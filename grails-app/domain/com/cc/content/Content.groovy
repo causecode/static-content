@@ -6,6 +6,7 @@ class Content {
 	String title
 	String subTitle
 	String body
+	String author
 	
 	static mapping = {
 		body type: 'text'
@@ -15,5 +16,6 @@ class Content {
 		body size: 0..2000, blank: false
 		title nullable: false, blank: false
 		subTitle nullable: false, blank: false
+		author nullable: true
     }
 }

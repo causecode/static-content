@@ -4,9 +4,10 @@ package com.cc.content
 import org.springframework.dao.DataIntegrityViolationException
 
 class ContentController {
+	def springSecurityService
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
-
+	//def principal = springSecurityService.getPrincipal()
     def index() {
         redirect(action: "list", params: params)
     }
@@ -21,15 +22,25 @@ class ContentController {
     }
 
     def save() {
-        def contentInstance = new Content()
-		println contentInstance?.dump()
-		println params
-		contentInstance.properties = params
-		println contentInstance?.dump()
-        if (!contentInstance.save()) {
-            render(view: "create", model: [contentInstance: contentInstance])
+        def contentInstance = new Content(params)
+		println  springSecurityService.getPrincipal()
+		def principal= springSecurityService.getPrincipal()
+	//	println principal.username
+		if(principal == "anonymousUser")
+		{
+			contentInstance.author = principal
+		}
+		else
+		{
+			contentInstance.author = principal.id
+			
+		}
+	  //contentInstance.author = principal
+      if (!contentInstance.save(flush: true)) {
+           render(view: "create", model: [contentInstance: contentInstance])
             return
         }
+	 
 
         flash.message = message(code: 'default.created.message', args: [message(code: 'content.label', default: 'Content'), contentInstance.id])
         redirect(action: "show", id: contentInstance.id)

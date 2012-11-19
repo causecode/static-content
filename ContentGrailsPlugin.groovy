@@ -4,12 +4,12 @@ class ContentGrailsPlugin {
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.1 > *"
     // the other plugins this plugin depends on
-    def dependsOn = [:]
+    def dependsOn = ["hibernate":"1.1 > *"]
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
         "grails-app/views/error.gsp"
     ]
-
+	//def loadAfter = ['hibernate']
     // TODO Fill in these fields
     def title = "Content Plugin" // Headline display name of the plugin
     def author = "Your name"
