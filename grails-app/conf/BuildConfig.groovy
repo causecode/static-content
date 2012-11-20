@@ -27,6 +27,8 @@ grails.project.dependency.resolution = {
 		  }
 
     plugins {
+		compile ":spring-security-ui:0.2"
+		compile ":spring-security-acl:1.1.1"
 		compile ":taggable:1.0.1"
 		runtime ":jquery:1.8.3"
 		compile ":jquery-ui:1.8.24"

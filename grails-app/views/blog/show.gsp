@@ -20,7 +20,7 @@
     <g:each in="${blogInstance.tags}">
       <g:link action="findByTag"  params="[tag:it]">${it}</g:link>
     </g:each>
-    
+    <sec:ifLoggedIn>
            <g:form>
         
         <fieldset class="buttons">
@@ -30,6 +30,6 @@
         </fieldset>
       
       </g:form>
- 
+ </sec:ifLoggedIn>
 </body>
 

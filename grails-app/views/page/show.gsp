@@ -13,7 +13,7 @@
     
     </div>
     <%= pageInstance.body %>
-   
+    <sec:ifLoggedIn>
            <g:form>
         
         <fieldset class="buttons">
@@ -23,6 +23,6 @@
         </fieldset>
       
       </g:form>
-
+  </sec:ifLoggedIn>
   </body>
 </html>

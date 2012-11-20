@@ -12,7 +12,9 @@
   <body>
     <div>
       <h1>Blog</h1>
+       <sec:ifLoggedIn>
           <g:link action='create' controller='blog'>Create a Blog</g:link>
+       </sec:ifLoggedIn>
     </div>
     <r:script>
     $('.pagination').wrapInner("<ul></ul>");
@@ -28,7 +30,13 @@
         <div class="blog_title">
           <h2>${blogInstance.title }</h2>
           <h4>${blogInstance.subTitle}</h4>
-          <small>By: <b> username &nbsp;&nbsp;</b></small>|&nbsp;&nbsp;Posted on: <small>${blogInstance.dateCreated.format('dd-MM-yyyy')}</small>
+          <g:if test="${blogInstance.author == 'anonymousUser'}">
+            <g:set var="user" value="anonymousUser" />
+          </g:if>
+          <g:else>
+             <g:set var="user" value="${userClass.get(blogInstance.author.toInteger()).username}" />
+          </g:else>
+          <small>By: <b> ${user} &nbsp;&nbsp;</b></small>|&nbsp;&nbsp;Posted on: <small>${blogInstance.dateCreated.format('dd-MM-yyyy')}</small>
           </div>
           <div class="blog_body">
             ${blogInstance.body.substring(0,139)}

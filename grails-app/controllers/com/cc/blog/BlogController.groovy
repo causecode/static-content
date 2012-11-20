@@ -1,9 +1,13 @@
 package com.cc.blog
 
 import org.springframework.dao.DataIntegrityViolationException
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugins.springsecurity.Secured;
+
 
 class BlogController {
 	def springSecurityService
+	def springSecurityUiService
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 	
     def index() {
@@ -11,7 +15,6 @@ class BlogController {
     }
 
     def list(Integer max) {
-     //   params.max = Math.min(max ?: 10, 100)
 		if(!params.max) {
 			params.max=2
 	   }
@@ -22,35 +25,29 @@ class BlogController {
 	   def blogs = blogList.list (max:params.max, offset:params.offset) {
 		  order("dateCreated","desc")
 	   }
-	  [blogInstanceList: blogs, blogInstanceTotal: blogs.getTotalCount()]
-       //[blogInstanceList: Blog.list(params), blogInstanceTotal: Blog.count()]
+	  [blogInstanceList: blogs, blogInstanceTotal: blogs.getTotalCount(), userClass: userClass()]
     }
 
+	@Secured(['ROLE_ADMIN','ROLE_USER'])
     def create() {
         [blogInstance: new Blog(params)]
     }
 
     def save() {
-        
         def blogInstance = new Blog(params)
-				bindData(blogInstance, params, [include: ['title', 'subTitle', 'body']])
-				println  springSecurityService.getPrincipal()
-				def principal= springSecurityService.getPrincipal()
-			//	println principal.username
-				if(principal == "anonymousUser")
-				{
+		bindData(blogInstance, params, [include: ['title', 'subTitle', 'body']])
+		def principal= springSecurityService.getPrincipal()
+		if(principal == "anonymousUser") {
 					blogInstance.author = principal
 				}
-				else
-				{
-					blogInstance.author = principal.id
+		else	{
+					blogInstance.author = principal.id as String
 					
 				}
 		if (!blogInstance.save(flush: true)) {
             render(view: "create", model: [blogInstance: blogInstance])
             return
         }
-
         flash.message = message(code: 'default.created.message', args: [message(code: 'blog.label', default: 'Blog'), blogInstance.id])
 		params.tags =params.tags.toLowerCase()
 		def seperatedTags = params.tags.tokenize(',')
@@ -66,11 +63,8 @@ class BlogController {
         def blogInstance = Blog.get(id)
 		def userId = blogInstance.author
 		if(userId.isNumber()) {
-			//def principal= springSecurityService.getPrincipal()
-			//Class userClass = principal.getClass()
-			def userClass = Class.forName("grails.plugins.springsecurity.userLookup.userDomainClassName")
 			userId.toInteger()
-			userInstance = userClass.getById(userId)
+			def userInstance = userClass().get(userId)  
 			username= userInstance.username
 		}
 		else {
@@ -81,7 +75,6 @@ class BlogController {
             redirect(action: "list")
             return
         }
-
         [blogInstance: blogInstance, username : username]
     }
 
@@ -159,6 +152,14 @@ class BlogController {
 	
 	def findByTag() {
 		def blogList= Blog.findAllByTag(params.tag)
-		 render(view: "list", model: [blogInstanceList: blogList, blogInstanceTotal: blogList.size(), activeNav:"blog_nav"])
+		 render(view: "list", model: [blogInstanceList: blogList, blogInstanceTotal: blogList.size(), userClass: userClass()])
 	   }
+	
+	protected String lookupUserClassName() {
+		SpringSecurityUtils.securityConfig.userLookup.userDomainClassName
+	}
+
+	protected Class<?> userClass() {
+		grailsApplication.getDomainClass(lookupUserClassName()).clazz
+	}
 }

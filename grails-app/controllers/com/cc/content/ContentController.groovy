@@ -2,9 +2,12 @@ package com.cc.content
 
 
 import org.springframework.dao.DataIntegrityViolationException
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+
 
 class ContentController {
 	def springSecurityService
+	def springSecurityUiService
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 	//def principal = springSecurityService.getPrincipal()
@@ -14,7 +17,7 @@ class ContentController {
 
     def list(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        [contentInstanceList: Content.list(params), contentInstanceTotal: Content.count()]
+        [contentInstanceList: Content.list(params), contentInstanceTotal: Content.count(), userClass: userClass()]
     }
 
     def create() {
@@ -23,19 +26,14 @@ class ContentController {
 
     def save() {
         def contentInstance = new Content(params)
-		println  springSecurityService.getPrincipal()
 		def principal= springSecurityService.getPrincipal()
-	//	println principal.username
-		if(principal == "anonymousUser")
-		{
-			contentInstance.author = principal
-		}
-		else
-		{
-			contentInstance.author = principal.id
-			
-		}
-	  //contentInstance.author = principal
+		if(principal == "anonymousUser") {
+					contentInstance.author = principal
+				}
+		else	{
+					contentInstance.author = principal.id as String
+					
+				}
       if (!contentInstance.save(flush: true)) {
            render(view: "create", model: [contentInstance: contentInstance])
             return
@@ -48,13 +46,23 @@ class ContentController {
 
     def show(Long id) {
         def contentInstance = Content.get(id)
+		def username
+		def userId = contentInstance.author
+		if(userId.isNumber()) {
+			userId.toInteger()
+			def userInstance = userClass().get(userId)
+			username= userInstance.username
+		}
+		else {
+			username= "anonymousUser"
+			}
         if (!contentInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'content.label', default: 'Content'), id])
             redirect(action: "list")
             return
         }
 
-        [contentInstance: contentInstance]
+        [contentInstance: contentInstance, username : username]
     }
 
     def edit(Long id) {
@@ -115,4 +123,11 @@ class ContentController {
             redirect(action: "show", id: id)
         }
     }
+	protected String lookupUserClassName() {
+		SpringSecurityUtils.securityConfig.userLookup.userDomainClassName
+	}
+
+	protected Class<?> userClass() {
+		grailsApplication.getDomainClass(lookupUserClassName()).clazz
+	}
 }

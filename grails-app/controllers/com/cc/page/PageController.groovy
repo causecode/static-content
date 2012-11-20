@@ -1,8 +1,13 @@
 package com.cc.page
 
 import org.springframework.dao.DataIntegrityViolationException
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugins.springsecurity.Secured
 
 class PageController {
+	
+	def springSecurityService
+	def springSecurityUiService
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
@@ -21,27 +26,24 @@ class PageController {
        def pages = pageList.list (max:params.max, offset:params.offset) {
           order("dateCreated","desc")
        }
-      [pageInstanceList: pages, pageInstanceTotal: pages.getTotalCount()]
+      [pageInstanceList: pages, pageInstanceTotal: pages.getTotalCount(), userClass: userClass()]
     }
-
+	
+	@Secured(['ROLE_ADMIN'])
     def create() {
         [pageInstance: new Page(params)]
     }
 
     def save() {
         def pageInstance = new Page(params)
-		println  springSecurityService.getPrincipal()
 		def principal= springSecurityService.getPrincipal()
-	//	println principal.username
-		if(principal == "anonymousUser")
-		{
-			pageInstance.author = principal
-		}
-		else
-		{
-			pageInstance.author = principal.id
-			
-		}
+		if(principal == "anonymousUser") {
+					pageInstance.author = principal
+				}
+		else	{
+					pageInstance.author = principal.id as String
+					
+				}
         if (!pageInstance.save(flush: true)) {
             render(view: "create", model: [pageInstance: pageInstance])
             return
@@ -53,13 +55,23 @@ class PageController {
 
     def show(Long id) {
         def pageInstance = Page.get(id)
+		def username
+		def userId = pageInstance.author
+		if(userId.isNumber()) {
+			userId.toInteger()
+			def userInstance = userClass().get(userId)
+			username= userInstance.username
+		}
+		else {
+			username= "anonymousUser"
+			}
         if (!pageInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'page.label', default: 'Page'), id])
             redirect(action: "list")
             return
         }
 
-        [pageInstance: pageInstance]
+        [pageInstance: pageInstance, username : username]
     }
 
     def edit(Long id) {
@@ -120,4 +132,12 @@ class PageController {
             redirect(action: "show", id: id)
         }
     }
+	
+	protected String lookupUserClassName() {
+		SpringSecurityUtils.securityConfig.userLookup.userDomainClassName
+	}
+
+	protected Class<?> userClass() {
+		grailsApplication.getDomainClass(lookupUserClassName()).clazz
+	}
 }

@@ -14,6 +14,7 @@
     <h1>${contentInstance.title }</h1><span><h6>${contentInstance.subTitle }</h6></span>
     </div>
     <%= contentInstance.body %>
+    <sec:ifLoggedIn>
         <g:form>
         <fieldset class="buttons">
           <g:hiddenField name="id" value="${contentInstance?.id}" />
@@ -21,6 +22,7 @@
           <g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
         </fieldset>
       </g:form>
+      </sec:ifLoggedIn>
 </body>
 
 </html>

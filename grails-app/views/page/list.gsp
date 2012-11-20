@@ -9,7 +9,9 @@
   </head>
   <body>
     <h1>Page</h1>
+    <sec:ifAllGranted roles="ROLE_ADMIN">
           <g:link action='create' controller='page'>Create a Page</g:link>
+    </sec:ifAllGranted>
     <r:script>
     $('.pagination').wrapInner("<ul></ul>");
     $('.step').wrap("<li></li>");
