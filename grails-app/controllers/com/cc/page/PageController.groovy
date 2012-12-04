@@ -56,6 +56,11 @@ class PageController {
     def show(Long id) {
         def pageInstance = Page.get(id)
 		def username
+		if (!pageInstance) {
+			flash.message = message(code: 'default.not.found.message', args: [message(code: 'page.label', default: 'Page'), id])
+			redirect(action: "list")
+			return
+		}
 		def userId = pageInstance.author
 		if(userId.isNumber()) {
 			userId.toInteger()
@@ -64,13 +69,7 @@ class PageController {
 		}
 		else {
 			username= "anonymousUser"
-			}
-        if (!pageInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'page.label', default: 'Page'), id])
-            redirect(action: "list")
-            return
-        }
-
+		}
         [pageInstance: pageInstance, username : username]
     }
 
@@ -81,7 +80,6 @@ class PageController {
             redirect(action: "list")
             return
         }
-
         [pageInstance: pageInstance]
     }
 

@@ -39,11 +39,11 @@ class BlogController {
 		def principal= springSecurityService.getPrincipal()
 		if(principal == "anonymousUser") {
 					blogInstance.author = principal
-				}
-		else	{
+		}
+		else {
 					blogInstance.author = principal.id as String
 					
-				}
+		}
 		if (!blogInstance.save(flush: true)) {
             render(view: "create", model: [blogInstance: blogInstance])
             return
@@ -54,13 +54,18 @@ class BlogController {
 		seperatedTags.each() {
 		  blogInstance.addTag(it);
 		}
-		 blogInstance.save()
+		blogInstance.save()
 		redirect(action: "show", id: blogInstance.id)
     }
 
     def show(Long id) {
 		def username
         def blogInstance = Blog.get(id)
+		if (!blogInstance) {
+			flash.message = message(code: 'default.not.found.message', args: [message(code: 'blog.label', default: 'Blog'), id])
+			redirect(action: "list")
+			return
+		}
 		def userId = blogInstance.author
 		if(userId.isNumber()) {
 			userId.toInteger()
@@ -69,12 +74,7 @@ class BlogController {
 		}
 		else {
 			username= "anonymousUser"
-			}
-        if (!blogInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'blog.label', default: 'Blog'), id])
-            redirect(action: "list")
-            return
-        }
+		}
         [blogInstance: blogInstance, username : username]
     }
 
@@ -85,7 +85,6 @@ class BlogController {
             redirect(action: "list")
             return
         }
-
         [blogInstance: blogInstance]
     }
 
@@ -153,7 +152,7 @@ class BlogController {
 	def findByTag() {
 		def blogList= Blog.findAllByTag(params.tag)
 		 render(view: "list", model: [blogInstanceList: blogList, blogInstanceTotal: blogList.size(), userClass: userClass()])
-	   }
+	}
 	
 	protected String lookupUserClassName() {
 		SpringSecurityUtils.securityConfig.userLookup.userDomainClassName

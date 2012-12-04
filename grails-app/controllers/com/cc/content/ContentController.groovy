@@ -10,7 +10,7 @@ class ContentController {
 	def springSecurityUiService
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
-	//def principal = springSecurityService.getPrincipal()
+	
     def index() {
         redirect(action: "list", params: params)
     }
@@ -29,23 +29,25 @@ class ContentController {
 		def principal= springSecurityService.getPrincipal()
 		if(principal == "anonymousUser") {
 					contentInstance.author = principal
-				}
-		else	{
-					contentInstance.author = principal.id as String
-					
-				}
-      if (!contentInstance.save(flush: true)) {
+		}
+		else {
+					contentInstance.author = principal.id as String		
+		}
+		if (!contentInstance.save(flush: true)) {
            render(view: "create", model: [contentInstance: contentInstance])
             return
         }
-	 
-
         flash.message = message(code: 'default.created.message', args: [message(code: 'content.label', default: 'Content'), contentInstance.id])
         redirect(action: "show", id: contentInstance.id)
     }
 
     def show(Long id) {
         def contentInstance = Content.get(id)
+		if (!contentInstance) {
+			flash.message = message(code: 'default.not.found.message', args: [message(code: 'content.label', default: 'Content'), id])
+			redirect(action: "list")
+			return
+		}
 		def username
 		def userId = contentInstance.author
 		if(userId.isNumber()) {
@@ -55,13 +57,7 @@ class ContentController {
 		}
 		else {
 			username= "anonymousUser"
-			}
-        if (!contentInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'content.label', default: 'Content'), id])
-            redirect(action: "list")
-            return
-        }
-
+		}
         [contentInstance: contentInstance, username : username]
     }
 
@@ -72,7 +68,6 @@ class ContentController {
             redirect(action: "list")
             return
         }
-
         [contentInstance: contentInstance]
     }
 
