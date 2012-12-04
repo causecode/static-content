@@ -1,6 +1,6 @@
 class ContentGrailsPlugin {
     // the plugin version
-    def version = "0.5"
+    def version = "0.6"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.1 > *"
     // the other plugins this plugin depends on
@@ -12,7 +12,7 @@ class ContentGrailsPlugin {
 	//def loadAfter = ['hibernate']
     // TODO Fill in these fields
     def title = "Content Plugin" // Headline display name of the plugin
-    def author = "Your name"
+    def author = "CauseCode"
     def authorEmail = ""
     def description = '''\
 Brief summary/description of the plugin.
