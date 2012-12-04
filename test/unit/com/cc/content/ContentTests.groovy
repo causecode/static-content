@@ -54,22 +54,22 @@ class ContentTests {
     }
 	
 	void testSave() {
-	params.dateCreated = new Date("11/10/2012")
-	params.lastUpdated = new Date("27/10/2012")
-	params.title = "Testing Actions Which Return A Map"
-	params.subTitle = "Testing XML and JSON Responses"
-	params.body = "XML and JSON response are also written directly to the response. Grails' mocking capabilities provide some conveniences for testing XML and JSON response. For example consider the following action:"
-	params.author = "Deepa"
-	def mockSpringSecurityService =	mockFor(grails.plugins.springsecurity.SpringSecurityService)
-			mockSpringSecurityService.demand.getPrincipal() { ->
-				[id:1, username: 'admin', firstName:"Vishesh", lastName:"Duggar",
+		params.dateCreated = new Date("11/10/2012")
+		params.lastUpdated = new Date("27/10/2012")
+		params.title = "Testing Actions Which Return A Map"
+		params.subTitle = "Testing XML and JSON Responses"
+		params.body = "XML and JSON response are also written directly to the response. Grails' mocking capabilities provide some conveniences for testing XML and JSON response. For example consider the following action:"
+		params.author = "Deepa"
+		def mockSpringSecurityService =	mockFor(grails.plugins.springsecurity.SpringSecurityService)
+		mockSpringSecurityService.demand.getPrincipal() { ->
+			[id:1, username: 'admin', firstName:"Vishesh", lastName:"Duggar",
 			password: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
 			confirmPassword: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
 			email: 'vishesh@causecode.com', enabled: true]
-			}
-			controller.springSecurityService = mockSpringSecurityService.createMock()
-	controller.save()
-	assert response.redirectedUrl == '/content/show'+'/5'
+		}
+		controller.springSecurityService = mockSpringSecurityService.createMock()
+		controller.save()
+		assert response.redirectedUrl == '/content/show'+'/5'
 	}
 	
 	void testSaveForInvalidParams() {
@@ -80,16 +80,16 @@ class ContentTests {
 		params.body
 		params.author = "Deepa"
 		def mockSpringSecurityService =	mockFor(grails.plugins.springsecurity.SpringSecurityService)
-				mockSpringSecurityService.demand.getPrincipal() { ->
-					[id:1, username: 'admin', firstName:"Vishesh", lastName:"Duggar",
-				password: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
-				confirmPassword: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
-				email: 'vishesh@causecode.com', enabled: true]
-				}
-				controller.springSecurityService = mockSpringSecurityService.createMock()
-		controller.save()
-		 assert view == "/content/create"
+		mockSpringSecurityService.demand.getPrincipal() { ->
+			[id:1, username: 'admin', firstName:"Vishesh", lastName:"Duggar",
+			password: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
+			confirmPassword: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
+			email: 'vishesh@causecode.com', enabled: true]
 		}
+		controller.springSecurityService = mockSpringSecurityService.createMock()
+		controller.save()
+		assert view == "/content/create"
+	}
 	
 	void testSaveWithoutParams() {
 		params.dateCreated
@@ -99,17 +99,16 @@ class ContentTests {
 		params.body
 		params.author
 		def mockSpringSecurityService =	mockFor(grails.plugins.springsecurity.SpringSecurityService)
-				mockSpringSecurityService.demand.getPrincipal() { ->
-					[id:1, username: 'admin', firstName:"Vishesh", lastName:"Duggar",
-				password: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
-				confirmPassword: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
-				email: 'vishesh@causecode.com', enabled: true]
-				}
-				controller.springSecurityService = mockSpringSecurityService.createMock()
-		controller.save()
-		 assert view == "/content/create"
+		mockSpringSecurityService.demand.getPrincipal() { ->
+			[id:1, username: 'admin', firstName:"Vishesh", lastName:"Duggar",
+			password: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
+			confirmPassword: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
+			email: 'vishesh@causecode.com', enabled: true]
 		}
-	
+		controller.springSecurityService = mockSpringSecurityService.createMock()
+		controller.save()
+		assert view == "/content/create"
+	}
 	
 	void testSaveWithOutUserInstance() {
 		params.dateCreated = new Date("11/10/2012")
@@ -157,42 +156,44 @@ class ContentTests {
 		assert result.contentInstance.author == "Deepa"
 	}
 	
-	void testShow(){
+	void testShow() {
 		controller.metaClass.userClass.get = {->
-				[id:1, username: 'Prachi', firstName:"Prachi", lastName:"Kulkarni",
+			[id:1, username: 'Prachi', firstName:"Prachi", lastName:"Kulkarni",
 			password: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
 			confirmPassword: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
-			email: 'Prachi@causecode.com', enabled: true]}
+			email: 'Prachi@causecode.com', enabled: true]
+		}
 		def result=controller.show(2)
 		assert result.contentInstance.author == "Prachi"
 	}
 	
-	void testShowWithOutId(){
+	void testShowWithOutId() {
 		controller.metaClass.userClass.get = {->
-				[id:1, username: 'Prachi', firstName:"Prachi", lastName:"Kulkarni",
+			[id:1, username: 'Prachi', firstName:"Prachi", lastName:"Kulkarni",
 			password: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
 			confirmPassword: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
-			email: 'Prachi@causecode.com', enabled: true]}
+			email: 'Prachi@causecode.com', enabled: true]
+		}
 		def result=controller.show()
 		assert response.redirectedUrl == '/content/list'
 	}
 	
-	void testShowAnonymousUser(){
+	void testShowAnonymousUser() {
 		def result=controller.show(3)
 		assert result.contentInstance.author == "anonymousUser"
 	}
 	
-	void testEdit(){
+	void testEdit() {
 		def result=controller.edit(2)
 		assert result.contentInstance.author == "Prachi"
 	}
 	
-	void testEditWithoutId(){
+	void testEditWithoutId() {
 		def result=controller.edit()
 		assert response.redirectedUrl == '/content/list'
 	}
 	
-	void testEditWithInvalidId(){
+	void testEditWithInvalidId() {
 		def result=controller.edit(6)
 		assert response.redirectedUrl == '/content/list'
 	}
@@ -203,9 +204,10 @@ class ContentTests {
 		assert response.redirectedUrl == '/content/show'+'/2'
 		controller.metaClass.userClass.get = {->
 			[id:1, username: 'Prachi', firstName:"Prachi", lastName:"Kulkarni",
-		password: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
-		confirmPassword: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
-		email: 'Prachi@causecode.com', enabled: true]}
+			password: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
+			confirmPassword: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
+			email: 'Prachi@causecode.com', enabled: true]
+		}
 		def updatedValue = controller.show(2)
 		assert updatedValue.contentInstance.author == "sona"
 	}
