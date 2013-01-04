@@ -86,7 +86,7 @@ class ContentController {
                           "Another user has updated this Content while you were editing")
                 render(view: "edit", model: [contentInstance: contentInstance])
                 return
-            }
+            }       
         }
 
         contentInstance.properties = params

@@ -117,17 +117,16 @@ class BlogController {
 		params.tags =params.tags.toLowerCase()
 		def seperatedTags = params.tags.tokenize(',')
 		blogInstance.getTags().each() {
-		  if(it in seperatedTags) {
-			}
+		  if(it in seperatedTags) { }
 		  else {
-		  blogInstance.removeTag(it)
+              blogInstance.removeTag(it)
 		  }
 		}
 		seperatedTags.each() {
 		  blogInstance.addTag(it);
 		}
 		blogInstance.save()
-		 redirect(action: "show", id: blogInstance.id)
+		redirect(action: "show", id: blogInstance.id)
     }
 
     def delete(Long id) {
