@@ -8,6 +8,8 @@ import grails.plugins.springsecurity.Secured;
 class BlogController {
 	def springSecurityService
 	def springSecurityUiService
+    List replyComments = [][]
+    
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 	
     def index() {
@@ -28,7 +30,7 @@ class BlogController {
 	  [blogInstanceList: blogs, blogInstanceTotal: blogs.getTotalCount(), userClass: userClass()]
     }
 
-	@Secured(['ROLE_ADMIN','ROLE_USER'])
+	//@Secured(['ROLE_ADMIN','ROLE_USER'])
     def create() {
         [blogInstance: new Blog(params)]
     }
@@ -59,6 +61,7 @@ class BlogController {
     }
 
     def show(Long id) {
+        List arrayOfComments = []
 		def username
         def blogInstance = Blog.get(id)
 		if (!blogInstance) {
@@ -75,9 +78,14 @@ class BlogController {
 		else {
 			username= "anonymousUser"
 		}
-        [blogInstance: blogInstance, username : username]
+        def blogComments = BlogComment.findAllByBlog(Blog.get(id))
+        blogComments.each { 
+                def comment = it.comment
+                arrayOfComments.add(comment)
+            }
+        [blogInstance: blogInstance, username : username, comments: arrayOfComments]
     }
-
+    
     def edit(Long id) {
         def blogInstance = Blog.get(id)
         if (!blogInstance) {
@@ -160,4 +168,29 @@ class BlogController {
 	protected Class<?> userClass() {
 		grailsApplication.getDomainClass(lookupUserClassName()).clazz
 	}
+    
+    def comment() {
+       def commentInstance = new Comment(params)
+       bindData(commentInstance, params, [include: ['subject', 'name', 'email', 'commentText']])
+       commentInstance.dateCreated = new Date()
+       commentInstance.validate()
+       println commentInstance.errors
+       if (!commentInstance.save(flush: true)) {
+           redirect(action: "show", id:params.blog_id)
+           return
+       }
+       if (params.replyCommentId.isNumber()) {
+           commentInstance.replyTo = Comment.get(params.replyCommentId)
+           commentInstance.save()
+       }
+       else {
+           def blogCommentInstance = new BlogComment()
+           blogCommentInstance.blog = Blog.get(params.blog_id)
+           blogCommentInstance.comment = commentInstance
+           blogCommentInstance.validate()
+           println blogCommentInstance.errors
+           blogCommentInstance.save()
+       }
+       redirect(action: "show", id: params.blog_id)
+     }
 }

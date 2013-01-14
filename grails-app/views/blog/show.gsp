@@ -5,8 +5,14 @@
 <head>
   <meta http-equiv="blog-Type" blog="text/html; charset=UTF-8" />
   <meta name="layout" content="main" />
+  <r:require modules="bootstrap, jquery"/>
   <g:set var="entityName" value="${message(code: 'blog.label', default: 'blog')}" />
   <title><g:message code="default.show.label" args="[entityName]" /></title>
+  <style type="text/css">
+	div.comment {  
+	  margin-left : 50px;
+	}
+	</style>
 </head>
 
 <body>
@@ -31,5 +37,49 @@
       
       </g:form>
  </sec:ifLoggedIn>
-</body>
+ <br>
+ <a href="#myModal" role="button" class="btn" data-toggle="modal">Comment</a>
+<g:form> 
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel">Comment</h3>
+	</div>
+	<div class="modal-body">
+
+		Subject: <g:textField name="subject"/><br>
+		Name:<g:textField name="name"/><br>
+		E-Mail:<g:textField name="email"/><br>
+		Comment:<g:textArea name="commentText"/><br>
+
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		<g:hiddenField name="blog_id" value="${blogInstance?.id}" />
+		<g:hiddenField name="replyCommentId"/>
+		<g:actionSubmit class="comment" action="comment" value="Comment"/>
+	</div>
+</div>
+</g:form>
+<h2>Comments</h2>
+
+<g:each in="${comments}">
+	<div data-comment = "${it.id}">
+	<p>${it.subject}</p>
+    <p>${it.name} | Date:<g:formatDate format="MM-dd-yyyy" date="${it.dateCreated}"/> 
+    <p>${it.commentText}</p>
+    <a href="#myModal" role="button" class="btn" data-toggle="modal">Reply</a>
+    <g:nestedComment commentId="${it.id}"></g:nestedComment>
+    <hr>
+    </div>
+</g:each>
+
+<script type="text/javascript">
+	$(".btn").on("click", function() { 
+ 		var replyCommentId = $(this).closest("div").attr("data-comment");
+   		$("input[type=hidden][name=replyCommentId]").val(replyCommentId);
+	});
+		</script>
+</body>
+</html>

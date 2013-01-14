@@ -32,6 +32,7 @@ grails.project.dependency.resolution = {
 		compile ":taggable:1.0.1"
 		runtime ":jquery:1.8.3"
 		compile ":jquery-ui:1.8.24"
+        compile ":twitter-bootstrap:2.2.2"
 		runtime ":resources:1.2.RC2"
         build(":tomcat:$grailsVersion",
               ":release:2.0.3",
