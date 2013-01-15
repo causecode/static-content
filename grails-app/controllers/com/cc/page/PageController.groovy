@@ -3,6 +3,7 @@ package com.cc.page
 import org.springframework.dao.DataIntegrityViolationException
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import grails.plugins.springsecurity.Secured
+import com.cc.content.*;
 
 class PageController {
 	
@@ -29,13 +30,14 @@ class PageController {
       [pageInstanceList: pages, pageInstanceTotal: pages.getTotalCount(), userClass: userClass()]
     }
 	
-	@Secured(['ROLE_ADMIN'])
     def create() {
         [pageInstance: new Page(params)]
     }
 
     def save() {
         def pageInstance = new Page(params)
+        bindData(pageInstance, params, [include: ['title', 'subTitle', 'body']])
+        pageInstance.pageLayout = PageLayout.get(params.pageLayout)
 		def principal= springSecurityService.getPrincipal()
 		if(principal == "anonymousUser") {
 					pageInstance.author = principal
@@ -70,7 +72,7 @@ class PageController {
 		else {
 			username= "anonymousUser"
 		}
-        [pageInstance: pageInstance, username : username]
+        [pageInstance: pageInstance, username : username, layout : pageInstance.pageLayout.layoutFile]
     }
 
     def edit(Long id) {
@@ -100,14 +102,12 @@ class PageController {
                 return
             }
         }
-
-        pageInstance.properties = params
-
+        bindData(pageInstance, params, [include: ['title', 'subTitle', 'body']])
+        pageInstance.pageLayout = PageLayout.get(params.pageLayout)
         if (!pageInstance.save(flush: true)) {
             render(view: "edit", model: [pageInstance: pageInstance])
             return
         }
-
         flash.message = message(code: 'default.updated.message', args: [message(code: 'page.label', default: 'Page'), pageInstance.id])
         redirect(action: "show", id: pageInstance.id)
     }
@@ -129,6 +129,18 @@ class PageController {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'page.label', default: 'Page'), id])
             redirect(action: "show", id: id)
         }
+    }
+    
+    def layout1() {
+        
+    }
+    
+    def layout2() {
+    
+    }
+    
+    def layout3() {
+    
     }
 	
 	protected String lookupUserClassName() {

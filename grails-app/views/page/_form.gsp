@@ -24,4 +24,8 @@
   <g:textArea name="body" cols="40" rows="5" maxlength="2000" required="" value="${pageInstance?.body}"/>
 </div>
 
+<div>
+	<g:message code="page.body.pageLayout" default="PageLayout" />
+	<g:select id="pageLayout" name="pageLayout" from="${com.cc.content.PageLayout.list()}" optionKey = "id" optionValue = "layoutName" value = "${pageInstance?.pageLayout?.id}"/>
+</div>
 

@@ -30,8 +30,7 @@ class BlogController {
 	  [blogInstanceList: blogs, blogInstanceTotal: blogs.getTotalCount(), userClass: userClass()]
     }
 
-	//@Secured(['ROLE_ADMIN','ROLE_USER'])
-    def create() {
+	def create() {
         [blogInstance: new Blog(params)]
     }
 
