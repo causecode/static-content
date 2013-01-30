@@ -21,7 +21,9 @@
     <g:message code="page.body.label" default="Body" />
     <span class="required-indicator">*</span>
   </label>
-  <g:textArea name="body" cols="40" rows="5" maxlength="2000" required="" value="${pageInstance?.body}"/>
+  <ckeditor:editor name="body" height="300px" width="80%">
+    <%= pageInstance?.body %>
+  </ckeditor:editor>
 </div>
 
 <div>

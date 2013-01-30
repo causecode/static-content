@@ -3,6 +3,7 @@
 <html>
   <head>
     <meta name="layout" content="main">
+    <r:require module="bootstrap"/>
     <g:set var="entityName" value="${message(code: 'content.label', default: 'Content')}" />
     <title><g:message code="default.edit.label" args="[entityName]" /></title>
     <ckeditor:resources />

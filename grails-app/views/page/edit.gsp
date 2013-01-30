@@ -3,6 +3,8 @@
 <html>
   <head>
     <meta name="layout" content="main">
+    <r:require module="bootstrap"/>
+    <ckeditor:resources/>
     <g:set var="entityName" value="${message(code: 'page.label', default: 'Page')}" />
     <title><g:message code="default.edit.label" args="[entityName]" /></title>
   </head>

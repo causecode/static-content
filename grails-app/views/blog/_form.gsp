@@ -21,9 +21,9 @@
     <g:message code="blog.body.label" default="Body" />
     <span class="required-indicator">*</span>
   </label>
-  <g:textArea name="body" value="${blogInstance?.body}" height="300px" width="80%">
-    <%= contentInstance?.body %>
-  </g:textArea>
+  <ckeditor:editor name="body" height="300px" width="80%">
+    <%= blogInstance?.body %>
+  </ckeditor:editor>
 </div>
 
 <div>
@@ -36,6 +36,7 @@
   </g:each>
   <g:textField name="tags" required="" value="${presentTags}"/>
 </div>
+
 
 
 
