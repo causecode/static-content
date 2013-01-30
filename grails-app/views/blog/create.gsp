@@ -3,6 +3,8 @@
 <html>
 	<head>
 		<meta name="layout" content="main">
+		<r:require module="bootstrap"/>
+		<ckeditor:resources/>
 		<g:set var="entityName" value="${message(code: 'blog.label', default: 'Blog')}" />
 		<title><g:message code="default.create.label" args="[entityName]" /></title>
 	</head>
@@ -26,7 +28,7 @@
 				</g:eachError>
 			</ul>
 			</g:hasErrors>
-			<g:form action="save" >
+			<g:form action="save" method="post" enctype="multipart/form-data" >
 				<fieldset class="form">
 					<g:render template="form"/>
 				</fieldset>

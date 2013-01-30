@@ -30,3 +30,16 @@ grails.resources.modules = {
 }
 
 grails.plugins.springsecurity.securityConfigType = "Annotation"
+
+ckeditor {
+    upload {
+        basedir = "/images/"
+            overwrite = false
+            image {
+                browser = true
+                upload = true
+                allowed = ['jpg', 'gif', 'jpeg', 'png']
+                denied = []
+            }
+        }
+}
