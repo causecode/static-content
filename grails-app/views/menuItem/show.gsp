@@ -60,6 +60,17 @@
 					
 				</li>
 				</g:if>
+				
+				<g:if test="${menuItemInstance?.menu}">
+				<li class="fieldcontain">
+					<span id="menu-label" class="property-label"><g:message code="menuItem.menu.label" default=" Menu : " /></span>
+					
+						<g:each in="${menuItemInstance.menu}" var="c">
+						<span class="property-value" aria-labelledby="menu-label"><g:link controller="menu" action="show" id="${c.id}">${c?.name}</g:link></span>
+						</g:each>
+					
+				</li>
+				</g:if>
 			</ol>
 			<g:form>
 				<fieldset class="buttons">

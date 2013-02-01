@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<meta name="layout" content="main">
-		<r:require modules="bootstrap, jquery"/>
+		<r:require modules="bootstrap, jquery, validator"/>
 		<g:set var="entityName" value="${message(code: 'menuItem.label', default: 'MenuItem')}" />
 		<title><g:message code="default.edit.label" args="[entityName]" /></title>
 	</head>
@@ -28,7 +28,7 @@
 				</g:eachError>
 			</ul>
 			</g:hasErrors>
-			<g:form method="post" >
+			<g:form name="mainForm" method="post" >
 				<g:hiddenField name="id" value="${menuItemInstance?.id}" />
 				<g:hiddenField name="version" value="${menuItemInstance?.version}" />
 				<fieldset class="form">
@@ -39,9 +39,9 @@
      				<g:if test="${it.id == null}">
     					<br><div id="childrenDiv" method="post" class="form-inline">
     					<label for="childTitle">Child Title<span class="required-indicator">*</span></label>
-						<g:textField name="childTitle" value="${it.title}"/>
+						<g:textField name="childTitle" class="required" value="${it.title}"/>
 						<label for="childUrl">Child Url<span class="required-indicator">*</span></label>
-						<g:textField name="childUrl" value="${it.url}"/>
+						<g:textField name="childUrl" class="required url" value="${it.url}"/>
 						</div><br>
 					</g:if>
 					</g:each>
@@ -65,12 +65,17 @@
 			$("#addChildren").click ( function () {
 				var data = '<br><div id="childrenDiv" method="post" class="form-inline">'+
 		    	'<label for="childTitle">Child Title<span class="required-indicator">*</span></label>'+
-				'<g:textField name="childTitle" value=" "/>'+
+				'<g:textField name="childTitle" class="required" value=" "/>'+
 				'<label for="childUrl">Child Url<span class="required-indicator">*</span></label>'+
-				'<g:textField name="childUrl" value=" "/>'+
+				'<g:textField name="childUrl" class="required url" value=" "/>'+
 				'</div><br>';
 				$("#clildMainDiv").append(data);
 			});
+		</script>
+		<script>
+			jQuery(document).ready(function() { 
+					var validator = $("#mainForm").validate();
+				});
 		</script>
 	</body>
 </html>

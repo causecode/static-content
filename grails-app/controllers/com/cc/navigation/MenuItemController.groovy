@@ -20,33 +20,39 @@ class MenuItemController {
     }
 
     def save() {
-        println params.dump()
         def parentInstance = new MenuItem()
         parentInstance.title = params.title
         parentInstance.url = params.url
-        if (params.childTitle.class.isArray()) {
-            for(def i=0; i<params.childTitle.length; i++) {
+        if(params.childTitle) {
+            if (params.childTitle.class.isArray()) {
+                for(def i=0; i<params.childTitle.length; i++) {
+                    def childInstance = new MenuItem()
+                    childInstance.title = params.childTitle[i]
+                    childInstance.url = params.childUrl[i]
+                    childInstance.parent = parentInstance
+                    parentInstance.addToChildItems(childInstance)
+                    childInstance.validate()
+                    println childInstance.errors
+                }
+            }
+            else {
                 def childInstance = new MenuItem()
-                childInstance.title = params.childTitle[i]
-                childInstance.url = params.childUrl[i]
+                childInstance.title = params.childTitle
+                childInstance.url = params.childUrl
                 childInstance.parent = parentInstance
                 parentInstance.addToChildItems(childInstance)
                 childInstance.validate()
                 println childInstance.errors
             }
         }
-        else {
-            def childInstance = new MenuItem()
-            childInstance.title = params.childTitle
-            childInstance.url = params.childUrl
-            childInstance.parent = parentInstance
-            parentInstance.addToChildItems(childInstance)
-            childInstance.validate()
-            println childInstance.errors
-        }
         if (!parentInstance.save(flush: true)) {
             render(view: "create", model: [menuItemInstance: parentInstance])
             return
+        }
+        if(!parentInstance.parent && params.selectedMenu) {
+            parentInstance.menu = Menu.get(params.selectedMenu)
+            def menuInstance = Menu.get(params.selectedMenu)
+            menuInstance.addToMenuItem(parentInstance)
         }
         redirect(action: "show", id: parentInstance.id)
     }
@@ -69,12 +75,10 @@ class MenuItemController {
             redirect(action: "list")
             return
         }
-
         [menuItemInstance: menuItemInstance]
     }
 
     def update(Long id, Long version) {
-        println params.dump()
         def parentInstance = MenuItem.get(id)
         if (!parentInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'menuItem.label', default: 'MenuItem'), id])
@@ -94,31 +98,49 @@ class MenuItemController {
   
         parentInstance.title = params.title
         parentInstance.url = params.url
-        if (params.childTitle.class.isArray()) {
-            for(def i=0; i<params.childTitle.length; i++) {
+        if(params.childTitle) {
+            if (params.childTitle.class.isArray()) {
+                for(def i=0; i<params.childTitle.length; i++) {
+                    def childInstance = new MenuItem()
+                    childInstance.title = params.childTitle[i]
+                    childInstance.url = params.childUrl[i]
+                    childInstance.parent = parentInstance
+                    parentInstance.addToChildItems(childInstance)
+                    childInstance.validate()
+                    println childInstance.errors
+                }
+            }
+            else {
                 def childInstance = new MenuItem()
-                childInstance.title = params.childTitle[i]
-                childInstance.url = params.childUrl[i]
+                childInstance.title = params.childTitle
+                childInstance.url = params.childUrl
                 childInstance.parent = parentInstance
                 parentInstance.addToChildItems(childInstance)
                 childInstance.validate()
                 println childInstance.errors
             }
         }
-        else {
-            def childInstance = new MenuItem()
-            childInstance.title = params.childTitle
-            childInstance.url = params.childUrl
-            childInstance.parent = parentInstance
-            parentInstance.addToChildItems(childInstance)
-            childInstance.validate()
-            println childInstance.errors
-        }
        if (!parentInstance.save(flush: true)) {
             render(view: "edit", model: [menuItemInstance: parentInstance])
             return
         }
 
+       if(!parentInstance.parent && params.selectedMenu) {
+           if(!(parentInstance.menu == Menu.get(params.selectedMenu))) {
+               if(parentInstance.menu) {
+                   parentInstance.menu.removeFromMenuItem(parentInstance)
+               }
+               parentInstance.menu = Menu.get(params.selectedMenu)
+               def menuInstance = Menu.get(params.selectedMenu)
+               menuInstance.addToMenuItem(parentInstance)
+           }
+        }
+        else if(!params.selectedMenu) {
+            if(parentInstance.menu) {
+                parentInstance.menu.removeFromMenuItem(parentInstance)
+                parentInstance.menu = null
+            }
+        }
         flash.message = message(code: 'default.updated.message', args: [message(code: 'menuItem.label', default: 'MenuItem'), parentInstance.id])
         redirect(action: "show", id: parentInstance.id)
     }
