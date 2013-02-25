@@ -1,19 +1,31 @@
+/* Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are not permitted.*/
+
+
 package com.cc.navigation
 
 class MenuTagLib {
     static namespace = "com"
     def bootstrapMenu = { attrs, body ->
         def menuInstance = Menu.get(attrs.id)
-        out << "<h1>"
-        out << "${menuInstance.name}"
-        out << "</h1>"
-        out << '<div class="navbar navbar-static">'
+        out << '<div class="navbar navbar-fixed-top">'
         out << '<div class="navbar-inner">'
         out << '<div class="container" style="width: auto;">'
+        out << '<a style="margin-left : 200px;" class="brand" href="#"><img class="logo" src="'+resource(dir: "images", file: "logo.png")+'" /> <span class="name">'+attrs.name+'</span></a>'
         out << "<ul class='nav'  role='navigation'>"
-        menuInstance.menuItem.each {
+        def menuItem = MenuItem.createCriteria()
+        def menuItemList = menuItem.list {
+            eq("menu", menuInstance)
+        }
+        menuItemList.each {
                 out << com.menu(id: it.id)
         }
+       /* menuInstance.menuItem.each {
+                out << com.menu(id: it.id)
+        }*/
         out << "</ul>"
         out << '</div>'
         out << '</div>'
