@@ -22,6 +22,7 @@ are not permitted. -->
 				<li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
 			</ul>
 		</div>
+		${menuInstance?.name}
 		<com:bootstrapMenu id = "${menuInstance?.id}"/> 
 		
 		
