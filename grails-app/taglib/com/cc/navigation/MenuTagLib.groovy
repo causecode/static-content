@@ -10,26 +10,25 @@ package com.cc.navigation
 class MenuTagLib {
     static namespace = "com"
     def bootstrapMenu = { attrs, body ->
-        def menuInstance = Menu.get(attrs.id)
-        out << '<div class="navbar navbar-fixed-top">'
-        out << '<div class="navbar-inner">'
-        out << '<div class="container" style="width: auto;">'
-        out << '<a style="margin-left : 200px;" class="brand" href="#"><img class="logo" src="'+resource(dir: "images", file: "logo.png")+'" /> <span class="name">'+menuInstance.name+'</span></a>'
-        out << "<ul class='nav'  role='navigation'>"
-        def menuItem = MenuItem.createCriteria()
-        def menuItemList = menuItem.list {
-            eq("menu", menuInstance)
+        if(Menu.get(attrs.id)) {
+            def menuInstance = Menu.get(attrs.id)
+            out << '<div class="navbar navbar-fixed-top">'
+            out << '<div class="navbar-inner">'
+            out << '<div class="container" style="width: auto;">'
+            out << '<a style="margin-left : 200px;" class="brand" href="#"><img class="logo" src="'+resource(dir: "images", file: "logo.png")+'" /> <span class="name">'+menuInstance.name+'</span></a>'
+            out << "<ul class='nav'  role='navigation'>"
+            def menuItem = MenuItem.createCriteria()
+            def menuItemList = menuItem.list {
+                eq("menu", menuInstance)
+            }
+            menuItemList.each {
+                    out << com.menu(id: it.id)
+            }
+            out << "</ul>"
+            out << '</div>'
+            out << '</div>'
+            out << '</div>'
         }
-        menuItemList.each {
-                out << com.menu(id: it.id)
-        }
-       /* menuInstance.menuItem.each {
-                out << com.menu(id: it.id)
-        }*/
-        out << "</ul>"
-        out << '</div>'
-        out << '</div>'
-        out << '</div>'
     }
     
     def menu = { attrs, body ->
