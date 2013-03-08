@@ -51,6 +51,7 @@ are not permitted. -->
 						</div><br>
 					</g:if>
 					</g:each>
+					
 				</g:if>
 				<h3>Children Items</h3>
 				<g:if test="${menuItemInstance?.childItems}">

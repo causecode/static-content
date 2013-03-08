@@ -39,27 +39,20 @@ are not permitted. -->
 				</fieldset>
 				<g:if test="${menuItemInstance?.childItems}">
      				<g:each in="${menuItemInstance?.childItems}">
-    					<br><div id="childrenDiv" method="post" class="form-inline">
-    					<label for="childTitle">Child Title<span class="required-indicator">*</span></label>
-						<g:textField name="childTitle" class="required" value="${it.title}"/>
-						<label for="childUrl">Child Url<span class="required-indicator">*</span></label>
-						<g:textField name="childUrl"  class="required url" value="${it.url}"/>
-						</div><br>
+    					<g:render template="childItemForm" model="['childItem':it]"/>
 					</g:each>
 				</g:if>
 				<fieldset class="buttons">
 					<g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Submit')}" />
 				</fieldset>
 			</g:form>
+			<div id="childrenDiv" style="display: none;">
+				<g:render template="childItemForm"/>
+			</div>
 		</div>
 		<script type="text/javascript">
 			$("#addChildren").click ( function () {
-				var data = '<br><div id="childrenDiv" method="post" class="form-inline">'+
-		    	'<label for="childTitle">Child Title<span class="required-indicator">*</span></label>'+
-				'<g:textField class="required" name="childTitle" value=" "/>'+
-				'<label for="childUrl">Child Url<span class="required-indicator">*</span></label>'+
-				'<g:textField class="required url" name="childUrl" value=" "/>'+
-				'</div><br>';
+				var data = $('#childrenDiv').html();
 				$("#clildMainDiv").append(data);
 			});
 		</script>
