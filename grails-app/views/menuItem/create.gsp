@@ -1,8 +1,10 @@
-<!--  Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are not permitted. -->
+<!--  /*
+ * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are not permitted.
+ */  -->
 
 <%@ page import="com.cc.navigation.MenuItem" %>
 <!DOCTYPE html>
@@ -37,11 +39,9 @@ are not permitted. -->
 				<fieldset class="form">
 					<g:render template="form"/>
 				</fieldset>
-				<g:if test="${menuItemInstance?.childItems}">
      				<g:each in="${menuItemInstance?.childItems}">
     					<g:render template="childItemForm" model="['childItem':it]"/>
 					</g:each>
-				</g:if>
 				<fieldset class="buttons">
 					<g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Submit')}" />
 				</fieldset>
