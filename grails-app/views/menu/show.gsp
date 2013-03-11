@@ -23,7 +23,7 @@ are not permitted. -->
 			</ul>
 		</div>
 		${menuInstance?.name}
-		<com:bootstrapMenu id = "${menuInstance?.id}"/> 
+		<com:bootstrapMenu id="${menuInstance?.id}"/> 
 		
 		
 			<g:form>

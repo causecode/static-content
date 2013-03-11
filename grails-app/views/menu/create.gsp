@@ -9,7 +9,7 @@ are not permitted. -->
 <html>
 	<head>
 		<meta name="layout" content="main">
-		<r:require modules="bootstrap, jquery, validator"/>
+		<r:require modules="jquery, validator"/>
 		<g:set var="entityName" value="${message(code: 'menu.label', default: 'Menu')}" />
 		<title><g:message code="default.create.label" args="[entityName]" /></title>
 	</head>
