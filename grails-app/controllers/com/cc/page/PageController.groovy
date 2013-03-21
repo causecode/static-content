@@ -72,7 +72,7 @@ class PageController {
 			return
 		}
 		def userId = pageInstance.author
-		if(userId.isNumber()) {
+		if(userId?.isNumber()) {
 			userId.toInteger()
 			def userInstance = userClass().get(userId)
 			username= userInstance.username
@@ -80,7 +80,7 @@ class PageController {
 		else {
 			username= "anonymousUser"
 		}
-        [pageInstance: pageInstance, username : username, layout : pageInstance.pageLayout.layoutFile]
+        [pageInstance: pageInstance, username : username, layout : pageInstance?.pageLayout?.layoutFile]
     }
 
     def edit(Long id) {

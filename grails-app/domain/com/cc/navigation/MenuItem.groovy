@@ -16,7 +16,6 @@ class MenuItem {
     static hasMany = [childItems: MenuItem]
     
     static constraints = {
-        url url: true
         parent nullable: true
         menu nullable: true
     }

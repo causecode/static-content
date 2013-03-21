@@ -14,5 +14,6 @@ class Page extends Content {
     PageLayout pageLayout
 
     static constraints = {
+        pageLayout nullable:true
     }
 }
