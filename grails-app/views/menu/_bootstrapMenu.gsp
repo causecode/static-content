@@ -2,7 +2,7 @@
 	<div class="navbar-inner">
 		<div class="container" style="width: 940px;" >
 		<a class="brand" href="#">
-			<img class="logo" src="${resource(dir: "images", file: "logo.png")}" />
+			<img class="logo" src="/images/logo.png" />
 		</a>
 		<ul class="nav pull-right">
 			<g:each in="${menuItemList}">
