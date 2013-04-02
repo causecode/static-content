@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are not permitted.
+ */
+
+
 package com.cc.navigation
 
 import org.springframework.dao.DataIntegrityViolationException
@@ -24,26 +33,7 @@ class MenuItemController {
         parentInstance.title = params.title
         parentInstance.url = params.url
         if(params.childTitle) {
-            if (params.childTitle.class.isArray()) {
-                for(def i=0; i<params.childTitle.length; i++) {
-                    def childInstance = new MenuItem()
-                    childInstance.title = params.childTitle[i]
-                    childInstance.url = params.childUrl[i]
-                    childInstance.parent = parentInstance
-                    parentInstance.addToChildItems(childInstance)
-                    childInstance.validate()
-                    println childInstance.errors
-                }
-            }
-            else {
-                def childInstance = new MenuItem()
-                childInstance.title = params.childTitle
-                childInstance.url = params.childUrl
-                childInstance.parent = parentInstance
-                parentInstance.addToChildItems(childInstance)
-                childInstance.validate()
-                println childInstance.errors
-            }
+            addChildItems(params.childTitle, params.childUrl, parentInstance)
         }
         if (!parentInstance.save(flush: true)) {
             render(view: "create", model: [menuItemInstance: parentInstance])
@@ -99,26 +89,7 @@ class MenuItemController {
         parentInstance.title = params.title
         parentInstance.url = params.url
         if(params.childTitle) {
-            if (params.childTitle.class.isArray()) {
-                for(def i=0; i<params.childTitle.length; i++) {
-                    def childInstance = new MenuItem()
-                    childInstance.title = params.childTitle[i]
-                    childInstance.url = params.childUrl[i]
-                    childInstance.parent = parentInstance
-                    parentInstance.addToChildItems(childInstance)
-                    childInstance.validate()
-                    println childInstance.errors
-                }
-            }
-            else {
-                def childInstance = new MenuItem()
-                childInstance.title = params.childTitle
-                childInstance.url = params.childUrl
-                childInstance.parent = parentInstance
-                parentInstance.addToChildItems(childInstance)
-                childInstance.validate()
-                println childInstance.errors
-            }
+            addChildItems(params.childTitle, params.childUrl, parentInstance)
         }
        if (!parentInstance.save(flush: true)) {
             render(view: "edit", model: [menuItemInstance: parentInstance])
@@ -181,6 +152,29 @@ class MenuItemController {
         catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'menuItem.label', default: 'MenuItem'), id])
             redirect(action: "show", id: parentId)
+        }
+    }
+    
+    private def addChildItems(def childTitle, def childUrl, def parentInstance) {
+        if (childTitle.class.isArray()) {
+            for(def i=0; i<childTitle.length; i++) {
+                def childInstance = new MenuItem()
+                childInstance.title = childTitle[i]
+                childInstance.url = childUrl[i]
+                childInstance.parent = parentInstance
+                parentInstance.addToChildItems(childInstance)
+                childInstance.validate()
+                println childInstance.errors
+            }
+        }
+        else {
+            def childInstance = new MenuItem()
+            childInstance.title = childTitle
+            childInstance.url = childUrl
+            childInstance.parent = parentInstance
+            parentInstance.addToChildItems(childInstance)
+            childInstance.validate()
+            println childInstance.errors
         }
     }
 }

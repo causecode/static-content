@@ -1,3 +1,11 @@
+<!--  /*
+ * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are not permitted.
+ */  -->
+
 <%@ page import="com.cc.navigation.MenuItem" %>
 <!DOCTYPE html>
 <html>
@@ -37,14 +45,10 @@
 				<g:if test="${menuItemInstance?.childItems}">
      				<g:each in="${menuItemInstance?.childItems}">
      				<g:if test="${it.id == null}">
-    					<br><div id="childrenDiv" method="post" class="form-inline">
-    					<label for="childTitle">Child Title<span class="required-indicator">*</span></label>
-						<g:textField name="childTitle" class="required" value="${it.title}"/>
-						<label for="childUrl">Child Url<span class="required-indicator">*</span></label>
-						<g:textField name="childUrl" class="required url" value="${it.url}"/>
-						</div><br>
+    					<g:render template="childItemForm" model="['childItem':it]"/>
 					</g:if>
 					</g:each>
+					
 				</g:if>
 				<h3>Children Items</h3>
 				<g:if test="${menuItemInstance?.childItems}">
@@ -61,14 +65,12 @@
 				</fieldset>
 			</g:form>
 		</div>
+		<div id="childrenDiv" style="display: none;">
+				<g:render template="childItemForm"/>
+		</div>
 		<script type="text/javascript">
 			$("#addChildren").click ( function () {
-				var data = '<br><div id="childrenDiv" method="post" class="form-inline">'+
-		    	'<label for="childTitle">Child Title<span class="required-indicator">*</span></label>'+
-				'<g:textField name="childTitle" class="required" value=" "/>'+
-				'<label for="childUrl">Child Url<span class="required-indicator">*</span></label>'+
-				'<g:textField name="childUrl" class="required url" value=" "/>'+
-				'</div><br>';
+				var data = $('#childrenDiv').html();
 				$("#clildMainDiv").append(data);
 			});
 		</script>

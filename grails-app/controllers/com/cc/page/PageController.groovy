@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are not permitted.
+ */
+
 package com.cc.page
 
 import org.springframework.dao.DataIntegrityViolationException
@@ -64,7 +72,7 @@ class PageController {
 			return
 		}
 		def userId = pageInstance.author
-		if(userId.isNumber()) {
+		if(userId?.isNumber()) {
 			userId.toInteger()
 			def userInstance = userClass().get(userId)
 			username= userInstance.username
@@ -72,7 +80,7 @@ class PageController {
 		else {
 			username= "anonymousUser"
 		}
-        [pageInstance: pageInstance, username : username, layout : pageInstance.pageLayout.layoutFile]
+        [pageInstance: pageInstance, username : username, layout : pageInstance?.pageLayout?.layoutFile]
     }
 
     def edit(Long id) {

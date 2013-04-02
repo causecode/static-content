@@ -24,9 +24,6 @@ log4j = {
 }
 
 grails.resources.modules = {
-	core {
-		resource url: '/js/jquery/jquery-1.8.2.min.js'
-	}
     validator {
         resource url: '/js/jquery.validate.js'
    }
