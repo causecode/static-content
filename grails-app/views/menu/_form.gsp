@@ -23,7 +23,7 @@ are not permitted. -->
 		<g:message code="menu.menuItem.label" default="Menu Item" />
 		
 	</label>
-	<g:select name="menuItem" from="${topLevelMenuItems}" multiple="multiple"  optionValue="title" optionKey="id" size="5" value="${menuInstance?.menuItem*.id}" class="many-to-many"/>
+	<g:select name="menuItem" from="${topLevelMenuItems}" multiple="multiple"  optionValue="title" optionKey="id" size="5" value="${menuInstance?.menuItems*.id}" class="many-to-many"/>
 </div>
 
 <div id="clildMenuItemDiv">

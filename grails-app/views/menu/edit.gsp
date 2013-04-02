@@ -43,8 +43,8 @@
 					<g:render template="form"/>
 				</fieldset>
 				<h3>Menu Items</h3>
-				<g:if test="${menuInstance?.menuItem}">
-     				<g:each in="${menuInstance.menuItem}">
+				<g:if test="${menuInstance?.menuItems}">
+     				<g:each in="${menuInstance.menuItems}">
     					<g:link controller="menuItem" action="show" id="${it.id}">${it.title}</g:link>
     					<g:link action="deleteChild" id="${it.id}">X</g:link><br>
 					</g:each>
