@@ -76,7 +76,7 @@ class MenuController {
             return
         }
         def topLevelMenuItems = MenuItem.where {
-             (parent == null && menu == null)
+             (parent == null && menu == menuInstance)
         }
         [menuInstance: menuInstance, topLevelMenuItems: topLevelMenuItems]
     }

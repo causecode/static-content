@@ -42,7 +42,7 @@ class MenuItemController {
         if(!parentInstance.parent && params.selectedMenu) {
             parentInstance.menu = Menu.get(params.selectedMenu)
             def menuInstance = Menu.get(params.selectedMenu)
-            menuInstance.addToMenuItem(parentInstance)
+            menuInstance.addToMenuItems(parentInstance)
         }
         redirect(action: "show", id: parentInstance.id)
     }
@@ -99,16 +99,16 @@ class MenuItemController {
        if(!parentInstance.parent && params.selectedMenu) {
            if(!(parentInstance.menu == Menu.get(params.selectedMenu))) {
                if(parentInstance.menu) {
-                   parentInstance.menu.removeFromMenuItem(parentInstance)
+                   parentInstance.menu.removeFromMenuItems(parentInstance)
                }
                parentInstance.menu = Menu.get(params.selectedMenu)
                def menuInstance = Menu.get(params.selectedMenu)
-               menuInstance.addToMenuItem(parentInstance)
+               menuInstance.addToMenuItems(parentInstance)
            }
         }
         else if(!params.selectedMenu) {
             if(parentInstance.menu) {
-                parentInstance.menu.removeFromMenuItem(parentInstance)
+                parentInstance.menu.removeFromMenuItems(parentInstance)
                 parentInstance.menu = null
             }
         }

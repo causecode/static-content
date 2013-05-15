@@ -11,7 +11,7 @@
 <html>
 	<head>
 		<meta name="layout" content="main">
-		<r:require modules="bootstrap, jquery, validator"/>
+		<r:require modules="bootstrap, jquery"/>
 		<g:set var="entityName" value="${message(code: 'menuItem.label', default: 'MenuItem')}" />
 		<title><g:message code="default.edit.label" args="[entityName]" /></title>
 	</head>
@@ -73,11 +73,6 @@
 				var data = $('#childrenDiv').html();
 				$("#clildMainDiv").append(data);
 			});
-		</script>
-		<script>
-			jQuery(document).ready(function() { 
-					var validator = $("#mainForm").validate();
-				});
 		</script>
 	</body>
 </html>

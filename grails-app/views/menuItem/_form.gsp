@@ -19,7 +19,7 @@ are not permitted. -->
 		<g:message code="menuItem.url.label" default="Url" />
 		<span class="required-indicator">*</span>
 	</label>
-	<g:field type="url" class="required url" name="url" value="${menuItemInstance?.url}"/>
+	<g:field type="text" class="required url" name="url" value="${menuItemInstance?.url}"/>
 </div>
 
 <g:select name="selectedMenu"

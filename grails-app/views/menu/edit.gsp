@@ -11,7 +11,7 @@
 <html>
 	<head>
 		<meta name="layout" content="main">
-		<r:require modules="bootstrap, jquery, validator"/>
+		<r:require modules="bootstrap, jquery"/>
 		<g:set var="entityName" value="${message(code: 'menu.label', default: 'Menu')}" />
 		<title><g:message code="default.edit.label" args="[entityName]" /></title>
 	</head>
@@ -43,8 +43,8 @@
 					<g:render template="form"/>
 				</fieldset>
 				<h3>Menu Items</h3>
-				<g:if test="${menuInstance?.menuItem}">
-     				<g:each in="${menuInstance.menuItem}">
+				<g:if test="${menuInstance?.menuItems}">
+     				<g:each in="${menuInstance.menuItems}">
     					<g:link controller="menuItem" action="show" id="${it.id}">${it.title}</g:link>
     					<g:link action="deleteChild" id="${it.id}">X</g:link><br>
 					</g:each>
