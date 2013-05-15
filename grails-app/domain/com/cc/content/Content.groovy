@@ -28,7 +28,7 @@ class Content {
     }
 
     static constraints = {
-        body size: 0..5000, blank: false
+        body blank: false
         title nullable: false, blank: false
         subTitle nullable: true
         author nullable: true, bindable: false
