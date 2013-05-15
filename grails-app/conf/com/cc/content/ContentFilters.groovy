@@ -13,6 +13,8 @@ class ContentFilters {
     def contentService
 
     def filters = {
+        // TODO check if other controllers from outside plugins are filtered or not
+        // If yes than change controller filter below.
         all(controller: '*', action: 'show') {
             before = {
                 List restrictedControllerList = ['page', 'blog']
@@ -23,12 +25,6 @@ class ContentFilters {
                     }
                 }
                 return true
-            }
-            after = { Map model ->
-
-            }
-            afterView = { Exception e ->
-
             }
         }
     }

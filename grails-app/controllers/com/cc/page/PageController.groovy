@@ -8,7 +8,7 @@
 
 package com.cc.page
 
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils;
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 
 class PageController {
@@ -17,7 +17,7 @@ class PageController {
 
     def beforeInterceptor = [action: this.&validate]
 
-    Page pageInstance
+    private Page pageInstance
 
     private validate() {
         if(!params.id) return true;

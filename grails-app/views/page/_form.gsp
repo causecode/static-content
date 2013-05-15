@@ -43,7 +43,8 @@
         <g:message code="page.pageLayout.label" default="Page Layout" />
     </label>
     <div class="controls">
-        <g:select id="pageLayout" name="pageLayout.id" from="${com.cc.content.PageLayout.list()}" optionKey="id" value="${pageInstance?.pageLayout?.id}" class="many-to-one" noSelection="['null': '']"/>
+        <g:select id="pageLayout" name="pageLayout.id" from="${com.cc.content.PageLayout.list()}"
+            optionKey="id" value="${pageInstance?.pageLayout?.id}" class="many-to-one" noSelection="['null': '']"/>
     </div>
 </div>
 

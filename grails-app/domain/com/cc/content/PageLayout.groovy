@@ -15,4 +15,9 @@ class PageLayout {
     static constraints = {
     }
 
+    @Override
+    public String toString() {
+        layoutName
+    }
+
 }
