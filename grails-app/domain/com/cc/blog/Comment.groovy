@@ -9,6 +9,7 @@
 package com.cc.blog
 
 class Comment {
+
     String subject
     String name
     String email
@@ -21,4 +22,5 @@ class Comment {
         replyTo nullable: true
         email email: true
     }
+
 }

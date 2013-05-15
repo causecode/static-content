@@ -8,12 +8,15 @@
 
 package com.cc.page
 
-import com.cc.content.*
-
+import com.cc.content.Content
+import com.cc.content.PageLayout
+ 
 class Page extends Content {
+
     PageLayout pageLayout
 
     static constraints = {
         pageLayout nullable:true
     }
+
 }

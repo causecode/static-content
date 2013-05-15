@@ -1,5 +1,13 @@
+/*
+ * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are not permitted.
+ */
+
 class ContentGrailsPlugin {
-    // the plugin version
+
     def version = "0.6"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.1 > *"
@@ -9,7 +17,7 @@ class ContentGrailsPlugin {
     def pluginExcludes = [
         "grails-app/views/error.gsp"
     ]
-	//def loadAfter = ['hibernate']
+    //def loadAfter = ['hibernate']
     // TODO Fill in these fields
     def title = "Content Plugin" // Headline display name of the plugin
     def author = "CauseCode"
@@ -18,25 +26,24 @@ class ContentGrailsPlugin {
 Brief summary/description of the plugin.
 '''
 
-    // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/content"
 
     // Extra (optional) plugin metadata
 
     // License: one of 'APACHE', 'GPL2', 'GPL3'
-//    def license = "APACHE"
+    //    def license = "APACHE"
 
     // Details of company behind the plugin (if there is one)
-//    def organization = [ name: "My Company", url: "http://www.my-company.com/" ]
+    //    def organization = [ name: "My Company", url: "http://www.my-company.com/" ]
 
     // Any additional developers beyond the author specified above.
-//    def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
+    //    def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
 
     // Location of the plugin's issue tracker.
-//    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
+    //    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
 
     // Online location of the plugin's browseable source code.
-//    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
+    //    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before

@@ -6,11 +6,11 @@
  * without modification, are not permitted.
  */
 
-
 package com.cc.blog
 
-import com.cc.content.*
 import org.grails.taggable.*
+
+import com.cc.content.*
 
 class Blog extends Content implements Taggable {
 

@@ -6,17 +6,19 @@
  * without modification, are not permitted.
  */
 
-
 package com.cc.navigation
 
 class MenuItem {
+
     String title
     String url
+
     static belongsTo = [parent: MenuItem, menu: Menu]
     static hasMany = [childItems: MenuItem]
-    
+
     static constraints = {
         parent nullable: true
         menu nullable: true
     }
+
 }
