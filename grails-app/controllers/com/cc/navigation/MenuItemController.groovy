@@ -6,7 +6,6 @@
  * without modification, are not permitted.
  */
 
-
 package com.cc.navigation
 
 import org.springframework.dao.DataIntegrityViolationException
@@ -79,32 +78,32 @@ class MenuItemController {
         if (version != null) {
             if (parentInstance.version > version) {
                 parentInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                          [message(code: 'menuItem.label', default: 'MenuItem')] as Object[],
-                          "Another user has updated this MenuItem while you were editing")
+                        [message(code: 'menuItem.label', default: 'MenuItem')] as Object[],
+                        "Another user has updated this MenuItem while you were editing")
                 render(view: "edit", model: [menuItemInstance: parentInstance])
                 return
             }
         }
-  
+
         parentInstance.title = params.title
         parentInstance.url = params.url
         if(params.childTitle) {
             addChildItems(params.childTitle, params.childUrl, parentInstance)
         }
-       if (!parentInstance.save(flush: true)) {
+        if (!parentInstance.save(flush: true)) {
             render(view: "edit", model: [menuItemInstance: parentInstance])
             return
         }
 
-       if(!parentInstance.parent && params.selectedMenu) {
-           if(!(parentInstance.menu == Menu.get(params.selectedMenu))) {
-               if(parentInstance.menu) {
-                   parentInstance.menu.removeFromMenuItems(parentInstance)
-               }
-               parentInstance.menu = Menu.get(params.selectedMenu)
-               def menuInstance = Menu.get(params.selectedMenu)
-               menuInstance.addToMenuItems(parentInstance)
-           }
+        if(!parentInstance.parent && params.selectedMenu) {
+            if(!(parentInstance.menu == Menu.get(params.selectedMenu))) {
+                if(parentInstance.menu) {
+                    parentInstance.menu.removeFromMenuItems(parentInstance)
+                }
+                parentInstance.menu = Menu.get(params.selectedMenu)
+                def menuInstance = Menu.get(params.selectedMenu)
+                menuInstance.addToMenuItems(parentInstance)
+            }
         }
         else if(!params.selectedMenu) {
             if(parentInstance.menu) {
@@ -134,7 +133,7 @@ class MenuItemController {
             redirect(action: "show", id: id)
         }
     }
-    
+
     def deleteChild() {
         def menuItemInstance = MenuItem.get(params.id)
         def parentId = menuItemInstance.parent.id
@@ -154,7 +153,7 @@ class MenuItemController {
             redirect(action: "show", id: parentId)
         }
     }
-    
+
     private def addChildItems(def childTitle, def childUrl, def parentInstance) {
         if (childTitle.class.isArray()) {
             for(def i=0; i<childTitle.length; i++) {
@@ -177,4 +176,5 @@ class MenuItemController {
             println childInstance.errors
         }
     }
+
 }

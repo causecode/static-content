@@ -6,20 +6,18 @@
  * without modification, are not permitted.
  */
 
-
 package com.cc.content
 
-
-import org.springframework.dao.DataIntegrityViolationException
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-
+import org.springframework.dao.DataIntegrityViolationException
 
 class ContentController {
-	def springSecurityService
-	def springSecurityUiService
+
+    def springSecurityService
+    def springSecurityUiService
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
-	
+
     def index() {
         redirect(action: "list", params: params)
     }
@@ -35,15 +33,15 @@ class ContentController {
 
     def save() {
         def contentInstance = new Content(params)
-		def principal= springSecurityService.getPrincipal()
-		if(principal == "anonymousUser") {
-					contentInstance.author = principal
-		}
-		else {
-					contentInstance.author = principal.id as String		
-		}
-		if (!contentInstance.save(flush: true)) {
-           render(view: "create", model: [contentInstance: contentInstance])
+        def principal= springSecurityService.getPrincipal()
+        if(principal == "anonymousUser") {
+            contentInstance.author = principal
+        }
+        else {
+            contentInstance.author = principal.id as String
+        }
+        if (!contentInstance.save(flush: true)) {
+            render(view: "create", model: [contentInstance: contentInstance])
             return
         }
         flash.message = message(code: 'default.created.message', args: [message(code: 'content.label', default: 'Content'), contentInstance.id])
@@ -52,21 +50,21 @@ class ContentController {
 
     def show(Long id) {
         def contentInstance = Content.get(id)
-		if (!contentInstance) {
-			flash.message = message(code: 'default.not.found.message', args: [message(code: 'content.label', default: 'Content'), id])
-			redirect(action: "list")
-			return
-		}
-		def username
-		def userId = contentInstance.author
-		if(userId.isNumber()) {
-			userId.toInteger()
-			def userInstance = userClass().get(userId)
-			username= userInstance.username
-		}
-		else {
-			username= "anonymousUser"
-		}
+        if (!contentInstance) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'content.label', default: 'Content'), id])
+            redirect(action: "list")
+            return
+        }
+        def username
+        def userId = contentInstance.author
+        if(userId.isNumber()) {
+            userId.toInteger()
+            def userInstance = userClass().get(userId)
+            username= userInstance.username
+        }
+        else {
+            username= "anonymousUser"
+        }
         [contentInstance: contentInstance, username : username]
     }
 
@@ -91,11 +89,11 @@ class ContentController {
         if (version != null) {
             if (contentInstance.version > version) {
                 contentInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                          [message(code: 'content.label', default: 'Content')] as Object[],
-                          "Another user has updated this Content while you were editing")
+                        [message(code: 'content.label', default: 'Content')] as Object[],
+                        "Another user has updated this Content while you were editing")
                 render(view: "edit", model: [contentInstance: contentInstance])
                 return
-            }       
+            }
         }
 
         contentInstance.properties = params
@@ -127,11 +125,12 @@ class ContentController {
             redirect(action: "show", id: id)
         }
     }
-	protected String lookupUserClassName() {
-		SpringSecurityUtils.securityConfig.userLookup.userDomainClassName
-	}
+    protected String lookupUserClassName() {
+        SpringSecurityUtils.securityConfig.userLookup.userDomainClassName
+    }
 
-	protected Class<?> userClass() {
-		grailsApplication.getDomainClass(lookupUserClassName()).clazz
-	}
+    protected Class<?> userClass() {
+        grailsApplication.getDomainClass(lookupUserClassName()).clazz
+    }
+
 }

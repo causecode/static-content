@@ -6,7 +6,6 @@
  * without modification, are not permitted.
  */
 
-
 package com.cc.navigation
 
 import org.springframework.dao.DataIntegrityViolationException
@@ -26,7 +25,7 @@ class MenuController {
 
     def create() {
         def topLevelMenuItems = MenuItem.where {
-                (parent == null && menu == null)
+            (parent == null && menu == null)
         }
         [menuInstance: new Menu(params), topLevelMenuItems: topLevelMenuItems]
     }
@@ -42,7 +41,7 @@ class MenuController {
             }
             else {
                 menuInstance.addToMenuItem(MenuItem.get(params.menuItem))
-             }
+            }
         }
         if (!menuInstance.save(flush: true)) {
             def topLevelMenuItems = MenuItem.where {
@@ -52,7 +51,7 @@ class MenuController {
             return
         }
         menuInstance.menuItem.each {
-            it.menu = menuInstance    
+            it.menu = menuInstance
         }
         redirect(action: "show", id: menuInstance.id)
     }
@@ -76,7 +75,7 @@ class MenuController {
             return
         }
         def topLevelMenuItems = MenuItem.where {
-             (parent == null && menu == menuInstance)
+            (parent == null && menu == menuInstance)
         }
         [menuInstance: menuInstance, topLevelMenuItems: topLevelMenuItems]
     }
@@ -92,8 +91,8 @@ class MenuController {
         if (version != null) {
             if (menuInstance.version > version) {
                 menuInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                          [message(code: 'menu.label', default: 'Menu')] as Object[],
-                          "Another user has updated this Menu while you were editing")
+                        [message(code: 'menu.label', default: 'Menu')] as Object[],
+                        "Another user has updated this Menu while you were editing")
                 def topLevelMenuItems = MenuItem.where {
                     (parent == null && menu == null)
                 }
@@ -111,7 +110,7 @@ class MenuController {
             }
             else {
                 menuInstance.addToMenuItem(MenuItem.get(params.menuItem))
-             }
+            }
         }
         if (!menuInstance.save(flush: true)) {
             def topLevelMenuItems = MenuItem.where {
@@ -123,7 +122,7 @@ class MenuController {
         menuInstance.menuItem.each {
             it.menu = menuInstance
         }
-        
+
         flash.message = message(code: 'default.updated.message', args: [message(code: 'menu.label', default: 'Menu'), menuInstance.id])
         redirect(action: "show", id: menuInstance.id)
     }
@@ -146,7 +145,7 @@ class MenuController {
             redirect(action: "show", id: id)
         }
     }
-    
+
     def deleteChild() {
         def menuItemInstance = MenuItem.get(params.id)
         def menuInstance = menuItemInstance.menu
@@ -166,7 +165,8 @@ class MenuController {
             return
         }
         catch (DataIntegrityViolationException e) {
-           redirect(action: "show", id: menuInstance.id)
+            redirect(action: "show", id: menuInstance.id)
         }
     }
+
 }

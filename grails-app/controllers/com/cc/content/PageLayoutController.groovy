@@ -71,8 +71,8 @@ class PageLayoutController {
         if (version != null) {
             if (pageLayoutInstance.version > version) {
                 pageLayoutInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                          [message(code: 'pageLayout.label', default: 'PageLayout')] as Object[],
-                          "Another user has updated this PageLayout while you were editing")
+                        [message(code: 'pageLayout.label', default: 'PageLayout')] as Object[],
+                        "Another user has updated this PageLayout while you were editing")
                 render(view: "edit", model: [pageLayoutInstance: pageLayoutInstance])
                 return
             }
