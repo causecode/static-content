@@ -13,22 +13,23 @@ grails.project.test.reports.dir = "target/test-reports"
 grails.project.dependency.resolution = {
     inherits("global") {
     }
+
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
         grailsCentral()
     }
+
     dependencies {
         runtime 'mysql:mysql-connector-java:5.1.18'
     }
 
     plugins {
-        compile ":spring-security-ui:0.2"
-        compile ":spring-security-acl:1.1.1"
         compile ":taggable:1.0.1"
         runtime ":jquery:1.8.3"
         compile ":jquery-ui:1.8.24"
         compile ":twitter-bootstrap:2.2.2"
         runtime ":resources:1.2.RC2"
+        compile ":spring-security-core:1.2.7.3"
         build(":tomcat:$grailsVersion", ":release:2.0.3", ":rest-client-builder:1.0.2") {
             export = false
         }

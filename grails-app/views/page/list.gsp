@@ -1,49 +1,47 @@
-<!--  /*
- * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or
- * without modification, are not permitted.
- */  -->
-
-<%@ page import="com.cc.page.Page" %>
-<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta name="layout" content="main">
-    <r:require module="bootstrap"/>
     <g:set var="entityName" value="${message(code: 'page.label', default: 'Page')}" />
     <title><g:message code="default.list.label" args="[entityName]" /></title>
-  </head>
-  <body>
-    <h1>Page</h1>
-    <sec:ifAllGranted roles="ROLE_ADMIN">
-          <g:link action='create' controller='page'>Create a Page</g:link>
-    </sec:ifAllGranted>
-    <r:script>
-    $('.pagination').wrapInner("<ul></ul>");
-    $('.step').wrap("<li></li>");
-    $('.prevLink').wrap("<li></li>");
-    $('.nextLink').wrap("<li></li>");
-    $('.currentStep').wrap("<li></li>");
-    </r:script>
-    <div class="page_list">
-      <g:each in="${pageInstanceList}" status="i" var="pageInstance">
-        <div class="pageEntry summary">
-        <div class="page_title">
-          <h2>${pageInstance.title }</h2>
-          <h4>${pageInstance.subTitle}</h4>
-        </div>
-          <div class="page_body">
-            ${pageInstance.body.substring(0,139)}
-            <g:link action='show' controller='page' id='${pageInstance.id}'>...more</g:link>
-          </div>
-          </div>
-          <hr style="border: 1px solid #DEDEDE;">
-       </g:each>  
-      <div class="pagination">
-        <g:paginate maxsteps="2" total="${pageInstanceTotal}" />
-      </div>
+</head>
+<body>
+    <div class="page-header">
+        <h1>
+            <g:message code="default.list.label" args="[entityName]" />
+        </h1>
     </div>
-  </body>
+    <table class="table table-bordered table-hover table-striped">
+        <thead>
+            <tr>
+                <g:sortableColumn property="title" title="${message(code: 'page.title.label', default: 'Title')}" />
+                <g:sortableColumn property="subTitle" title="${message(code: 'page.subTitle.label', default: 'Sub Title')}" />
+                <g:sortableColumn property="author" title="${message(code: 'page.author.label', default: 'Author')}" />
+                <g:sortableColumn property="dateCreated" title="${message(code: 'page.dateCreated.label', default: 'Date Created')}" />
+                <g:sortableColumn property="lastUpdated" title="${message(code: 'page.lastUpdated.label', default: 'Last Updated')}" />
+            </tr>
+        </thead>
+        <tbody>
+            <g:each in="${pageInstanceList}" var="pageInstance">
+                <tr>
+                    <td><g:link action="show" id="${pageInstance.id}">
+                        ${fieldValue(bean: pageInstance, field: "title")}</g:link></td>
+                    <td>${fieldValue(bean: pageInstance, field: "subTitle")}</td>
+                    <td>${fieldValue(bean: pageInstance, field: "author")}</td>
+                    <td><g:formatDate date="${pageInstance.dateCreated}" /></td>
+                    <td><g:formatDate date="${pageInstance.lastUpdated}" /></td>
+                </tr>
+            </g:each>
+            <g:if test="${!pageInstanceList }">
+                <tr>
+                    <td colspan="5">
+                        No record found. <g:link action="create">Create new</g:link>.
+                    </td>
+                </tr>
+            </g:if>
+        </tbody>
+    </table>
+    <div class="pagination">
+        <g:paginate total="${pageInstanceTotal}" />
+    </div>
+</body>
 </html>

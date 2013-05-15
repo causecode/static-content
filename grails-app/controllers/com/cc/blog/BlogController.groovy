@@ -14,9 +14,6 @@ import org.springframework.dao.DataIntegrityViolationException
 class BlogController {
 
     def springSecurityService
-    def springSecurityUiService
-
-    List replyComments = [][]
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
