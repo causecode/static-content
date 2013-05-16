@@ -146,10 +146,12 @@ class ContentService {
             log.error "No annotated field found in domain class ${domainClassInstance?.class}"
 
         for(controller in grailsApplication.controllerClasses) {
-            if(controller.name == attrs.controller.capitalize()) {
+            if(controller.name == attrs.controller?.capitalize()) {
                 controllerClass = controller.clazz
             }
         }
+        if(!controllerClass)
+            log.error "Cound not find controller class with given controller: ${attrs.controller}"
 
         Annotation controllerAnnotation = controllerClass?.getAnnotation(ControllerShorthand.class)
         if(controllerAnnotation) {  // Searching for shorthand for grails controller
@@ -159,7 +161,7 @@ class ContentService {
         if(controllerShortHand)
             attrs.uri = "/$controllerShortHand/${attrs.id}/${sanitizedTitle ?: ''}"
         else
-            log.error "No annotation found for controller: ${controllerClass.class}"
+            log.error "No annotation found for controller: ${controllerClass?.class}"
 
         def urlAttrs = attrs
         if (attrs.url instanceof Map) {
