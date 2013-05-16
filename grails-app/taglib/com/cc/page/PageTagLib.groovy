@@ -37,16 +37,4 @@ class PageTagLib {
         out << body(layout)
     }
 
-    def renderMetaTags = { attrs, body ->
-        if(!attrs.pageInstance)
-            throwTagError("Page tag lib missing required attribute pageInstance")
-
-        Page pageInstance = attrs.pageInstance
-        if(!pageInstance.metaTags)
-            return
-        pageInstance.metaTags.each {
-            out << "<meta name=\"${it.type}\" content=\"${it.value}\" />\n"
-        }
-    }
-
 }
