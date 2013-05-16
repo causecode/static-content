@@ -16,4 +16,5 @@ class Blog extends Content implements Taggable {
 
     static constraints = {
     }
+
 }

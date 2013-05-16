@@ -29,6 +29,7 @@ class Content {
 
     static mapping = {
         body type: 'text'
+        table "cc_content_content"
     }
 
     static constraints = {

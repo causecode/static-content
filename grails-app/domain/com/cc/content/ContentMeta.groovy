@@ -25,6 +25,7 @@ class ContentMeta {
 
     static mapping = {
         versioin: false
+        table "cc_content_content_meta"
     }
 
 }

@@ -23,4 +23,8 @@ class Menu {
         lastUpdated bindable: false
     }
 
+    static mapping = {
+        table "cc_content_menu"
+    }
+
 }

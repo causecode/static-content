@@ -25,7 +25,11 @@ class Meta {
         dateCreated bindable: false
         lastUpdated bindable: false
     }
-    
+
+    static mapping = {
+        table "cc_content_meta"
+    }
+
     static List<String> getTypeList() {
         return [KEYWORDS, DESCRIPTION]
     }

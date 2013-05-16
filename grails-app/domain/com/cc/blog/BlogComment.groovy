@@ -16,4 +16,8 @@ class BlogComment {
     static constraints = {
     }
 
+    static mapping = {
+        table "cc_content_blog_comment"
+    }
+
 }

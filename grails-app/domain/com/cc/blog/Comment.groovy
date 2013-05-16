@@ -23,4 +23,8 @@ class Comment {
         email email: true
     }
 
+    static mapping = {
+        table "cc_content_comment"
+    }
+
 }
