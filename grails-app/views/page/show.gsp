@@ -14,6 +14,7 @@
         </h1>
     </div>
     <%= pageInstance.body %>
+    <content:createLink controller="page" action="test" id="19" domain="com.cc.page.Page" />
     <content:canEdit>
         <g:form>
             <fieldset class="form-actions">

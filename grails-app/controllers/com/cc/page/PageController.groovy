@@ -11,6 +11,9 @@ package com.cc.page
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 
+import com.cc.annotation.shorthand.ControllerShorthand;
+
+@ControllerShorthand(value = "c")
 class PageController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]

@@ -8,6 +8,7 @@
 
 package com.cc.content
 
+import com.cc.annotation.sanitizedTitle.SanitizedTitle
 import com.cc.content.meta.Meta
 
 class Content {
@@ -18,6 +19,7 @@ class Content {
     Date dateCreated
     Date lastUpdated
 
+    @SanitizedTitle
     String title
     String subTitle
     String body
