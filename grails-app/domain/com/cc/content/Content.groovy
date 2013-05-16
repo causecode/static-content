@@ -48,6 +48,8 @@ class Content {
     }
 
     List<Meta> getMetaTags() {
+        if(!this.id) return [];
+
         ContentMeta.findAllByContent(this)*.meta
     }
 

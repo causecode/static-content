@@ -25,5 +25,9 @@ class Meta {
         dateCreated bindable: false
         lastUpdated bindable: false
     }
+    
+    static List<String> getTypeList() {
+        return [KEYWORDS, DESCRIPTION]
+    }
 
 }

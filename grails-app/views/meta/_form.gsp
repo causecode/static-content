@@ -1,27 +1,17 @@
-<g:hasErrors bean="${metaInstance}">
-    <ul class="text-error">
-        <g:eachError bean="${metaInstance}" var="error">
-            <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>>
-                <g:message error="${error}" /></li>
-        </g:eachError>
-    </ul>
-</g:hasErrors>
+<%@ page import="com.cc.content.meta.Meta" %>
 
-<div class="control-group ${hasErrors(bean: metaInstance, field: 'type', 'error')}">
+<div class="control-group">
     <label class="control-label" for="type">
-        <g:message code="meta.type.label" default="Type" />
+        <g:remoteLink controller="meta" action="deleteMeta" id="${metaInstance?.id }" 
+            before="\$this = \$(this); var c=confirm('Are you sure');if(!c) return false"
+            onSuccess="\$this.parents('.control-group').remove()">
+            <i class="icon-remove">
+            </i>
+        </g:remoteLink>
     </label>
     <div class="controls">
-        <g:textField name="type" required="" value="${metaInstance?.type}"/>
+        <g:select name="meta.type" from="${Meta.getTypeList() }" value="${metaInstance?.type }"
+            noSelection="['': 'Select Meta Tag']"/><br>
+        <g:textArea name="meta.value" >${metaInstance?.value }</g:textArea>
     </div>
 </div>
-
-<div class="control-group ${hasErrors(bean: metaInstance, field: 'value', 'error')}">
-    <label class="control-label" for="value">
-        <g:message code="meta.value.label" default="Value" />
-    </label>
-    <div class="controls">
-        <g:textField name="value" required="" value="${metaInstance?.value}"/>
-    </div>
-</div>
-

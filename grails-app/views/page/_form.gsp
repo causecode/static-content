@@ -56,3 +56,23 @@
         <g:checkBox name="publish" value="${pageInstance?.publish}" />
     </div>
 </div>
+
+<div class="page-header">
+    <h2 style="display: inline">Meta Tags</h2>
+    <small style="padding-left: 43px">
+        <a href="javascript:void(0)" onclick="$('.form-actions').before($('#meta-form').html())">
+            <i class="icon-plus"></i>
+        </a>
+    </small>
+</div>
+
+<g:each in="${pageInstance?.metaTags }" var="metaInstance">
+    <g:render template="/meta/form" model="[metaInstance: metaInstance]" />
+</g:each>
+<g:if test="${!pageInstance?.metaTags }">
+    <g:render template="/meta/form" />
+</g:if>
+
+<div class="hide" id="meta-form">
+    <g:render template="/meta/form" />
+</div>

@@ -13,6 +13,7 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
 
 import com.cc.blog.Blog
+import com.cc.content.meta.Meta
 import com.cc.page.Page
 
 class ContentService {
@@ -62,6 +63,47 @@ class ContentService {
     boolean canEdit() {
         String contentManagerRole = grailsApplication.config.cc.plugins.content.contentMangerRole
         return SpringSecurityUtils.ifAnyGranted(contentManagerRole)
+    }
+
+    Content create(Map args, List metaTypes, List metaValues, Class clazz = Content.class) {
+        Content contentInstance = clazz.newInstance()
+        contentInstance.author = resolveAuthor(contentInstance)
+        update(args, contentInstance, metaTypes, metaValues)
+        return contentInstance
+    }
+
+    Content update(Map args, Content contentInstance, List metaTypes, List metaValues) {
+        bindData(contentInstance, args)
+        contentInstance.validate()
+        if(contentInstance.hasErrors()) {
+            log.warn "Error saving ${contentInstance.class.name}: " + contentInstance.errors
+            return contentInstance
+        }
+        contentInstance.save()
+        if(!metaTypes || !metaValues)
+            return contentInstance
+
+        metaTypes.eachWithIndex { type, index ->
+            Meta metaInstance = ContentMeta.withCriteria(uniqueResult: true) {
+                createAlias("content", "contentInstance")
+                createAlias("meta", "metaInstance")
+                projections {
+                    property("meta")
+                }
+                eq("contentInstance.id", contentInstance.id)
+                eq("metaInstance.type", type)
+            }
+            if(!metaInstance) {
+                metaInstance = new Meta(type: type)
+            }
+            metaInstance.value = metaValues[index]
+            metaInstance.validate()
+            if(!metaInstance.hasErrors()) {
+                metaInstance.save()
+                ContentMeta.findOrSaveByContentAndMeta(contentInstance, metaInstance)
+            }
+        }
+        return contentInstance
     }
 
 }
