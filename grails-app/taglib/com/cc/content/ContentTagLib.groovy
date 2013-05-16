@@ -15,6 +15,7 @@ import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.beans.factory.annotation.Autowired
 
 import com.cc.annotation.sanitizedTitle.SanitizedTitle;
+import com.cc.annotation.shorthand.ControllerShorthand;
 
 class ContentTagLib {
 
@@ -59,25 +60,41 @@ class ContentTagLib {
             throwTagError("Tag content:createLink missing required attribute domain")
 
         Class domainClass = grailsApplication.getDomainClass(attrs.domain).clazz
-        def domainClassInstance = domainClass.get(attrs.id)
+        def domainClassInstance = domainClass.get(attrs.id)     // Get actual domainInstance
         List<Field> fields = []
 
         if(domainClass.superclass && domainClass.superclass != Object)
-            fields.addAll(domainClass.superclass.getDeclaredFields())
+            fields.addAll(domainClass.superclass.getDeclaredFields())   // Adding fields from super class
         fields.addAll(domainClass.getDeclaredFields())
-        
 
-        String fieldName, sanitizedTitle = ""
+        String fieldName, sanitizedTitle, controllerShortHand = ""
         for(field in fields) {
-            if(field.isAnnotationPresent(SanitizedTitle.class)) {
+            if(field.isAnnotationPresent(SanitizedTitle.class) && field.type == String) {  // Searching annotation on each field
                 fieldName = field.name
                 break
             }
         }
         if(fieldName)
             sanitizedTitle = friendlyUrlService.sanitizeWithDashes(domainClassInstance[fieldName])
-            
-        
+        else
+            log.error "No annotated field found in domain class ${domainClassInstance.class}"
+
+        Class controllerClass
+        for(controller in grailsApplication.controllerClasses) {
+            if(controller.name == attrs.controller.capitalize()) {
+                controllerClass = controller.clazz
+            }
+        }
+
+        def controllerAnnotation = controllerClass?.getAnnotation(ControllerShorthand.class)
+        if(controllerAnnotation) {
+            controllerShortHand = controllerAnnotation.value()
+        }
+
+        if(controllerShortHand)
+            attrs.uri = "/$controllerShortHand/${attrs.id}/${sanitizedTitle ?: ''}"
+        else
+            log.error "No annotation found for controller: ${controllerClass.class}"
         def urlAttrs = attrs
         if (attrs.url instanceof Map) {
             urlAttrs = attrs.url
