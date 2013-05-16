@@ -11,7 +11,7 @@ package com.cc.page
 class PageTagLib {
 
     static namespace = "page"
-    
+
     def grailsApplication
 
     /**
@@ -27,14 +27,26 @@ class PageTagLib {
 
         Page pageInstance = attrs.pageInstance
         if(!pageInstance.pageLayout) {
-            out << grailsApplication.config.cc.plugins.content.default.layout.name ?: "main"
+            out << body(grailsApplication.config.cc.plugins.content.default.layout.name ?: "main")
             //out << "<meta name=\"layout\" content=\"main\">"
             return
         }
 
         String layout = pageInstance.pageLayout.layoutName
         //out << "<meta name=\"layout\" content=\"$layout\">"
-        out << layout
+        out << body(layout)
+    }
+
+    def renderMetaTags = { attrs, body ->
+        if(!attrs.pageInstance)
+            throwTagError("Page tag lib missing required attribute pageInstance")
+
+        Page pageInstance = attrs.pageInstance
+        if(!pageInstance.metaTags)
+            return
+        pageInstance.metaTags.each {
+            out << "<meta name=\"${it.type}\" content=\"${it.value}\" />\n"
+        }
     }
 
 }
