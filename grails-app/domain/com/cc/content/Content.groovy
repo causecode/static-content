@@ -8,6 +8,8 @@
 
 package com.cc.content
 
+import com.cc.content.meta.Meta
+
 class Content {
 
     transient contentService
@@ -43,6 +45,10 @@ class Content {
 
     String resolveAuthor() {
         return contentService.resolveAuthor(this)
+    }
+
+    List<Meta> getMetaTags() {
+        ContentMeta.findAllByContent(this)*.meta
     }
 
     //    def beforeInsert() {
