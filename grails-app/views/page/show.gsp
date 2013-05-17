@@ -1,8 +1,6 @@
 <html>
 <head>
-    <page:renderLayout pageInstance="${pageInstance }">
-        <meta name="layout" content="${it }" />
-    </page:renderLayout>
+    <meta name="layout" content="${pageInstance.pageLayout?.layoutName ?: 'main' }" />
     <content:renderMetaTags contentInstance="${pageInstance }" />
     <title><g:message code="default.show.label" args="[entityName]" /></title>
 </head>

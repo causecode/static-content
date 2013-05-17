@@ -60,4 +60,11 @@ class Content {
     //        author = resolveAuthor()
     //    }
 
+    //    def beforeDelete() {
+    //            List contentMetaList = ContentMeta.findAllByContent(this)
+    //            List metaList = contentMetaList*.meta
+    //            contentMetaList*.delete()
+    //            metaList*.delete()
+    //    }
+
 }

@@ -11,7 +11,8 @@ package com.cc.page
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 
-import com.cc.annotation.shorthand.ControllerShorthand;
+import com.cc.annotation.shorthand.ControllerShorthand
+import com.cc.content.ContentMeta
 
 @ControllerShorthand(value = "c")
 class PageController {
@@ -98,7 +99,13 @@ class PageController {
 
     def delete(Long id) {
         try {
-            pageInstance.delete(flush: true)
+            Page.withTransaction {
+                List<ContentMeta> contentMetaList = ContentMeta.findAllByContent(pageInstance)
+                List metaList = contentMetaList*.meta
+                contentMetaList*.delete()
+                metaList*.delete()
+                pageInstance.delete()
+            }
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'page.label'), id])
             redirect(action: "list")
         } catch (DataIntegrityViolationException e) {
