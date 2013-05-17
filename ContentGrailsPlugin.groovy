@@ -8,11 +8,11 @@
 
 class ContentGrailsPlugin {
 
-    def version = "1.5"
+    def version = "1.6"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.1 > *"
     // the other plugins this plugin depends on
-    def dependsOn = ["hibernate":"1.1 > *"]
+    def dependsOn = ["hibernate": "2.1 > *"]
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
         "grails-app/views/error.gsp"
@@ -23,7 +23,7 @@ class ContentGrailsPlugin {
     def author = "CauseCode"
     def authorEmail = ""
     def description = '''\
-Brief summary/description of the plugin.
+A plugin used to manage contents like static pages, menus etc. at one place.
 '''
 
     def documentation = "http://grails.org/plugin/content"
