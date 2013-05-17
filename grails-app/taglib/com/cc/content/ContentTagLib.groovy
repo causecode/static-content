@@ -45,7 +45,7 @@ class ContentTagLib {
         if(!attrs.domain)
             throwTagError("Tag content:createLink missing required attribute domain")
 
-        out << contentService.createLink(attrs, request, response)
+        out << contentService.createLink(attrs)
     }
 
 }

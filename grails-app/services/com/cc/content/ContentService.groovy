@@ -8,15 +8,14 @@
 
 package com.cc.content
 
+import grails.util.Environment
+
 import java.lang.annotation.Annotation
 import java.lang.reflect.Field
 
 import org.codehaus.groovy.grails.commons.metaclass.GroovyDynamicMethodsInterceptor
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import org.codehaus.groovy.grails.web.mapping.LinkGenerator
 import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
-import org.springframework.beans.factory.annotation.Autowired
 
 import com.cc.annotation.sanitizedTitle.SanitizedTitle
 import com.cc.annotation.shorthand.ControllerShorthand
@@ -29,11 +28,10 @@ class ContentService {
     private static final String ANONYMOUS_USER = "anonymousUser"
 
     def friendlyUrlService
+    def g
     def grailsApplication
+    def gspTagLibraryLookup
     def springSecurityService
-
-    @Autowired
-    LinkGenerator linkGenerator
 
     ContentService() {
         GroovyDynamicMethodsInterceptor i = new GroovyDynamicMethodsInterceptor(this)
@@ -118,11 +116,9 @@ class ContentService {
         return contentInstance
     }
 
-    String createLink(Map attrs, request, response) {
+    String createLink(Map attrs) {
         if(!attrs.domain)
             return
-
-        boolean useJsessionId = grailsApplication.config.grails.views.enable.jsessionid
 
         Class domainClass, controllerClass
         domainClass = grailsApplication.getDomainClass(attrs.domain).clazz
@@ -163,29 +159,15 @@ class ContentService {
         else
             log.error "No annotation found for controller: ${controllerClass?.class}"
 
-        def urlAttrs = attrs
-        if (attrs.url instanceof Map) {
-            urlAttrs = attrs.url
+        if(attrs.absolute?.toBoolean()) {
+            attrs.absolute = false
+            attrs.base = grailsApplication.config.grails.serverURL
+            if(Environment.current == Environment.DEVELOPMENT)
+                attrs.base = grailsApplication.config.grails.other.serverURL    // Other config which contains public IP like: 13.14.28.153:8080
         }
-        def params = urlAttrs.params && urlAttrs.params instanceof Map ? urlAttrs.params : [:]
-        if (request['flowExecutionKey']) {
-            params."execution" = request['flowExecutionKey']
-            urlAttrs.params = params
-            if (attrs.controller == null && attrs.action == null && attrs.url == null && attrs.uri == null) {
-                urlAttrs[LinkGenerator.ATTRIBUTE_ACTION] = GrailsWebRequest.lookup().actionName
-            }
-        }
-        if (urlAttrs.event) {
-            params."_eventId" = urlAttrs.remove('event')
-            urlAttrs.params = params
-        }
-        def generatedLink = linkGenerator.link(attrs, request.characterEncoding)
 
-        if (useJsessionId) {
-            return response.encodeURL(generatedLink)
-        } else {
-            return generatedLink
-        }
+        g = gspTagLibraryLookup.lookupNamespaceDispatcher("g")
+        return g.createLink(attrs)
     }
 
 }
