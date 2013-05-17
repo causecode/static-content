@@ -1,6 +1,9 @@
 <html>
 <head>
-    <meta name="layout" content="${page.renderLayout(pageInstance: pageInstance) }" />
+    <page:renderLayout pageInstance="${pageInstance }">
+        <meta name="layout" content="${it }" />
+    </page:renderLayout>
+    <content:renderMetaTags contentInstance="${pageInstance }" />
     <title><g:message code="default.show.label" args="[entityName]" /></title>
 </head>
 <body>
@@ -11,6 +14,7 @@
         </h1>
     </div>
     <%= pageInstance.body %>
+
     <content:canEdit>
         <g:form>
             <fieldset class="form-actions">

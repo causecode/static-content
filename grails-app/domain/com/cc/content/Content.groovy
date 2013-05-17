@@ -8,6 +8,9 @@
 
 package com.cc.content
 
+import com.cc.annotation.sanitizedTitle.SanitizedTitle
+import com.cc.content.meta.Meta
+
 class Content {
 
     transient contentService
@@ -16,6 +19,7 @@ class Content {
     Date dateCreated
     Date lastUpdated
 
+    @SanitizedTitle
     String title
     String subTitle
     String body
@@ -25,10 +29,11 @@ class Content {
 
     static mapping = {
         body type: 'text'
+        table "cc_content_content"
     }
 
     static constraints = {
-        body size: 0..5000, blank: false
+        body blank: false
         title nullable: false, blank: false
         subTitle nullable: true
         author nullable: true, bindable: false
@@ -43,6 +48,12 @@ class Content {
 
     String resolveAuthor() {
         return contentService.resolveAuthor(this)
+    }
+
+    List<Meta> getMetaTags() {
+        if(!this.id) return [];
+
+        ContentMeta.findAllByContent(this)*.meta
     }
 
     //    def beforeInsert() {

@@ -15,6 +15,10 @@ class PageLayout {
     static constraints = {
     }
 
+    static mapping = {
+        table "cc_content_page_layout"
+    }
+
     @Override
     public String toString() {
         layoutName

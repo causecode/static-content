@@ -6,30 +6,32 @@
  * without modification, are not permitted.
  */
 
-package com.cc.navigation
+package com.cc.content.meta
 
-import java.util.Date;
+class Meta {
 
-class MenuItem {
+    public static final String KEYWORDS = "keywords"
+    public static final String DESCRIPTION = "description"
 
-    String title
-    String url
+    String type
+    String value
 
     Date dateCreated
     Date lastUpdated
 
-    static belongsTo = [parent: MenuItem, menu: Menu]
-    static hasMany = [childItems: MenuItem]
-
     static constraints = {
-        parent nullable: true
-        menu nullable: true
+        type blank: false
+        value blank: false
         dateCreated bindable: false
         lastUpdated bindable: false
     }
 
     static mapping = {
-        table "cc_content_menu_item"
+        table "cc_content_meta"
+    }
+
+    static List<String> getTypeList() {
+        return [KEYWORDS, DESCRIPTION]
     }
 
 }

@@ -11,10 +11,20 @@ package com.cc.navigation
 class Menu {
 
     String name
+
+    Date dateCreated
+    Date lastUpdated
+
     static hasMany = [menuItems: MenuItem]
 
     static constraints = {
         name blank: false
+        dateCreated bindable: false
+        lastUpdated bindable: false
+    }
+
+    static mapping = {
+        table "cc_content_menu"
     }
 
 }

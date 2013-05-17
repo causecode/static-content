@@ -11,11 +11,15 @@ package com.cc.page
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 
+import com.cc.annotation.shorthand.ControllerShorthand;
+
+@ControllerShorthand(value = "c")
 class PageController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def beforeInterceptor = [action: this.&validate]
+    def contentService
 
     private Page pageInstance
 
@@ -53,8 +57,7 @@ class PageController {
     }
 
     def save() {
-        pageInstance = new Page(params)
-        pageInstance.author = pageInstance.resolveAuthor()
+        pageInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Page.class)
         if(!pageInstance.save(flush: true)) {
             render(view: "create", model: [pageInstance: pageInstance])
             return
@@ -82,10 +85,9 @@ class PageController {
                 return
             }
         }
+        pageInstance = contentService.update(params, pageInstance, params.meta.list("type"), params.meta.list("value"))
 
-        pageInstance.properties = params
-
-        if (!pageInstance.save(flush: true)) {
+        if(pageInstance.hasErrors()) {
             render(view: "edit", model: [pageInstance: pageInstance])
             return
         }

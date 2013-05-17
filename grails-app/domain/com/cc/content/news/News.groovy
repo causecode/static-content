@@ -6,13 +6,11 @@
  * without modification, are not permitted.
  */
 
-package com.cc.blog
+package com.cc.content.news
 
-import org.grails.taggable.*
+import com.cc.content.Content
 
-import com.cc.content.*
-
-class Blog extends Content implements Taggable {
+class News extends Content {
 
     static constraints = {
     }
