@@ -56,6 +56,11 @@ class ContentService {
         return ANONYMOUS_USER
     }
 
+    /**
+     * A method to check if current user have authority to view the 
+     * current content instance, based on the role configured by
+     * cc.plugins.content.contentManagerRole
+     */
     boolean isVisible(def id) {
         if(canEdit()) return true;
 
@@ -71,7 +76,7 @@ class ContentService {
     }
 
     boolean canEdit() {
-        String contentManagerRole = grailsApplication.config.cc.plugins.content.contentMangerRole
+        String contentManagerRole = grailsApplication.config.cc.plugins.content.contentManagerRole
         return SpringSecurityUtils.ifAnyGranted(contentManagerRole)
     }
 
@@ -116,11 +121,22 @@ class ContentService {
         return contentInstance
     }
 
+    /**
+     * Used to create SEO friendly search url like /o/151/hewlet-packard
+     * @param attrs
+     * @param attrs.domain REQUIRED the name of the domain class from which
+     * sanitized title will be appended in uri. Domain class must have SanitizedTitle
+     * annotation.
+     * @param attrs.controller REQUIRED the name of the controller for which 
+     * SEO friendly url needs to be generated. The controller must have annotaion
+     * ControllerShortHand ehich specific value.
+     * @return String SEO friendly url.
+     */
     String createLink(Map attrs) {
         if(!attrs.domain)
             return
 
-        Class domainClass, controllerClass
+        Class domainClass
         domainClass = grailsApplication.getDomainClass(attrs.domain).clazz
         def domainClassInstance = domainClass.get(attrs.id)     // Get actual domainInstance
         List<Field> fields = []
@@ -141,23 +157,16 @@ class ContentService {
         else
             log.error "No annotated field found in domain class ${domainClassInstance?.class}"
 
-        for(controller in grailsApplication.controllerClasses) {
-            if(controller.name == attrs.controller?.capitalize()) {
-                controllerClass = controller.clazz
-            }
-        }
-        if(!controllerClass)
-            log.error "Cound not find controller class with given controller: ${attrs.controller}"
-
-        Annotation controllerAnnotation = controllerClass?.getAnnotation(ControllerShorthand.class)
-        if(controllerAnnotation) {  // Searching for shorthand for grails controller
-            controllerShortHand = controllerAnnotation.value()
+        // See hooking into dynamic events
+        getShorthandAnnotatedControllers().each { conrtollerName, shorthand ->
+            if(controllerName == attrs.controller?.capitalize())
+                controllerShortHand = shorthand
         }
 
         if(controllerShortHand)
             attrs.uri = "/$controllerShortHand/${attrs.id}/${sanitizedTitle ?: ''}"
         else
-            log.error "No annotation found for controller: ${controllerClass?.class}"
+            log.error "No annotation found for controller: ${attrs.controller}"
 
         if(attrs.absolute?.toBoolean()) {
             attrs.absolute = false

@@ -1,3 +1,8 @@
+import java.lang.annotation.Annotation
+
+import com.cc.annotation.shorthand.ControllerShorthand
+import com.cc.content.ContentService
+
 /*
  * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
  * All rights reserved.
@@ -54,7 +59,21 @@ A plugin used to manage contents like static pages, menus etc. at one place.
     }
 
     def doWithDynamicMethods = { ctx ->
-        // TODO Implement registering dynamic methods to classes (optional)
+        println "\nConfiguring content plugin ..."
+        Map shorthandAnnotatedControllerMap = [:]
+        for(controller in application.controllerClasses) {
+            Annotation controllerAnnotation = controller.clazz.getAnnotation(ControllerShorthand.class)
+            if(controllerAnnotation) {  // Searching for shorthand for grails controller
+                shorthandAnnotatedControllerMap.put(controller.name, controllerAnnotation.value())
+            }
+        }
+        println "Shorthand annotated controller map: " + shorthandAnnotatedControllerMap
+        def serviceClass = application.getServiceClass(ContentService.class.name)
+        println serviceClass?.dump()
+        serviceClass.metaClass.getShorthandAnnotatedControllers {
+            return shorthandAnnotatedControllerMap
+        }
+        println "... finished configuring content plugin\n"
     }
 
     def doWithApplicationContext = { applicationContext ->

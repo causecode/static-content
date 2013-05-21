@@ -16,7 +16,7 @@ class ContentTagLib {
 
     /**
      * Used when current user have content role
-     * described by cc.plugins.content.contentMangerRole
+     * described by cc.plugins.content.contentManagerRole
      */
     def canEdit = { attrs, body ->
         if(contentService.canEdit()) {
@@ -41,6 +41,16 @@ class ContentTagLib {
         }
     }
 
+    /**
+     * Used to create SEO friendly search url like /o/151/hewlet-packard
+     * @param domain REQUIRED the name of the domain class from which
+     * sanitized title will be appended in uri. Domain class must have SanitizedTitle
+     * annotation.
+     * @param controller REQUIRED the name of the controller for which 
+     * SEO friendly url needs to be generated. The controller must have annotaion
+     * ControllerShortHand ehich specific value.
+     * @return String SEO friendly url.
+     */
     def createLink = { attrs, body ->
         if(!attrs.domain)
             throwTagError("Tag content:createLink missing required attribute domain")
