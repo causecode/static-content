@@ -51,6 +51,8 @@ A plugin used to manage contents like static pages, menus etc. at one place.
     // Online location of the plugin's browseable source code.
     //    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
 
+    def watchedResources = "file:./grails-app/services/*ContentService.groovy"
+
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before
     }
@@ -61,20 +63,7 @@ A plugin used to manage contents like static pages, menus etc. at one place.
 
     def doWithDynamicMethods = { ctx ->
         println "\nConfiguring content plugin ..."
-        Map shorthandAnnotatedControllerMap = [:]
-        for(controller in application.controllerClasses) {
-            Annotation controllerAnnotation = controller.clazz.getAnnotation(ControllerShorthand.class)
-            if(controllerAnnotation) {  // Searching for shorthand for grails controller
-                String actualName = controller.name
-                String camelCaseName = actualName.replace(actualName.charAt(0), actualName.charAt(0).toLowerCase())
-                shorthandAnnotatedControllerMap.put(camelCaseName, controllerAnnotation.value())
-            }
-        }
-        println "Shorthand annotated controller map: " + shorthandAnnotatedControllerMap
-        def serviceClass = application.getServiceClass(ContentService.class.name)
-        serviceClass.metaClass.getShorthandAnnotatedControllers {
-            return shorthandAnnotatedControllerMap
-        }
+        addServiceMethod(ctx)
         println "... finished configuring content plugin\n"
     }
 
@@ -83,9 +72,9 @@ A plugin used to manage contents like static pages, menus etc. at one place.
     }
 
     def onChange = { event ->
-        // TODO Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
+        if (event.source && application.isServiceClass(event.source)) {
+            addServiceMethod(event.ctx)
+        }
     }
 
     def onConfigChange = { event ->
@@ -96,8 +85,24 @@ A plugin used to manage contents like static pages, menus etc. at one place.
     def onShutdown = { event ->
         // TODO Implement code that is executed when the application shuts down (optional)
     }
-    
-    private void addServiceMethod() {
-        
+
+    private void addServiceMethod(ctx) {
+        def application = ctx.grailsApplication
+        MetaClass metaClassInstance = application.getServiceClass(ContentService.class.name)?.metaClass
+        if (!metaClassInstance.respondsTo(null, 'getShorthandAnnotatedControllers')) {
+            Map shorthandAnnotatedControllerMap = [:]
+            for(controller in application.controllerClasses) {
+                Annotation controllerAnnotation = controller.clazz.getAnnotation(ControllerShorthand.class)
+                if(controllerAnnotation) {  // Searching for shorthand for grails controller
+                    String actualName = controller.name
+                    String camelCaseName = actualName.replace(actualName.charAt(0), actualName.charAt(0).toLowerCase())
+                    shorthandAnnotatedControllerMap.put(camelCaseName, controllerAnnotation.value())
+                }
+            }
+            println "\nShorthand annotated controller map: $shorthandAnnotatedControllerMap \n"
+            metaClassInstance.getShorthandAnnotatedControllers {
+                return shorthandAnnotatedControllerMap
+            }
+        }
     }
 }
