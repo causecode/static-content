@@ -5,9 +5,9 @@ A plugin used to manage contents like static pages, menus etc. at one place.
 Configurations for this plugin:
 
 <code>
-cc.plugins.content.authorProperty = "username"
-cc.plugins.content.contentManagerRole = "ROLE_MANAGER_CONTENT"
-cc.plugins.content.default.layout.name = "main"
+	cc.plugins.content.authorProperty = "username"
+	cc.plugins.content.contentManagerRole = "ROLE_MANAGER_CONTENT"
+	cc.plugins.content.default.layout.name = "main"
 </code>
 
 ## Changes in URLMappings.groovy file:
@@ -75,5 +75,5 @@ Also add a private method:
 And add a private field as:
 
 <code>
-    static Map shorthandControllers = [:]
+	static Map shorthandControllers = [:]
 </code>
