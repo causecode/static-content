@@ -158,8 +158,8 @@ class ContentService {
             log.error "No annotated field found in domain class ${domainClassInstance?.class}"
 
         // See hooking into dynamic events
-        getShorthandAnnotatedControllers().each { conrtollerName, shorthand ->
-            if(controllerName == attrs.controller?.capitalize())
+        getShorthandAnnotatedControllers().each { controllerName, shorthand ->
+            if(controllerName == attrs.controller)
                 controllerShortHand = shorthand
         }
 

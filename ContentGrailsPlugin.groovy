@@ -30,6 +30,7 @@ class ContentGrailsPlugin {
     def description = '''\
 A plugin used to manage contents like static pages, menus etc. at one place.
 '''
+    //def loadBefore = ['grails-plugin-url-mappings']
 
     def documentation = "http://grails.org/plugin/content"
 
@@ -64,12 +65,13 @@ A plugin used to manage contents like static pages, menus etc. at one place.
         for(controller in application.controllerClasses) {
             Annotation controllerAnnotation = controller.clazz.getAnnotation(ControllerShorthand.class)
             if(controllerAnnotation) {  // Searching for shorthand for grails controller
-                shorthandAnnotatedControllerMap.put(controller.name, controllerAnnotation.value())
+                String actualName = controller.name
+                String camelCaseName = actualName.replace(actualName.charAt(0), actualName.charAt(0).toLowerCase())
+                shorthandAnnotatedControllerMap.put(camelCaseName, controllerAnnotation.value())
             }
         }
         println "Shorthand annotated controller map: " + shorthandAnnotatedControllerMap
         def serviceClass = application.getServiceClass(ContentService.class.name)
-        println serviceClass?.dump()
         serviceClass.metaClass.getShorthandAnnotatedControllers {
             return shorthandAnnotatedControllerMap
         }
@@ -93,5 +95,9 @@ A plugin used to manage contents like static pages, menus etc. at one place.
 
     def onShutdown = { event ->
         // TODO Implement code that is executed when the application shuts down (optional)
+    }
+    
+    private void addServiceMethod() {
+        
     }
 }
