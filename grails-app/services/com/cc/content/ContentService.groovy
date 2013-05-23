@@ -134,18 +134,17 @@ class ContentService {
      */
     String createLink(Map attrs) {
         if(!attrs.domain)
-            return
+            return ""
 
-        Class domainClass
-        domainClass = grailsApplication.getDomainClass(attrs.domain).clazz
-        def domainClassInstance = domainClass.get(attrs.id)     // Get actual domainInstance
+        Class DomainClass = grailsApplication.getDomainClass(attrs.domain).clazz
+        def domainClassInstance = DomainClass.get(attrs.id)     // Get actual domainInstance
         List<Field> fields = []
 
-        if(domainClass.superclass && domainClass.superclass != Object)
-            fields.addAll(domainClass.superclass.getDeclaredFields())   // Adding fields from super class
-        fields.addAll(domainClass.getDeclaredFields())      // Adding fields from current class
+        if(DomainClass.superclass && DomainClass.superclass != Object)
+            fields.addAll(DomainClass.superclass.getDeclaredFields())   // Adding fields from super class
+        fields.addAll(DomainClass.getDeclaredFields())      // Adding fields from current class
 
-        String fieldName, sanitizedTitle, controllerShortHand = ""
+        String action, fieldName, sanitizedTitle, controllerShortHand = ""
         for(field in fields) {
             if(field.isAnnotationPresent(SanitizedTitle.class) && field.type == String) {  // Searching annotation on each field
                 fieldName = field.name
@@ -157,6 +156,8 @@ class ContentService {
         else
             log.error "No annotated field found in domain class ${domainClassInstance?.class}"
 
+        action = attrs.action ? attrs.action + "/" : ""
+
         // See hooking into dynamic events
         getShorthandAnnotatedControllers().each { controllerName, shorthand ->
             if(controllerName == attrs.controller)
@@ -164,7 +165,7 @@ class ContentService {
         }
 
         if(controllerShortHand)
-            attrs.uri = "/$controllerShortHand/${attrs.id}/${sanitizedTitle ?: ''}"
+            attrs.uri = "/$controllerShortHand/${action}${attrs.id}/${sanitizedTitle ?: ''}"
         else
             log.error "No annotation found for controller: ${attrs.controller}"
 

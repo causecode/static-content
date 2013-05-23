@@ -2,23 +2,34 @@
 
 A plugin used to manage contents like static pages, menus etc. at one place.
 
-Configurations for this plugin:
-
-<code>
+## Configurations for this plugin:
 
     cc.plugins.content.authorProperty = "username"
     cc.plugins.content.contentManagerRole = "ROLE_MANAGER_CONTENT"
     cc.plugins.content.default.layout.name = "main"
 
-</code>
+## Access protect controllers: (according to application need)
+
+    '/blog/**' : ['ROLE_MANAGER_ORGS'],
+    '/pageLayout/**' : ['ROLE_MANAGER_ORGS'],
+    '/faq/**' : ['ROLE_MANAGER_ORGS'],
+    '/news/**' : ['ROLE_MANAGER_ORGS'],
+    '/menu/**' : ['ROLE_MANAGER_ORGS'],
+    '/menuItem/**' : ['ROLE_MANAGER_ORGS'],
+    '/page/show/**' : ['IS_AUTHENTICATED_ANONYMOUSLY'],
+    '/page/**' : ['ROLE_MANAGER_ORGS'],
 
 ## Changes in URLMappings.groovy file:
 
 Remove default url mapping.
 
-Add this:
+    "/$controller/$action?/$id?"{
+        constraints {
+            // apply constraints here
+        }
+    }
 
-<code>
+Add this:
 
     "/$controllerName/$actionName?/$identity?/$sanitizedTitle?" {
         controller = {
@@ -35,11 +46,7 @@ Add this:
         }
     }
 
-</code>
-
 Also add a private method:
-
-<code>
 
     static private String resolveURL(def params, ctx, String type) {
         String requestedController = params.controllerName
@@ -62,10 +69,10 @@ Also add a private method:
                 return "show"
         }
         if(type == "id") {
-            if(requestedController == resolvedController)   // When no shorthand for controller found
-                return params.identity
-            else
+            if(requestedController != resolvedController && params.actionName?.isNumber()) {
                 return params.actionName
+            }
+            return params.identity
         }
         if(type == "shortened") {
             if(requestedController == resolvedController)   // When no shorthand for controller found
@@ -75,12 +82,7 @@ Also add a private method:
         }
     }
 
-</code>
 
 And add a private field as:
 
-<code>
-
     static Map shorthandControllers = [:]
-
-</code>
