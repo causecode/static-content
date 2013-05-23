@@ -5,9 +5,11 @@ A plugin used to manage contents like static pages, menus etc. at one place.
 Configurations for this plugin:
 
 <code>
-	cc.plugins.content.authorProperty = "username"
-	cc.plugins.content.contentManagerRole = "ROLE_MANAGER_CONTENT"
-	cc.plugins.content.default.layout.name = "main"
+
+    cc.plugins.content.authorProperty = "username"
+    cc.plugins.content.contentManagerRole = "ROLE_MANAGER_CONTENT"
+    cc.plugins.content.default.layout.name = "main"
+
 </code>
 
 ## Changes in URLMappings.groovy file:
@@ -17,6 +19,7 @@ Remove default url mapping.
 Add this:
 
 <code>
+
     "/$controllerName/$actionName?/$identity?/$sanitizedTitle?" {
         controller = {
             return resolveURL(params, applicationContext, "controller")
@@ -31,11 +34,13 @@ Add this:
             return resolveURL(params, applicationContext, "shortened")
         }
     }
+
 </code>
 
 Also add a private method:
 
 <code>
+
     static private String resolveURL(def params, ctx, String type) {
         String requestedController = params.controllerName
         String resolvedController = params.controllerName
@@ -47,7 +52,6 @@ Also add a private method:
                 resolvedController = controllername
             }
         }
-
         if(type == "controller") {
             return resolvedController
         }
@@ -70,10 +74,13 @@ Also add a private method:
                 return true
         }
     }
+
 </code>
 
 And add a private field as:
 
 <code>
-	static Map shorthandControllers = [:]
+
+    static Map shorthandControllers = [:]
+
 </code>
