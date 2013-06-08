@@ -1,4 +1,4 @@
-<plugin name='content' version='1.7' grailsVersion='2.1 &gt; *'>
+<plugin name='content' version='1.8' grailsVersion='2.1 &gt; *'>
   <author>CauseCode</author>
   <title>Content Plugin</title>
   <description>A plugin used to manage contents like static pages, menus etc. at one place.
@@ -36,22 +36,18 @@
   </resources>
   <repositories>
     <repository name='grailsCentral' url='http://grails.org/plugins' />
-    <repository name='http://grails.org/plugins' url='http://grails.org/plugins' />
     <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+    <repository name='http://grails.org/plugins' url='http://grails.org/plugins' />
   </repositories>
-  <dependencies>
-    <runtime>
-      <dependency group='mysql' name='mysql-connector-java' version='5.1.18' />
-    </runtime>
-  </dependencies>
+  <dependencies />
   <plugins>
     <compile>
       <plugin group='org.grails.plugins' name='spring-security-core' version='1.2.7.3' />
       <plugin group='org.grails.plugins' name='taggable' version='1.0.1' />
     </compile>
     <runtime>
-      <plugin group='org.grails.plugins' name='jquery' version='1.8.3' />
       <plugin group='org.grails.plugins' name='resources' version='1.2.RC2' />
+      <plugin group='org.grails.plugins' name='jquery' version='1.8.3' />
     </runtime>
   </plugins>
   <runtimePluginRequirements>

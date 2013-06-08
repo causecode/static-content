@@ -1,6 +1,9 @@
 <div class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
-		<div class="container" style="width: 940px;" >
+	
+<!-- 	<div class="container" style="width: 940px;" >		-->
+	
+		<div class="container" >							<!-- inline style removed -->
 		<a class="brand" href="#">
 			<img class="logo" src="/images/logo.png" />
 		</a>
