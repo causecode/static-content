@@ -72,7 +72,7 @@ Also add a private method:
             if(requestedController != resolvedController && params.actionName?.isNumber()) {
                 return params.actionName
             }
-            return params.identity
+            return params.identity ?: params.id
         }
         if(type == "shortened") {
             if(requestedController == resolvedController)   // When no shorthand for controller found
