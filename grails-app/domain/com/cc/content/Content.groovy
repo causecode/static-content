@@ -27,6 +27,8 @@ class Content {
 
     boolean publish
 
+    TextFormat textFormat
+    
     static mapping = {
         body type: 'text'
         table "cc_content_content"
