@@ -27,6 +27,15 @@
     </div>
 </div>
 
+<div class="control-group ${hasErrors(bean: pageInstance, field: 'textFormat.name', 'error')}">
+    <label class="control-label" for="textFormat.name">
+        <g:message code="page.textFormat.name.label" default="Text Format" />
+    </label>
+    <div class="controls">
+        <g:select name="page.textFormat.name" from="${formatsAvailable }" />
+    </div>
+</div>
+
 <div class="control-group ${hasErrors(bean: pageInstance, field: 'body', 'error')}">
     <label class="control-label" for="body">
         <g:message code="page.body.label" default="Body" />

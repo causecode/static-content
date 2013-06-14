@@ -21,6 +21,7 @@ class PageController {
 
     def beforeInterceptor = [action: this.&validate]
     def contentService
+    def springSecurityService
 
     private Page pageInstance
 
@@ -54,7 +55,13 @@ class PageController {
     }
 
     def create() {
-        [pageInstance: new Page(params)]
+//        def formatsAvailable = ["FULL_HTML", "PARTIAL_HTML", "PLAIN_TEXT"]
+        //        def principal = springSecurityService.principal
+        //        def authorities = principal.authorities
+        def auth = springSecurityService.authentication
+        def authorities = auth.authorities
+//        def textFormatList = TextFormat.findAllByRolesInList(authorities)
+        [pageInstance: new Page(params), formatsAvailable: ["FULL_HTML", "PARTIAL_HTML", "PLAIN_TEXT"]]
     }
 
     def save() {
