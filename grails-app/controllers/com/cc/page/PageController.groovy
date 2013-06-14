@@ -8,11 +8,14 @@
 
 package com.cc.page
 
+import java.util.Iterator;
+
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.ContentMeta
+import com.cc.content.*
 
 @ControllerShorthand(value = "c")
 class PageController {
@@ -55,13 +58,16 @@ class PageController {
     }
 
     def create() {
-//        def formatsAvailable = ["FULL_HTML", "PARTIAL_HTML", "PLAIN_TEXT"]
-        //        def principal = springSecurityService.principal
-        //        def authorities = principal.authorities
-        def auth = springSecurityService.authentication
-        def authorities = auth.authorities
-//        def textFormatList = TextFormat.findAllByRolesInList(authorities)
-        [pageInstance: new Page(params), formatsAvailable: ["FULL_HTML", "PARTIAL_HTML", "PLAIN_TEXT"]]
+        def textFormatNamesList = []
+        def auth = SpringSecurityUtils.getPrincipalAuthorities()
+        def textFormatList = TextFormat.getAll()
+        for (textFormatInstance in textFormatList) {
+            def rolesList = SpringSecurityUtils.parseAuthoritiesString(textFormatInstance.roles.toString()) 
+            if (!auth.disjoint(rolesList)) {
+                textFormatNamesList.add(textFormatInstance.name)
+            }
+        }
+        [pageInstance: new Page(params), formatsAvailable: textFormatNamesList]
     }
 
     def save() {

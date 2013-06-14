@@ -29,10 +29,10 @@
 
 <div class="control-group ${hasErrors(bean: pageInstance, field: 'textFormat.name', 'error')}">
     <label class="control-label" for="textFormat.name">
-        <g:message code="page.textFormat.name.label" default="Text Format" />
+        <g:message code="textFormat.name.label" default="Text Format" />
     </label>
     <div class="controls">
-        <g:select name="page.textFormat.name" from="${formatsAvailable }" />
+        <g:select name="textFormat.name" from="${formatsAvailable }" />
     </div>
 </div>
 
@@ -40,10 +40,24 @@
     <label class="control-label" for="body">
         <g:message code="page.body.label" default="Body" />
     </label>
-    <div class="controls">
+    <div class="controls" id="ckeditor" style="display:inherit;" >
         <ckeditor:editor name="body" height="300px" width="80%">
             <%= pageInstance?.body %>
         </ckeditor:editor>
+    </div>
+    <div class="controls" id="plaintext" style="display:none;" > 
+        <textarea name="body" rows="25" cols="60" style="width: 80%">
+            <%= pageInstance?.body %>
+        </textarea>
+    </div>
+</div>
+
+<div class="control-group ">
+    <label class="control-label">
+        <g:message code="blank.label" default="" />
+    </label>
+    <div class="controls">
+        <a id="switch" class="btn btn-link">Switch to Plain Text</a>
     </div>
 </div>
 
