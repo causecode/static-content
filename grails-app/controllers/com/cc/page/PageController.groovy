@@ -14,7 +14,6 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.annotation.shorthand.ControllerShorthand
-import com.cc.content.ContentMeta
 import com.cc.content.*
 
 @ControllerShorthand(value = "c")
@@ -59,6 +58,9 @@ class PageController {
 
     def create() {
         def textFormatNamesList = []
+        if(!params.editor) {
+            params.editor = true
+        }
         def auth = SpringSecurityUtils.getPrincipalAuthorities()
         def textFormatList = TextFormat.getAll()
         for (textFormatInstance in textFormatList) {
@@ -67,18 +69,38 @@ class PageController {
                 textFormatNamesList.add(textFormatInstance.name)
             }
         }
-        [pageInstance: new Page(params), formatsAvailable: textFormatNamesList]
+        def pageInstance = new Page(params)
+        def textFormatInstance = new TextFormat()
+        pageInstance.textFormat = textFormatInstance
+        [pageInstance: pageInstance, formatsAvailable: textFormatNamesList, editor:params.boolean('editor')]
     }
 
     def save() {
-        pageInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Page.class)
-        if(!pageInstance.save(flush: true)) {
+//        pageInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Page.class)
+        
+        def textFormatInstance = TextFormat.findByName(params.textFormat.name)
+        def tags = textFormatInstance.allowedTags
+
+        if(tags && tags != "") {
+            def tagsList = tags.tokenize(', ')
+            String regexPart = ""
+            for (tag in tagsList) {
+                regexPart += "(?!" + tag.toString() + ")"
+            }
+            String regex = "<" + regexPart + "[^>]*" + regexPart + ">"
+            params.body.replaceAll(regex, "")
+        }
+
+        render "Partial Text is :" + params.body
+        
+/*        if(!pageInstance.save(flush: true)) {
             render(view: "create", model: [pageInstance: pageInstance])
             return
         }
 
         flash.message = message(code: 'default.created.message', args: [message(code: 'page.label'), pageInstance.id])
         redirect(action: "show", id: pageInstance.id)
+*/
     }
 
     def show(Long id) {

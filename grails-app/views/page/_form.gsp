@@ -40,25 +40,36 @@
     <label class="control-label" for="body">
         <g:message code="page.body.label" default="Body" />
     </label>
-    <div class="controls" id="ckeditor" style="display:inherit;" >
-        <ckeditor:editor name="body" height="300px" width="80%">
-            <%= pageInstance?.body %>
-        </ckeditor:editor>
-    </div>
-    <div class="controls" id="plaintext" style="display:none;" > 
-        <textarea name="body" rows="25" cols="60" style="width: 80%">
-            <%= pageInstance?.body %>
-        </textarea>
-    </div>
+    <g:if test="${editor}" >
+        <div class="controls" >
+            <ckeditor:editor name="body" height="300px" width="80%">
+                <%= pageInstance?.body %>
+            </ckeditor:editor>
+        </div>
+    </g:if>
+    <g:else>
+        <div class="controls" > 
+            <textarea name="body" rows="25" cols="60" style="width: 80%">
+                <%= pageInstance?.body %>
+            </textarea>
+        </div>
+    </g:else>
 </div>
 
 <div class="control-group ">
     <label class="control-label">
         <g:message code="blank.label" default="" />
     </label>
-    <div class="controls">
-        <a id="switch" class="btn btn-link">Switch to Plain Text</a>
-    </div>
+    <g:if test="${editor}">
+        <div class="controls">
+            <g:link action="create" params="[editor:false]" class="btn btn-link">Switch to Plain Text</g:link>
+        </div>
+    </g:if>
+    <g:else>
+        <div class="controls">
+            <g:link action="create" params="[editor:true]" class="btn btn-link">Switch to Ckeditor</g:link>
+        </div>
+    </g:else>
 </div>
 
 <div class="control-group ${hasErrors(bean: pageInstance, field: 'pageLayout', 'error')}">
