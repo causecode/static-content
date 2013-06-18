@@ -95,7 +95,6 @@ class ContentService {
             log.warn "Error saving ${contentInstance.class.name}: " + contentInstance.errors
             return contentInstance
         }
-        contentInstance.textFormat = TextFormat.findByName(args.textFormat.name)
         contentInstance.save()
         if(!metaTypes || !metaValues)
             return contentInstance
@@ -182,4 +181,24 @@ class ContentService {
         return g.createLink(attrs)
     }
 
+    /**
+     * To set the body according to the Text Format selected
+     * @param args 
+     * @return Modified Body
+     */
+    def formatBody(String body, TextFormat textFormatInstance) {
+        def tags = textFormatInstance.allowedTags
+        if(textFormatInstance.name == 'PLAIN_TEXT') {
+            body = body.encodeAsHTML()
+        } else if(tags) {
+            def tagsList = tags.tokenize(',')
+            String regexPart = ""
+            tagsList.each { tag ->
+                regexPart += "(?!" + tag.trim() + "[^a-zA-Z])"
+            }
+            String regex = "(?i)<" + regexPart + "[^>]*" + regexPart + ">"
+            body = body.replaceAll(regex, "")
+        }
+        return body
+    }
 }

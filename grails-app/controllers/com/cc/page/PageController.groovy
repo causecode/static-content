@@ -25,6 +25,7 @@ class PageController {
     def beforeInterceptor = [action: this.&validate]
     def contentService
     def springSecurityService
+    def textFormatService
 
     private Page pageInstance
 
@@ -58,36 +59,29 @@ class PageController {
     }
 
     def create() {
-        def textFormatInstancesAvailableList = []
         if(!params.editor) {
             params.editor = true
         }
-        def textFormatInstanceList = TextFormat.getAll()
-        textFormatInstanceList.each {
-            if (SpringSecurityUtils.ifAnyGranted(it.roles)) {
-                textFormatInstancesAvailableList.add(it.name)
-            }
+        if(!pageInstance) {
+            pageInstance = new Page(params)
         }
-        [pageInstance: new Page(params), formatsAvailable: textFormatInstancesAvailableList, editor:params.boolean('editor')]
+        [pageInstance: pageInstance, formatsAvailable: textFormatService.applicableFormats(),
+            editor:params.boolean('editor')]
     }
 
     def save() {
-        def textFormatInstance = TextFormat.findByName(params.textFormat.name)
-        def tags = textFormatInstance.allowedTags
-
-        if(tags) {
-            def tagsList = tags.tokenize(',')
-            String regexPart = ""
-            tagsList.each { tag ->
-                regexPart += "(?!" + tag.trim() + "[^a-zA-Z])"
-            }
-            String regex = "/<" + regexPart + "[^>]*" + regexPart + ">/i"
-            params.body = params.body.replaceAll(regex, "")
+        def textFormatInstance = TextFormat.findById(params.textFormat.id)
+        if(SpringSecurityUtils.ifNotGranted(textFormatInstance.roles)) {
+            flash.message = "Sorry! You do not possess previleges to use " + textFormatInstance.name + " format"
+            render(view: "create", model: [pageInstance: pageInstance])
+            return
         }
-        pageInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Page.class)
+        
+        params.body = contentService.formatBody(params.body,textFormatInstance)
 
-        if(!pageInstance.hasErrors()) {
-            flash.message = "Error saving Instance: " + pageInstance.errors
+        pageInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Page.class)
+        if(pageInstance.hasErrors()) {
+            flash.message = "Error saving Instance in controller action: " + pageInstance.errors
             render(view: "create", model: [pageInstance: pageInstance])
             return
         }
@@ -100,7 +94,12 @@ class PageController {
     }
 
     def edit(Long id) {
-        [pageInstance: pageInstance]
+        if (!pageInstance.textFormatId) {
+            pageInstance.textFormat = new TextFormat()
+        }
+        [pageInstance: pageInstance,
+             formatsAvailable: textFormatService.applicableFormats,
+             editor:pageInstance.textFormat.editor]
     }
 
     def update(Long id, Long version) {
@@ -113,6 +112,16 @@ class PageController {
                 return
             }
         }
+        
+        def textFormatInstance = TextFormat.findById(params.textFormat.id)
+        if(SpringSecurityUtils.ifNotGranted(textFormatInstance.roles)) {
+            flash.message = "Sorry! You do not possess previleges to use " + textFormatInstance.name + " format"
+            render(view: "create", model: [pageInstance: pageInstance])
+            return
+        }
+        
+        params.body = contentService.formatBody(params.body,textFormatInstance)
+
         pageInstance = contentService.update(params, pageInstance, params.meta.list("type"), params.meta.list("value"))
 
         if(pageInstance.hasErrors()) {
