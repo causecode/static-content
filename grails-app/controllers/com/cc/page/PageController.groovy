@@ -15,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.*
+import com.cc.content.format.TextFormat;
 
 @ControllerShorthand(value = "c")
 class PageController {
@@ -57,50 +58,41 @@ class PageController {
     }
 
     def create() {
-        def textFormatNamesList = []
+        def textFormatInstancesAvailableList = []
         if(!params.editor) {
             params.editor = true
         }
-        def auth = SpringSecurityUtils.getPrincipalAuthorities()
-        def textFormatList = TextFormat.getAll()
-        for (textFormatInstance in textFormatList) {
-            def rolesList = SpringSecurityUtils.parseAuthoritiesString(textFormatInstance.roles.toString()) 
-            if (!auth.disjoint(rolesList)) {
-                textFormatNamesList.add(textFormatInstance.name)
+        def textFormatInstanceList = TextFormat.getAll()
+        textFormatInstanceList.each {
+            if (SpringSecurityUtils.ifAnyGranted(it.roles)) {
+                textFormatInstancesAvailableList.add(it.name)
             }
         }
-        def pageInstance = new Page(params)
-        def textFormatInstance = new TextFormat()
-        pageInstance.textFormat = textFormatInstance
-        [pageInstance: pageInstance, formatsAvailable: textFormatNamesList, editor:params.boolean('editor')]
+        [pageInstance: new Page(params), formatsAvailable: textFormatInstancesAvailableList, editor:params.boolean('editor')]
     }
 
     def save() {
-//        pageInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Page.class)
-        
         def textFormatInstance = TextFormat.findByName(params.textFormat.name)
         def tags = textFormatInstance.allowedTags
 
-        if(tags && tags != "") {
-            def tagsList = tags.tokenize(', ')
+        if(tags) {
+            def tagsList = tags.tokenize(',')
             String regexPart = ""
-            for (tag in tagsList) {
-                regexPart += "(?!" + tag.toString() + ")"
+            tagsList.each { tag ->
+                regexPart += "(?!" + tag.trim() + "[^a-zA-Z])"
             }
-            String regex = "<" + regexPart + "[^>]*" + regexPart + ">"
-            params.body.replaceAll(regex, "")
+            String regex = "/<" + regexPart + "[^>]*" + regexPart + ">/i"
+            params.body = params.body.replaceAll(regex, "")
         }
+        pageInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Page.class)
 
-        render "Partial Text is :" + params.body
-        
-/*        if(!pageInstance.save(flush: true)) {
+        if(!pageInstance.hasErrors()) {
+            flash.message = "Error saving Instance: " + pageInstance.errors
             render(view: "create", model: [pageInstance: pageInstance])
             return
         }
-
         flash.message = message(code: 'default.created.message', args: [message(code: 'page.label'), pageInstance.id])
         redirect(action: "show", id: pageInstance.id)
-*/
     }
 
     def show(Long id) {

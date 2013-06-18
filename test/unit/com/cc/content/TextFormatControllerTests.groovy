@@ -3,6 +3,9 @@ package com.cc.content
 
 
 import org.junit.*
+
+import com.cc.content.format.TextFormat;
+
 import grails.test.mixin.*
 
 @TestFor(TextFormatController)

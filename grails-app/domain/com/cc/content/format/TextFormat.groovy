@@ -6,7 +6,7 @@
  * without modification, are not permitted.
  */
 
-package com.cc.content
+package com.cc.content.format
 
 class TextFormat {
 

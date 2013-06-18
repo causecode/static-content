@@ -20,6 +20,7 @@ import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
 import com.cc.annotation.sanitizedTitle.SanitizedTitle
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.blog.Blog
+import com.cc.content.format.TextFormat;
 import com.cc.content.meta.Meta
 import com.cc.page.Page
 
@@ -94,6 +95,7 @@ class ContentService {
             log.warn "Error saving ${contentInstance.class.name}: " + contentInstance.errors
             return contentInstance
         }
+        contentInstance.textFormat = TextFormat.findByName(args.textFormat.name)
         contentInstance.save()
         if(!metaTypes || !metaValues)
             return contentInstance

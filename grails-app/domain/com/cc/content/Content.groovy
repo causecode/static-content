@@ -9,6 +9,7 @@
 package com.cc.content
 
 import com.cc.annotation.sanitizedTitle.SanitizedTitle
+import com.cc.content.format.TextFormat;
 import com.cc.content.meta.Meta
 
 class Content {
@@ -41,6 +42,7 @@ class Content {
         author nullable: true, bindable: false
         dateCreated bindable: false
         lastUpdated bindable: false
+        textFormat nullable:true 
     }
 
     @Override

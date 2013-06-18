@@ -10,6 +10,8 @@ package com.cc.content
 
 import org.springframework.dao.DataIntegrityViolationException
 
+import com.cc.content.format.TextFormat;
+
 class TextFormatController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
