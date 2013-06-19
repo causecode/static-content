@@ -3,6 +3,8 @@
     <meta name="layout" content="main">
     <g:set var="entityName" value="${message(code: 'page.label', default: 'Page')}" />
     <title><g:message code="default.create.label" args="[entityName]" /></title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="/js/editor.js"></script>
 </head>
 <body>
     <div class="page-header">

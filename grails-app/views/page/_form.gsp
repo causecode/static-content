@@ -27,12 +27,13 @@
     </div>
 </div>
 
-<div class="control-group ${hasErrors(bean: pageInstance, field: 'textFormat.name', 'error')}">
-    <label class="control-label" for="textFormat.name">
-        <g:message code="textFormat.name.label" default="Text Format" />
+<div class="control-group ${hasErrors(bean: pageInstance, field: 'textFormat.id', 'error')}">
+    <label class="control-label" for="textFormat.id">
+        <g:message code="textFormat.id.label" default="Text Format" />
     </label>
-    <div class="controls">
-        <g:select name="textFormat.name" from="${formatsAvailable }" />
+    <div class="controls" id="drop-down">
+        <g:select name="textFormat.id" from="${formatsAvailable }" optionKey="id" optionValue="name"
+             value="${pageInstance?.textFormat?.name }" />
     </div>
 </div>
 
@@ -40,36 +41,8 @@
     <label class="control-label" for="body">
         <g:message code="page.body.label" default="Body" />
     </label>
-    <g:if test="${editor}" >
-        <div class="controls" >
-            <ckeditor:editor name="body" height="300px" width="80%">
-                <%= pageInstance?.body %>
-            </ckeditor:editor>
+        <div class="controls" id="editor" >
         </div>
-    </g:if>
-    <g:else>
-        <div class="controls" > 
-            <textarea name="body" rows="25" cols="60" style="width: 80%">
-                <%= pageInstance?.body %>
-            </textarea>
-        </div>
-    </g:else>
-</div>
-
-<div class="control-group ">
-    <label class="control-label">
-        <g:message code="blank.label" default="" />
-    </label>
-    <g:if test="${editor}">
-        <div class="controls">
-            <g:link action="create" params="[editor:false]" class="btn btn-link">Switch to Plain Text</g:link>
-        </div>
-    </g:if>
-    <g:else>
-        <div class="controls">
-            <g:link action="create" params="[editor:true]" class="btn btn-link">Switch to Ckeditor</g:link>
-        </div>
-    </g:else>
 </div>
 
 <div class="control-group ${hasErrors(bean: pageInstance, field: 'pageLayout', 'error')}">

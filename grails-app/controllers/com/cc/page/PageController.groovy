@@ -65,7 +65,7 @@ class PageController {
         if(!pageInstance) {
             pageInstance = new Page(params)
         }
-        [pageInstance: pageInstance, formatsAvailable: textFormatService.applicableFormats(),
+        [pageInstance: pageInstance, formatsAvailable: textFormatService.applicableFormats,
             editor:params.boolean('editor')]
     }
 
@@ -94,12 +94,8 @@ class PageController {
     }
 
     def edit(Long id) {
-        if (!pageInstance.textFormatId) {
-            pageInstance.textFormat = new TextFormat()
-        }
-        [pageInstance: pageInstance,
-             formatsAvailable: textFormatService.applicableFormats,
-             editor:pageInstance.textFormat.editor]
+        [pageInstance: pageInstance, formatsAvailable: textFormatService.applicableFormats,
+             editor:pageInstance?.textFormat?.editor]
     }
 
     def update(Long id, Long version) {
@@ -147,6 +143,17 @@ class PageController {
         } catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'page.label'), id])
             redirect(action: "show", id: id)
+        }
+    }
+    
+    /**
+     * To switch between Text Area and Ckeditor
+     */
+    def editorSwitch() {
+        if(params.boolean('flag')) {
+            render(template: "textarea")
+        } else {
+            render(template: "ckeditor")
         }
     }
 }
