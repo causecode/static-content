@@ -11,7 +11,6 @@
 <html>
 	<head>
 		<meta name="layout" content="main">
-		<r:require module="bootstrap"/>
 		<g:set var="entityName" value="${message(code: 'menu.label', default: 'Menu')}" />
 		<title><g:message code="default.show.label" args="[entityName]" /></title>
 	</head>

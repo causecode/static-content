@@ -11,7 +11,6 @@
 <html>
   <head>
     <meta name="layout" content="main">
-    <r:require module="bootstrap"/>
     <g:set var="entityName" value="${message(code: 'blog.label', default: 'Latest Blog')}" />
     <title><g:message code="default.list.label" args="[entityName]" /></title>
     <style type="text/css" media="screen">

@@ -11,7 +11,6 @@
 <html>
 	<head>
 		<meta name="layout" content="main">
-		<r:require module="bootstrap"/>
 		<g:set var="entityName" value="${message(code: 'pageLayout.label', default: 'PageLayout')}" />
 		<title><g:message code="default.edit.label" args="[entityName]" /></title>
 	</head>
