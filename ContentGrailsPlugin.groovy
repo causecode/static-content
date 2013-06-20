@@ -29,6 +29,7 @@ class ContentGrailsPlugin {
     def authorEmail = ""
     def description = '''\
 A plugin used to manage contents like static pages, menus etc. at one place.
+Also provides shortened and user friendly urls.
 '''
     //def loadBefore = ['grails-plugin-url-mappings']
 
@@ -99,7 +100,8 @@ A plugin used to manage contents like static pages, menus etc. at one place.
                     shorthandAnnotatedControllerMap.put(camelCaseName, controllerAnnotation.value())
                 }
             }
-            println "\nShorthand annotated controller map: $shorthandAnnotatedControllerMap \n"
+            println "\nShorthand annotated controller map: $shorthandAnnotatedControllerMap"
+            println ""
             metaClassInstance.getShorthandAnnotatedControllers {
                 return shorthandAnnotatedControllerMap
             }
