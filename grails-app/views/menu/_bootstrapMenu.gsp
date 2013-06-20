@@ -2,12 +2,12 @@
     <div class="navbar-inner">
         <div class="container">
             <a class="brand" href="#">
-                <g:if test="${logoUrl }">
-                    <img class="logo" src="${logoUrl }" />
+                <g:if test="${brandURL }">
+                    <img class="logo" src="${brandURL }" />
                 </g:if>
-                <g:if test="${title }">
-                    <span style="${titleCss }">
-                        ${title }
+                <g:if test="${brandName }">
+                    <span style="${brandCss }" id="brand-name">
+                        ${brandName }
                     </span>
                 </g:if>
             </a>
