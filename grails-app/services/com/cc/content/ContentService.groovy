@@ -188,7 +188,7 @@ class ContentService {
      */
     def formatBody(String body, TextFormat textFormatInstance) {
         def tags = textFormatInstance.allowedTags
-        if(textFormatInstance.name == 'PLAIN_TEXT') {
+        if(!textFormatInstance.editor) {
             body = body.encodeAsHTML()
         } else if(tags) {
             def tagsList = tags.tokenize(',')

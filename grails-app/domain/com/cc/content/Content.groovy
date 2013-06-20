@@ -29,6 +29,7 @@ class Content {
     boolean publish
 
     TextFormat textFormat
+    boolean editor
     
     static mapping = {
         body type: 'text'

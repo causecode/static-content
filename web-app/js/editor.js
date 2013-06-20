@@ -1,33 +1,38 @@
-$.noConflict();
 function editorCheck() {
-    var selectedValue = jQuery("#drop-down select").val();
-    if (jQuery("#drop-down select").val() == '2') {
-        CKEDITOR.instances = {}
-        switchEditor('true');
-        jQuery("#editor a").remove();
+    selectedValue = $("#drop-down select").val();
+    if (noEditorIdList.indexOf(parseInt(selectedValue)) != -1) {
+        switchEditor(false);
     } else {
-        switchEditor('false');
+        switchEditor(true);
     }
 }
-function switchEditor(flag) {
-    jQuery.ajax({
+function switchEditor(editorFlag, switchEditorFlag) {
+    $.ajax({
         type : 'POST',
         data : {
-            'flag' : flag
+            'editorFlag' : editorFlag,
+            'switcheditorFlag' : switchEditorFlag,
+            'id': $('input#id').val()
         },
         url : '/page/editorSwitch',
-        success : function(data, textStatus) {
-            jQuery('#editor').html(data);
+        beforeSend : function() {
+            selectedValue = $("#drop-down select").val();
+            if ((editorFlag=='true'? true : false) && (noEditorIdList.indexOf(parseInt(selectedValue)) != -1)) {
+                switchEditor('false');
+                return 0;
+            }
             CKEDITOR.instances = {}
+        },
+        success : function(data, textStatus) {
+            $('#editor').html(data);
         },
         error : function(XMLHttpRequest, textStatus, errorThrown) {
         }
     });
     return false;
 }
-jQuery(function() {
-    editorCheck();
-    jQuery("#drop-down select").change(function() {
+$(function() {
+    $("#drop-down select").change(function() {
         editorCheck();
     });
 });

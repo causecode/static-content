@@ -76,7 +76,6 @@ class PageController {
             render(view: "create", model: [pageInstance: pageInstance])
             return
         }
-        
         params.body = contentService.formatBody(params.body,textFormatInstance)
 
         pageInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Page.class)
@@ -150,10 +149,9 @@ class PageController {
      * To switch between Text Area and Ckeditor
      */
     def editorSwitch() {
-        if(params.boolean('flag')) {
-            render(template: "textarea")
-        } else {
-            render(template: "ckeditor")
-        }
+        render(template: "bodyEditor", model: [pageInstance: pageInstance,
+                                              textFormatInstance: pageInstance?.textFormat,
+                                              editorFlag:params.boolean('editorFlag'), 
+                                              switchEditorFlag:params.boolean('switchEditorFlag')])
     }
 }

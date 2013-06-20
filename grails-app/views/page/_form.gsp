@@ -1,4 +1,6 @@
 <ckeditor:resources/>
+<script src="/js/editor.js"></script>
+<g:hiddenField name="id" value="${pageInstance.id }"/>
 
 <g:hasErrors bean="${pageInstance}">
     <ul class="text-error">
@@ -33,16 +35,27 @@
     </label>
     <div class="controls" id="drop-down">
         <g:select name="textFormat.id" from="${formatsAvailable }" optionKey="id" optionValue="name"
-             value="${pageInstance?.textFormat?.name }" />
+             value="${pageInstance?.textFormat }" />
     </div>
 </div>
+
+<r:script>
+    var noEditorIdList = ${com.cc.content.format.TextFormat.findAllByEditor(false)*.id};
+</r:script>
 
 <div class="control-group ${hasErrors(bean: pageInstance, field: 'body', 'error')}">
     <label class="control-label" for="body">
         <g:message code="page.body.label" default="Body" />
     </label>
-        <div class="controls" id="editor" >
-        </div>
+    <div class="controls" id="editor" >
+        <g:if test="${pageInstance.id }">
+            <g:render template="bodyEditor" model="['pageInstance':pageInstance ,
+             'textFormatInstance':pageInstance?.textFormat ]" />
+        </g:if>
+        <g:else>
+            <g:render template="bodyEditor" model="['editorFlag':true, 'switchEditorFlag':false]"/>
+        </g:else>
+    </div>
 </div>
 
 <div class="control-group ${hasErrors(bean: pageInstance, field: 'pageLayout', 'error')}">
