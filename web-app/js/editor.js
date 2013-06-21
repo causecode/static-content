@@ -12,7 +12,6 @@ function switchEditor(useEditor) {
         type : 'POST',
         data : {
             'useEditor': useEditor,
-            'id': (useEditor ? null : $('input#id').val()),
             'textInstanceId': $("#drop-down select").val()
         },
         url : '/page/editorSwitch',

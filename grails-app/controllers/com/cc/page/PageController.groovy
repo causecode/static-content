@@ -30,7 +30,6 @@ class PageController {
     private Page pageInstance
 
     private validate() {
-        print params.id
         if(!params.id) return true;
 
         pageInstance = Page.get(params.id)
@@ -72,7 +71,7 @@ class PageController {
 
     def save() {
         def textFormatInstance = TextFormat.findById(params.textFormat.id)
-        if(SpringSecurityUtils.ifNotGranted(textFormatInstance.roles)) {
+        if(SpringSecurityUtils.ifNotGranted(textFormatInstance?.roles)) {
             flash.message = "Sorry! You do not possess previleges to use " + textFormatInstance.name + " format"
             render(view: "create", model: [pageInstance: pageInstance])
             return
@@ -110,7 +109,7 @@ class PageController {
         }
         
         def textFormatInstance = TextFormat.findById(params.textFormat.id)
-        if(SpringSecurityUtils.ifNotGranted(textFormatInstance.roles)) {
+        if(SpringSecurityUtils.ifNotGranted(textFormatInstance?.roles)) {
             flash.message = "Sorry! You do not possess previleges to use " + textFormatInstance.name + " format"
             render(view: "create", model: [pageInstance: pageInstance])
             return
@@ -150,8 +149,7 @@ class PageController {
      * To switch between Text Area and Ckeditor
      */
     def editorSwitch() {
-        render(template: "bodyEditor", model: [pageInstance: pageInstance,
-                                              textFormatInstance: TextFormat.get(params.textInstanceId),
-                                              editorFlag:params.boolean('editorFlag')])
+        render(template: "bodyEditor", plugin:"content", 
+            model: [textFormatInstance: TextFormat.get(params.textInstanceId), useEditor:params.boolean('useEditor')])
     }
 }

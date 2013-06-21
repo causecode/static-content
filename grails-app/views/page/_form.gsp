@@ -48,12 +48,10 @@
     </label>
     <div class="controls" id="editor" >
         <g:if test="${!formatsAvailable*.editor.contains(true) }">
-            <div>
-                <textarea name="body" rows="25" cols="60" style="width: 80%">
-                <%= pageInstance?.body %>
-                </textarea>
-                <g:hiddenField name="editor" value="false"/>
-            </div>
+            <textarea name="body" rows="25" cols="60" style="width: 80%">
+            <%= pageInstance?.body %>
+            </textarea>
+            <g:hiddenField name="editor" value="false"/>
         </g:if>
         <g:else>
             <r:require module="editorswitch"/>
