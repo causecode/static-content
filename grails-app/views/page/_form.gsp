@@ -62,7 +62,7 @@
                  'textFormatInstance':pageInstance?.textFormat ]" />
             </g:if>
             <g:else>
-                <g:render template="bodyEditor" model="['editorFlag':true]"/>
+                <g:render template="bodyEditor" model="['useEditor':true]"/>
             </g:else>
         </g:else>
     </div>

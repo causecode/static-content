@@ -30,6 +30,7 @@ class PageController {
     private Page pageInstance
 
     private validate() {
+        print params.id
         if(!params.id) return true;
 
         pageInstance = Page.get(params.id)
@@ -144,7 +145,7 @@ class PageController {
             redirect(action: "show", id: id)
         }
     }
-    
+
     /**
      * To switch between Text Area and Ckeditor
      */

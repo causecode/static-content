@@ -11,7 +11,6 @@
         </h1>
     </div>
     <g:form class="form-horizontal" >
-        <g:hiddenField name="id" value="${pageInstance?.id}" />
         <g:hiddenField name="version" value="${pageInstance?.version}" />
         <fieldset class="form">
             <g:render template="form" />
