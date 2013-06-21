@@ -1,5 +1,4 @@
 <ckeditor:resources/>
-<script src="/js/editor.js"></script>
 <g:hiddenField name="id" value="${pageInstance.id }"/>
 
 <g:hasErrors bean="${pageInstance}">
@@ -48,12 +47,23 @@
         <g:message code="page.body.label" default="Body" />
     </label>
     <div class="controls" id="editor" >
-        <g:if test="${pageInstance.id }">
-            <g:render template="bodyEditor" model="['pageInstance':pageInstance ,
-             'textFormatInstance':pageInstance?.textFormat ]" />
+        <g:if test="${!formatsAvailable*.editor.contains(true) }">
+            <div>
+                <textarea name="body" rows="25" cols="60" style="width: 80%">
+                <%= pageInstance?.body %>
+                </textarea>
+                <g:hiddenField name="editor" value="false"/>
+            </div>
         </g:if>
         <g:else>
-            <g:render template="bodyEditor" model="['editorFlag':true, 'switchEditorFlag':false]"/>
+            <r:require module="editorswitch"/>
+            <g:if test="${pageInstance.id }">
+                <g:render template="bodyEditor" model="['pageInstance':pageInstance ,
+                 'textFormatInstance':pageInstance?.textFormat ]" />
+            </g:if>
+            <g:else>
+                <g:render template="bodyEditor" model="['editorFlag':true]"/>
+            </g:else>
         </g:else>
     </div>
 </div>

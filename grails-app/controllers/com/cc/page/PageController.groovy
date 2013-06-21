@@ -150,8 +150,7 @@ class PageController {
      */
     def editorSwitch() {
         render(template: "bodyEditor", model: [pageInstance: pageInstance,
-                                              textFormatInstance: pageInstance?.textFormat,
-                                              editorFlag:params.boolean('editorFlag'), 
-                                              switchEditorFlag:params.boolean('switchEditorFlag')])
+                                              textFormatInstance: TextFormat.get(params.textInstanceId),
+                                              editorFlag:params.boolean('editorFlag')])
     }
 }

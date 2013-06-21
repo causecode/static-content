@@ -6,21 +6,16 @@ function editorCheck() {
         switchEditor(true);
     }
 }
-function switchEditor(editorFlag, switchEditorFlag) {
+function switchEditor(editorFlag) {
     $.ajax({
         type : 'POST',
         data : {
-            'editorFlag' : editorFlag,
-            'switcheditorFlag' : switchEditorFlag,
-            'id': $('input#id').val()
+            'editorFlag': editorFlag,
+            'id': $('input#id').val(),
+            'textInstanceId': $("#drop-down select").val()
         },
         url : '/page/editorSwitch',
         beforeSend : function() {
-            selectedValue = $("#drop-down select").val();
-            if ((editorFlag=='true'? true : false) && (noEditorIdList.indexOf(parseInt(selectedValue)) != -1)) {
-                switchEditor('false');
-                return 0;
-            }
             CKEDITOR.instances = {}
         },
         success : function(data, textStatus) {
