@@ -15,31 +15,27 @@
 		<title><g:message code="default.create.label" args="[entityName]" /></title>
 	</head>
 	<body>
-		<a href="#create-menu" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-		<div class="nav" role="navigation">
-			<ul>
-				<li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
-				<li><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]" /></g:link></li>
-			</ul>
-		</div>
-		<div id="create-menu" class="content scaffold-create" role="main">
-			<h1><g:message code="default.create.label" args="[entityName]" /></h1>
-			<g:if test="${flash.message}">
-			<div class="message" role="status">${flash.message}</div>
-			</g:if>
-			<g:hasErrors bean="${menuInstance}">
-			<ul class="errors" role="alert">
-				<g:eachError bean="${menuInstance}" var="error">
-				<li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
-				</g:eachError>
-			</ul>
-			</g:hasErrors>
-			<g:form action="save" >
-				<fieldset class="form">
+		<div class="page-header">
+			<h1>
+                <g:message code="default.create.label" args="[entityName]" />
+            </h1>
+			<g:form action="save" class="form-horizontal">
+				<fieldset>
 					<g:render template="form"/>
-				</fieldset>
-				<fieldset class="buttons">
-					<g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
+				    <div class="form-actions">
+                       <div class="fieldcontain ${hasErrors(bean: menuInstance, field: 'menuItem', 'error')}" id="toggleDiv">
+                           <label for="menuItem">
+                               <g:message code="menu.menuItem.label" default="Menu Items" />
+                           </label>
+                            <g:select name="menuItem" from="${topLevelMenuItems}" multiple="multiple"  
+                                optionValue="title" optionKey="id" size="5" value="${menuInstance?.menuItems*.id}" 
+                                class="many-to-many"/>
+                       </div>
+                       <g:submitButton name="addChildren" class="btn btn-primary" 
+                            value="${message(code: 'default.button.addChildren.label', default: 'Add Children')}" />
+                       <g:submitButton name="create" class="btn btn-primary" 
+                            value="${message(code: 'default.button.create.label', default: 'Create')}" />
+                    </div>
 				</fieldset>
 			</g:form>
 		</div>

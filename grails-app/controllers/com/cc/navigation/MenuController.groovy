@@ -36,11 +36,11 @@ class MenuController {
         if(params.menuItem) {
             if(params.menuItem.class.isArray()) {
                 params.menuItem.each {
-                    menuInstance.addToMenuItem(MenuItem.get(it))
+                    menuInstance.addTomenuItem(MenuItem.get(it))
                 }
             }
             else {
-                menuInstance.addToMenuItem(MenuItem.get(params.menuItem))
+                menuInstance.addTomenuItem(MenuItem.get(params.menuItem))
             }
         }
         if (!menuInstance.save(flush: true)) {

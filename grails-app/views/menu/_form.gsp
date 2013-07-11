@@ -6,24 +6,22 @@ are not permitted. -->
 
 <%@ page import="com.cc.navigation.Menu" %>
 
-<div class="fieldcontain ${hasErrors(bean: menuInstance, field: 'name', 'error')} ">
-	<label for="name">
-		<g:message code="menu.name.label" default="Name" />
-		
-	</label>
-	<g:textField name="name" value="${menuInstance?.name}"/>
-</div>
+<g:hasErrors bean="${menuInstance}">
+    <ul class="text-error">
+        <g:eachError bean="${menuInstance}" var="error">
+            <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>>
+                <g:message error="${error}" /></li>
+        </g:eachError>
+    </ul>
+</g:hasErrors>
 
-<fieldset class="addChildren">
-		<button type="button" id="addChildren">Add Children</button>
-</fieldset>
-
-<div class="fieldcontain ${hasErrors(bean: menuInstance, field: 'menuItem', 'error')}" id="toggleDiv">
-	<label for="menuItem">
-		<g:message code="menu.menuItem.label" default="Menu Item" />
-		
-	</label>
-	<g:select name="menuItem" from="${topLevelMenuItems}" multiple="multiple"  optionValue="title" optionKey="id" size="5" value="${menuInstance?.menuItems*.id}" class="many-to-many"/>
+<div class="control-group ${hasErrors(bean: menuInstance, field: 'name', 'error')}">
+    <label class="control-label" for="name">
+        <g:message code="menu.name.label" default="Name" />
+    </label>
+    <div class="controls">
+        <g:textField name="name" required="" value="${menuInstance?.name}"/>
+    </div>
 </div>
 
 <div id="clildMenuItemDiv">
