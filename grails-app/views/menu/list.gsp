@@ -9,13 +9,13 @@
 <%@ page import="com.cc.navigation.Menu" %>
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta name="layout" content="main">
-		<g:set var="entityName" value="${message(code: 'menu.label', default: 'Menu')}" />
-		<title><g:message code="default.list.label" args="[entityName]" /></title>
-	</head>
-	<body>
-		<div class="page-header" id="list-menu">
+    <head>
+        <meta name="layout" content="main">
+        <g:set var="entityName" value="${message(code: 'menu.label', default: 'Menu')}" />
+        <title><g:message code="default.list.label" args="[entityName]" /></title>
+    </head>
+    <body>
+        <div class="page-header" id="list-menu">
             <h1>
                 <g:message code="default.list.label" args="[entityName]" />
             </h1>
@@ -41,8 +41,8 @@
                 </g:if>
             </tbody>
         </table>
-		<div class="pager" >
-			<g:paginate total="${menuInstanceTotal}" next="Forward" prev="Back" />
-		</div>
-	</body>
+        <div class="pager" >
+            <g:paginate total="${menuInstanceTotal}" next="Forward" prev="Back" />
+        </div>
+    </body>
 </html>
