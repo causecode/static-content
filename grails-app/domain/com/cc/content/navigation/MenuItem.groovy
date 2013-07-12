@@ -22,6 +22,7 @@ class MenuItem {
     static hasMany = [childItems: MenuItem]
 
     static constraints = {
+        menu nullable: true
         parent nullable: true
         dateCreated bindable: false
         lastUpdated bindable: false

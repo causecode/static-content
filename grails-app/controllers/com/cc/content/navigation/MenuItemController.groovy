@@ -23,7 +23,8 @@ class MenuItemController {
 
         menuItemInstance = MenuItem.get(params.id)
         if(!menuItemInstance) {
-            flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'menuItem.label', default: 'MenuItem'), params.id])
+            flash.message = g.message(code: 'default.not.found.message', 
+                args: [message(code: 'menuItem.label', default: 'MenuItem'), params.title])
             redirect(action: "list")
             return false
         }
@@ -50,7 +51,8 @@ class MenuItemController {
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.id])
+        flash.message = message(code: 'default.created.message', 
+            args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
         redirect(action: "show", id: menuItemInstance.id)
     }
 
@@ -80,17 +82,20 @@ class MenuItemController {
             return
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.id])
+        flash.message = message(code: 'default.updated.message', 
+            args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
         redirect(action: "show", id: menuItemInstance.id)
     }
 
     def delete(Long id) {
         try {
             menuItemInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'menuItem.label', default: 'MenuItem'), id])
+            flash.message = message(code: 'default.deleted.message', 
+                args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
             redirect(action: "list")
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'menuItem.label', default: 'MenuItem'), id])
+            flash.message = message(code: 'default.not.deleted.message', 
+                args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
             redirect(action: "show", id: id)
         }
     }

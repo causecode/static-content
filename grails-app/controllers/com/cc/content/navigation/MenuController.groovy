@@ -23,7 +23,7 @@ class MenuController {
 
         menuInstance = Menu.get(params.id)
         if(!menuInstance) {
-            flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'menu.label', default: 'Menu'), params.id])
+            flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'menu.label', default: 'Menu'), params.name])
             redirect(action: "list")
             return false
         }
@@ -50,7 +50,8 @@ class MenuController {
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'menu.label', default: 'Menu'), menuInstance.id])
+        flash.message = message(code: 'default.created.message', 
+            args: [message(code: 'menu.label', default: 'Menu'), menuInstance.name])
         redirect(action: "show", id: menuInstance.id)
     }
 
@@ -80,17 +81,20 @@ class MenuController {
             return
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'menu.label', default: 'Menu'), menuInstance.id])
+        flash.message = message(code: 'default.updated.message', 
+            args: [message(code: 'menu.label', default: 'Menu'), menuInstance.name])
         redirect(action: "show", id: menuInstance.id)
     }
 
     def delete(Long id) {
         try {
             menuInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'menu.label', default: 'Menu'), id])
+            flash.message = message(code: 'default.deleted.message', 
+                args: [message(code: 'menu.label', default: 'Menu'), name])
             redirect(action: "list")
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'menu.label', default: 'Menu'), id])
+            flash.message = message(code: 'default.not.deleted.message', 
+                args: [message(code: 'menu.label', default: 'Menu'), name])
             redirect(action: "show", id: id)
         }
     }

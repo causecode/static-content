@@ -32,4 +32,5 @@ class MenuTagLib {
         def menuItemInstance = MenuItem.get(attrs.id)
         out << render(template: '/menu/menu', plugin: 'content', model: ['menuItemInstance': menuItemInstance])
     }
+    
 }

@@ -17,7 +17,7 @@
             noSelection="['null': '']" optionValue="title"/>
     </div>
 </div>
-
+<!-- 
 <div class="control-group ${hasErrors(bean: menuItemInstance, field: 'menu', 'error')}">
     <label class="control-label" for="menu">
         <g:message code="menuItem.menu.label" default="Menu" />
@@ -27,7 +27,7 @@
             optionKey="id" value="${menuItemInstance?.menu?.id}" class="many-to-one" noSelection="['null': '']"/>
     </div>
 </div>
-
+ -->
 
 <div class="control-group ${hasErrors(bean: menuItemInstance, field: 'title', 'error')}">
     <label class="control-label" for="title">
