@@ -10,6 +10,9 @@ package com.cc.navigation
 
 import org.springframework.dao.DataIntegrityViolationException
 
+import com.cc.content.navigation.Menu;
+import com.cc.content.navigation.MenuItem;
+
 class MenuItemController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]

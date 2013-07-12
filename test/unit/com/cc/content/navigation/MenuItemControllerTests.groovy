@@ -1,4 +1,4 @@
-package com.cc.navigation
+package com.cc.content.navigation
 
 
 

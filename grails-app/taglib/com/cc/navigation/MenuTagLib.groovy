@@ -8,6 +8,9 @@
 
 package com.cc.navigation
 
+import com.cc.content.navigation.Menu;
+import com.cc.content.navigation.MenuItem;
+
 class MenuTagLib {
 
     static namespace = "com"

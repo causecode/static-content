@@ -6,30 +6,25 @@
  * without modification, are not permitted.
  */
 
-package com.cc.navigation
+package com.cc.content.navigation
 
-import java.util.Date;
+class Menu {
 
-class MenuItem {
-
-    String title
-    String url
+    String name
 
     Date dateCreated
     Date lastUpdated
 
-    static belongsTo = [parent: MenuItem, menu: Menu]
-    static hasMany = [childItems: MenuItem]
+    static hasMany = [menuItems: MenuItem]
 
     static constraints = {
-        parent nullable: true
-        menu nullable: true
+        name blank: false
         dateCreated bindable: false
         lastUpdated bindable: false
     }
 
     static mapping = {
-        table "cc_content_menu_item"
+        table "cc_content_menu"
     }
 
 }

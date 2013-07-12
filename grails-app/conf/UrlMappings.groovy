@@ -17,5 +17,9 @@ class UrlMappings {
 
         "/"(view:"/index")
         "500"(view:'/error')
+        "/menuItem/AddMenuItem" {
+            controller = "menuItem"
+            action = "create"
+        }
     }
 }
