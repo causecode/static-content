@@ -17,6 +17,27 @@
     </div>
 </div>
 
+<div class="control-group ${hasErrors(bean: menuInstance, field: 'roles', 'error')}">
+    <label class="control-label" for="roles">
+        <g:message code="menu.roles.label" default="Role" />
+    </label>
+    <div class="controls">
+        <g:select name="roles" from="${['ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN','ROLE_JOB_BOARD_MANAGER']}" 
+            value="${menuInstance?.roles}" multiple="true" noSelection="['':'None']"/>
+    </div>
+</div>
+
+<div class="control-group ${hasErrors(bean: menuInstance, field: 'showOnlyWhenLoggedIn', 'error')}">
+    <label class="control-label" for="showOnlyWhenLoggedIn">
+        <g:message code='menu.showOnlyWhenLoggedIn.label' default="Show Only When Logged In" />
+    </label>
+    <div class="controls">
+        <g:checkBox name="showOnlyWhenLoggedIn" optionKey="id" 
+            value="${menuInstance?.showOnlyWhenLoggedIn}"/>
+    </div>
+</div>
+
+
 <div class="control-group ${hasErrors(bean: menuInstance, field: 'menuItems', 'error')}">
     <label class="control-label" for="menuItems">
         <g:message code="menu.menuItems.label" default="Menu Items" />

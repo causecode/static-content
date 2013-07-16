@@ -45,6 +45,25 @@
                 </span>
             </li>
         </g:if>
+        
+        <g:if test="${menuInstance?.roles}">
+            <li class="fieldcontain">
+                <span id="roles-label" class="property-label">
+                    <g:message code="menu.roles.label" default="Roles" />
+                </span>
+                <span class="property-value" aria-labelledby="roles-label">
+                    <g:fieldValue bean="${menuInstance}" field="roles"/>
+                </span>
+            </li>
+        </g:if>
+
+        <g:if test="${menuInstance?.showOnlyWhenLoggedIn}">
+            <li class="fieldcontain">
+                <span id="showOnlyWhenLoggedIn-label" class="property-label">
+                    <g:message code="menu.showOnlyWhenLoggedIn.label" default="Show Only When Logged In" />
+                </span>
+            </li>
+        </g:if>
 
         <g:if test="${menuInstance?.menuItems}">
             <li class="fieldcontain">

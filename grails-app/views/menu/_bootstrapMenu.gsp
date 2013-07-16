@@ -14,15 +14,10 @@
             <ul class="nav pull-right" role="navigation" id="menu-item-${menuInstance?.id }">
                 <g:each in="${menuItemList}">
                     <g:if test="${!it.parent }">
-                        <g:if test="${it.childItems}">
-                            <com:menu id="${it.id}" renderingSubMenu="true"></com:menu>
-                        </g:if>
-                        <g:else>
                             <com:menu id="${it.id}"></com:menu>
-                        </g:else>
                     </g:if>
                 </g:each>
-            </ul>
+            </ul>  
         </div>
     </div>
 </div>

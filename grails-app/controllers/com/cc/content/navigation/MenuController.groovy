@@ -9,6 +9,8 @@
 package com.cc.content.navigation
 
 import org.springframework.dao.DataIntegrityViolationException
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugins.springsecurity.Secured
 
 class MenuController {
 
@@ -17,7 +19,8 @@ class MenuController {
     def beforeInterceptor = [action: this.&validate]
 
     Menu menuInstance
-
+    def springSecurityService
+    
     private validate() {
         if(!params.id) return true;
 
@@ -97,5 +100,13 @@ class MenuController {
                 args: [message(code: 'menu.label', default: 'Menu'), name])
             redirect(action: "show", id: id)
         }
+    }
+    
+    protected String lookupUserClassName() {
+        SpringSecurityUtils.securityConfig.userLookup.userDomainClassName
+    }
+
+    protected Class<?> userClass() {
+        grailsApplication.getDomainClass(lookupUserClassName()).clazz
     }
 }

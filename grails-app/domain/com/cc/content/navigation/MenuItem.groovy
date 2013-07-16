@@ -18,7 +18,8 @@ class MenuItem {
     Date dateCreated
     Date lastUpdated
 
-    List childItems
+    boolean showOnlyWhenLoggedIn 
+    String roles
 
     static belongsTo = [parent: MenuItem, menu: Menu]
     static hasMany = [childItems: MenuItem]

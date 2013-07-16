@@ -15,7 +15,8 @@ class Menu {
     Date dateCreated
     Date lastUpdated
 
-    List menuItems
+    boolean showOnlyWhenLoggedIn
+    String roles
 
     static hasMany = [menuItems: MenuItem]
 
@@ -27,6 +28,10 @@ class Menu {
 
     static mapping = {
         table "cc_content_menu"
+    }
+    
+    boolean canBeDisplay() {
+        
     }
 
 }
