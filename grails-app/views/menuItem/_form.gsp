@@ -17,17 +17,17 @@
             noSelection="['null': '']" optionValue="title"/>
     </div>
 </div>
-<!-- 
+
 <div class="control-group ${hasErrors(bean: menuItemInstance, field: 'menu', 'error')}">
     <label class="control-label" for="menu">
         <g:message code="menuItem.menu.label" default="Menu" />
     </label>
     <div class="controls">
         <g:select id="menu" name="menu.id" from="${com.cc.content.navigation.Menu.list()}" optionValue="name"
-            optionKey="id" value="${menuItemInstance?.menu?.id}" class="many-to-one" noSelection="['null': '']"/>
+            optionKey="id" value="${menuItemInstance?.menu?.id}" class="many-to-one" noSelection="['': '']"/>
     </div>
 </div>
- -->
+
 
 <div class="control-group ${hasErrors(bean: menuItemInstance, field: 'title', 'error')}">
     <label class="control-label" for="title">

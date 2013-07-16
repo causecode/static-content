@@ -1,27 +1,27 @@
 <g:if test="${menuItemInstance.childItems}">
-    <li class="dropdown">
+    <li class="${renderingSubMenu ? 'dropdown-submenu' : 'dropdown' }">
         <a id="submenu-${menuItemInstance.id}" href='#' role="button" class="dropdown-toggle" data-toggle="dropdown">
-            ${menuItemInstance.title} </a>
-        <b class="caret"></b>
-        <g:each in="${menuItemInstance.childItems}" var="childItemInstance">
-            <g:if test="${childItemInstance.childItems}">
-                <g:each in="${menuItemInstance.childItems}" var="subChildItemInstance">
-                    <ul class="dropdown-menu" role="menu" aria-lebelledby="submenu-${menuItemInstance.id}">
-                        <com:menu id="${subChildItemInstance.id}"></com:menu>
-                    </ul>
-                </g:each>
+            ${menuItemInstance.title} 
+            <g:if test="${!renderingSubMenu}">
+                <b class="caret"></b>
             </g:if>
-            <g:else>
-                <li role="presentation">
-                    <a href='${childItemInstance.url}' >${childItemInstance.title}</a>
-                </li>
-            </g:else>
-        </g:each>
+        </a>
+        <ul class="dropdown-menu">
+            <g:each in="${menuItemInstance.childItems}" var="childItemInstance">
+                <g:if test="${childItemInstance.childItems}">
+                    <com:menu id="${childItemInstance.id}" renderingSubMenu="true" ></com:menu>
+                </g:if>
+                <g:else>
+                    <li>
+                        <a href='${childItemInstance.url}' class="dropdown-toggle">${childItemInstance.title}</a>
+                    </li>
+                </g:else>
+            </g:each>
+        </ul>
+    </li>
 </g:if>
 <g:else>
-   <ul class="dropdown-menu">
-        <li class="dropdown">
-            <a href="${menuItemInstance.url}" class="item-link">${menuItemInstance.title}</a>
-        </li>
-    </ul>
+    <li>
+        <a href="${menuItemInstance.url}" class="item-link">${menuItemInstance.title}</a>
+    </li>
 </g:else>

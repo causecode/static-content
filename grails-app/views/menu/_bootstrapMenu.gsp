@@ -14,30 +14,15 @@
             <ul class="nav pull-right" role="navigation" id="menu-item-${menuInstance?.id }">
                 <g:each in="${menuItemList}">
                     <g:if test="${!it.parent }">
-                        <com:menu id="${it.id}"></com:menu>
+                        <g:if test="${it.childItems}">
+                            <com:menu id="${it.id}" renderingSubMenu="true"></com:menu>
+                        </g:if>
+                        <g:else>
+                            <com:menu id="${it.id}"></com:menu>
+                        </g:else>
                     </g:if>
                 </g:each>
             </ul>
-            
-            <!-- 
-            <ul class="nav pull-right" role="navigation">
-                <li class="dropdown">
-                    <a id="drop1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Home</a>
-                    <b class="caret"></b>
-                    <ul class="dropdown-menu" role="menu" aria-lebelledby="drop1">
-                        <li role="presentation">
-                            <a role="menuitem"href="#">submenu1</a>
-                         </li>
-                         <li role="presentation">
-                            <a role="menuitem"href="#">submenu2</a>
-                         </li>
-                         <li role="presentation">
-                            <a role="menuitem"href="#">submenu3</a>
-                         </li>
-                    </ul>
-                </li>
-            </ul>
-             -->
         </div>
     </div>
 </div>
