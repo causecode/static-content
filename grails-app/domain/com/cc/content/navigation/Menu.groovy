@@ -15,6 +15,8 @@ class Menu {
     Date dateCreated
     Date lastUpdated
 
+    List menuItems
+
     static hasMany = [menuItems: MenuItem]
 
     static constraints = {

@@ -6,7 +6,7 @@
  * without modification, are not permitted.
  */
 
-package com.cc.navigation
+package com.cc.content.navigation
 
 import com.cc.content.navigation.Menu;
 import com.cc.content.navigation.MenuItem;
