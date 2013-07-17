@@ -11,7 +11,7 @@
         </h1>
     </div>
 
-    <com:bootstrapMenu id="${menuItemInstance?.id}"/> 
+    <com:menu id="${menuItemInstance?.id}"/> 
 
     <ol class="property-list menuItem">
         
