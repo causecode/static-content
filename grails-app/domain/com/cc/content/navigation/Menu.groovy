@@ -17,6 +17,7 @@ class Menu {
 
     boolean showOnlyWhenLoggedIn
     String roles
+    List menuItems
 
     static hasMany = [menuItems: MenuItem]
 
@@ -24,6 +25,8 @@ class Menu {
         name blank: false
         dateCreated bindable: false
         lastUpdated bindable: false
+        roles blank:true
+        showOnlyWhenLoggedIn nullable:true
     }
 
     static mapping = {

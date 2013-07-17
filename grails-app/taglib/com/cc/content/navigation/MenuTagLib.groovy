@@ -23,9 +23,12 @@ class MenuTagLib {
     def menu = { attrs, body ->
         if(Menu.get(attrs.id)) {
             def menuInstance = Menu.get(attrs.id)
-            def menuItemList = MenuItem.findAllByMenu(menuInstance)
-            out << render(template: '/menu/menu', plugin: 'content', model: ['menuInstance': menuInstance,
-                'menuItemList': menuItemList].plus(attrs))
+            if(menuInstance) {
+                def menuItemList = MenuItem?.findAllByMenu(menuInstance)
+                out << render(template: '/menu/menu', plugin: 'content', model: ['menuInstance': menuInstance,
+                              'menuItemList': menuItemList].plus(attrs))
+                
+            }
         }
     }
 

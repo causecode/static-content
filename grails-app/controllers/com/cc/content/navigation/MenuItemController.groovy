@@ -9,6 +9,7 @@
 package com.cc.content.navigation
 
 import org.springframework.dao.DataIntegrityViolationException
+import com.cc.content.navigation.*
 
 class MenuItemController {
 
@@ -17,6 +18,8 @@ class MenuItemController {
     def beforeInterceptor = [action: this.&validate]
 
     MenuItem menuItemInstance
+
+    def mainMenu
 
     private validate() {
         if(!params.id) return true;
@@ -46,16 +49,21 @@ class MenuItemController {
 
     def save() {
         menuItemInstance = new MenuItem(params)
+        if(menuItemInstance?.menu) {
+            mainMenu = Menu.findById(menuItemInstance?.menu?.id)
+        } else {
+            mainMenu = MenuItem.findById(menuItemInstance?.parent?.id)
+        }
         if (!menuItemInstance.save(flush: true)) {
             render(view: "create", model: [menuItemInstance: menuItemInstance])
             return
         }
-
+        mainMenu?.addToMenuItems(menuItemInstance)
         flash.message = message(code: 'default.created.message', 
             args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
         redirect(action: "show", id: menuItemInstance.id)
     }
-
+ 
     def show(Long id) {
         [menuItemInstance: menuItemInstance]
     }
@@ -76,12 +84,12 @@ class MenuItemController {
         }
 
         menuItemInstance.properties = params
-
+        def mainMenu = Menu.findById(menuItemInstance?.menu?.id)
         if (!menuItemInstance.save(flush: true)) {
             render(view: "edit", model: [menuItemInstance: menuItemInstance])
             return
         }
-
+        mainMenu?.addToMenuItems(menuItemInstance)
         flash.message = message(code: 'default.updated.message', 
             args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
         redirect(action: "show", id: menuItemInstance.id)
@@ -98,5 +106,9 @@ class MenuItemController {
                 args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
             redirect(action: "show", id: id)
         }
+    }
+    def editOrder() {
+        params.max = Math.min(max ?: 10, 100)
+        [menuItemInstanceList: MenuItem.list(params), menuItemInstanceTotal: MenuItem.count()]
     }
 }

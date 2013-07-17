@@ -99,4 +99,8 @@ class MenuController {
             redirect(action: "show", id: id)
         }
     }
+    
+    def jqui() {
+        
+    }
 }

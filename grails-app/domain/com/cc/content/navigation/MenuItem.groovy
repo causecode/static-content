@@ -20,13 +20,16 @@ class MenuItem {
 
     boolean showOnlyWhenLoggedIn
     String roles
-
+    List childItems
+    
     static belongsTo = [parent: MenuItem, menu: Menu]
     static hasMany = [childItems: MenuItem]
 
     static constraints = {
         menu nullable: true
         parent nullable: true
+        roles blank:true
+        showOnlyWhenLoggedIn nullable:true
         dateCreated bindable: false
         lastUpdated bindable: false
     }

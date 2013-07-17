@@ -23,7 +23,7 @@
     </label>
     <div class="controls">
         <g:select name="roles" from="${['ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN','ROLE_JOB_BOARD_MANAGER']}" 
-            value="${menuInstance?.roles}" multiple="true" noSelection="['':'None']"/>
+            value="${menuInstance?.roles}" multiple="true" noSelection="['':'']"/>
     </div>
 </div>
 
