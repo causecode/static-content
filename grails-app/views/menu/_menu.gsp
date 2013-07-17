@@ -1,24 +1,22 @@
-<g:if test="${menuItemInstance.childItems}">
-    <g:if test="${menuItemInstance.showOnlyWhenLoggedIn }" >
-        <sec:ifLoggedIn>
-            <g:if test="${menuItemInstance.roles }" >
-                <sec:ifAnyGranted roles="${menuItemInstance.roles }">
-                    <li class="${renderingSubMenu ? 'dropdown-submenu' : 'dropdown' }">
-                        <g:render template="/menu/dropdownMenuItem" model="['menuItemInstance':menuItemInstance]"/>
-                    </li>
-                </sec:ifAnyGranted>
-            </g:if>
-        </sec:ifLoggedIn>
-    </g:if>
-</g:if>
-<g:else>
-        <g:if test="${menuItemInstance.showOnlyWhenLoggedIn }" >
-            <sec:ifLoggedIn>
-                <g:if test="${menuItemInstance.roles }" >
-                    <sec:ifAnyGranted roles="${menuItemInstance.roles }">
-                        <g:render template="/menu/simpleMenuItem" model="['menuItemInstanc':menuItemInstance]"/>
-                    </sec:ifAnyGranted>
+<com:canBeVisible instance="${menuItemInstance}" >
+    <g:if test="${menuItemInstance.childItems}">
+        <li class="${renderingSubMenu ? 'dropdown-submenu' : 'dropdown' }">
+            <a id="submenu-${menuItemInstance.id}" href='#' role="button" class="dropdown-toggle" data-toggle="dropdown">
+                ${menuItemInstance.title} 
+                <g:if test="${!renderingSubMenu}">
+                    <b class="caret"></b>
                 </g:if>
-            </sec:ifLoggedIn>
-        </g:if>
-</g:else>
+            </a>
+            <ul class="dropdown-menu">
+                <g:each in="${menuItemInstance.childItems}" var="childItemInstance">
+                    <com:menu id="${childItemInstance.id}" renderingSubMenu="true" ></com:menu>
+                </g:each>
+            </ul>
+        </li>
+    </g:if>
+    <g:else>
+        <li>
+            <a href="${menuItemInstance.url}" class="item-link">${menuItemInstance.title}</a>
+        </li>
+    </g:else>
+</com:canBeVisible>

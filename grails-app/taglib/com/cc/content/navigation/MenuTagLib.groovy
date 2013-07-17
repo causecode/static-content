@@ -8,12 +8,13 @@
 
 package com.cc.content.navigation
 
-import com.cc.content.navigation.Menu;
-import com.cc.content.navigation.MenuItem;
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 class MenuTagLib {
 
     static namespace = "com"
+
+    def springSecurityService
 
     /**
      * Used to render menubars.
@@ -30,8 +31,23 @@ class MenuTagLib {
 
     def menu = { attrs, body ->
         def menuItemInstance = MenuItem.get(attrs.id)
-        out << render(template: '/menu/menu', plugin: 'content', 
-                         model: ['menuItemInstance': menuItemInstance , renderingSubMenu: attrs.renderingSubMenu])
+        out << render(template: '/menu/menu', plugin: 'content',
+        model: ['menuItemInstance': menuItemInstance , renderingSubMenu: attrs.renderingSubMenu])
+    }
+
+    /**
+     * Used to validate User Logged in/not and User Roles.
+     * @attr instance REQUIRED The instance of the Menu domain/MenuItem domain for which validation is performed.
+     */
+    def canBeVisible = { attrs, body ->
+        def instance = attrs.instance
+        if(!instance?.showOnlyWhenLoggedIn) {
+            out << body()
+        } else if(springSecurityService.isLoggedIn()) {
+            if(instance?.roles && SpringSecurityUtils.ifAnyGranted(instance.roles)) {
+                out << body()
+            }
+        }
     }
 
 }

@@ -29,9 +29,5 @@ class Menu {
     static mapping = {
         table "cc_content_menu"
     }
-    
-    boolean canBeDisplay() {
-        
-    }
 
 }

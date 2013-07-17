@@ -1,5 +1,3 @@
-
-
 <html>
 <head>
     <meta name="layout" content="main">
@@ -12,7 +10,9 @@
             <g:message code="default.show.label" args="[entityName]" />
         </h1>
     </div>
+
     <com:bootstrapMenu id="${menuItemInstance?.id}"/> 
+
     <ol class="property-list menuItem">
         
         <g:if test="${menuItemInstance?.parent}">
@@ -25,7 +25,7 @@
                 </span>
             </li>
         </g:if>
-        
+
         <g:if test="${menuItemInstance?.menu}">
             <li class="fieldcontain">
                 <span id="menu-label" class="property-label">
@@ -36,7 +36,7 @@
                 </span>
             </li>
         </g:if>
-        
+
         <g:if test="${menuItemInstance?.dateCreated}">
             <li class="fieldcontain">
                 <span id="dateCreated-label" class="property-label">
@@ -47,7 +47,7 @@
                 </span>
             </li>
         </g:if>
-        
+
         <g:if test="${menuItemInstance?.lastUpdated}">
             <li class="fieldcontain">
                 <span id="lastUpdated-label" class="property-label">
@@ -58,7 +58,7 @@
                 </span>
             </li>
         </g:if>
-        
+
         <g:if test="${menuItemInstance?.title}">
             <li class="fieldcontain">
                 <span id="title-label" class="property-label">
@@ -69,7 +69,7 @@
                 </span>
             </li>
         </g:if>
-        
+
         <g:if test="${menuItemInstance?.url}">
             <li class="fieldcontain">
                 <span id="url-label" class="property-label">
@@ -80,7 +80,18 @@
                 </span>
             </li>
         </g:if>
-        
+
+        <g:if test="${menuItemInstance?.roles}">
+            <li class="fieldcontain">
+                <span id="roles-label" class="property-label">
+                    <g:message code="menuItem.roles.label" default="Roles" />
+            </span>
+                <span class="property-value" aria-labelledby="roles-label">
+                    <g:fieldValue bean="${menuItemInstance}" field="roles"/>
+                </span>
+            </li>
+        </g:if>
+
         <g:if test="${menuItemInstance?.childItems}">
             <li class="fieldcontain">
     .           <span id="childItems-label" class="property-label">
@@ -95,7 +106,7 @@
             </li>
         </g:if>
     </ol>
-    
+
     <g:form>
         <fieldset class="form-actions">
             <g:hiddenField name="id" value="${menuItemInstance?.id}" />

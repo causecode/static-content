@@ -18,7 +18,7 @@ class MenuItem {
     Date dateCreated
     Date lastUpdated
 
-    boolean showOnlyWhenLoggedIn 
+    boolean showOnlyWhenLoggedIn
     String roles
 
     static belongsTo = [parent: MenuItem, menu: Menu]
@@ -34,5 +34,4 @@ class MenuItem {
     static mapping = {
         table "cc_content_menu_item"
     }
-
 }

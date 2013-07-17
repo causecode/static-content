@@ -1,4 +1,3 @@
-
 <html>
 <head>
     <meta name="layout" content="main">
@@ -11,7 +10,7 @@
             <g:message code="default.show.label" args="[entityName]" />
         </h1>
     </div>
-    <com:bootstrapMenu id="${menuInstance?.id}"/> 
+
     <ol class="property-list menu">
         <g:if test="${menuInstance?.name}">
             <li class="fieldcontain">
@@ -34,7 +33,7 @@
                 </span>
             </li>
         </g:if>
-        
+
         <g:if test="${menuInstance?.lastUpdated}">
             <li class="fieldcontain">
                 <span id="lastUpdated-label" class="property-label">
@@ -45,7 +44,7 @@
                 </span>
             </li>
         </g:if>
-        
+
         <g:if test="${menuInstance?.roles}">
             <li class="fieldcontain">
                 <span id="roles-label" class="property-label">

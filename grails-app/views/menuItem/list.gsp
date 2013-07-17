@@ -24,7 +24,12 @@
         <tbody>
             <g:each in="${menuItemInstanceList}" var="menuItemInstance">
                 <tr>
-                    <td><g:link action="show" id="${menuItemInstance.id}">${fieldValue(bean: menuItemInstance, field: "parent.title")}</g:link></td>
+                    <td><g:link action="show" id="${menuItemInstance.id}">
+                        ${fieldValue(bean: menuItemInstance, field: "parent.title")}
+                    </g:link></td>
+                    <td><g:link action="show" id="${menuItemInstance.id}">
+                        ${fieldValue(bean: menuItemInstance, field: "title")}
+                    </g:link></td>
                     <td>${fieldValue(bean: menuItemInstance, field: "title")}</td>
                     <td><g:formatDate date="${menuItemInstance.dateCreated}" /></td>
                     <td><g:formatDate date="${menuItemInstance.lastUpdated}" /></td>
@@ -41,7 +46,7 @@
             </g:if>
         </tbody>
     </table>
-    <div class="pager">
+    <div class="pagination">
         <g:paginate total="${menuItemInstanceTotal}" />
     </div>
 </body>
