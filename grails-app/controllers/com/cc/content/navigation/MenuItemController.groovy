@@ -21,6 +21,7 @@ class MenuItemController {
 
     def mainMenu
     def mainMenuItem
+    def menuItemService
 
     private validate() {
         if(!params.id) return true;
@@ -49,21 +50,7 @@ class MenuItemController {
     }
 
     def save() {
-        menuItemInstance = new MenuItem(params)
-       
-        if (!menuItemInstance.save(flush: true)) {
-            render(view: "create", model: [menuItemInstance: menuItemInstance])
-            return
-        }
-        if(params?.menuId) {
-            mainMenu = Menu.get(params.menuId)
-            mainMenu?.addToMenuItems(menuItemInstance)
-        } 
-        if(params?.parentId) {
-            mainMenuItem = MenuItem.get(params.parentId)
-            mainMenuItem?.addToChildItems(menuItemInstance)
-        }
-        
+        menuItemInstance = menuItemService.create(params)
         flash.message = message(code: 'default.created.message', 
             args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
         redirect(action: "show", id: menuItemInstance.id)
@@ -89,12 +76,11 @@ class MenuItemController {
         }
 
         menuItemInstance.properties = params
-        def mainMenu = Menu.findById(menuItemInstance?.menu?.id)
         if (!menuItemInstance.save(flush: true)) {
             render(view: "edit", model: [menuItemInstance: menuItemInstance])
             return
         }
-        mainMenu?.addToMenuItems(menuItemInstance)
+        menuItemInstance = menuItemService.update(menuItemInstance , params)
         flash.message = message(code: 'default.updated.message', 
             args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
         redirect(action: "show", id: menuItemInstance.id)

@@ -13,7 +13,7 @@
 
     <com:menu id="${menuItemInstance?.id}"/> 
     <ol class="property-list menuItem">
-        <li>${menuItemInstance?.parent.id}</li>
+        <li>${menuItemInstance?.parent?.id}</li>
         <g:if test="${menuItemInstance?.parent}">
             <li class="fieldcontain">
                 <span id="parent-label" class="property-label">
