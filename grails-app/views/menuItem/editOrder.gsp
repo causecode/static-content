@@ -1,39 +1,45 @@
-<html>
+<%--<html>
 <head>
     <meta name="layout" content="main">
     <g:set var="entityName" value="${message(code: 'menuItem.label', default: 'EditOrder')}" />
     <title><g:message code="default.editOrder.label" args="[entityName]" /></title>
-    <link rel="stylesheet" href="/css/jquery-ui/jquery-ui-1.10.3.custom.css" />
-    <script src="/js/jquery-ui/jquery-1.9.1.js"></script>
-    <script src="/js/jquery-ui/jquery-ui-1.10.3.custom.js"></script>
+    <r:require modules="draggableAndSortable"/>
     
 </head>
 <body>
-    <script>
+    <script>is:"x"
         $(function() {
-        $( "#sortable" ).sortable({
-          revert: true
+        $("#childMenuItem").sortable({
+            revert:true,
+            axis:"x"
         });
-        $( "#draggable" ).draggable({
-          connectToSortable: "#sortable",
-          helper: "clone",
-          revert: "invalid"
+        $("#childMenuItem").draggable({
+            connectToSortable: "#sortable",
+            revert: "invalid",
+            axis:"y"
         });
         $( "ul, li" ).disableSelection();
         });
     </script>
-    <ul>
-      <li id="draggable" class="ui-state-highlight">Drag me down</li>
-    </ul>
+    
     <ul id="sortable" class="ui-sortable">
     <g:each in="${menuItemInstanceList}" var="menuItemInstance">
         <li class="ui-state-default">${menuItemInstance.id}</li>
     </g:each>
     </ul>
     
-    <div class="pager">
-        <g:paginate total="${menuItemInstanceTotal}" />
+    <div id="parentMenuItem" >
+        <ul id="sortable" class="media-list ui-sortable">
+            <li class="media  ui-state-default">
+                <div id="childMenuItem" class="media-body thumbnail">
+                    <g:each in="${menuItemInstanceList}" var="menuItemInstance">
+                        <g:if test="${!menuItemInstance?.parent }">
+                                    <com:bootstrapMediaMenu id="${menuItemInstance?.id}"></com:bootstrapMediaMenu>
+                        </g:if>
+                    </g:each>
+                </div>
+            </li>
+        </ul>
     </div>
-    
 </body>
-</html>
+</html>--%>

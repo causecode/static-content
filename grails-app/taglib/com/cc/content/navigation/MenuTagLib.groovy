@@ -53,4 +53,9 @@ class MenuTagLib {
         }
     }
 
+    def bootstrapMediaMenu = { attrs, body ->
+        def menuItemInstance = MenuItem.get(attrs.id)
+        out << render(template: '/menuItem/bootstrapMediaMenu', plugin: 'content',
+        model: ['menuItemInstance': menuItemInstance])
+    }
 }

@@ -45,7 +45,7 @@
     <div class="controls">
         <ul class="one-to-many">
             <g:each in="${menuInstance?.menuItems?}" var="m">
-                <li><g:link controller="menuItem" action="show" id="${m.id}">${m?.title.encodeAsHTML()}</g:link></li>
+                <li><g:link controller="menuItem" action="show" id="${m?.id}">${m?.title.encodeAsHTML()}</g:link></li>
             </g:each>
             </br>
             <g:link controller="menuItem" action="create" params="['menu.id': menuInstance?.id]">

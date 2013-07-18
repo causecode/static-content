@@ -51,6 +51,7 @@ class MenuItemController {
 
     def save() {
         menuItemInstance = menuItemService.create(params)
+        
         flash.message = message(code: 'default.created.message', 
             args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
         redirect(action: "show", id: menuItemInstance.id)
@@ -75,12 +76,8 @@ class MenuItemController {
             }
         }
 
-        menuItemInstance.properties = params
-        if (!menuItemInstance.save(flush: true)) {
-            render(view: "edit", model: [menuItemInstance: menuItemInstance])
-            return
-        }
         menuItemInstance = menuItemService.update(menuItemInstance , params)
+        
         flash.message = message(code: 'default.updated.message', 
             args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
         redirect(action: "show", id: menuItemInstance.id)
@@ -99,6 +96,6 @@ class MenuItemController {
         }
     }
     def editOrder() {
-        [menuItemInstanceList: MenuItem.list(), menuItemInstanceTotal: MenuItem.count()]
+        [menuItemInstanceList: MenuItem.list(), menuInstanceTotal: Menu.count()]
     }
 }
