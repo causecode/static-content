@@ -9,20 +9,6 @@
     
 </head>
 <body>
-    <div class="page-header">
-        <h1>
-            <g:message code="default.list.label" args="[entityName]" />
-        </h1>
-    </div>
-    <ul id="sortable">
-    <g:each in="${menuItemInstanceList}" var="menuItemInstance">
-        <li class="ui-state-default">${menuItemInstance.id}</li>
-    </g:each>
-    </ul>
-    
-        <div class="pager">
-        <g:paginate total="${menuItemInstanceTotal}" />
-    </div>
     <script>
         $(function() {
         $( "#sortable" ).sortable({
@@ -36,5 +22,18 @@
         $( "ul, li" ).disableSelection();
         });
     </script>
+    <ul>
+      <li id="draggable" class="ui-state-highlight">Drag me down</li>
+    </ul>
+    <ul id="sortable" class="ui-sortable">
+    <g:each in="${menuItemInstanceList}" var="menuItemInstance">
+        <li class="ui-state-default">${menuItemInstance.id}</li>
+    </g:each>
+    </ul>
+    
+    <div class="pager">
+        <g:paginate total="${menuItemInstanceTotal}" />
+    </div>
+    
 </body>
 </html>

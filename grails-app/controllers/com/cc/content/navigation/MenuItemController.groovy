@@ -20,6 +20,7 @@ class MenuItemController {
     MenuItem menuItemInstance
 
     def mainMenu
+    def mainMenuItem
 
     private validate() {
         if(!params.id) return true;
@@ -49,16 +50,20 @@ class MenuItemController {
 
     def save() {
         menuItemInstance = new MenuItem(params)
-        if(menuItemInstance?.menu) {
-            mainMenu = Menu.findById(menuItemInstance?.menu?.id)
-        } else {
-            mainMenu = MenuItem.findById(menuItemInstance?.parent?.id)
-        }
+       
         if (!menuItemInstance.save(flush: true)) {
             render(view: "create", model: [menuItemInstance: menuItemInstance])
             return
         }
-        mainMenu?.addToMenuItems(menuItemInstance)
+        if(params?.menuId) {
+            mainMenu = Menu.get(params.menuId)
+            mainMenu?.addToMenuItems(menuItemInstance)
+        } 
+        if(params?.parentId) {
+            mainMenuItem = MenuItem.get(params.parentId)
+            mainMenuItem?.addToChildItems(menuItemInstance)
+        }
+        
         flash.message = message(code: 'default.created.message', 
             args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
         redirect(action: "show", id: menuItemInstance.id)
@@ -108,7 +113,6 @@ class MenuItemController {
         }
     }
     def editOrder() {
-        params.max = Math.min(max ?: 10, 100)
-        [menuItemInstanceList: MenuItem.list(params), menuItemInstanceTotal: MenuItem.count()]
+        [menuItemInstanceList: MenuItem.list(), menuItemInstanceTotal: MenuItem.count()]
     }
 }

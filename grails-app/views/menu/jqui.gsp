@@ -7,10 +7,7 @@
   <link rel="stylesheet" href="/css/jquery-ui/jquery-ui-1.10.3.custom.css" />
   <script src="/js/jquery-ui/jquery-1.9.1.js"></script>
   <script src="/js/jquery-ui/jquery-ui-1.10.3.custom.js"></script>
-  <style>
-  ul { list-style-type: none; margin: 0; padding: 0; margin-bottom: 10px; }
-  li { margin: 5px; padding: 5px; width: 150px; }
-  </style>
+  
   <script>
   $(function() {
     $( "#sortable" ).sortable({

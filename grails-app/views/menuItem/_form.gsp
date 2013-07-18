@@ -12,7 +12,7 @@
         <g:message code="menuItem.parent.label" default="Parent" />
     </label>
     <div class="controls">
-        <g:select id="parent" name="parent.id" from="${com.cc.content.navigation.MenuItem.list()}" 
+        <g:select id="parent" name="parentId" from="${com.cc.content.navigation.MenuItem.list()}" 
             optionKey="id" value="${menuItemInstance?.parent?.id}" class="many-to-one" 
             noSelection="['null': '']" optionValue="title"/>
     </div>
@@ -23,7 +23,7 @@
         <g:message code="menuItem.menu.label" default="Menu" />
     </label>
     <div class="controls">
-        <g:select id="menu" name="menu.id" from="${com.cc.content.navigation.Menu.list()}" optionValue="name"
+        <g:select id="menu" name="menuId" from="${com.cc.content.navigation.Menu.list()}" optionValue="name"
             optionKey="id" value="${menuItemInstance?.menu?.id}" class="many-to-one" noSelection="['': '']"/>
     </div>
 </div>
