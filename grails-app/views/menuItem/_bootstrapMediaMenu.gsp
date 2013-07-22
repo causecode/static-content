@@ -1,9 +1,14 @@
-<%--<h4 class="media-heading thumbnail">${menuItemInstance.title}</h4>
 <g:if test="${menuItemInstance?.childItems}">
-    <div class="media ui-sortable" >
-    <g:each in="${menuItemInstance.childItems}" var="childItemInstance">
-        <com:bootstrapMediaMenu id="${childItemInstance.id}"></com:bootstrapMediaMenu>
-    </g:each>
+    <div id = "${menuItemInstance?.id }" class="media ui-sortable" >
+    <ul id="sortableSubChild" class="ui-sortable media-list">
+        <g:each in="${menuItemInstance?.childItems}" var="childItemInstance">
+            <li class="ui-state-default media " data-item-id="${childItemInstance?.id}">
+                <div id="${childItemInstance?.id}" class="media-body draggable ui-draggable ui-widget-content">
+                    <p class="ex1 thumbnail"> ${childItemInstance?.title}</p>
+                    <com:bootstrapMediaMenu id="${childItemInstance?.id}"></com:bootstrapMediaMenu>
+                </div>
+            </li>
+        </g:each>
+    </ul>
     </div>
 </g:if>
---%>

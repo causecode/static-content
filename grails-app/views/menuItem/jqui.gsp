@@ -1,4 +1,3 @@
-<!doctype html>
  
 <html lang="en">
 <head>
@@ -18,8 +17,6 @@
   </style>
   <script>
   $(function() {
-    $( "#draggable" ).draggable({ axis: "y" });
-    $( "#draggable2" ).draggable({ axis: "x" });
  
     $( "#draggable3" ).draggable({ containment: "#containment-wrapper", scroll: false });
     $( "#draggable5" ).draggable({ containment: "parent" });
@@ -28,15 +25,7 @@
 </head>
 <body>
  
-<h3>Constrain movement along an axis:</h3>
- 
-<div id="draggable" class="draggable ui-widget-content">
-  <p>I can be dragged only vertically</p>
-</div>
- 
-<div id="draggable2" class="draggable ui-widget-content">
-  <p>I can be dragged only horizontally</p>
-</div>
+
  
 <h3>Or to within another DOM element:</h3>
 <div id="containment-wrapper">

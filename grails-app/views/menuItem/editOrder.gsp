@@ -1,45 +1,53 @@
-<%--<html>
+<html>
 <head>
     <meta name="layout" content="main">
     <g:set var="entityName" value="${message(code: 'menuItem.label', default: 'EditOrder')}" />
     <title><g:message code="default.editOrder.label" args="[entityName]" /></title>
     <r:require modules="draggableAndSortable"/>
-    
+    <style>
+        p.ex1 {margin-left:40px;}
+          #containment-wrapper { width: 95%; height:450px; border:2px solid #ccc; padding: 10px; }
+    </style>
 </head>
 <body>
-    <script>is:"x"
+    <script>
         $(function() {
-        $("#childMenuItem").sortable({
-            revert:true,
-            axis:"x"
+            $("#sortableChild,#sortableSubChild").sortable({
+                revert:true,
+                update: function( event, ui ) {
+                    var $sortedMenuItem = $(ui.item[0])
+                    elementId = $sortedMenuItem.data('item-id');
+                    var index = $sortedMenuItem.index();
+                    getMenuItemIndex(elementId , index )
+                }
+            });
+            $( "ul, li" ).disableSelection();
         });
-        $("#childMenuItem").draggable({
-            connectToSortable: "#sortable",
-            revert: "invalid",
-            axis:"y"
-        });
-        $( "ul, li" ).disableSelection();
-        });
+        
+        function getMenuItemIndex(elementId,index) {
+            var menuItemInstance = MenuItem().get(elementId)
+            console.log(menuItemInstance)
+            $.ajax({
+                type: 'POST',
+                url: '/menuItem/editOrder',
+                data: JSON.stringify({ index: index }),
+                success: function(result) {
+                    //
+                }
+            });
+        }
     </script>
-    
-    <ul id="sortable" class="ui-sortable">
-    <g:each in="${menuItemInstanceList}" var="menuItemInstance">
-        <li class="ui-state-default">${menuItemInstance.id}</li>
-    </g:each>
-    </ul>
-    
-    <div id="parentMenuItem" >
-        <ul id="sortable" class="media-list ui-sortable">
-            <li class="media  ui-state-default">
-                <div id="childMenuItem" class="media-body thumbnail">
-                    <g:each in="${menuItemInstanceList}" var="menuItemInstance">
-                        <g:if test="${!menuItemInstance?.parent }">
-                                    <com:bootstrapMediaMenu id="${menuItemInstance?.id}"></com:bootstrapMediaMenu>
-                        </g:if>
-                    </g:each>
-                </div>
-            </li>
+        <ul id="sortableChild" class="ui-sortable media-list" >
+            <g:each in="${menuItemInstanceList}" var="menuItemInstance">
+                <g:if test="${!menuItemInstance?.parent }">
+                    <li class="ui-state-default media " data-item-id="${menuItemInstance?.id }">
+                        <div id="${menuItemInstance?.id }" class="draggable ui-widget-content media-body thumbnail">
+                             <p class="ex1 "> ${menuItemInstance?.title}</p>
+                            <com:bootstrapMediaMenu id="${menuItemInstance?.id}"></com:bootstrapMediaMenu>
+                        </div>
+                    </li>
+                </g:if>
+            </g:each>
         </ul>
-    </div>
 </body>
-</html>--%>
+</html>

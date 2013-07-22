@@ -38,7 +38,7 @@ class MenuItemService {
             menuInstance?.addToMenuItems(menuItemInstance)
         }
         if(args?.parentId) {
-            mainMenuItemInstance = MenuItem.get(args.parentId)
+            mainMenuItemInstance = MenuItem.get(args?.parentId)
             mainMenuItemInstance?.addToChildItems(menuItemInstance)
         }
         return menuItemInstance

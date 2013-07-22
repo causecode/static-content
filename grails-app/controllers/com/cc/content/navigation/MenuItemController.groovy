@@ -98,4 +98,7 @@ class MenuItemController {
     def editOrder() {
         [menuItemInstanceList: MenuItem.list(), menuInstanceTotal: Menu.count()]
     }
+    def jqui() {
+    
+    }
 }
