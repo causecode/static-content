@@ -6,7 +6,6 @@
     <r:require modules="draggableAndSortable"/>
     <style>
         p.ex1 {margin-left:40px;}
-          #containment-wrapper { width: 95%; height:450px; border:2px solid #ccc; padding: 10px; }
     </style>
 </head>
 <body>
@@ -19,20 +18,19 @@
                     elementId = $sortedMenuItem.data('item-id');
                     var index = $sortedMenuItem.index();
                     getMenuItemIndex(elementId , index )
+                    console.log(elementId,index)
                 }
             });
             $( "ul, li" ).disableSelection();
         });
         
         function getMenuItemIndex(elementId,index) {
-            var menuItemInstance = MenuItem().get(elementId)
-            console.log(menuItemInstance)
             $.ajax({
                 type: 'POST',
                 url: '/menuItem/editOrder',
-                data: JSON.stringify({ index: index }),
+                data: {'elementId':elementId,'index':index},
                 success: function(result) {
-                    //
+                    
                 }
             });
         }

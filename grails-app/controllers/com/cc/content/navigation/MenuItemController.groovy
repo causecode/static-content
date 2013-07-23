@@ -22,6 +22,7 @@ class MenuItemController {
     def mainMenu
     def mainMenuItem
     def menuItemService
+	
 
     private validate() {
         if(!params.id) return true;
@@ -85,7 +86,9 @@ class MenuItemController {
 
     def delete(Long id) {
         try {
-            menuItemInstance.delete(flush: true)
+            menuItemInstance = menuItemService.deleteMenuItem(menuItemInstance)
+			
+            menuItemInstance?.delete(flush: true)
             flash.message = message(code: 'default.deleted.message', 
                 args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
             redirect(action: "list")
@@ -96,6 +99,18 @@ class MenuItemController {
         }
     }
     def editOrder() {
+        if(request.xhr){
+            def index = params.index as int
+            menuItemInstance = menuItemService.editMenuItemsOrder(params.elementId,index-1)
+           /* menuItemInstance = menuItemService.deleteMenuItem(menuItemInstance)
+            if(menuItemInstance?.menu){
+                menuInstance = Menu.findById(menuItemInstance.menu?.id)
+                println "*******"+ menuInstance?.menuItems
+                println ">>>>>>>"+menuInstance?.menuItems[params.index]
+                menuInstance.addToMenuItems(menuItemInstance)
+                menuInstance.save()
+            }*/
+        }
         [menuItemInstanceList: MenuItem.list(), menuInstanceTotal: Menu.count()]
     }
     def jqui() {

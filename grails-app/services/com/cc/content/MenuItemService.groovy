@@ -15,8 +15,6 @@ import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
 
 class MenuItemService {
 
-    def menuInstance
-    def mainMenuItemInstance
     MenuItemService() {
         GroovyDynamicMethodsInterceptor i = new GroovyDynamicMethodsInterceptor(this)
         i.addDynamicMethodInvocation(new BindDynamicMethod())
@@ -26,13 +24,15 @@ class MenuItemService {
         def menuItemInstance = new MenuItem(args)
         if (!menuItemInstance.save(flush: true)) {
             render(view: "create", model: [menuItemInstance: menuItemInstance])
-            return 
+            return
         }
         update(menuItemInstance , args)
         return menuItemInstance
     }
-    
+
     MenuItem update(MenuItem menuItemInstance , Map args) {
+        def menuInstance
+        def mainMenuItemInstance
         if(args?.menuId) {
             menuInstance = Menu.get(args.menuId)
             menuInstance?.addToMenuItems(menuItemInstance)
@@ -42,5 +42,50 @@ class MenuItemService {
             mainMenuItemInstance?.addToChildItems(menuItemInstance)
         }
         return menuItemInstance
+    }
+
+    MenuItem removeFromParentMenuItem(MenuItem menuItemInstance){
+        def menuInstance
+        MenuItem parentMenuItemInstance
+
+        if(menuItemInstance?.menu){
+            menuInstance = Menu.findById(menuItemInstance.menu?.id)
+            menuInstance.removeFromMenuItems(menuItemInstance)
+            menuInstance.save()
+        }
+        if(menuItemInstance?.parent) {
+            parentMenuItemInstance = MenuItem.get(menuItemInstance.parent?.id)
+            parentMenuItemInstance.removeFromChildItems(menuItemInstance)
+            parentMenuItemInstance.save()
+        }
+        return menuItemInstance
+    }
+
+    MenuItem deleteMenuItem(MenuItem menuItemInstance){
+        removeFromParentMenuItem(menuItemInstance)
+
+        menuItemInstance.childItems?.each {
+            deleteMenuItem(it)
+        }
+        menuItemInstance?.delete()
+        return menuItemInstance
+    }
+
+    MenuItem removeChildMenuItem(MenuItem menuItemInstance){
+        removeFromParentMenuItem(menuItemInstance)
+
+        menuItemInstance.childItems?.each {
+            deleteMenuItem(it)
+        }
+        menuItemInstance?.delete()
+        return menuItemInstance
+    }
+
+    MenuItem editMenuItemsOrder(elementId,index){
+        def menuItemInstance = MenuItem.get(elementId)
+        def parentMenuItemInstance = menuItemInstance.parent
+        List menuItemList = parentMenuItemInstance.childItems
+        println elementId+ "**************************"+index
+        menuItemList.add(index , menuItemInstance)
     }
 }

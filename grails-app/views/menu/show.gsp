@@ -72,7 +72,7 @@
                 <g:each in="${menuInstance.menuItems}" var="m">
                     </br>
                     <span class="property-value" aria-labelledby="menuItems-label">
-                        <g:link controller="menuItem" action="show" id="${m.id}">${m?.title.encodeAsHTML()}</g:link>
+                        <g:link controller="menuItem" action="show" id="${m?.id}">${m?.title.encodeAsHTML()}</g:link>
                     </span>
                 </g:each>
             </li>
