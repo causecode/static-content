@@ -1,6 +1,6 @@
 <g:if test="${menuItemInstance?.childItems}">
     <div id = "${menuItemInstance?.id }" class="media ui-sortable" >
-    <ul id="sortableSubChild" class="ui-sortable media-list">
+    <ul id="sortable" class="ui-sortable media-list">
         <g:each in="${menuItemInstance?.childItems}" var="childItemInstance">
             <li class="ui-state-default media " data-item-id="${childItemInstance?.id}">
                 <div id="${childItemInstance?.id}" class="media-body draggable ui-draggable ui-widget-content">

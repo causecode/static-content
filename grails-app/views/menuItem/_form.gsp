@@ -13,8 +13,8 @@
     </label>
     <div class="controls">
         <g:select id="parent" name="parentId" from="${com.cc.content.navigation.MenuItem.list()}" 
-            optionKey="id" value="${menuItemInstance?.parent?.id}" class="many-to-one" 
-            noSelection="['null': '']" optionValue="title"/>
+            optionKey="id" value="${menuItemInstance?.parent?.id}" class="many-to-one"
+            noSelection="['': '']" optionValue="title" disabled="${menuItemInstance?.id ? 'true':'false' }"/>
     </div>
 </div>
 
@@ -24,7 +24,8 @@
     </label>
     <div class="controls">
         <g:select id="menu" name="menuId" from="${com.cc.content.navigation.Menu.list()}" optionValue="name"
-            optionKey="id" value="${menuItemInstance?.menu?.id}" class="many-to-one" noSelection="['': '']"/>
+            optionKey="id" value="${menuItemInstance?.menu?.id}" class="many-to-one" 
+            noSelection="['': '']"  disabled="${menuItemInstance?.id ? 'true':'false' }"/>
     </div>
 </div>
 

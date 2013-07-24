@@ -11,37 +11,37 @@
 <body>
     <script>
         $(function() {
-            $("#sortableChild,#sortableSubChild").sortable({
+            $("#sortable").sortable({
                 revert:true,
                 update: function( event, ui ) {
                     var $sortedMenuItem = $(ui.item[0])
-                    elementId = $sortedMenuItem.data('item-id');
+                    menuItemId = $sortedMenuItem.data('item-id');
                     var index = $sortedMenuItem.index();
-                    getMenuItemIndex(elementId , index )
-                    console.log(elementId,index)
+                    getMenuItemIndex(menuItemId , index )
+                    console.log(menuItemId,index)
                 }
             });
             $( "ul, li" ).disableSelection();
         });
         
-        function getMenuItemIndex(elementId,index) {
+        function getMenuItemIndex(menuItemId,index) {
             $.ajax({
                 type: 'POST',
                 url: '/menuItem/editOrder',
-                data: {'elementId':elementId,'index':index},
+                data: {'menuItemId':menuItemId,'index':index},
                 success: function(result) {
                     
                 }
             });
         }
     </script>
-        <ul id="sortableChild" class="ui-sortable media-list" >
+        <ul id="sortable" class="ui-sortable media-list" >
             <g:each in="${menuItemInstanceList}" var="menuItemInstance">
                 <g:if test="${!menuItemInstance?.parent }">
                     <li class="ui-state-default media " data-item-id="${menuItemInstance?.id }">
                         <div id="${menuItemInstance?.id }" class="draggable ui-widget-content media-body thumbnail">
                              <p class="ex1 "> ${menuItemInstance?.title}</p>
-                            <com:bootstrapMediaMenu id="${menuItemInstance?.id}"></com:bootstrapMediaMenu>
+                             <com:bootstrapMediaMenu id="${menuItemInstance?.id}"></com:bootstrapMediaMenu>
                         </div>
                     </li>
                 </g:if>

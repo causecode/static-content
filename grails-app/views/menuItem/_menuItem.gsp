@@ -9,7 +9,7 @@
             </a>
             <ul class="dropdown-menu">
                 <g:each in="${menuItemInstance.childItems}" var="childItemInstance">
-                    <com:menuItem id="${childItemInstance.id}" renderingSubMenu="true" ></com:menuItem>
+                    <com:menuItem id="${childItemInstance?.id}" renderingSubMenu="true" ></com:menuItem>
                 </g:each>
             </ul>
         </li>

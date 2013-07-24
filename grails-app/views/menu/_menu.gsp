@@ -14,7 +14,7 @@
                 </a>
                 <ul class="nav pull-right" role="navigation" id="menu-item-${menuInstance?.id }">
                     <g:each in="${menuItemList}">
-                        <g:if test="${!it.parent }">
+                        <g:if test="${it && !it.parent }">
                             <com:menuItem id="${it.id}"></com:menuItem>
                         </g:if>
                     </g:each>

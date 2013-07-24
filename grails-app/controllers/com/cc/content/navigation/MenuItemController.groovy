@@ -78,7 +78,10 @@ class MenuItemController {
         }
 
         menuItemInstance = menuItemService.update(menuItemInstance , params)
-        
+        if(menuItemInstance.hasErrors()) {
+            render(view: "create", model: [menuItemInstance: menuItemInstance])
+            return
+        }
         flash.message = message(code: 'default.updated.message', 
             args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
         redirect(action: "show", id: menuItemInstance.id)
@@ -101,15 +104,7 @@ class MenuItemController {
     def editOrder() {
         if(request.xhr){
             def index = params.index as int
-            menuItemInstance = menuItemService.editMenuItemsOrder(params.elementId,index-1)
-           /* menuItemInstance = menuItemService.deleteMenuItem(menuItemInstance)
-            if(menuItemInstance?.menu){
-                menuInstance = Menu.findById(menuItemInstance.menu?.id)
-                println "*******"+ menuInstance?.menuItems
-                println ">>>>>>>"+menuInstance?.menuItems[params.index]
-                menuInstance.addToMenuItems(menuItemInstance)
-                menuInstance.save()
-            }*/
+            menuItemInstance = menuItemService.editMenuItemsOrder(params.menuItemId,index)
         }
         [menuItemInstanceList: MenuItem.list(), menuInstanceTotal: Menu.count()]
     }
