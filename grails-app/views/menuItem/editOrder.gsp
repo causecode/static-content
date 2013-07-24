@@ -15,30 +15,32 @@
                 revert:true,
                 update: function( event, ui ) {
                     var $sortedMenuItem = $(ui.item[0])
+                    var $sortedParentMenuItem = $sortedMenuItem.parent()
+                    parentMenuItemId = $sortedParentMenuItem.data('parent-menu-item-id');
                     menuItemId = $sortedMenuItem.data('item-id');
                     var index = $sortedMenuItem.index();
-                    getMenuItemIndex(menuItemId , index )
-                    console.log(menuItemId,index)
+                    getMenuItemIndex(menuItemId, index, parentMenuItemId )
+                    console.log(menuItemId,index,parentMenuItemId)
                 }
             });
             $( "ul, li" ).disableSelection();
         });
         
-        function getMenuItemIndex(menuItemId,index) {
+        function getMenuItemIndex(menuItemId, index, parentMenuItemId) {
             $.ajax({
                 type: 'POST',
                 url: '/menuItem/editOrder',
-                data: {'menuItemId':menuItemId,'index':index},
+                data: {'menuItemId':menuItemId,'index':index,'parentMenuItemId':parentMenuItemId},
                 success: function(result) {
                     
                 }
             });
         }
     </script>
-        <ul id="sortable" class="ui-sortable media-list" >
+        <ul id="sortable" class="ui-sortable media-list" data-parent-menu-item-id="null">
             <g:each in="${menuItemInstanceList}" var="menuItemInstance">
                 <g:if test="${!menuItemInstance?.parent }">
-                    <li class="ui-state-default media " data-item-id="${menuItemInstance?.id }">
+                    <li id="${menuItemInstance?.id }" class="ui-state-default media " data-item-id="${menuItemInstance?.id }">
                         <div id="${menuItemInstance?.id }" class="draggable ui-widget-content media-body thumbnail">
                              <p class="ex1 "> ${menuItemInstance?.title}</p>
                              <com:bootstrapMediaMenu id="${menuItemInstance?.id}"></com:bootstrapMediaMenu>

@@ -21,20 +21,21 @@ class MenuTagLib {
      * @attr id REQUIRED The identifier of the Menu domain for which menu bar should be rendered.
      */
     def menu = { attrs, body ->
-        if(Menu.get(attrs.id)) {
-            def menuInstance = Menu.get(attrs.id)
-            if(menuInstance) {
-                def menuItemList = MenuItem?.findAllByMenu(menuInstance)
-                out << render(template: '/menu/menu', plugin: 'content', model: ['menuInstance': menuInstance,
-                              'menuItemList': menuItemList].plus(attrs))
-                
-            }
+        Menu menuInstance = Menu.get(attrs.id)
+        if(!menuInstance) {
+            log.info "No menu found with id [$attrs.id]."
+            return
         }
+        def menuItemList = menuInstance.menuItems
+        out << render(template: '/menu/menu', plugin: 'content', model: ['menuInstance': menuInstance,
+            'menuItemList': menuItemList].plus(attrs))
     }
 
     def menuItem = { attrs, body ->
         def menuItemInstance = MenuItem.get(attrs.id)
-        if(!menuItemInstance) return
+        if(!menuItemInstance) {
+            log.info "Menu item instance not found with id [${attrs.id}]"
+        }
         out << render(template: '/menuItem/menuItem', plugin: 'content',
         model: ['menuItemInstance': menuItemInstance , renderingSubMenu: attrs.renderingSubMenu])
     }

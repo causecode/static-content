@@ -18,19 +18,19 @@ class MenuItemController {
     def beforeInterceptor = [action: this.&validate]
 
     MenuItem menuItemInstance
-
+    //Menu menuInstance
     def mainMenu
     def mainMenuItem
     def menuItemService
-	
+
 
     private validate() {
         if(!params.id) return true;
 
         menuItemInstance = MenuItem.get(params.id)
         if(!menuItemInstance) {
-            flash.message = g.message(code: 'default.not.found.message', 
-                args: [message(code: 'menuItem.label', default: 'MenuItem'), params.title])
+            flash.message = g.message(code: 'default.not.found.message',
+            args: [message(code: 'menuItem.label', default: 'MenuItem'), params.title])
             redirect(action: "list")
             return false
         }
@@ -52,12 +52,12 @@ class MenuItemController {
 
     def save() {
         menuItemInstance = menuItemService.create(params)
-        
-        flash.message = message(code: 'default.created.message', 
-            args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
+
+        flash.message = message(code: 'default.created.message',
+        args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
         redirect(action: "show", id: menuItemInstance.id)
     }
- 
+
     def show(Long id) {
         [menuItemInstance: menuItemInstance]
     }
@@ -70,8 +70,8 @@ class MenuItemController {
         if(version != null) {
             if (menuItemInstance.version > version) {
                 menuItemInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                [message(code: 'menuItem.label', default: 'MenuItem')] as Object[],
-                "Another user has updated this MenuItem while you were editing")
+                        [message(code: 'menuItem.label', default: 'MenuItem')] as Object[],
+                        "Another user has updated this MenuItem while you were editing")
                 render(view: "edit", model: [menuItemInstance: menuItemInstance])
                 return
             }
@@ -82,33 +82,35 @@ class MenuItemController {
             render(view: "create", model: [menuItemInstance: menuItemInstance])
             return
         }
-        flash.message = message(code: 'default.updated.message', 
-            args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
+        flash.message = message(code: 'default.updated.message',
+        args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
         redirect(action: "show", id: menuItemInstance.id)
     }
 
     def delete(Long id) {
         try {
             menuItemInstance = menuItemService.deleteMenuItem(menuItemInstance)
-			
+
             menuItemInstance?.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', 
-                args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
+            flash.message = message(code: 'default.deleted.message',
+            args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
             redirect(action: "list")
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', 
-                args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
+            flash.message = message(code: 'default.not.deleted.message',
+            args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
             redirect(action: "show", id: id)
         }
     }
+
     def editOrder() {
+        
         if(request.xhr){
             def index = params.index as int
-            menuItemInstance = menuItemService.editMenuItemsOrder(params.menuItemId,index)
+            menuItemInstance = menuItemService.editMenuItemsOrder(params.menuItemId,index,params?.parentMenuItemId)
         }
         [menuItemInstanceList: MenuItem.list(), menuInstanceTotal: Menu.count()]
     }
     def jqui() {
-    
+
     }
 }
