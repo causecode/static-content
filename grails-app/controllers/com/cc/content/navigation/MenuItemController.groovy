@@ -91,7 +91,7 @@ class MenuItemController {
         try {
             menuItemInstance = menuItemService.deleteMenuItem(menuItemInstance)
 
-            menuItemInstance?.delete(flush: true)
+            //menuItemInstance?.delete(flush: true)
             flash.message = message(code: 'default.deleted.message',
             args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
             redirect(action: "list")

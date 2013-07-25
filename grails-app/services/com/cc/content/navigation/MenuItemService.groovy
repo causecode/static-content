@@ -52,10 +52,10 @@ class MenuItemService {
             menuInstance.removeFromMenuItems(menuItemInstance)
             menuInstance.save()
         }else (menuItemInstance?.parent) {
-            parentMenuItemInstance = MenuItem.get(menuItemInstance.parent?.id)
-            parentMenuItemInstance.removeFromChildItems(menuItemInstance)
-            parentMenuItemInstance.save()
-        }
+                parentMenuItemInstance = MenuItem.get(menuItemInstance.parent?.id)
+                parentMenuItemInstance.removeFromChildItems(menuItemInstance)
+                parentMenuItemInstance.save()
+            }
         return menuItemInstance
     }
 
@@ -70,45 +70,30 @@ class MenuItemService {
     }
 
     MenuItem editMenuItemsOrder(menuItemId,index,parentMenuItemId){
-        List mainMenuItemList = []
-        List parentSubMenuItemList = []
-        List newParentSubMenuItemList = []
-        Menu menuInstance = Menu.get("1")
         MenuItem parentMenuItemInstance
+        MenuItem newParentMenuItemInstance
+
+        Menu menuInstance = Menu.get("1")
+        List allMainMenuItemList = menuInstance.menuItems
         MenuItem menuItemInstance = MenuItem.get(menuItemId)
-        
+
         if(!parentMenuItemId) {
-            List allMenuItemList = menuInstance.menuItems
-            
-            allMenuItemList.each {
-                if(!it.parent) {
-                    mainMenuItemList.add(it)
-                }
-            }
-            
+            println "**** inselde if"
             if(menuItemInstance?.parent) {
                 parentMenuItemInstance = menuItemInstance?.parent
-                parentSubMenuItemList = parentMenuItemInstance?.childItems
-                parentSubMenuItemList.remove(menuItemInstance)
+                parentMenuItemInstance.childItems.remove(menuItemInstance)
             } else {
-                menuInstance?.removeFromMenuItems(menuItemInstance)
-                //mainMenuItemList?.remove(menuItemInstance)
+                allMainMenuItemList?.remove(menuItemInstance)
             }
-            
             menuInstance?.menuItems.add(index,menuItemInstance)
-            //mainMenuItemList.add(index,menuItemInstance)
         } else {
             if(menuItemInstance?.parent) {
                 parentMenuItemInstance = menuItemInstance?.parent
-                parentSubMenuItemList = parentMenuItemInstance?.childItems
-                parentSubMenuItemList.remove(menuItemInstance)
-                
-            } 
-            menuInstance.removeFromMenuItems(menuItemInstance)
-            MenuItem newParentMenuItemInstance = MenuItem.get(parentMenuItemId)
-            newParentMenuItemInstance.addToChildItems(menuItemInstance)
-            newParentSubMenuItemList = newParentMenuItemInstance?.childItems
-            newParentSubMenuItemList.add(index,menuItemInstance)
+                parentMenuItemInstance?.childItems.remove(menuItemInstance)
+            }
+            allMainMenuItemList.remove(menuItemInstance)
+            newParentMenuItemInstance = MenuItem.get(parentMenuItemId)
+            newParentMenuItemInstance.childItems.add(index,menuItemInstance)
         }
     }
 }

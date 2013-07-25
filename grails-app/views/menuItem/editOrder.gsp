@@ -37,6 +37,7 @@
             });
         }
     </script>
+    <div>
         <ul id="sortable" class="ui-sortable media-list" data-parent-menu-item-id="null">
             <g:each in="${menuItemInstanceList}" var="menuItemInstance">
                 <g:if test="${!menuItemInstance?.parent }">
@@ -49,5 +50,6 @@
                 </g:if>
             </g:each>
         </ul>
+    </div>
 </body>
 </html>
