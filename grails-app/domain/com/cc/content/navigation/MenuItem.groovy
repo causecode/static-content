@@ -22,8 +22,12 @@ class MenuItem {
     String roles
     List childItems
     
-    static belongsTo = [parent: MenuItem, menu: Menu]
+    MenuItem parent
+    Menu menu
+    
+    //static belongsTo = [parent: MenuItem, menu: Menu]
     static hasMany = [childItems: MenuItem]
+    static mappedBy = [childItems: "parent"]
 
     static constraints = {
         menu nullable: true
@@ -36,5 +40,7 @@ class MenuItem {
 
     static mapping = {
         table "cc_content_menu_item"
+        //menuItems cascade: "all-delete-orphan"
     }
+    
 }

@@ -20,6 +20,7 @@ class Menu {
     List menuItems
 
     static hasMany = [menuItems: MenuItem]
+    static mappedBy = [menuItems: "menu"]
 
     static constraints = {
         name blank: false

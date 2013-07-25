@@ -103,12 +103,11 @@ class MenuItemController {
     }
 
     def editOrder() {
-        
+        Menu menuInstance = Menu.get(params.id)
         if(request.xhr){
-            def index = params.index as int
-            menuItemInstance = menuItemService.editMenuItemsOrder(params.menuItemId,index,params?.parentMenuItemId)
+            menuItemInstance = menuItemService.editMenuItemsOrder(params)
         }
-        [menuItemInstanceList: MenuItem.list(), menuInstanceTotal: Menu.count()]
+        [menuItemInstanceList: menuInstance?.menuItems, menuInstanceTotal: Menu.count(),menuInstance:menuInstance]
     }
     def jqui() {
 
