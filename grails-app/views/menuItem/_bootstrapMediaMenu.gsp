@@ -1,14 +1,13 @@
-<g:if test="${menuItemInstance?.childItems}">
-    <div id = "${menuItemInstance?.id }" class="media ui-sortable " >
-    <ul id="sortable" class="ui-sortable media-list" data-parent-menu-item-id="${menuItemInstance?.id }" data-menu-id="${menuInstance?.id }">
+<ul class="sortable thumbnails" data-parent-id="${menuItemInstance?.id }" data-menu-id="${menuInstance?.id }">
+    <g:if test="${menuItemInstance?.childItems}">
         <g:each in="${menuItemInstance?.childItems}" var="childItemInstance">
-            <li id="${childItemInstance?.id }" class="ui-state-default media " data-item-id="${childItemInstance?.id}">
-                <div id="${childItemInstance?.id}" class="media-body draggable ui-draggable ui-widget-content thumbnail">
-                    <p class="ex1 "> ${childItemInstance?.title}</p>
-                    <com:bootstrapMediaMenu id="${childItemInstance?.id}"></com:bootstrapMediaMenu>
-                </div>
+            <li class="thumbnail" data-menu-item-id="${childItemInstance?.id}">
+                <p>
+                    <strong> ${childItemInstance?.title}
+                    </strong>
+                </p>
+                <com:bootstrapMediaMenu id="${childItemInstance?.id}"></com:bootstrapMediaMenu>
             </li>
         </g:each>
-    </ul>
-    </div>
-</g:if>
+    </g:if>
+</ul>

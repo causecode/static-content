@@ -1,0 +1,10 @@
+#menu-item-sorting ul.thumbnails {
+    margin-left: 0px;
+}
+#menu-item-sorting li.thumbnail {
+	float: none;
+	-webkit-transition: none;
+    -moz-transition: none;
+    -o-transition: none;
+    transition: none;
+}

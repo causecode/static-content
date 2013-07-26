@@ -4,40 +4,42 @@
     <g:set var="entityName" value="${message(code: 'menuItem.label', default: 'EditOrder')}" />
     <title><g:message code="default.editOrder.label" args="[entityName]" /></title>
     <r:require modules="draggableAndSortable"/>
-    <style>
-        p.ex1 {margin-left:40px;}
-    </style>
+    <r:require modules="menuItem"/>
 </head>
 <body>
-    <script>
-        $(function() {
-            $("#sortable").sortable({
-                revert:true,
-                update: function( event, ui ) {
-                    var $sortedMenuItem = $(ui.item[0])
-                    var $sortedParentMenuItem = $sortedMenuItem.parent()
-                    parentMenuItemId = $sortedParentMenuItem.data('parent-menu-item-id');
-                    menuItemId = $sortedMenuItem.data('item-id');
-                    menuId = $sortedParentMenuItem.data('menu-id')
-                    var index = $sortedMenuItem.index();
-                    getMenuItemIndex(menuItemId, index, parentMenuItemId,menuId )
-                    console.log(menuItemId,index,parentMenuItemId, menuId)
-                }
-            });
-            $( "ul, li" ).disableSelection();
-        });
-        
-        function getMenuItemIndex(menuItemId, index, parentMenuItemId, menuId) {
-            $.ajax({
-                type: 'POST',
-                url: '/menuItem/editOrder',
-                data: {'menuItemId':menuItemId,'index':index,'parentMenuItemId':parentMenuItemId,'menuId':menuId},
-                success: function(result) {
-                    
-                }
-            });
-        }
-    </script>
+    <div id="menu-item-sorting">
+        <a href="#" role="button" class="" id="create-menu-item">Create Menu Item</a>
+        <ul class="sortable thumbnails" data-parent-id="" data-menu-id="${menuInstance?.id }">
+            <g:each in="${menuItemInstanceList}" var="menuItemInstance">
+                <g:if test="${!menuItemInstance?.parent }">
+                    <li id="${menuItemInstance?.id }" class="thumbnail" data-menu-item-id="${menuItemInstance?.id }">
+                        <p>
+                            <strong>${menuItemInstance?.title}</strong>
+                        </p>
+                        <com:bootstrapMediaMenu id="${menuItemInstance?.id}"></com:bootstrapMediaMenu>
+                    </li>
+                </g:if>
+            </g:each>
+        </ul>
+        <div id="sa" style="visibility: hidden">
+            <li id="new"><p><strong></strong></p></li>
+        </div>
+    </div>
+    
+    <div id="myModal" class="modal hide fade" data-captcha="true" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Modal header</h3>
+      </div>
+      <div class="modal-body">
+        <p>One fine body…</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn btn-primary">Create</button>
+      </div>
+    </div><%--
+    
     <div>
         <ul id="sortable" class="ui-sortable media-list" data-parent-menu-item-id="null" data-menu-id="${menuInstance?.id }">
             <g:each in="${menuItemInstanceList}" var="menuItemInstance">
@@ -52,5 +54,5 @@
             </g:each>
         </ul>
     </div>
-</body>
+--%></body>
 </html>
