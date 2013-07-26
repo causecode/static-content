@@ -8,3 +8,10 @@
     -o-transition: none;
     transition: none;
 }
+#menu-item-sorting a#save-button {
+    float:right;
+}
+li.ui-sortable-placeholder {
+    visibility:visible !important;
+    background-color: whitesmoke;
+}

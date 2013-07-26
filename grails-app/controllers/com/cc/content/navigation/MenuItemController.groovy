@@ -104,6 +104,7 @@ class MenuItemController {
 
     def editOrder() {
         Menu menuInstance = Menu.get(params.id)
+        println menuInstance.menuItems
         if(request.xhr){
             menuItemInstance = menuItemService.editMenuItemsOrder(params)
         }
@@ -111,5 +112,11 @@ class MenuItemController {
     }
     def jqui() {
 
+    }
+    
+    def saveMenu() {
+        if(request.xhr){
+            menuItemInstance = menuItemService.saveMenuItems(params)
+        }
     }
 }

@@ -7,52 +7,86 @@
     <r:require modules="menuItem"/>
 </head>
 <body>
+    <a href="#" role="button" class="" id="create-menu-item" style="float:right">Create Menu Item</a>
+    <br>
     <div id="menu-item-sorting">
-        <a href="#" role="button" class="" id="create-menu-item">Create Menu Item</a>
-        <ul class="sortable thumbnails" data-parent-id="" data-menu-id="${menuInstance?.id }">
+    <div id="alertMessageLink" class="alert alert-success hide">MenuItem Created Successfully!</div>
+        <ul id="menuItemList" class="sortable thumbnails" data-parent-id="" data-menu-id="${menuInstance?.id }">
             <g:each in="${menuItemInstanceList}" var="menuItemInstance">
-                <g:if test="${!menuItemInstance?.parent }">
+                <g:if test="${menuItemInstance && !menuItemInstance?.parent }">
                     <li id="${menuItemInstance?.id }" class="thumbnail" data-menu-item-id="${menuItemInstance?.id }">
                         <p>
                             <strong>${menuItemInstance?.title}</strong>
                         </p>
-                        <com:bootstrapMediaMenu id="${menuItemInstance?.id}"></com:bootstrapMediaMenu>
+                        
+                                <com:bootstrapMediaMenu id="${menuItemInstance?.id}"></com:bootstrapMediaMenu>
                     </li>
                 </g:if>
             </g:each>
         </ul>
-        <div id="sa" style="visibility: hidden">
-            <li id="new"><p><strong></strong></p></li>
+    </div>
+    
+    <div id="createMenuItemModal" class="modal hide fade" >
+        <div class="modal-header">
+            <a href="#" class="close" data-dismiss="modal">x</a>
+            <h3>Create Menu Item</h3>
         </div>
-    </div>
-    
-    <div id="myModal" class="modal hide fade" data-captcha="true" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Modal header</h3>
-      </div>
-      <div class="modal-body">
-        <p>One fine body…</p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button class="btn btn-primary">Create</button>
-      </div>
-    </div><%--
-    
-    <div>
-        <ul id="sortable" class="ui-sortable media-list" data-parent-menu-item-id="null" data-menu-id="${menuInstance?.id }">
-            <g:each in="${menuItemInstanceList}" var="menuItemInstance">
-                <g:if test="${!menuItemInstance?.parent }">
-                    <li id="${menuItemInstance?.id }" class=" media " data-item-id="${menuItemInstance?.id }">
-                        <div id="${menuItemInstance?.id }" class="draggable ui-widget-content media-body thumbnail">
-                             <p class="ex1 "> ${menuItemInstance?.title}</p>
-                             <com:bootstrapMediaMenu id="${menuItemInstance?.id}"></com:bootstrapMediaMenu>
+        <g:form name="create-menu-item-form" class="form-horizontal block-error jquery-form">
+            <fieldset form="create-menu-item-form">
+                <div class="modal-body">
+                    <div class="alert hide fade in" id="alert-lead">
+                        <button type="button" class="close" onclick="$(this).parent().fadeOut()">&times;</button>
+                        <p></p>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="title" class="control-label">
+                            <g:message code="person.label.Title" default="Title" />
+                        </label>
+                        <div class="controls">
+                            <g:textField id="titleId" title="Enter menu item title." class="required" name="menuItemTitle"
+                                placeholder="Home" autofocus="autofocus" />
                         </div>
-                    </li>
-                </g:if>
-            </g:each>
-        </ul>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="roles">
+                            <g:message code="menuItem.roles.label" default="Role" />
+                        </label>
+                        <div class="controls">
+                            <g:select id="roleId" name="roles" from="${['ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN','ROLE_JOB_BOARD_MANAGER']}" 
+                                multiple="true" noSelection="['':'']"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="url">
+                            <g:message code="menuItem.url.label" default="Url" />
+                        </label>
+                        <div class="controls">
+                            <g:textField id="urlId" name="url"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="showOnlyWhenLoggedIn">
+                            <g:message code='menuItem.showOnlyWhenLoggedIn.label' default="Show Only When Logged In" />
+                        </label>
+                        <div class="controls">
+                            <g:checkBox id="showOnlyWhenLoggedInId" name="showOnlyWhenLoggedIn" optionKey="id" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <g:submitButton id="createButton"name="create" class="btn btn-primary"
+                        value="${message(code: 'default.button.create.label', default: 'Create')}" />
+                    <a id="create" href="#" class="btn" data-dismiss="modal">create</a>
+                    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+               </div>
+            </fieldset>
+        </g:form>
     </div>
---%></body>
+    
+</body>
 </html>
