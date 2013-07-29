@@ -10,7 +10,7 @@
     <a href="#" role="button" class="" id="create-menu-item" style="float:right">Create Menu Item</a>
     <br>
     <div id="menu-item-sorting">
-    <div id="alertMessageLink" class="alert alert-success hide"></div>
+        <div id="alertMessageLink" class="alert alert-success hide"></div>
         <ul id="menuItemList" class="sortable thumbnails menuItem" data-parent-id="" data-menu-id="${menuInstance?.id }">
             <g:each in="${menuItemInstanceList}" var="menuItemInstance">
                 <g:if test="${menuItemInstance && !menuItemInstance?.parent }">

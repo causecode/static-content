@@ -23,7 +23,6 @@ class MenuItemService {
     MenuItem create(Map args) {
         def menuItemInstance = new MenuItem()
         update(menuItemInstance , args)
-        println "****************after save" + menuItemInstance
         return menuItemInstance
     }
 
@@ -31,21 +30,26 @@ class MenuItemService {
         def menuInstance
         def mainMenuInstance
         def subMenuItemInstance
-
+        def index = args?.index as int
         menuItemInstance.properties = args
-        println "menuItemInstance.properties" +  menuItemInstance.properties
         if(args?.menuId ) {
-            println "inseide if ........."
             menuInstance = Menu.get(args.menuId)
-            menuInstance?.addToMenuItems(menuItemInstance)
+            if(index) {
+                menuInstance?.menuItems.add(index,menuItemInstance)
+            } else {
+                menuInstance?.menuItems.add(0,menuItemInstance)
+            }
+            menuItemInstance.menu = menuInstance
         }
-        if(args?.parentId ) {
-            println "inseide else if ........."
+        if(args?.parentId) {
             subMenuItemInstance = MenuItem.get(args?.parentId)
-            subMenuItemInstance?.addToChildItems(menuItemInstance)
+            if(args?.index) {
+                subMenuItemInstance.childItems.add(args.index as int,menuItemInstance)
+            } else {
+                subMenuItemInstance?.childItems.add(0,menuItemInstance)
+            }
         }
         menuItemInstance.save()
-        println "****************after update" + menuItemInstance
         return menuItemInstance
     }
 
@@ -73,9 +77,12 @@ class MenuItemService {
         return menuItemInstance
     }
 
-    MenuItem editMenuItemsOrder(menuId,menuItemId,parentId,index){
-        
-        println "menuId"+menuId+"menuItemId"+menuItemId+"parentId"+parentId+"index"+index
+    MenuItem editMenuItemsOrder(Map args){
+        println args
+        def menuId = args.menuId
+        def menuItemId = args.menuItemId
+        def parentId = args.parentId
+        def index = args.index as int
         def parentIndex
         MenuItem parentMenuItemInstance
         MenuItem newParentMenuItemInstance
@@ -108,49 +115,14 @@ class MenuItemService {
         /**
          * When making a top level MenuItem a child MenuItem
          */
-        else {
+        /*else {
             menuInstance.removeFromMenuItems(menuItemInstance)
             menuInstance.save()
-        }
+        }*/
         newParentMenuItemInstance = MenuItem.get(parentId)
         newParentMenuItemInstance.childItems.add(index as int,menuItemInstance)
         newParentMenuItemInstance.save()
-        parentIndex = menuInstance?.menuItems.indexOf(newParentMenuItemInstance) as int
-        menuInstance?.menuItems.add(++parentIndex,menuItemInstance)
-    }
-
-    MenuItem saveMenuItems(Map args) {
-        println "params for saving temp menuItem " + args
-        def title = args?.title
-        def role = args?.role
-        def url = args?.url
-        def showOnlyWhenLoggedIn = args?.showOnlyWhenLoggedIn
-        def menuInstance
-        def mainMenuInstance
-        def subMenuItemInstance
-
-        MenuItem menuItemInstance = new MenuItem()
-        menuItemInstance.title = title
-        menuItemInstance.roles = role
-        menuItemInstance.url = url
-        menuItemInstance.showOnlyWhenLoggedIn = showOnlyWhenLoggedIn
-        if(args?.menuId ) {
-            menuInstance = Menu.get(args.menuId)
-            menuInstance?.addToMenuItems(menuItemInstance)
-        }
-        if(args?.parentId ) {
-            subMenuItemInstance = MenuItem.get(args?.parentId)
-            subMenuItemInstance?.addToChildItems(menuItemInstance)
-        }
-        menuItemInstance.save()
-        println "****************after update" + menuItemInstance
-        def menuItemId = menuItemInstance.id
-        def parentId = args.parentId
-        def menuId = args.menuId
-        def index = args.index
-        println "****************befor order" + menuItemInstance
-        menuInstance = editMenuItemsOrder(menuId,menuItemId,parentId,index)
-        println "****************after order" + menuItemInstance
-        return menuItemInstance
+        //parentIndex = menuInstance?.menuItems.indexOf(newParentMenuItemInstance) as int
+        //menuInstance?.menuItems.add(++parentIndex,menuItemInstance)
     }
 }

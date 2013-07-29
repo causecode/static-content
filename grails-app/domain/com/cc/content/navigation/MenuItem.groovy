@@ -30,10 +30,7 @@ class MenuItem {
     static mappedBy = [childItems: "parent"]
 
     static constraints = {
-        menu nullable: true
-        parent nullable: true
         roles blank:true
-        showOnlyWhenLoggedIn nullable:true
         dateCreated bindable: false
         lastUpdated bindable: false
     }

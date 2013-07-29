@@ -105,7 +105,7 @@ class MenuItemController {
     def editOrder() {
         Menu menuInstance = Menu.get(params.id)
         if(request.xhr){
-            menuItemInstance = menuItemService.editMenuItemsOrder(params.menuId,params.menuItemId,params.parentId,params.index)
+            menuItemInstance = menuItemService.editMenuItemsOrder(params)
         }
         [menuItemInstanceList: menuInstance?.menuItems, menuInstanceTotal: Menu.count(),menuInstance:menuInstance]
     }
@@ -115,8 +115,7 @@ class MenuItemController {
     
     def saveMenu() {
         if(request.xhr){
-            menuItemInstance = menuItemService.saveMenuItems(params)
-            println "**************In saveMenu "+menuItemInstance
+            menuItemInstance = menuItemService.create(params)
         }
     }
 }

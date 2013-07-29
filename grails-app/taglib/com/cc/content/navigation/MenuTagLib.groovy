@@ -48,10 +48,18 @@ class MenuTagLib {
         def instance = attrs.instance
         if(!instance?.showOnlyWhenLoggedIn) {
             out << body()
+            return
         } else if(springSecurityService.isLoggedIn()) {
-            if(instance?.roles && SpringSecurityUtils.ifAnyGranted(instance.roles)) {
+            out << body()
+            return
+        }
+        if(instance?.roles) {
+            if(SpringSecurityUtils.ifAnyGranted(instance.roles)) {
                 out << body()
-            }
+                return
+            } 
+        } else {
+            out << body()
         }
     }
 
