@@ -12,4 +12,7 @@
             </li>
         </g:each>
     </g:if>
+    <g:else>
+      
+    </g:else>
 </ul>

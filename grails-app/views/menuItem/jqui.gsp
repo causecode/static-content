@@ -32,7 +32,9 @@
         <li class="ui-state-default" >
             <ul id="sortable" style="margin-left:80px">
                 <li class="ui-state-default" >Item 1</li>
-                <li class="ui-state-default">Item 1</li>
+                <li class="ui-state-default">
+                    <ul><li></li></ul>
+                </li>
                 <li class="ui-state-default">Item 1</li>
                 <li class="ui-state-default">Item 1</li>
             </ul>
