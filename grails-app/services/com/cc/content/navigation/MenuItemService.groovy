@@ -27,16 +27,18 @@ class MenuItemService {
     }
 
     MenuItem update(MenuItem menuItemInstance , Map args) {
+        println args
         def menuInstance
         def mainMenuInstance
         def subMenuItemInstance
-        def index = args?.index as int
         menuItemInstance.properties = args
         if(args?.menuId ) {
             menuInstance = Menu.get(args.menuId)
-            if(index) {
-                menuInstance?.menuItems.add(index,menuItemInstance)
+            if(args?.index) {
+                println "Inside if"
+                menuInstance?.menuItems.add(args?.index as int,menuItemInstance)
             } else {
+            println "Inside else"
                 menuInstance?.menuItems.add(0,menuItemInstance)
             }
             menuItemInstance.menu = menuInstance
@@ -50,6 +52,7 @@ class MenuItemService {
             }
         }
         menuItemInstance.save()
+        println "After Saving *******"+ menuItemInstance.dump()
         return menuItemInstance
     }
 
@@ -61,7 +64,8 @@ class MenuItemService {
             menuInstance = Menu.findById(menuItemInstance.menu?.id)
             menuInstance.removeFromMenuItems(menuItemInstance)
             menuInstance.save()
-        } else if(menuItemInstance?.parent) {
+        }
+        if(menuItemInstance?.parent) {
             parentMenuItemInstance = MenuItem.get(menuItemInstance.parent?.id)
             parentMenuItemInstance.removeFromChildItems(menuItemInstance)
             parentMenuItemInstance.save()
@@ -72,7 +76,7 @@ class MenuItemService {
     MenuItem deleteMenuItem(MenuItem menuItemInstance){
         removeFromParentMenuItem(menuItemInstance)
 
-        menuItemInstance.childItems?.each { deleteMenuItem(it) }
+        menuItemInstance?.childItems?.each { deleteMenuItem(it) }
         menuItemInstance?.delete()
         return menuItemInstance
     }
@@ -115,14 +119,14 @@ class MenuItemService {
         /**
          * When making a top level MenuItem a child MenuItem
          */
-        /*else {
+        else {
             menuInstance.removeFromMenuItems(menuItemInstance)
             menuInstance.save()
-        }*/
+        }
         newParentMenuItemInstance = MenuItem.get(parentId)
         newParentMenuItemInstance.childItems.add(index as int,menuItemInstance)
         newParentMenuItemInstance.save()
-        //parentIndex = menuInstance?.menuItems.indexOf(newParentMenuItemInstance) as int
-        //menuInstance?.menuItems.add(++parentIndex,menuItemInstance)
+        parentIndex = menuInstance?.menuItems.indexOf(newParentMenuItemInstance) as int
+        menuInstance?.menuItems.add(++parentIndex,menuItemInstance)
     }
 }

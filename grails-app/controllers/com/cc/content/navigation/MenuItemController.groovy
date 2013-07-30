@@ -9,6 +9,7 @@
 package com.cc.content.navigation
 
 import org.springframework.dao.DataIntegrityViolationException
+import grails.converters.JSON
 import com.cc.content.navigation.*
 
 class MenuItemController {
@@ -76,7 +77,7 @@ class MenuItemController {
                 return
             }
         }
-
+        println ".................."+params
         menuItemInstance = menuItemService.update(menuItemInstance , params)
         if(menuItemInstance.hasErrors()) {
             render(view: "create", model: [menuItemInstance: menuItemInstance])
@@ -89,12 +90,14 @@ class MenuItemController {
 
     def delete(Long id) {
         try {
-            menuItemInstance = menuItemService.deleteMenuItem(menuItemInstance)
+            if(request.xhr) {
+                MenuItem menuItemInstance = MenuItem.get(params.menuItemId)
 
-            //menuItemInstance?.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message',
-            args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
-            redirect(action: "list")
+                menuItemInstance = menuItemService.deleteMenuItem(menuItemInstance)
+
+                //menuItemInstance?.delete(flush: true)
+                
+            }
         } catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message',
             args: [message(code: 'menuItem.label', default: 'MenuItem'), menuItemInstance.title])
@@ -102,20 +105,29 @@ class MenuItemController {
         }
     }
 
-    def editOrder() {
-        Menu menuInstance = Menu.get(params.id)
-        if(request.xhr){
-            menuItemInstance = menuItemService.editMenuItemsOrder(params)
-        }
-        [menuItemInstanceList: menuInstance?.menuItems, menuInstanceTotal: Menu.count(),menuInstance:menuInstance]
-    }
-    def jqui() {
-
-    }
-    
-    def saveMenu() {
+    def saveMenuItem() {
         if(request.xhr){
             menuItemInstance = menuItemService.create(params)
+            render menuItemInstance.id
         }
     }
+
+    def editMenuItem(){
+        if(request.xhr) {
+            MenuItem menuItemInstance = MenuItem.get(params.menuItemId)
+            def itemData = ['title':menuItemInstance.title,'url':menuItemInstance.url,'roles':menuItemInstance.roles,
+                'showOnlyWhenLoggedIn':menuItemInstance.showOnlyWhenLoggedIn]
+            render itemData as JSON
+        }
+    }
+
+    def updateMenuItem(){
+        if(request.xhr) {
+            MenuItem menuItemInstance = MenuItem.get(params.menuItemId)
+            println "Before Saving *******"+ menuItemInstance
+            menuItemInstance = menuItemService.update(menuItemInstance,params)
+        }
+        
+    }
+
 }

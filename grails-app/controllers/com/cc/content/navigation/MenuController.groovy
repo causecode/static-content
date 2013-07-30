@@ -17,6 +17,8 @@ class MenuController {
     def beforeInterceptor = [action: this.&validate]
 
     Menu menuInstance
+    MenuItem menuItemInstance
+    def menuItemService
     def springSecurityService
     
     private validate() {
@@ -57,7 +59,11 @@ class MenuController {
     }
 
     def show(Long id) {
-        [menuInstance: menuInstance]
+       menuInstance = Menu.get(params.id)
+        if(request.xhr){
+            menuItemInstance = menuItemService.editMenuItemsOrder(params)
+        }
+        [menuItemInstanceList: menuInstance?.menuItems, menuInstanceTotal: Menu.count(),menuInstance:menuInstance]
     }
 
     def edit(Long id) {
@@ -98,10 +104,6 @@ class MenuController {
                 args: [message(code: 'menu.label', default: 'Menu'), name])
             redirect(action: "show", id: id)
         }
-    }
-    
-    def jqui() {
-        
     }
     
 }

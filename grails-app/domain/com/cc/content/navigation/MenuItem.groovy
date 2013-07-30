@@ -30,7 +30,7 @@ class MenuItem {
     static mappedBy = [childItems: "parent"]
 
     static constraints = {
-        roles blank:true
+        roles nullable:true
         dateCreated bindable: false
         lastUpdated bindable: false
     }
