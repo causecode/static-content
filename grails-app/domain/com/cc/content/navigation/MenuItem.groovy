@@ -21,11 +21,10 @@ class MenuItem {
     boolean showOnlyWhenLoggedIn
     String roles
     List childItems
-    
+
     MenuItem parent
     Menu menu
-    
-    //static belongsTo = [parent: MenuItem, menu: Menu]
+
     static hasMany = [childItems: MenuItem]
     static mappedBy = [childItems: "parent"]
 
@@ -37,7 +36,6 @@ class MenuItem {
 
     static mapping = {
         table "cc_content_menu_item"
-        //menuItems cascade: "all-delete-orphan"
     }
-    
+
 }

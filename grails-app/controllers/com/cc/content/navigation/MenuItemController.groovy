@@ -42,11 +42,6 @@ class MenuItemController {
         redirect(action: "list", params: params)
     }
 
-    def list(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        [menuItemInstanceList: MenuItem.list(params), menuItemInstanceTotal: MenuItem.count()]
-    }
-
     def create() {
         [menuItemInstance: new MenuItem(params)]
     }
@@ -59,14 +54,6 @@ class MenuItemController {
         redirect(action: "show", id: menuItemInstance.id)
     }
 
-    def show(Long id) {
-        [menuItemInstance: menuItemInstance]
-    }
-
-    def edit(Long id) {
-        [menuItemInstance: menuItemInstance]
-    }
-
     def update(Long id, Long version) {
         if(version != null) {
             if (menuItemInstance.version > version) {
@@ -77,7 +64,6 @@ class MenuItemController {
                 return
             }
         }
-        println ".................."+params
         menuItemInstance = menuItemService.update(menuItemInstance , params)
         if(menuItemInstance.hasErrors()) {
             render(view: "create", model: [menuItemInstance: menuItemInstance])
@@ -92,11 +78,8 @@ class MenuItemController {
         try {
             if(request.xhr) {
                 MenuItem menuItemInstance = MenuItem.get(params.menuItemId)
-
                 menuItemInstance = menuItemService.deleteMenuItem(menuItemInstance)
-
-                //menuItemInstance?.delete(flush: true)
-                
+                render menuItemInstance as JSON
             }
         } catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message',
@@ -127,7 +110,7 @@ class MenuItemController {
             println "Before Saving *******"+ menuItemInstance
             menuItemInstance = menuItemService.update(menuItemInstance,params)
         }
-        
+
     }
 
 }

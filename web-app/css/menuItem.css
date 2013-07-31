@@ -1,34 +1,43 @@
 #menu-item-sorting ul.thumbnails.childWrapper {
     margin-left: -20px;
 }
+
 #menu-item-sorting li.thumbnail {
-	float: none;
-	margin-bottom:10px;
-	-webkit-transition: none;
+    float: none;
+    margin-bottom:10px;
+    -webkit-transition: none;
     -moz-transition: none;
     -o-transition: none;
     transition: none;
     cursor: move;
 }
+
 #menu-item-sorting a#save-button {
     float:right;
+    margin-top:1px;
+    font-weight:bold;
 }
+
 li.ui-sortable-placeholder {
     visibility:visible !important;
     background-color: whitesmoke;
 }
+
 #menu-item-sorting li.temporaryMenuItem {
     background-color: #FFFFCC;
 }
+
 li.ui-sortable-helper {
     visibility:visible !important;
     background-color: #CCCCFF;
 }
+
 i.icon-move {
     font-size:10px;
     margin-right:5px;
     line-height:25px;
 }
+
 i.icon-pencil {
     font-size:11px;
     margin-right:5px;

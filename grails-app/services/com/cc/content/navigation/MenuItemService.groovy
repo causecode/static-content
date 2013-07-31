@@ -35,10 +35,8 @@ class MenuItemService {
         if(args?.menuId ) {
             menuInstance = Menu.get(args.menuId)
             if(args?.index) {
-                println "Inside if"
                 menuInstance?.menuItems.add(args?.index as int,menuItemInstance)
             } else {
-            println "Inside else"
                 menuInstance?.menuItems.add(0,menuItemInstance)
             }
             menuItemInstance.menu = menuInstance
@@ -52,7 +50,6 @@ class MenuItemService {
             }
         }
         menuItemInstance.save()
-        println "After Saving *******"+ menuItemInstance.dump()
         return menuItemInstance
     }
 
@@ -62,7 +59,8 @@ class MenuItemService {
 
         if(menuItemInstance?.menu) {
             menuInstance = Menu.findById(menuItemInstance.menu?.id)
-            menuInstance.removeFromMenuItems(menuItemInstance)
+            menuInstance?.menuItems.remove(menuItemInstance)
+            //menuInstance.removeFromMenuItems(menuItemInstance)
             menuInstance.save()
         }
         if(menuItemInstance?.parent) {
@@ -75,7 +73,6 @@ class MenuItemService {
 
     MenuItem deleteMenuItem(MenuItem menuItemInstance){
         removeFromParentMenuItem(menuItemInstance)
-
         menuItemInstance?.childItems?.each { deleteMenuItem(it) }
         menuItemInstance?.delete()
         return menuItemInstance

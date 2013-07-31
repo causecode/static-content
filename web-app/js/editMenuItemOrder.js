@@ -13,7 +13,6 @@ $(document).ready(function() {
                 var menuId = $sortedParentMenuItem.data('menu-id')
                 var index = $sortedMenuItem.index();
                 getMenuItemIndex(menuId,menuItemId,parentId,index)
-                console.log(menuId,menuItemId,parentId,index)
             }
         }
     });
@@ -47,8 +46,9 @@ $('a#create').click(function(){
                              " data-roles=\"" + roles + "\"" +
                              " data-url=\""+ url + "\"" +
                              " data-show-only-when-logged-in=\"" + showOnlyWhenLoggedIn + "\">" +
-                             "<p><strong>" + title + "</strong>" + 
-                             "<a id=\"save-button\" role=\"button\" href=\"#\" class=\"btn\">Save</a></p></li>");
+                             "<i class=\"icon-move\"></i>"+
+                             "<strong>" + title + "</strong>" + 
+                             "<a id=\"save-button\" role=\"button\" href=\"#\" class=\"btn btn-mini\">Save</a></li>");
 });
 
 $(document).on("click", "a#save-button", function(){ 
@@ -67,8 +67,6 @@ $(document).on("click", "a#save-button", function(){
     var index = $menuItem.index();
     $('#save-button').remove();
     $('li.temporaryMenuItem').removeClass('temporaryMenuItem');
-    console.log('title'+title,'roles'+roles,'url'+url,'showOnlyWhenLoggedIn'+showOnlyWhenLoggedIn,
-               'parentId'+parentId,'menuId'+menuId,'index'+index);
     $.ajax({
         type: 'POST',
         url: '/menuItem/saveMenuItem',
@@ -83,6 +81,7 @@ $(document).on("click", "a#save-button", function(){
                     $menuItem.removeAttr('data-url');
                     $menuItem.removeAttr('data-roles');
                     $menuItem.removeAttr('data-show-only-when-logged-in');
+                    $menuItem.append('<a  id="editMenuItem" href="#" class="pull-right"><i class="icon-pencil"></i></a>');
                 }
         }
     });
@@ -90,7 +89,7 @@ $(document).on("click", "a#save-button", function(){
 /*
  * JS for editing Menu Item.
  */
-$('a#editMenuItem').click(function(){
+$(document).on("click", "a#editMenuItem", function(){
     var $menuItem = $(this).parents('li');
     menuItemId = $menuItem.data('menu-item-id')
     $.ajax({
@@ -100,9 +99,7 @@ $('a#editMenuItem').click(function(){
         success: function(response) {
                 if(response) {
                     var itemInstance = response
-                    console.log($menuItem)
                     $menuItem.data('item-instance',itemInstance)
-                    console.log($menuItem.data('item-instance'))
                     $('#editMenuItemModal #title').val(itemInstance.title)
                     $('#editMenuItemModal #url').val(itemInstance.url)
                     $('#editMenuItemModal #roles').val(itemInstance.roles)
@@ -117,7 +114,7 @@ $('a#editMenuItem').click(function(){
 /*
  * JS for updating Menu Item.
  */
-$('a#updateMenuItem').click(function(){
+$(document).on("click", "a#updateMenuItem", function(){
     menuItemId = $('#updateMenuItem').data('menu-item-id');
     var $menuItem = $('li#'+menuItemId);
     var itemInstance = $menuItem.data('item-instance');
@@ -144,13 +141,12 @@ $('a#updateMenuItem').click(function(){
  */
 $('a#deleteMenuItem').click(function(){
     menuItemId = $('#updateMenuItem').data('menu-item-id');
-    console.log(menuItemId)
     $.ajax({
         type: 'POST',
         url: '/menuItem/delete',
         data: {'menuItemId':menuItemId},
         success: function(response) {
-            $('li#'+menuItemId).remove()
+            $('li#'+menuItemId).remove();
         }
     });
 });

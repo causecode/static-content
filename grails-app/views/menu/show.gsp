@@ -30,7 +30,7 @@
             </g:each>
         </ul>
     </div>
-    
+
     <div id="createMenuItemModal" class="modal hide fade" >
         <div class="modal-header">
             <a href="#" class="close" data-dismiss="modal">x</a>
@@ -52,7 +52,7 @@
             </fieldset>
         </g:form>
     </div>
-    
+
     <div id="editMenuItemModal" class="modal hide fade" >
         <div class="modal-header">
             <a href="#" class="close" data-dismiss="modal">x</a>
