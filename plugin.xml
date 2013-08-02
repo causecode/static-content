@@ -1,7 +1,8 @@
-<plugin name='content' version='1.8' grailsVersion='2.1 &gt; *'>
+<plugin name='content' version='1.9' grailsVersion='2.1 &gt; *'>
   <author>CauseCode</author>
   <title>Content Plugin</title>
   <description>A plugin used to manage contents like static pages, menus etc. at one place.
+Also provides shortened and user friendly urls.
 </description>
   <documentation>http://grails.org/plugin/content</documentation>
   <type>ContentGrailsPlugin</type>
@@ -36,8 +37,8 @@
   </resources>
   <repositories>
     <repository name='grailsCentral' url='http://grails.org/plugins' />
-    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
     <repository name='http://grails.org/plugins' url='http://grails.org/plugins' />
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
   </repositories>
   <dependencies />
   <plugins>

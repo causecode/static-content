@@ -1,17 +1,21 @@
-<div class="navbar navbar-fixed-top">
+<div class="navbar ${menuCss ?: '' } main-menu" id="main-menu-${menuInstance?.id }" data-menu-id="${menuInstance?.id}">
     <div class="navbar-inner">
-
-<!--    <div class="container" style="width: 940px;" >      -->
-
-        <div class="container" >                                <!-- inline style removed -->
-        <a class="brand" href="#">
-            <img class="logo" src="/images/logo.png" />
-        </a>
-        <ul class="nav pull-right">
-            <g:each in="${menuItemList}">
-                <com:menu id="${it.id}"></com:menu>
-            </g:each>
-        </ul>
+        <div class="container">
+            <a class="brand" href="/">
+                <g:if test="${brandLogo }">
+                    <img class="logo" src="${brandLogo }" />
+                </g:if>
+                <g:if test="${brandName }">
+                    <span style="${brandCss }" id="brand-name">
+                        ${brandName }
+                    </span>
+                </g:if>
+            </a>
+            <ul class="nav pull-right" id="menu-item-${menuInstance?.id }">
+                <g:each in="${menuItemList}">
+                    <com:menu id="${it.id}"></com:menu>
+                </g:each>
+            </ul>
         </div>
     </div>
 </div>

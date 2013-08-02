@@ -11,7 +11,6 @@
 <html>
   <head>
     <meta name="layout" content="main">
-    <r:require module="bootstrap"/>
     <ckeditor:resources/>
     <g:set var="entityName" value="${message(code: 'blog.label', default: 'Blog')}" />
     <title><g:message code="default.edit.label" args="[entityName]" /></title>
