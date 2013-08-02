@@ -10,15 +10,14 @@ package com.cc.content
 
 import grails.util.Environment
 
-import java.lang.annotation.Annotation
 import java.lang.reflect.Field
 
 import org.codehaus.groovy.grails.commons.metaclass.GroovyDynamicMethodsInterceptor
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import org.codehaus.groovy.grails.web.mapping.LinkGenerator
 import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
 
 import com.cc.annotation.sanitizedTitle.SanitizedTitle
-import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.blog.Blog
 import com.cc.content.meta.Meta
 import com.cc.page.Page
@@ -27,10 +26,9 @@ class ContentService {
 
     private static final String ANONYMOUS_USER = "anonymousUser"
 
+    LinkGenerator grailsLinkGenerator
     def friendlyUrlService
-    def g
     def grailsApplication
-    def gspTagLibraryLookup
     def springSecurityService
 
     ContentService() {
@@ -151,10 +149,14 @@ class ContentService {
                 break
             }
         }
-        if(fieldName && domainClassInstance)
-            sanitizedTitle = friendlyUrlService.sanitizeWithDashes(domainClassInstance[fieldName])
-        else
-            log.error "No annotated field found in domain class ${domainClassInstance?.class}"
+        if(fieldName) {
+            if(domainClassInstance) {
+                sanitizedTitle = friendlyUrlService.sanitizeWithDashes(domainClassInstance[fieldName])
+            } else {
+                log.error "No entry found with id [$attrs.id] for domain [$attrs.domain]."
+            }
+        } else
+            log.error "No annotated field found in domain class [$attrs.domain]."
 
         action = attrs.action ? attrs.action + "/" : ""
 
@@ -167,7 +169,7 @@ class ContentService {
         if(controllerShortHand)
             attrs.uri = "/$controllerShortHand/${action}${attrs.id}/${sanitizedTitle ?: ''}"
         else
-            log.error "No annotation found for controller: ${attrs.controller}"
+            log.error "No shorthand found for controller: ${attrs.controller}"
 
         if(attrs.absolute?.toBoolean()) {
             attrs.absolute = false
@@ -176,8 +178,7 @@ class ContentService {
                 attrs.base = grailsApplication.config.grails.other.serverURL    // Other config which contains public IP like: 13.14.28.153:8080
         }
 
-        g = gspTagLibraryLookup.lookupNamespaceDispatcher("g")
-        return g.createLink(attrs)
+        return grailsLinkGenerator.link(attrs)
     }
 
 }
