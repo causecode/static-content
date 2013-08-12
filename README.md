@@ -86,3 +86,5 @@ Also add a private method:
 And add a private field as:
 
     static Map shorthandControllers = [:]
+
+NOTE : Secure domains
