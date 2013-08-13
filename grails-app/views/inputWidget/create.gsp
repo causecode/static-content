@@ -1,8 +1,9 @@
 <html>
 <head>
     <meta name="layout" content="main">
-    <g:set var="entityName" value="${message(code: 'menu.label', default: 'Menu')}" />
+    <g:set var="entityName" value="${message(code: 'inputWidget.label', default: 'InputWidget')}" />
     <title><g:message code="default.create.label" args="[entityName]" /></title>
+    <r:require modules="inputWidget"/>
 </head>
 <body>
     <div class="page-header">
@@ -11,7 +12,8 @@
         </h1>
     </div>
     <div class="container-fluid">
-        <div class="span2">
+        <div class="row-fluid">
+            <div class="span6">
             <g:form action="save"  class="form-horizontal">
                 <fieldset>
                     <g:render template="form" />
@@ -21,9 +23,10 @@
                     </div>
                 </fieldset>
             </g:form>
-        </div>
-        <div class="span10">
-        xnclkxc
+            </div>
+            <div class="span6 thumbnail">
+                <g:render template="previewInputWidget" />
+            </div>
         </div>
     </div>
 </body>

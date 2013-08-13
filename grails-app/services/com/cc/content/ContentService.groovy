@@ -154,7 +154,7 @@ class ContentService {
         if(fieldName && domainClassInstance)
             sanitizedTitle = friendlyUrlService.sanitizeWithDashes(domainClassInstance[fieldName])
         else
-            log.error "No annotated field found in domain class ${domainClassInstance?.class}"
+            //log.error "No annotated field found in domain class ${domainClassInstance?.class}"
 
         action = attrs.action ? attrs.action + "/" : ""
 
