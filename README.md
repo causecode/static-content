@@ -88,3 +88,12 @@ And add a private field as:
     static Map shorthandControllers = [:]
 
 NOTE : Secure domains
+
+
+## ChnageLog
+
+### Version 1.10
+
+#### Datebase changes
+
+1. Added new InputWidget domain.
