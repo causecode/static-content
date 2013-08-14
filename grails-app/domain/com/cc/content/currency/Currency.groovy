@@ -22,4 +22,8 @@ class Currency {
         name blank:false
     }
 
+    @Override
+    String toString() {
+        return code
+    }
 }
