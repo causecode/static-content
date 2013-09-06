@@ -21,7 +21,11 @@
         <g:message code="inputWidget.name.label" default="Name" />
     </label>
     <div class="controls">
-        <g:select name="inputWidgetName" from="${['checkBox','select','textArea','textField']}" value="${inputWidgetInstance?.name}"/>
+        <g:select name="name" class="inputWidgetName" required="" optionKey="${inputWidgetInstance?.id }" optionValue="${inputWidgetInstance?.name}" 
+        from="${['checkBox','select','textArea','textField']}" value="${inputWidgetInstance?.name}"
+        noSelection="${['':'']}"></g:select>
+
+    
     </div>
 </div>
 

@@ -31,4 +31,7 @@ class InputWidget {
         lastUpdated bindable: false
     }
 
+    String toString() {
+        return name
+    }
 }

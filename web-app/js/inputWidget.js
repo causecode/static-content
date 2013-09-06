@@ -1,6 +1,6 @@
-$("select#inputWidgetName").change(function(){
+$("select.inputWidgetName").change(function(){
     var str = "";
-    $( "select#inputWidgetName option:selected" ).each(function() {
+    $( "select.inputWidgetName option:selected" ).each(function() {
         str += $( this ).text() + " ";
       });
     if(str == 'select ') {
