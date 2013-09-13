@@ -94,8 +94,5 @@ class InputWidgetController {
             redirect(action: "show", id: id)
         }
     }
-    
-    def tp() {
-        
-    }
+
 }
