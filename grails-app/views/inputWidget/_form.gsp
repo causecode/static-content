@@ -1,5 +1,16 @@
 <div class="form-group" >
     <label class="control-label col-lg-3">
+        <g:message code="inputWidget.type.label" default="Type" />
+    </label>
+    <div class="controls col-lg-7">
+        <g:select name="type" from="${com.cc.content.inputWidget.InputWidgetType?.values()}" 
+            keys="${com.cc.content.inputWidget.InputWidgetType.values()*.name()}"
+            required="" class="form-control"/>
+    </div>
+</div>
+
+<div class="form-group" >
+    <label class="control-label col-lg-3">
         <g:message code="inputWidget.label.label" default="Label" />
     </label>
     <div class="controls col-lg-7">
@@ -12,9 +23,7 @@
         <g:message code="inputWidget.name.label" default="Name" />
     </label>
     <div class="controls col-lg-7">
-        <g:select name="name" class="inputWidgetName" required="" optionKey="${inputWidgetInstance?.id }" optionValue="${inputWidgetInstance?.name}" 
-        from="${['textArea','textField']}" value="${inputWidgetInstance?.name}"
-        noSelection="${['':'']}" class="form-control"></g:select>
+        <g:textField name="name" required="" value="${inputWidgetInstance?.name}" class="form-control"/>
     </div>
 </div>
 
@@ -29,6 +38,17 @@
 
 <div class="form-group" >
     <label class="control-label col-lg-3">
+        <g:message code="inputWidget.helpType.label" default="Help Type" />
+    </label>
+    <div class="controls col-lg-7">
+        <g:select name="helpType" from="${com.cc.content.inputWidget.InputWidgetHelpType?.values()}" 
+            keys="${com.cc.content.inputWidget.InputWidgetHelpType.values()*.name()}"
+            required="" class="form-control"/>
+    </div>
+</div>
+
+<div class="form-group" >
+    <label class="control-label col-lg-3">
         <g:message code="inputWidget.helpText.label" default="Help Text" />
     </label>
     <div class="controls col-lg-7">
@@ -38,19 +58,11 @@
 
 <div class="form-group" >
     <label class="control-label col-lg-3">
-        <g:message code="inputWidget.helpType.label" default="Help Type" />
-    </label>
-    <div class="controls col-lg-7">
-        <g:select name="helpType" from="${['inline','block','tooltip','placeHolder']}" value="${inputWidgetInstance?.helpType}" class="form-control"/>
-    </div>
-</div>
-
-
-<div class="form-group" >
-    <label class="control-label col-lg-3">
         <g:message code="inputWidget.validate.label" default="Validate" />
     </label>
     <div class="controls col-lg-7">
-        <g:textField name="validate" required="" value="${inputWidgetInstance?.validate}" class="form-control"/>
+         <g:select name="validate" from="${com.cc.content.inputWidget.InputWidgetValidation?.values()}" 
+            keys="${com.cc.content.inputWidget.InputWidgetValidation.values()*.name()}"
+            required="" class="form-control"/>
     </div>
 </div>
