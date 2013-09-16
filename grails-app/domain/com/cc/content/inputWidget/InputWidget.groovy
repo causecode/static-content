@@ -12,21 +12,24 @@ class InputWidget {
 
     String name
     String label
-    String widgetKey
-    String widgetValue
+    String widgetKeys
+    String widgetValues
     String defaultValue
     String helpText
-    String helpType
-    String validate
+
+    InputWidgetType type
+    InputWidgetHelpType helpType
+    InputWidgetValidation validation
+
     Date dateCreated
     Date lastUpdated
 
     static constraints = {
         name blank: false
-        label blank: false
-        validate blank: false
-        widgetKey nullable: true
-        widgetValue nullable: true
+        label nullable: true
+        validation nullable: true
+        widgetKeys nullable: true
+        widgetValues nullable: true
         dateCreated bindable: false
         lastUpdated bindable: false
     }
@@ -34,4 +37,16 @@ class InputWidget {
     String toString() {
         return name
     }
+}
+
+enum InputWidgetType {
+    CHECKBOX, MULTI_SELECT, RADIO, SELECT, TEXT_AREA, TEXT_FIELD
+}
+
+enum InputWidgetValidation {
+    EMAIL
+}
+
+enum InputWidgetHelpType {
+    BLOCK, INLINE, PLACEHOLDER, POPOVER, TOOLTIP
 }
