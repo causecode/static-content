@@ -10,10 +10,12 @@
 
 <g:if test="${inputWidgetType == InputWidgetType.TEXT_AREA}">
     <g:textArea name="textArea" class="inputWidget form-control"
-        data-input-widget-id="${inputWidgetInstance.id }" value="${inputWidgetValue}"></g:textArea>
+        data-input-widget-id="${inputWidgetInstance.id }" value="${inputWidgetValue}"
+        data-help-type="${inputWidgetInstance.helpType }" data-help-text="${inputWidgetInstance.helpText }"></g:textArea>
 </g:if>
 
 <g:if test="${inputWidgetType == InputWidgetType.TEXT_FIELD}">
     <g:textField name="text" class="inputWidget form-control" value="${inputWidgetValue}"
-        data-input-widget-id="${inputWidgetInstance.id }" />
+        data-input-widget-id="${inputWidgetInstance.id }"
+        data-help-type="${inputWidgetInstance.helpType }" data-help-text="${inputWidgetInstance.helpText }" />
 </g:if>
