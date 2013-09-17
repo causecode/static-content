@@ -1,5 +1,5 @@
 <div class="form-group" >
-    <label class="control-label col-lg-3">
+    <label class="control-label col-lg-3" for="type">
         <g:message code="inputWidget.type.label" default="Type" />
     </label>
     <div class="controls col-lg-7">
@@ -10,7 +10,7 @@
 </div>
 
 <div class="form-group" >
-    <label class="control-label col-lg-3">
+    <label class="control-label col-lg-3" for="label">
         <g:message code="inputWidget.label.label" default="Label" />
     </label>
     <div class="controls col-lg-7">
@@ -19,7 +19,7 @@
 </div>
 
 <div class="form-group" >
-    <label class="control-label col-lg-3">
+    <label class="control-label col-lg-3" for="name">
         <g:message code="inputWidget.name.label" default="Name" />
     </label>
     <div class="controls col-lg-7">
@@ -28,7 +28,7 @@
 </div>
 
 <div class="form-group" >
-    <label class="control-label col-lg-3">
+    <label class="control-label col-lg-3" for="defaultValue">
         <g:message code="inputWidget.defaultValue.label" default="Default Value" />
     </label>
     <div class="controls col-lg-7">
@@ -37,7 +37,7 @@
 </div>
 
 <div class="form-group" >
-    <label class="control-label col-lg-3">
+    <label class="control-label col-lg-3" for="helpType">
         <g:message code="inputWidget.helpType.label" default="Help Type" />
     </label>
     <div class="controls col-lg-7">
@@ -48,7 +48,7 @@
 </div>
 
 <div class="form-group" >
-    <label class="control-label col-lg-3">
+    <label class="control-label col-lg-3" for="helpText">
         <g:message code="inputWidget.helpText.label" default="Help Text" />
     </label>
     <div class="controls col-lg-7">
@@ -57,7 +57,7 @@
 </div>
 
 <div class="form-group" >
-    <label class="control-label col-lg-3">
+    <label class="control-label col-lg-3" for="validate">
         <g:message code="inputWidget.validate.label" default="Validate" />
     </label>
     <div class="controls col-lg-7">

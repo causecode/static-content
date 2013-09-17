@@ -25,7 +25,7 @@ class InputWidget {
     Date lastUpdated
 
     static constraints = {
-        name blank: false
+        name blank: true
         label nullable: true
         validation nullable: true
         widgetKeys nullable: true
