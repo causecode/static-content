@@ -2,6 +2,18 @@
 
 A plugin used to manage contents like static pages, menus etc. at one place.
 
+## ChnageLog
+
+### Version 1.10
+
+#### Datebase changes
+
+1. Added new InputWidget domain.
+
+#### Improvements
+
+1. Upgraded to 'Bootstrap 3.0.0 .'
+
 ## Configurations for this plugin:
 
     cc.plugins.content.authorProperty = "username"
@@ -89,11 +101,3 @@ And add a private field as:
 
 NOTE : Secure domains
 
-
-## ChnageLog
-
-### Version 1.10
-
-#### Datebase changes
-
-1. Added new InputWidget domain.
