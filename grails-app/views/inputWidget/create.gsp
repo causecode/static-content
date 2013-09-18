@@ -17,11 +17,9 @@
                 <g:form action="save" class="form-horizontal">
                     <fieldset>
                         <g:render template="form" />
-                        <div class="form-actions well form-group">
-                            <div class="col-lg-offset-2">
-                                <g:submitButton name="create" class="btn btn-default btn-primary"
-                                    value="${message(code: 'default.button.create.label')}" />
-                            </div>
+                        <div class="form-actions ">
+                            <g:submitButton name="create" class="btn btn-default btn-primary"
+                                value="${message(code: 'default.button.create.label')}" />
                         </div>
                     </fieldset>
                 </g:form>

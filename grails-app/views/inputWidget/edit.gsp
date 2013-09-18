@@ -15,14 +15,12 @@
         <g:hiddenField name="version" value="${inputWidgetInstance?.version}" />
         <fieldset class="form">
             <g:render template="form" />
-            <div class="form-actions well form-group">
-                <div class="col-lg-offset-2">
-                    <g:actionSubmit class="btn btn-default btn-primary" action="update"
-                        value="${message(code: 'default.button.update.label')}" />
-                    <g:actionSubmit class="btn btn-default btn-danger" action="delete"
-                        value="${message(code: 'default.button.delete.label')}" formnovalidate=""
-                        onclick="return confirm('${message(code: 'default.button.delete.confirm.message')}');" />
-                </div>
+            <div class="form-actions ">
+                <g:actionSubmit class="btn btn-default btn-primary" action="update"
+                    value="${message(code: 'default.button.update.label')}" />
+                <g:actionSubmit class="btn btn-default btn-danger" action="delete"
+                    value="${message(code: 'default.button.delete.label')}" formnovalidate=""
+                    onclick="return confirm('${message(code: 'default.button.delete.confirm.message')}');" />
             </div>
         </fieldset>
     </g:form>
