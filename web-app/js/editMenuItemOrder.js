@@ -42,13 +42,13 @@ $('a#create').click(function(){
     var roles = $('select#roles').val();
     var url = $('input#url').val();
     var showOnlyWhenLoggedIn = $('input#showOnlyWhenLoggedIn').val();
-    $('ul.menuItem').prepend("<li id=\"\"class=\"thumbnail temporaryMenuItem\" data-title=\""+title+ "\""+
+    $('ul.menuItem').prepend("<li id=\"\"class=\"img-thumbnail temporaryMenuItem\" data-title=\""+title+ "\""+
                              " data-roles=\"" + roles + "\"" +
                              " data-url=\""+ url + "\"" +
                              " data-show-only-when-logged-in=\"" + showOnlyWhenLoggedIn + "\">" +
                              "<i class=\"icon-move\"></i>"+
                              "<strong>" + title + "</strong>" + 
-                             "<a id=\"save-button\" role=\"button\" href=\"#\" class=\"btn btn-default btn btn-default-mini\">Save</a></li>");
+                             "<a id=\"save-button\" role=\"button\" href=\"#\" class=\"btn btn-default btn-sm\">Save</a></li>");
 });
 
 $(document).on("click", "a#save-button", function(){ 
