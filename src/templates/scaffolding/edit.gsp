@@ -15,12 +15,14 @@
         <g:hiddenField name="version" value="\${${propertyName}?.version}" />
         <fieldset class="form">
             <g:render template="form" />
-            <div class="form-actions">
-                <g:actionSubmit class="btn btn-primary" action="update"
+            <div class="form-actions well form-group">
+                        <div class="col-lg-offset-2">
+                <g:actionSubmit class="btn btn-default btn btn-default-primary" action="update"
                     value="\${message(code: 'default.button.update.label')}" />
-                <g:actionSubmit class="btn btn-danger" action="delete"
+                <g:actionSubmit class="btn btn-default btn btn-default-danger" action="delete"
                     value="\${message(code: 'default.button.delete.label')}" formnovalidate=""
                     onclick="return confirm('\${message(code: 'default.button.delete.confirm.message')}');" />
+            </div>
             </div>
         </fieldset>
     </g:form>

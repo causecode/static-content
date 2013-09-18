@@ -8,44 +8,43 @@
     </ul>
 </g:hasErrors>
 
-<div class="control-group ${hasErrors(bean: menuInstance, field: 'name', 'error')}">
-    <label class="control-label" for="name">
-        <g:message code="menu.name.label" default="Name" />
+<div class="form-group ${hasErrors(bean: menuInstance, field: 'name', 'error')}">
+    <label class="control-label col-sm-2" for="name"> <g:message code="menu.name.label" default="Name" />
     </label>
-    <div class="controls">
-        <g:textField name="name" required="" value="${menuInstance?.name}"/>
+    <div class="col-sm-5">
+        <g:textField name="name" required="" value="${menuInstance?.name}" class="form-control" />
     </div>
 </div>
 
-<div class="control-group ${hasErrors(bean: menuInstance, field: 'roles', 'error')}">
-    <label class="control-label" for="roles">
-        <g:message code="menu.roles.label" default="Role" />
+<div class="form-group ${hasErrors(bean: menuInstance, field: 'roles', 'error')}">
+    <label class="control-label col-sm-2" for="roles"> <g:message code="menu.roles.label" default="Role" />
     </label>
-    <div class="controls">
-        <g:select name="roles" from="${['ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN','ROLE_JOB_BOARD_MANAGER']}" 
-            value="${menuInstance?.roles}" multiple="true" noSelection="['':'']"/>
+    <div class="col-sm-5">
+        <g:select name="roles" from="${['ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN','ROLE_JOB_BOARD_MANAGER']}"
+            value="${menuInstance?.roles}" multiple="true" noSelection="['':'']" class="form-control" />
     </div>
 </div>
 
-<div class="control-group ${hasErrors(bean: menuInstance, field: 'showOnlyWhenLoggedIn', 'error')}">
-    <label class="control-label" for="showOnlyWhenLoggedIn">
-        <g:message code='menu.showOnlyWhenLoggedIn.label' default="Show Only When Logged In" />
+<div class="form-group ${hasErrors(bean: menuInstance, field: 'showOnlyWhenLoggedIn', 'error')}">
+    <label class="control-label col-sm-2" for="showOnlyWhenLoggedIn"> <g:message
+            code='menu.showOnlyWhenLoggedIn.label' default="Show Only When Logged In" />
     </label>
-    <div class="controls">
-        <g:checkBox name="showOnlyWhenLoggedIn" optionKey="id" 
-            value="${menuInstance?.showOnlyWhenLoggedIn}"/>
+    <div class="col-sm-5">
+        <g:checkBox name="showOnlyWhenLoggedIn" optionKey="id" value="${menuInstance?.showOnlyWhenLoggedIn}" />
     </div>
 </div>
 
 
-<div class="control-group ${hasErrors(bean: menuInstance, field: 'menuItems', 'error')}">
-    <label class="control-label" for="menuItems">
-        <g:message code="menu.menuItems.label" default="Menu Items" />
+<div class="form-group ${hasErrors(bean: menuInstance, field: 'menuItems', 'error')}">
+    <label class="control-label col-sm-2" for="menuItems"> <g:message code="menu.menuItems.label"
+            default="Menu Items" />
     </label>
-    <div class="controls">
+    <div class="col-sm-5">
         <ul class="one-to-many">
             <g:each in="${menuInstance?.menuItems?}" var="m">
-                <li><g:link controller="menuItem" action="show" id="${m?.id}">${m?.title.encodeAsHTML()}</g:link></li>
+                <li><g:link controller="menuIstem" action="show" id="${m?.id}">
+                        ${m?.title.encodeAsHTML()}
+                    </g:link></li>
             </g:each>
             </br>
             <g:link controller="menuItem" action="create" params="['menu.id': menuInstance?.id]">

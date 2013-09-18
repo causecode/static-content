@@ -48,7 +48,7 @@ $('a#create').click(function(){
                              " data-show-only-when-logged-in=\"" + showOnlyWhenLoggedIn + "\">" +
                              "<i class=\"icon-move\"></i>"+
                              "<strong>" + title + "</strong>" + 
-                             "<a id=\"save-button\" role=\"button\" href=\"#\" class=\"btn btn-mini\">Save</a></li>");
+                             "<a id=\"save-button\" role=\"button\" href=\"#\" class=\"btn btn-default btn btn-default-mini\">Save</a></li>");
 });
 
 $(document).on("click", "a#save-button", function(){ 

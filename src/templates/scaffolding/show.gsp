@@ -2,9 +2,9 @@
 <% import grails.persistence.Event %>
 <html>
 <head>
-    <meta name="layout" content="main">
-    <g:set var="entityName" value="\${message(code: '${domainClass.propertyName}.label', default: '${className}')}" />
-    <title><g:message code="default.show.label" args="[entityName]" /></title>
+<meta name="layout" content="main">
+<g:set var="entityName" value="\${message(code: '${domainClass.propertyName}.label', default: '${className}')}" />
+<title><g:message code="default.show.label" args="[entityName]" /></title>
 </head>
 <body>
     <div class="page-header">
@@ -41,14 +41,16 @@
 			<%  } %>
     </ol>
     <g:form>
-        <fieldset class="form-actions">
-            <g:hiddenField name="id" value="\${${propertyName}?.id}" />
-            <g:link class="btn btn-primary" action="edit" id="\${${propertyName}?.id}">
-                <g:message code="default.button.edit.label" default="Edit" />
-            </g:link>
-            <g:actionSubmit class="btn btn-danger" action="delete"
-                value="\${message(code: 'default.button.delete.label', default: 'Delete')}"
-                onclick="return confirm('\${message(code: 'default.button.delete.confirm.message')}');" />
+        <fieldset class="form-actions well form-group">
+            <div class="col-lg-offset-2">
+                <g:hiddenField name="id" value="\${${propertyName}?.id}" />
+                <g:link class="btn btn-default btn btn-default-primary" action="edit" id="\${${propertyName}?.id}">
+                    <g:message code="default.button.edit.label" default="Edit" />
+                </g:link>
+                <g:actionSubmit class="btn btn-default btn btn-default-danger" action="delete"
+                    value="\${message(code: 'default.button.delete.label', default: 'Delete')}"
+                    onclick="return confirm('\${message(code: 'default.button.delete.confirm.message')}');" />
+            </div>
         </fieldset>
     </g:form>
 </body>

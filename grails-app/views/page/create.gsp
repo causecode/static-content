@@ -1,8 +1,8 @@
 <html>
 <head>
-    <meta name="layout" content="main">
-    <g:set var="entityName" value="${message(code: 'page.label', default: 'Page')}" />
-    <title><g:message code="default.create.label" args="[entityName]" /></title>
+<meta name="layout" content="main">
+<g:set var="entityName" value="${message(code: 'page.label', default: 'Page')}" />
+<title><g:message code="default.create.label" args="[entityName]" /></title>
 </head>
 <body>
     <div class="page-header">
@@ -10,11 +10,11 @@
             <g:message code="default.create.label" args="[entityName]" />
         </h1>
     </div>
-    <g:form action="save"  class="form-horizontal">
+    <g:form action="save" class="form-horizontal">
         <fieldset>
             <g:render template="form" />
             <div class="form-actions">
-                <g:submitButton name="create" class="btn btn-primary"
+                <g:submitButton name="create" class="btn btn-default btn-primary"
                     value="${message(code: 'default.button.create.label')}" />
             </div>
         </fieldset>

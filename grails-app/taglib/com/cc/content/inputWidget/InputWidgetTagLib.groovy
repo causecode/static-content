@@ -25,4 +25,9 @@ class InputWidgetTagLib {
             inputWidgetValue: attrs.remove("inputWidgetValue")
         ])
     }
+
+    def widget = { attrs , body ->
+        InputWidget inputWidgetInstance = InputWidget.get(attrs.id)
+        out << render(template: '/inputWidget/form', plugin: 'content', model: [inputWidgetInstance: inputWidgetInstance])
+    }
 }

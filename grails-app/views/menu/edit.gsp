@@ -10,15 +10,15 @@
             <g:message code="default.edit.label" args="[entityName]" />
         </h1>
     </div>
-    <g:form class="form-horizontal" >
+    <g:form class="form-horizontal">
         <g:hiddenField name="id" value="${menuInstance?.id}" />
         <g:hiddenField name="version" value="${menuInstance?.version}" />
-        <fieldset class="form">
+        <fieldset>
             <g:render template="form" />
             <div class="form-actions">
-                <g:actionSubmit class="btn btn-primary" action="update"
+                <g:actionSubmit class="btn btn-default btn-primary" action="update"
                     value="${message(code: 'default.button.update.label')}" />
-                <g:actionSubmit class="btn btn-danger" action="delete"
+                <g:actionSubmit class="btn btn-default btn-danger" action="delete"
                     value="${message(code: 'default.button.delete.label')}" formnovalidate=""
                     onclick="return confirm('${message(code: 'default.button.delete.confirm.message')}');" />
             </div>

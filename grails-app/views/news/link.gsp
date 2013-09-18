@@ -1,8 +1,8 @@
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="layout" content="main" />
-    <title>AltrUHelp</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="layout" content="main" />
+<title>AltrUHelp</title>
 </head>
 <body>
     <iframe name="external" id="external" style="height: 4000px" onload="resizeFrame(this)"
