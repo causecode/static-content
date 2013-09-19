@@ -5,28 +5,24 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */ -->
-
-<%@ page import="com.cc.blog.Blog"%>
-<!DOCTYPE html>
 <html>
 <head>
-<meta name="layout" content="main">
-<ckeditor:resources />
-<g:set var="entityName" value="${message(code: 'blog.label', default: 'Blog')}" />
-<title><g:message code="default.create.label" args="[entityName]" /></title>
+    <meta name="layout" content="main">
+    <g:set var="entityName" value="${message(code: 'blog.label')}" />
+    <title><g:message code="default.create.label" args="[entityName]" /></title>
 </head>
 <body>
-    <div id="create-blog" class="page-header content" role="main">
+    <div class="page-header">
         <h1>
             <g:message code="default.create.label" args="[entityName]" />
         </h1>
     </div>
-    <g:form action="save" class="form-horizontal" enctype="multipart/form-data">
+    <g:form action="save" class="form-horizontal">
         <fieldset>
-            <g:render template="form" />
+            <g:render template="/content/form" model="[contentInstance: blogInstance]" plugin="content" />
             <div class="form-actions">
-                    <g:submitButton name="create" class="save btn btn-default btn-primary"
-                        value="${message(code: 'default.button.create.label', default: 'Create')}" />
+                <g:submitButton name="create" class="btn btn-primary"
+                    value="${message(code: 'default.button.create.label')}" />
             </div>
         </fieldset>
     </g:form>

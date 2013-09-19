@@ -6,15 +6,18 @@
  * without modification, are not permitted.
  */
 
-package com.cc.blog
+package com.cc.content.blog.comment
 
 class Comment {
 
-    String subject
-    String name
-    String email
     String commentText
+    String email
+    String name
+    String subject
+
     Date dateCreated
+    Date lastUpdated
+
     Comment replyTo
 
     static constraints = {

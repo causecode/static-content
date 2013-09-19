@@ -19,7 +19,7 @@ class ContentTagLib {
      * described by cc.plugins.content.contentManagerRole
      */
     def canEdit = { attrs, body ->
-        if(contentService.canEdit()) {
+        if(contentService.contentManager) {
             out << body()
         }
     }
@@ -56,6 +56,13 @@ class ContentTagLib {
             throwTagError("Tag content:createLink missing required attribute domain")
 
         out << contentService.createLink(attrs)
+    }
+
+    /**
+     * @attr id REQUIRED
+     */
+    def resolveAuthor = { attrs, body ->
+        out << contentService.resolveAuthor(Content.get(attrs.id), attrs.authorProperty ?: "fullName")
     }
 
 }

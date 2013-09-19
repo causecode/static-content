@@ -12,7 +12,7 @@
     </div>
     <g:form action="save" class="form-horizontal">
         <fieldset>
-            <g:render template="form" />
+            <g:render template="/content/form" model="[contentInstance: pageInstance]" plugin="content" />
             <div class="form-actions">
                 <g:submitButton name="create" class="btn btn-default btn-primary"
                     value="${message(code: 'default.button.create.label')}" />

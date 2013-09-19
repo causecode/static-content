@@ -6,13 +6,13 @@
  * without modification, are not permitted.
  */ -->
 
-<%@ page import="com.cc.blog.Blog"%>
+<%@ page import="com.cc.content.blog.Blog"%>
 <!doctype html>
 <html>
 <head>
 <meta name="layout" content="main">
 <ckeditor:resources />
-<g:set var="entityName" value="${message(code: 'blog.label', default: 'Blog')}" />
+<g:set var="entityName" value="${message(code: 'blog.label')}" />
 <title><g:message code="default.edit.label" args="[entityName]" /></title>
 </head>
 <body>
@@ -25,7 +25,7 @@
         <g:hiddenField name="id" value="${blogInstance?.id}" />
         <g:hiddenField name="version" value="${blogInstance?.version}" />
         <fieldset>
-            <g:render template="form" />
+            <g:render template="/content/form" model="[contentInstance: blogInstance]" plugin="content" />
             <div class="form-actions">
                 <g:actionSubmit class="save btn btn-primary" action="update"
                     value="${message(code: 'default.button.update.label', default: 'Update')}" />

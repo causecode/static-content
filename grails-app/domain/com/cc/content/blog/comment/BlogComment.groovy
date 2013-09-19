@@ -6,15 +6,20 @@
  * without modification, are not permitted.
  */
 
-package com.cc.blog
+package com.cc.content.blog.comment
 
-import org.grails.taggable.*
+import com.cc.content.blog.Blog
 
-import com.cc.content.*
+class BlogComment {
 
-class Blog extends Content implements Taggable {
+    Blog blog
+    Comment comment
 
     static constraints = {
+    }
+
+    static mapping = {
+        table "cc_content_blog_comment"
     }
 
 }

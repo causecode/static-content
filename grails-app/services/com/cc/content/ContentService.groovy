@@ -19,7 +19,7 @@ import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
 
 import com.cc.annotation.sanitizedTitle.SanitizedTitle
 import com.cc.annotation.shorthand.ControllerShorthand
-import com.cc.blog.Blog
+import com.cc.content.blog.Blog;
 import com.cc.content.meta.Meta
 import com.cc.page.Page
 
@@ -27,6 +27,8 @@ class ContentService {
 
     private static final String ANONYMOUS_USER = "anonymousUser"
 
+    Class authorClass
+    String authorClassName
     def friendlyUrlService
     def g
     def grailsApplication
@@ -34,24 +36,22 @@ class ContentService {
     def springSecurityService
 
     ContentService() {
+        authorClassName = SpringSecurityUtils.securityConfig.userLookup.userDomainClassName
         GroovyDynamicMethodsInterceptor i = new GroovyDynamicMethodsInterceptor(this)
         i.addDynamicMethodInvocation(new BindDynamicMethod())
     }
 
-    String resolveAuthor(Content contentInstance) {
+    String resolveAuthor(Content contentInstance, String authorProperty = "username") {
+        if(!authorClass) {  // Using singleton property of grails service
+            authorClass = grailsApplication.getDomainClass(authorClassName).clazz
+        }
         if(!contentInstance?.id) {
             def currentUser = springSecurityService.currentUser
             return currentUser ? currentUser.id.toString() : ANONYMOUS_USER
         }
         if(contentInstance.author.isNumber()) {
-            String authorClassName = SpringSecurityUtils.securityConfig.userLookup.userDomainClassName
-            if(!authorClassName) return ANONYMOUS_USER; // Required if plugin run-app
-
-            Class authorClass = grailsApplication.getDomainClass(authorClassName).clazz
-            if(!authorClass) return ANONYMOUS_USER; // Required if plugin run-app
-
             def authorInstance = authorClass.get(contentInstance.author)
-            return authorInstance[grailsApplication.config.cc.plugins.content.authorProperty ?: "username"]
+            return authorInstance[authorProperty]
         }
         return ANONYMOUS_USER
     }
@@ -62,7 +62,7 @@ class ContentService {
      * cc.plugins.content.contentManagerRole
      */
     boolean isVisible(def id) {
-        if(canEdit()) return true;
+        if(contentManager) return true;
 
         List restrictedDomainClassList = [Page.class.name, Blog.class.name]
         Content contentInstance = Content.withCriteria(uniqueResult: true) {
@@ -75,7 +75,12 @@ class ContentService {
         return false
     }
 
+    @Deprecated
     boolean canEdit() {
+        isContentManager()
+    }
+
+    boolean isContentManager() {
         String contentManagerRole = grailsApplication.config.cc.plugins.content.contentManagerRole
         return SpringSecurityUtils.ifAnyGranted(contentManagerRole)
     }

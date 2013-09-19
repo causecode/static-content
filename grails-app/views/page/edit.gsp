@@ -14,7 +14,7 @@
         <g:hiddenField name="id" value="${pageInstance?.id}" />
         <g:hiddenField name="version" value="${pageInstance?.version}" />
         <fieldset>
-            <g:render template="form" />
+            <g:render template="/content/form" model="[contentInstance: pageInstance]" plugin="content" />
             <div class="form-actions">
                 <g:actionSubmit class="btn btn-default btn-primary" action="update"
                     value="${message(code: 'default.button.update.label')}" />

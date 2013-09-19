@@ -16,9 +16,9 @@ Also provides shortened and user friendly urls.
     <resource>com.cc.navigation.MenuController</resource>
     <resource>com.cc.navigation.MenuItemController</resource>
     <resource>com.cc.page.PageController</resource>
-    <resource>com.cc.blog.Blog</resource>
-    <resource>com.cc.blog.BlogComment</resource>
-    <resource>com.cc.blog.Comment</resource>
+    <resource>com.cc.content.blog.Blog</resource>
+    <resource>com.cc.content.blog.BlogComment</resource>
+    <resource>com.cc.content.blog.Comment</resource>
     <resource>com.cc.content.Content</resource>
     <resource>com.cc.content.ContentMeta</resource>
     <resource>com.cc.content.PageLayout</resource>

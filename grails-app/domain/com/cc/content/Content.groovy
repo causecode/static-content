@@ -46,8 +46,8 @@ class Content {
         title
     }
 
-    String resolveAuthor() {
-        return contentService.resolveAuthor(this)
+    String resolveAuthor(String authorProperty = "username") {
+        return contentService.resolveAuthor(this, authorProperty)
     }
 
     List<Meta> getMetaTags() {
@@ -55,10 +55,6 @@ class Content {
 
         ContentMeta.findAllByContent(this)*.meta
     }
-
-    //    def beforeInsert() {
-    //        author = resolveAuthor()
-    //    }
 
     //    def beforeDelete() {
     //            List contentMetaList = ContentMeta.findAllByContent(this)
