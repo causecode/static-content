@@ -32,11 +32,13 @@
     </r:script>
 
     <div class="blog_list">
-        <g:each in="${blogInstanceList}" status="i" var="blogInstance">
+        <g:each in="${blogInstanceList}" status="index" var="blogInstance">
             <div class="blogEntry summary">
                 <div class="blog_title">
                     <h2>
-                        ${blogInstance.title }
+                        <g:link action="show" id="${blogInstance?.id}">
+                            ${blogInstance.title }
+                        </g:link>
                     </h2>
                     <h4>
                         ${blogInstance.subTitle}
@@ -45,23 +47,34 @@
                         <g:set var="user" value="anonymousUser" />
                     </g:if>
                     <g:else>
-                        <g:set var="user" value="${userClass.get(blogInstance.author.toInteger()).username}" />
+                        <g:set var="user" value="${userClass.get(blogInstance.author.toInteger()).fullName}" />
                     </g:else>
                     <small>By: <b> ${user} &nbsp;&nbsp;
-                    </b></small>|&nbsp;&nbsp;Posted on: <small>
-                        ${blogInstance.dateCreated.format('dd-MM-yyyy')}
+                    </b></small>|&nbsp;&nbsp;Posted on: <small> ${blogInstance.dateCreated.format('dd-MM-yyyy')}
                     </small>
                 </div>
                 <div class="blog_body">
-                    ${blogInstance.body.substring(0,1)}
-                    <g:link action='show' controller='blog' id='${blogInstance.id}'>...more</g:link>
+                    <h5 class="inline">
+                        <strong>Description :</strong>
+                    </h5>
+                    ${blogInstance.body}
                 </div>
+                <g:link action='show' controller='blog' id='${blogInstance.id}'>...more</g:link>
             </div>
             <hr style="border: 1px solid #DEDEDE;">
         </g:each>
-        <div class="pagination">
-            <g:paginate total="${blogInstanceTotal}" />
-        </div>
+
+        <g:set var="limit" value="${(params.offset.toInteger() + params.max.toInteger()) }"></g:set>
+        <span class="muted help-block" style="margin-top: -20px"> <small>Showing: <strong> ${params.offset.toInteger() + 1 }-${limit > blogInstanceTotal ? blogInstanceTotal : limit }</strong>
+                of <strong> ${blogInstanceTotal }
+            </strong>
+        </small>
+        </span>
+
+        <ul class="pagination">
+            <g:paginate action="list" total="${blogInstanceTotal}" />
+        </ul>
     </div>
 </body>
 </html>
+

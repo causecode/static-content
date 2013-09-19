@@ -8,8 +8,12 @@
 
 package com.cc.blog
 
+import org.apache.tools.ant.util.LayoutPreservingProperties.Blank;
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
+
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class BlogController {
 
@@ -17,22 +21,33 @@ class BlogController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
+    private static String HTML_P_TAG_PATTERN = "(?s)<p>(.*?)<\\/p>"
+
     def index() {
         redirect(action: "list", params: params)
     }
 
-    def list(Integer max) {
-        if(!params.max) {
-            params.max=2
+    def list(Integer max, Integer offset) {
+        params.max = Math.min(max ?: 2, 100)
+        params.offset = offset ? offset: 0
+
+        String query = """select new Map(b.id as id, b.body as body, b.title as title, b.subTitle as subTitle,
+                            b.author as author, b.dateCreated as dateCreated) from Blog b """
+
+        def blogList = Blog.executeQuery(query,[max: params.max, offset: params.offset])
+
+        Pattern patternTag = Pattern.compile(HTML_P_TAG_PATTERN)
+
+        blogList.each {
+            Matcher matcherTag = patternTag.matcher(it.body)
+            if(!matcherTag) {
+                it.body = ""
+            } else {
+                it.body = matcherTag.group(1)
+            }
         }
-        if(!params.offset) {
-            params.offset=0
-        }
-        def blogList = Blog.createCriteria()
-        def blogs = blogList.list (max:params.max, offset:params.offset) {
-            order("dateCreated","desc")
-        }
-        [blogInstanceList: blogs, blogInstanceTotal: blogs.getTotalCount(), userClass: userClass()]
+
+        [blogInstanceList: blogList, blogInstanceTotal: Blog.list().size(), userClass: userClass()]
     }
 
     def create() {
@@ -77,7 +92,7 @@ class BlogController {
         if(userId.isNumber()) {
             userId.toInteger()
             def userInstance = userClass().get(userId)
-            username= userInstance.username
+            username= userInstance.fullName
         }
         else {
             username= "anonymousUser"
