@@ -43,10 +43,10 @@ enum InputWidgetType {
     CHECKBOX, MULTI_SELECT, RADIO, SELECT, TEXT_AREA, TEXT_FIELD
 }
 
-enum InputWidgetValidation {
-    EMAIL
-}
-
 enum InputWidgetHelpType {
     BLOCK, INLINE, PLACEHOLDER, POPOVER, TOOLTIP
+}
+
+enum InputWidgetValidation {
+    EMAIL, INTEGER, DATE, TIME, URL, ZIP_CODE
 }

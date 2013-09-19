@@ -28,7 +28,6 @@ div.comment {
         <h1>
             ${blogInstance.title }
         </h1>
-        <a href="#commentModal" role="button" class="btn btn-default commentButton pull-right" data-toggle="modal">Comment</a>
         <span><h6>
                 ${blogInstance.subTitle }
             </h6></span> <small>By: <b> ${username} &nbsp;&nbsp;
@@ -108,7 +107,9 @@ div.comment {
             </div>
         </div>
     </div>
-    <h2>Comments</h2>
+    <h2 class="inline">Comments</h2>
+    <a href="#commentModal" role="" class="commentButton" data-toggle="modal">&nbsp;&nbsp;Add</a>
+    
 
     <g:each in="${comments}">
         <g:render template='comments' model="['it':it]"></g:render>
