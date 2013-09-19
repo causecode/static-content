@@ -10,25 +10,25 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label class="control-label col-sm-3">Subject </label>
-                            <div class="col-lg-7">
+                            <div class="col-sm-7">
                                 <g:textField name="subject" class="form-control" required="" autofocus="autofocus" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-3">Name </label>
-                            <div class="col-lg-7">
+                            <div class="col-sm-7">
                                 <g:textField name="name" class="form-control" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-3">Email </label>
-                            <div class="col-lg-7">
+                            <div class="col-sm-7">
                                 <g:textField name="email" class="form-control" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-3">Comment </label>
-                            <div class="col-lg-7">
+                            <div class="col-sm-7">
                                 <g:textArea name="commentText" class="form-control" />
                             </div>
                         </div>

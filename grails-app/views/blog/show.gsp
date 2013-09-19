@@ -12,6 +12,7 @@
     <meta name="layout" content="main" />
     <g:set var="entityName" value="${message(code: 'blog.label')}" />
     <title>${blogInstance.title }</title>
+    <content:renderMetaTags contentInstance="${blogInstance }" />
     <style type="text/css">
         div.comment {
             margin-left: 50px;

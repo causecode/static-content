@@ -13,12 +13,9 @@ class ContentFilters {
     def contentService
 
     def filters = {
-        // TODO check if other controllers from outside plugins are filtered or not
-        // If yes than change controller filter below.
         all(controller: 'page|blog', action: 'show') {
             before = {
-                List restrictedControllerList = ['page', 'blog']
-                if(controllerName in restrictedControllerList && params.id) {
+                if(params.id) {
                     if(!contentService.isVisible(params.id)) {
                         log.info "Not accessible page visited."
                         redirect controller: controllerName, action: "list"
@@ -29,4 +26,5 @@ class ContentFilters {
             }
         }
     }
+
 }

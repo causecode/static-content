@@ -11,8 +11,6 @@
         <g:select name="meta.type" from="${Meta.getTypeList() }" value="${metaInstance?.type }"
             noSelection="['': 'Select Meta Tag']" class="form-control" />
         <br>
-        <g:textArea name="meta.value" class="form-control">
-            ${metaInstance?.value }
-        </g:textArea>
+        <g:textArea name="meta.value" class="form-control">${metaInstance?.value }</g:textArea>
     </div>
 </div>
