@@ -14,6 +14,7 @@ import com.cc.content.meta.Meta
 class Content {
 
     transient contentService
+    transient friendlyUrlService
     def grailsApplication
 
     Date dateCreated
@@ -34,7 +35,7 @@ class Content {
 
     static constraints = {
         body blank: false
-        title nullable: false, blank: false
+        title blank: false
         subTitle nullable: true
         author nullable: true, bindable: false
         dateCreated bindable: false
@@ -48,6 +49,10 @@ class Content {
 
     String resolveAuthor(String authorProperty = "username") {
         return contentService.resolveAuthor(this, authorProperty)
+    }
+
+    String getSanitizedTitle() {
+        friendlyUrlService.sanitizeWithDashes(title)
     }
 
     List<Meta> getMetaTags() {

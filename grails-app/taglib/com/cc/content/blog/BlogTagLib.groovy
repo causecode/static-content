@@ -21,4 +21,8 @@ class BlogTagLib {
         }
     }
 
+    def searchLink = { attrs, body ->
+        out << Blog.get(attrs.id).searchLink()
+    }
+
 }

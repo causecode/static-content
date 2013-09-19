@@ -11,7 +11,6 @@ package com.cc.content.blog
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.content.blog.comment.BlogComment
@@ -31,7 +30,7 @@ class BlogController {
 
     private Blog blogInstance
 
-    private static String HTML_P_TAG_PATTERN = "(?s)<p>(.*?)<\\/p>"
+    private static String HTML_P_TAG_PATTERN = "(?s)<p(.*?)>(.*?)<\\/p>"
 
     private boolean validate() {
         if(!params.id) {
@@ -69,7 +68,7 @@ class BlogController {
 
         blogList.each {
             Matcher matcherTag = patternTag.matcher(it.body)
-            it.body = matcherTag.find() ? matcherTag.group(1) : ""
+            it.body = matcherTag.find() ? matcherTag.group(2) : ""
         }
 
         [blogInstanceList: blogList, blogInstanceTotal: blogInstanceTotal]

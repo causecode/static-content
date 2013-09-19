@@ -24,22 +24,22 @@
     </g:if>
 
     <div class="blog-list">
-        <g:each in="${blogInstanceList}" status="index" var="blogInstance">
+        <g:each in="${blogInstanceList}">
             <div class="blog-entry summary">
                 <h2>
-                    <g:link action="show" id="${blogInstance?.id}">
-                        ${blogInstance.title }
-                    </g:link>
+                    <a href="<content:searchLink id='${it.id }' />">
+                        ${it.title }
+                    </a>
                 </h2>
                 <h4>
-                    ${blogInstance.subTitle}
+                    ${it.subTitle}
                 </h4>
-                <g:render template="/blog/templates/additionalInfo" model="[instance: blogInstance]" />
+                <g:render template="/blog/templates/additionalInfo" model="[instance: it]" />
                 <div class="blog-body">
                     <br>
                     <strong>Description:</strong>
-                    ${blogInstance.body}
-                    <g:link action="show" id='${blogInstance.id}'>...more</g:link>
+                    ${it.body}
+                    <a href="<content:searchLink id='${it.id }' />">...more</a>
                 </div>
             </div>
             <hr style="border: 1px solid #DEDEDE;">
