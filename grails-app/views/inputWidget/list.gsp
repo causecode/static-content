@@ -18,13 +18,13 @@
 					
                 <g:sortableColumn property="label" title="${message(code: 'inputWidget.label.label', default: 'Label')}" />
 					
-                <g:sortableColumn property="validate" title="${message(code: 'inputWidget.validate.label', default: 'Validate')}" />
+                <g:sortableColumn property="validation" title="${message(code: 'inputWidget.validation.label', default: 'Validation')}" />
 					
-                <g:sortableColumn property="widgetKey" title="${message(code: 'inputWidget.widgetKey.label', default: 'Widget Key')}" />
+                <g:sortableColumn property="widgetKeys" title="${message(code: 'inputWidget.widgetKeys.label', default: 'Widget Keys')}" />
 					
-                <g:sortableColumn property="widgetValue" title="${message(code: 'inputWidget.widgetValue.label', default: 'Widget Value')}" />
+                <g:sortableColumn property="widgetValues" title="${message(code: 'inputWidget.widgetValues.label', default: 'Widget Values')}" />
 					
-                <g:sortableColumn property="dateCreated" title="${message(code: 'inputWidget.dateCreated.label', default: 'Date Created')}" />
+                <g:sortableColumn property="defaultSelected" title="${message(code: 'inputWidget.defaultSelected.label', default: 'Default Selected')}" />
 					
             </tr>
         </thead>
@@ -36,13 +36,13 @@
 					
                     <td>${fieldValue(bean: inputWidgetInstance, field: "label")}</td>
 					
-                    <td>${fieldValue(bean: inputWidgetInstance, field: "validate")}</td>
+                    <td>${fieldValue(bean: inputWidgetInstance, field: "validation")}</td>
 					
-                    <td>${fieldValue(bean: inputWidgetInstance, field: "widgetKey")}</td>
+                    <td>${fieldValue(bean: inputWidgetInstance, field: "widgetKeys")}</td>
 					
-                    <td>${fieldValue(bean: inputWidgetInstance, field: "widgetValue")}</td>
+                    <td>${fieldValue(bean: inputWidgetInstance, field: "widgetValues")}</td>
 					
-                    <td><g:formatDate date="${inputWidgetInstance.dateCreated}" /></td>
+                    <td>${fieldValue(bean: inputWidgetInstance, field: "defaultSelected")}</td>
 					
                 </tr>
             </g:each>
