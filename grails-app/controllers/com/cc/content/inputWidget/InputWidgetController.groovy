@@ -66,8 +66,8 @@ class InputWidgetController {
         if(version != null) {
             if (inputWidgetInstance.version > version) {
                 inputWidgetInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                [message(code: 'inputWidget.label', default: 'InputWidget')] as Object[],
-                "Another user has updated this InputWidget while you were editing")
+                        [message(code: 'inputWidget.label', default: 'InputWidget')] as Object[],
+                        "Another user has updated this InputWidget while you were editing")
                 render(view: "edit", model: [inputWidgetInstance: inputWidgetInstance])
                 return
             }

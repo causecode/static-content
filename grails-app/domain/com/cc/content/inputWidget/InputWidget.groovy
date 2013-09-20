@@ -27,12 +27,11 @@ class InputWidget {
     Integer maxChar
     Integer minValueRange
     Integer maxValueRange
-    
+
     Date dateCreated
     Date lastUpdated
 
     static constraints = {
-        name blank: true
         label nullable: true
         validation nullable: true
         widgetKeys nullable: true
@@ -61,5 +60,5 @@ enum InputWidgetHelpType {
 }
 
 enum InputWidgetValidation {
-    EMAIL, INTEGER, DATE_US, TIME, URL, ZIP_CODE
+    TEXT, EMAIL, INTEGER, DATE, TIME, URL, ZIP_CODE
 }
