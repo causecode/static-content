@@ -46,8 +46,7 @@ $('a#create').click(function(){
 });
 
 $(document).on("click", "a#save-button", function(){ 
-    $('#alertMessageLink').text('MenuItem Created Successfully!');
-    $('#alertMessageLink').show();
+    $('#alertMessageLink').text('MenuItem Created Successfully!').show();
 
     var $menuItem = $(this).parents('li.temporaryMenuItem');
     var title = $menuItem.data('title');
@@ -67,16 +66,14 @@ $(document).on("click", "a#save-button", function(){
         data: {'title':title,'roles':roles,'url':url,'showOnlyWhenLoggedIn':showOnlyWhenLoggedIn,
                'parentId':parentId,'menuId':menuId,'index':index},
         success: function(response) {
-                if(response) {
-                    var menuItemId = response ;
-                    $menuItem.attr('id',menuItemId);
-                    $menuItem.data('menu-item-id',menuItemId);
-                    $menuItem.removeAttr('data-title');
-                    $menuItem.removeAttr('data-url');
-                    $menuItem.removeAttr('data-roles');
-                    $menuItem.removeAttr('data-show-only-when-logged-in');
-                    $menuItem.append('<a  id="editMenuItem" href="#" class="pull-right"><i class="icon-pencil"></i></a>');
-                }
+            var menuItemId = response ;
+            $menuItem.attr('id',menuItemId);
+            $menuItem.data('menu-item-id',menuItemId);
+            $menuItem.removeAttr('data-title');
+            $menuItem.removeAttr('data-url');
+            $menuItem.removeAttr('data-roles');
+            $menuItem.removeAttr('data-show-only-when-logged-in');
+            $menuItem.append('<a  id="editMenuItem" href="#" class="pull-right"><i class="icon-pencil"></i></a>');
         }
     });
 });
