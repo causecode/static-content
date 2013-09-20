@@ -79,9 +79,10 @@ class BlogController {
     }
 
     def save() {
-        Blog.withTransaction {
+        Blog.withTransaction { status ->
             blogInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Blog.class)
             if (blogInstance.hasErrors()) {
+                status.setRollbackOnly()
                 render(view: "create", model: [blogInstance: blogInstance])
                 return
             }
@@ -112,10 +113,11 @@ class BlogController {
             }
         }
 
-        Blog.withTransaction {
+        Blog.withTransaction { status ->
             contentService.update(params, blogInstance, params.meta.list("type"), params.meta.list("value"))
 
             if (blogInstance.hasErrors()) {
+                status.setRollbackOnly()
                 render(view: "edit", model: [blogInstance: blogInstance])
                 return
             }

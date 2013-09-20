@@ -69,7 +69,7 @@ $(document).on("click", "a#save-button", function(){
     $('li.temporaryMenuItem').removeClass('temporaryMenuItem');
     $.ajax({
         type: 'POST',
-        url: '/menuItem/saveMenuItem',
+        url: '/menuItem/save',
         data: {'title':title,'roles':roles,'url':url,'showOnlyWhenLoggedIn':showOnlyWhenLoggedIn,
                'parentId':parentId,'menuId':menuId,'index':index},
         success: function(response) {
@@ -94,8 +94,8 @@ $(document).on("click", "a#editMenuItem", function(){
     menuItemId = $menuItem.data('menu-item-id')
     $.ajax({
         type: 'POST',
-        url: '/menuItem/editMenuItem',
-        data: {'menuItemId':menuItemId},
+        url: '/menuItem/edit',
+        data: {id: menuItemId},
         success: function(response) {
                 if(response) {
                     var itemInstance = response
@@ -129,8 +129,8 @@ $(document).on("click", "a#updateMenuItem", function(){
     var roles = rolesArray + "";
     $.ajax({
         type: 'POST',
-        url: '/menuItem/updateMenuItem',
-        data: {'title':title,'roles':roles,'url':url,'showOnlyWhenLoggedIn':showOnlyWhenLoggedIn,'menuItemId':menuItemId},
+        url: '/menuItem/update',
+        data: {'title':title,'roles':roles,'url':url,'showOnlyWhenLoggedIn':showOnlyWhenLoggedIn, id: menuItemId},
         success: function(response) {
         }
     });

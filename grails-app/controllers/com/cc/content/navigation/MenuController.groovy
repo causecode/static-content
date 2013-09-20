@@ -16,17 +16,17 @@ class MenuController {
 
     def beforeInterceptor = [action: this.&validate]
 
-    Menu menuInstance
-    MenuItem menuItemInstance
+    private Menu menuInstance
+    private MenuItem menuItemInstance
+
     def menuItemService
-    def springSecurityService
 
     private validate() {
         if(!params.id) return true;
 
         menuInstance = Menu.get(params.id)
         if(!menuInstance) {
-            flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'menu.label', default: 'Menu'), params.name])
+            flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'menu.label'), params.id])
             redirect(action: "list")
             return false
         }
@@ -54,12 +54,11 @@ class MenuController {
         }
 
         flash.message = message(code: 'default.created.message',
-        args: [message(code: 'menu.label', default: 'Menu'), menuInstance.name])
+        args: [message(code: 'menu.label'), menuInstance.name])
         redirect(action: "show", id: menuInstance.id)
     }
 
     def show(Long id) {
-        menuInstance = Menu.get(params.id)
         if(request.xhr){
             menuItemInstance = menuItemService.editMenuItemsOrder(params)
         }
@@ -74,7 +73,7 @@ class MenuController {
         if(version != null) {
             if (menuInstance.version > version) {
                 menuInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'menu.label', default: 'Menu')] as Object[],
+                        [message(code: 'menu.label')] as Object[],
                         "Another user has updated this Menu while you were editing")
                 render(view: "edit", model: [menuInstance: menuInstance])
                 return
@@ -88,20 +87,17 @@ class MenuController {
             return
         }
 
-        flash.message = message(code: 'default.updated.message',
-        args: [message(code: 'menu.label', default: 'Menu'), menuInstance.name])
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'menu.label'), menuInstance.name])
         redirect(action: "show", id: menuInstance.id)
     }
 
     def delete(Long id) {
         try {
             menuInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message',
-            args: [message(code: 'menu.label', default: 'Menu'), name])
+            flash.message = message(code: 'default.deleted.message', args: [message(code: 'menu.label'), name])
             redirect(action: "list")
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message',
-            args: [message(code: 'menu.label', default: 'Menu'), name])
+            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'menu.label'), name])
             redirect(action: "show", id: id)
         }
     }

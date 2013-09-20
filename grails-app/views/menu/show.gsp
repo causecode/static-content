@@ -1,18 +1,18 @@
 <html>
 <head>
-<meta name="layout" content="main">
-<g:set var="entityName" value="${message(code: 'menu.label', default: 'Menu')}" />
-<title><g:message code="default.SortMenuItems.label" args="[entityName]" /></title>
-<r:require modules="draggableAndSortable" />
-<r:require modules="menuItem" />
+    <meta name="layout" content="main">
+    <g:set var="entityName" value="${message(code: 'menu.label')}" />
+    <title><g:message code="default.SortMenuItems.label" args="[entityName]" /></title>
+    <r:require modules="menuItem" />
 </head>
 <body>
     <div class="page-header">
-        <h1>
-            Sort Menu Items <span class="btn-group pull-right"> <a href="#"
-                class="btn btn-default btn-primary btn-small" id="create-menu-item">Create Menu Item</a>
-            </span>
+        <h1 class="inline">
+            Sort Menu Items
         </h1>
+        <span class="btn-group pull-right">
+            <a href="#" class="btn btn-primary btn-sm" id="create-menu-item"><i class="icon-plus"></i> Menu Item</a>
+        </span>
     </div>
 
     <div id="menu-item-sorting">
@@ -30,50 +30,8 @@
             </g:each>
         </ul>
     </div>
+    <g:render template="/menuItem/templates/createMenuItemOverlay" plugin="content" />
+    <g:render template="/menuItem/templates/editMenuItemOverlay" plugin="content" />
 
-    <div id="createMenuItemModal" class="modal hide fade">
-        <div class="modal-header">
-            <a href="#" class="close" data-dismiss="modal">x</a>
-            <h3>Create Menu Item</h3>
-        </div>
-        <g:form name="create-menu-item-form" class="form-horizontal block-error jquery-form">
-            <fieldset form="create-menu-item-form">
-                <div class="modal-body">
-                    <div class="alert hide fade in" id="alert-lead">
-                        <button type="button" class="close" onclick="$(this).parent().fadeOut()">&times;</button>
-                        <p></p>
-                    </div>
-                    <g:render template="basicForm"></g:render>
-                </div>
-                <div class="modal-footer">
-                    <a id="create" href="#" class="btn btn-default btn-primary" data-dismiss="modal">create</a> <a
-                        href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
-                </div>
-            </fieldset>
-        </g:form>
-    </div>
-
-    <div id="editMenuItemModal" class="modal hide fade">
-        <div class="modal-header">
-            <a href="#" class="close" data-dismiss="modal">x</a>
-            <h3>Edit Menu Item</h3>
-        </div>
-        <g:form name="edit-menu-item-form" class="form-horizontal block-error jquery-form">
-            <fieldset form="edit-menu-item-form">
-                <div class="modal-body">
-                    <div class="alert hide fade in" id="alert-lead">
-                        <button type="button" class="close" onclick="$(this).parent().fadeOut()">&times;</button>
-                        <p></p>
-                    </div>
-                    <g:render template="basicForm"></g:render>
-                </div>
-                <div class="modal-footer">
-                    <a id="updateMenuItem" class="btn btn-default btn-primary" data-dismiss="modal">Update</a> <a
-                        id="deleteMenuItem" class="btn btn-default btn-danger" data-dismiss="modal"
-                        onclick="return confirm('${message(code: 'default.button.delete.confirm.message')}');">Delete</a>
-                </div>
-            </fieldset>
-        </g:form>
-    </div>
 </body>
 </html>
