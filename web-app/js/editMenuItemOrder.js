@@ -18,7 +18,8 @@ $(document).ready(function() {
     });
     $( "ul, li" ).disableSelection();
 });
-/*
+
+/**
  * Function used to make Ajax call which sorts Menu Items. 
  */
 function getMenuItemIndex(menuId,menuItemId,parentId,index) {
@@ -77,7 +78,8 @@ $(document).on("click", "a#save-button", function(){
         }
     });
 });
-/*
+
+/**
  * JS for editing Menu Item.
  */
 $(document).on("click", "a#editMenuItem", function(){
@@ -88,21 +90,20 @@ $(document).on("click", "a#editMenuItem", function(){
         url: '/menuItem/edit',
         data: {id: menuItemId},
         success: function(response) {
-                if(response) {
-                    var itemInstance = response
-                    $menuItem.data('item-instance',itemInstance)
-                    $('#editMenuItemModal #title').val(itemInstance.title)
-                    $('#editMenuItemModal #url').val(itemInstance.url)
-                    $('#editMenuItemModal #roles').val(itemInstance.roles)
-                    $('#editMenuItemModal #showOnlyWhenLoggedIn').val(itemInstance.showOnlyWhenLoggedIn)
-                    $('#editMenuItemModal').modal('show');
-                    $('#updateMenuItem').data('menu-item-id',menuItemId);
-                }
+            var itemInstance = response
+            $menuItem.data('item-instance',itemInstance)
+            $('#editMenuItemModal #title').val(itemInstance.title)
+            $('#editMenuItemModal #url').val(itemInstance.url)
+            $('#editMenuItemModal #roles').val(itemInstance.roles)
+            $('#editMenuItemModal #showOnlyWhenLoggedIn').val(itemInstance.showOnlyWhenLoggedIn)
+            $('#editMenuItemModal').modal('show');
+            $('#updateMenuItem').data('menu-item-id',menuItemId);
         }
     });
     
 });
-/*
+
+/**
  * JS for updating Menu Item.
  */
 $(document).on("click", "a#updateMenuItem", function(){
@@ -127,7 +128,7 @@ $(document).on("click", "a#updateMenuItem", function(){
     });
 });
 
-/*
+/**
  * JS for delete Menu Item.
  */
 $('a#deleteMenuItem').click(function(){

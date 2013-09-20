@@ -4,15 +4,22 @@ A plugin used to manage contents like static pages, menus etc. at one place.
 
 ## ChnageLog
 
-### Version 1.10
+### Version 1.9.1
 
-#### Datebase changes
+#### Breaking change
 
-1. Added new InputWidget domain.
+1. Changed package name of *Menu, MenuItem, Blog, Comment, BlogComment*.
+
+#### Database changes
+
+1. Added new InputWidget domain,
+2. Change in structure of menu & menu item.
 
 #### Improvements
 
-1. Upgraded to 'Bootstrap 3.0.0 .'
+1. Bootstrap upgraded to 3.0,
+2. Blog/comment UI & code restructured,
+3. Added meta tag property in blog show page.
 
 ## Configurations for this plugin:
 
