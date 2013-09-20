@@ -1,3 +1,7 @@
+/*
+ * JS Used to show and hide Input Widget fields on widgetTypeSelection
+ * while creating Input Widget.
+ */
 $("#type").on("change", function(){
     $("div.minChar").addClass("hide");
     $("div.maxChar").addClass("hide");
@@ -11,11 +15,17 @@ $("#type").on("change", function(){
     if($type == 'SELECT' || $type == 'MULTI_SELECT') {
         $("div.widgetKeyValue").removeClass("hide");
         $("div.noSelected").removeClass("hide");
-    }
-    if($type == 'CHECKBOX' || $type == 'SELECT' || $type == 'MULTI_SELECT' || $type == 'RADIO') {
         $("div.defaultSelected").removeClass("hide");
+    }
+    if($type == 'CHECKBOX' || $type == 'RADIO') {
+        $("div.defaultSelected").removeClass("hide");
+        $("div.validation").addClass("hide");
     } 
-    if($type == 'TEXT_AREA' || $type == 'TEXT_FIELD') {
+    if($type == 'TEXT_AREA') {
+        $("div.minChar").removeClass("hide");
+        $("div.maxChar").removeClass("hide");
+    }
+    if($type == 'TEXT_FIELD') {
         $("div.minChar").removeClass("hide");
         $("div.maxChar").removeClass("hide");
         $("div.minValueRange").removeClass("hide");

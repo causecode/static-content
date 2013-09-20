@@ -81,7 +81,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group validation ">
         <label class="control-label col-lg-3" for="validation"> 
             <g:message code="inputWidget.validation.label" default="validation" />
         </label>
@@ -114,7 +114,7 @@
         <label class="control-label col-lg-3" for="minChar"> 
             <g:message code="inputWidget.minChar.label" default="Min Char" />
         </label>
-        <div class=" col-lg-6">
+        <div class=" col-lg-3">
             <g:field name="minChar" type="number" value="${inputWidgetInstance?.minChar}" class="form-control"/>
         </div>
     </div>
@@ -123,16 +123,16 @@
         <label class="control-label col-lg-3" for="maxChar"> 
             <g:message code="inputWidget.maxChar.label" default="Max Char" />
         </label>
-        <div class=" col-lg-6">
+        <div class=" col-lg-3">
             <g:field name="maxChar" type="number" value="${inputWidgetInstance?.maxChar}" class="form-control"/>
         </div>
     </div>
 
     <div class="form-group minValueRange hide">
         <label class="control-label col-lg-3" for="minValueRange"> 
-        <g:message code="inputWidget.minValueRange.label" default="Min Value Range" />
+            <g:message code="inputWidget.minValueRange.label" default="Min Value Range" />
         </label>
-        <div class=" col-lg-6">
+        <div class=" col-lg-3">
             <g:field name="minValueRange" type="number" value="${inputWidgetInstance?.minValueRange}" class="form-control"/>
         </div>
     </div>
@@ -141,7 +141,7 @@
         <label class="control-label col-lg-3" for="maxValueRange"> 
             <g:message code="inputWidget.maxValueRange.label" default="Max Value Range" />
         </label>
-        <div class=" col-lg-6">
+        <div class=" col-lg-3">
             <g:field name="maxValueRange" type="number" value="${inputWidgetInstance?.maxValueRange}" class="form-control"/>
         </div>
     </div>
