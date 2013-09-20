@@ -1,5 +1,5 @@
-<div id="createMenuItemModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="create-menu-item-title"
-    aria-hidden="true">
+<div id="create-menu-item-overlay" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="create-menu-item-title" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

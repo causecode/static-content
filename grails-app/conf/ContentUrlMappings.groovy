@@ -18,10 +18,6 @@ class ContentUrlMappings {
                 }
             }
         }
-        "/menuItem/AddMenuItem" {
-            controller = "menuItem"
-            action = "create"
-        }
     }
 
 }

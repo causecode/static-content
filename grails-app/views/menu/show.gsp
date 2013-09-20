@@ -11,7 +11,8 @@
             Sort Menu Items
         </h1>
         <span class="btn-group pull-right">
-            <a href="#" class="btn btn-primary btn-sm" id="create-menu-item"><i class="icon-plus"></i> Menu Item</a>
+            <a href="#create-menu-item-overlay" class="btn btn-primary btn-sm" data-toggle="modal">
+                <i class="icon-plus"></i> Menu Item</a>
         </span>
     </div>
 

@@ -30,12 +30,6 @@ function getMenuItemIndex(menuId,menuItemId,parentId,index) {
         }
     });
 }
-/*
- * JS for Creating Menu Item.
- */
-$('a#create-menu-item').click(function() {
-    $('#createMenuItemModal').modal('show');
-});
 
 $('a#create').click(function(){
     var title = $('input#title').val(); 
