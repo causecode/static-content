@@ -2,7 +2,7 @@
 <head>
     <meta name="layout" content="main">
     <g:set var="entityName" value="${message(code: 'menu.label')}" />
-    <title><g:message code="default.SortMenuItems.label" args="[entityName]" /></title>
+    <title>Sort ${entityName } - ${menuInstance.name }</title>
     <r:require modules="menuItem" />
 </head>
 <body>
@@ -22,10 +22,10 @@
             <g:each in="${menuItemInstanceList}" var="menuItemInstance">
                 <g:if test="${menuItemInstance && !menuItemInstance?.parent }">
                     <li id="${menuItemInstance?.id }" class="thumbnail" data-menu-item-id="${menuItemInstance?.id }">
-                        <i class="icon-move"></i> <strong>
-                            ${menuItemInstance?.title}
-                    </strong> <a id="editMenuItem" href="#" class="pull-right"><i class="icon-pencil"></i></a> <com:bootstrapMediaMenu
-                            id="${menuItemInstance?.id}"></com:bootstrapMediaMenu>
+                        <i class="icon-move"></i>
+                        <strong>${menuItemInstance?.title}</strong>
+                        <a id="editMenuItem" href="#" class="pull-right"><i class="icon-pencil"></i></a>
+                        <com:bootstrapMediaMenu id="${menuItemInstance?.id}" />
                     </li>
                 </g:if>
             </g:each>
@@ -33,6 +33,10 @@
     </div>
     <g:render template="/menuItem/templates/createMenuItemOverlay" plugin="content" />
     <g:render template="/menuItem/templates/editMenuItemOverlay" plugin="content" />
+
+    <div class="separator" style="margin: 40px 0 50px"><span class="separator-text">Preview</span></div>
+
+    <com:menu id="${menuInstance.id }" />
 
 </body>
 </html>

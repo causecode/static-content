@@ -1,8 +1,12 @@
-#menu-item-sorting ul.thumbnails.childWrapper {
-    margin-left: -20px;
+#menu-item-sorting ul {
+    list-style: none;
 }
 
-#menu-item-sorting li.thumbnail {
+#menu-item-sorting ul.thumbnails {
+    margin-left: -40px;
+}
+
+#menu-item-sorting ul li.thumbnail {
     float: none;
     margin-bottom:10px;
     -webkit-transition: none;

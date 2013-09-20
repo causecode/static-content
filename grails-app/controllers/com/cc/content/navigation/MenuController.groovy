@@ -8,6 +8,8 @@
 
 package com.cc.content.navigation
 
+import grails.converters.JSON
+
 import org.springframework.dao.DataIntegrityViolationException
 
 class MenuController {
@@ -61,6 +63,8 @@ class MenuController {
     def show(Long id) {
         if(request.xhr){
             menuItemInstance = menuItemService.editMenuItemsOrder(params)
+            render ([success: true]) as JSON
+            return
         }
         [menuItemInstanceList: menuInstance?.menuItems, menuInstanceTotal: Menu.count(),menuInstance:menuInstance]
     }
