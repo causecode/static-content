@@ -1,5 +1,5 @@
 <small class="text-muted">
-    <i class="icon-user"></i>&nbsp;
+    <i class="icon-user" title="Posted By"></i>&nbsp;
     <g:if test="${authorName }">
         ${authorName }
     </g:if>

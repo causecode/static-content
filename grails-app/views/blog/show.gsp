@@ -28,9 +28,13 @@
 
 <body>
     <div class="page-header">
-        <h1>
+        <h1 class="inline">
             ${blogInstance.title }
         </h1>
+        <content:canEdit>
+            <g:link action="edit" id="${blogInstance.id}" class="clear-hover"><i class="icon-edit"></i></g:link>
+            <g:link action="delete" id="${blogInstance.id }"  class="clear-hover"><i class="icon-trash"></i></g:link>
+        </content:canEdit>
         <g:if test="${blogInstance.subTitle }">
             <h4>
                 ${blogInstance.subTitle}
@@ -65,20 +69,5 @@
     </g:if>
 
     <g:render template="/blog/templates/commentOverlay" plugin="comment" />
-    <content:canEdit>
-        <g:form>
-            <fieldset>
-                <div class="form-actions">
-                    <g:hiddenField name="id" value="${blogInstance?.id}" />
-                    <g:link class="btn btn-primary" action="edit" id="${blogInstance?.id}">
-                        <g:message code="default.button.edit.label" default="Edit" />
-                    </g:link>
-                    <g:actionSubmit class="btn btn-danger" action="delete"
-                        value="${message(code: 'default.button.delete.label')}"
-                        onclick="return confirm('${message(code: 'default.button.delete.confirm.message')}');" />
-                </div>
-            </fieldset>
-        </g:form>
-    </content:canEdit>
 </body>
 </html>

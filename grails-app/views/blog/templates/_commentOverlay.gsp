@@ -11,25 +11,29 @@
                         <div class="form-group">
                             <label class="control-label col-sm-3">Subject </label>
                             <div class="col-sm-7">
-                                <g:textField name="subject" class="form-control" required="" autofocus="autofocus" />
+                                <g:textField name="subject" class="form-control" required="" autofocus="autofocus"
+                                    placeholder="" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-3">Name </label>
                             <div class="col-sm-7">
-                                <g:textField name="name" class="form-control" required="" />
+                                <g:textField name="name" class="form-control" required=""
+                                    placeholder="John Doe" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-3">Email </label>
                             <div class="col-sm-7">
-                                <g:textField name="email" class="form-control" required="" />
+                                <g:textField name="email" class="form-control" required=""
+                                    placeholder="test@example.com" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-3">Comment </label>
                             <div class="col-sm-7">
-                                <g:textArea name="commentText" class="form-control" required="" />
+                                <g:textArea name="commentText" class="form-control" required=""
+                                    placeholder="Your Comment" />
                             </div>
                         </div>
                     </div>

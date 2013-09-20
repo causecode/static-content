@@ -20,7 +20,7 @@ class BlogController {
 
     static defaultAction = "list"
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [save: "POST", update: "POST"]
 
     def beforeInterceptor = [action: this.&validate]
 
