@@ -18,6 +18,16 @@ class ContentUrlMappings {
                 }
             }
         }
+        "/blog" (controller: "blog", action: "list")
+        "/blog/byTag/$tag" {
+            controller = "blog"
+            action = "list"
+            constraints {
+                tag validator: {  //Used to distinguish other Url like '/blog/edit/1'
+                    !it.isNumber()
+                }
+            }
+        }
     }
 
 }

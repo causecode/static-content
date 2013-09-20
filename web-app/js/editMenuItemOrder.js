@@ -30,30 +30,23 @@ function getMenuItemIndex(menuId,menuItemId,parentId,index) {
         }
     });
 }
-/*
- * JS for Creating Menu Item.
- */
-$('a#create-menu-item').click(function() {
-    $('#createMenuItemModal').modal('show');
-});
 
 $('a#create').click(function(){
     var title = $('input#title').val(); 
     var roles = $('select#roles').val();
     var url = $('input#url').val();
     var showOnlyWhenLoggedIn = $('input#showOnlyWhenLoggedIn').val();
-    $('ul.menuItem').prepend("<li id=\"\"class=\"img-thumbnail temporaryMenuItem\" data-title=\""+title+ "\""+
+    $('ul.menuItem').prepend("<li id=\"\"class=\"thumbnail clearfix temporaryMenuItem\" data-title=\""+title+ "\""+
                              " data-roles=\"" + roles + "\"" +
                              " data-url=\""+ url + "\"" +
                              " data-show-only-when-logged-in=\"" + showOnlyWhenLoggedIn + "\">" +
                              "<i class=\"icon-move\"></i>"+
                              "<strong>" + title + "</strong>" + 
-                             "<a id=\"save-button\" role=\"button\" href=\"#\" class=\"btn btn-default btn-sm\">Save</a></li>");
+                             "<a id=\"save-button\" role=\"button\" href=\"#\" class=\"btn btn-default btn-xs\">Save</a></li>");
 });
 
 $(document).on("click", "a#save-button", function(){ 
-    $('#alertMessageLink').text('MenuItem Created Successfully!');
-    $('#alertMessageLink').show();
+    $('#alertMessageLink').text('MenuItem Created Successfully!').show();
 
     var $menuItem = $(this).parents('li.temporaryMenuItem');
     var title = $menuItem.data('title');
@@ -69,20 +62,18 @@ $(document).on("click", "a#save-button", function(){
     $('li.temporaryMenuItem').removeClass('temporaryMenuItem');
     $.ajax({
         type: 'POST',
-        url: '/menuItem/saveMenuItem',
+        url: '/menuItem/save',
         data: {'title':title,'roles':roles,'url':url,'showOnlyWhenLoggedIn':showOnlyWhenLoggedIn,
                'parentId':parentId,'menuId':menuId,'index':index},
         success: function(response) {
-                if(response) {
-                    var menuItemId = response ;
-                    $menuItem.attr('id',menuItemId);
-                    $menuItem.data('menu-item-id',menuItemId);
-                    $menuItem.removeAttr('data-title');
-                    $menuItem.removeAttr('data-url');
-                    $menuItem.removeAttr('data-roles');
-                    $menuItem.removeAttr('data-show-only-when-logged-in');
-                    $menuItem.append('<a  id="editMenuItem" href="#" class="pull-right"><i class="icon-pencil"></i></a>');
-                }
+            var menuItemId = response ;
+            $menuItem.attr('id',menuItemId);
+            $menuItem.data('menu-item-id',menuItemId);
+            $menuItem.removeAttr('data-title');
+            $menuItem.removeAttr('data-url');
+            $menuItem.removeAttr('data-roles');
+            $menuItem.removeAttr('data-show-only-when-logged-in');
+            $menuItem.append('<a  id="editMenuItem" href="#" class="pull-right"><i class="icon-pencil"></i></a>');
         }
     });
 });
@@ -94,8 +85,8 @@ $(document).on("click", "a#editMenuItem", function(){
     menuItemId = $menuItem.data('menu-item-id')
     $.ajax({
         type: 'POST',
-        url: '/menuItem/editMenuItem',
-        data: {'menuItemId':menuItemId},
+        url: '/menuItem/edit',
+        data: {id: menuItemId},
         success: function(response) {
                 if(response) {
                     var itemInstance = response
@@ -129,8 +120,8 @@ $(document).on("click", "a#updateMenuItem", function(){
     var roles = rolesArray + "";
     $.ajax({
         type: 'POST',
-        url: '/menuItem/updateMenuItem',
-        data: {'title':title,'roles':roles,'url':url,'showOnlyWhenLoggedIn':showOnlyWhenLoggedIn,'menuItemId':menuItemId},
+        url: '/menuItem/update',
+        data: {'title':title,'roles':roles,'url':url,'showOnlyWhenLoggedIn':showOnlyWhenLoggedIn, id: menuItemId},
         success: function(response) {
         }
     });

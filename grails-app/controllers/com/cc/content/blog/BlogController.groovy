@@ -11,6 +11,7 @@ package com.cc.content.blog
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+import org.grails.taggable.TagLink
 import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.content.blog.comment.BlogComment
@@ -20,11 +21,10 @@ class BlogController {
 
     static defaultAction = "list"
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [save: "POST", update: "POST"]
 
     def beforeInterceptor = [action: this.&validate]
 
-    def blogService
     def contentService
     def springSecurityService
 
@@ -45,24 +45,34 @@ class BlogController {
         return true
     }
 
-    def list(Integer max, Integer offset) {
+    def list(Integer max, Integer offset, String tag) {
         long blogInstanceTotal
         boolean publish = false
 
         params.offset = offset ? offset: 0
         params.max = Math.min(max ?: 2, 100)
 
-        String query = """select new Map(b.id as id, b.body as body, b.title as title, b.subTitle as subTitle,
-                            b.author as author, b.dateCreated as dateCreated) from Blog b"""
+        StringBuilder query = new StringBuilder("""SELECT new Map(b.id as id, b.body as body, b.title as title,
+                            b.subTitle as subTitle, b.author as author, b.dateCreated as dateCreated) FROM Blog b """)
+
+        if(tag) {
+            query.append(", ${TagLink.class.name} tagLink WHERE b.id = tagLink.tagRef ")
+            query.append("AND tagLink.type = 'blog' AND tagLink.tag.name = '$tag' ")
+        }
 
         if(contentService.contentManager) {
-            blogInstanceTotal = Blog.count()
+            blogInstanceTotal = tag ? Blog.countByTag(tag) : Blog.count()
+        } else if(tag) {
+            query.append("AND b.publish = true")
+            blogInstanceTotal = Blog.findAllByTagWithCriteria(tag) {
+                eq("publish", true)
+            }.size()
         } else {
-            query += " where publish = true"
+            query.append("WHERE b.publish = true")
             blogInstanceTotal = Blog.countByPublish(true)
         }
 
-        List<Map> blogList = Blog.executeQuery(query, [max: params.max, offset: params.offset])
+        List<Map> blogList = Blog.executeQuery(query.toString(), [max: params.max, offset: params.offset])
 
         Pattern patternTag = Pattern.compile(HTML_P_TAG_PATTERN)
 
@@ -79,14 +89,15 @@ class BlogController {
     }
 
     def save() {
-        Blog.withTransaction {
+        Blog.withTransaction { status ->
             blogInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Blog.class)
             if (blogInstance.hasErrors()) {
+                status.setRollbackOnly()
                 render(view: "create", model: [blogInstance: blogInstance])
                 return
             }
-            blogService.addTags(blogInstance, params.tags)
-            blogInstance.save()
+            blogInstance.setTags(params.tags.tokenize(",")*.trim())
+            blogInstance.save(flush: true)
             flash.message = message(code: 'default.created.message', args: [message(code: 'blog.label'), blogInstance.id])
             redirect(action: "show", id: blogInstance.id)
         }
@@ -112,16 +123,18 @@ class BlogController {
             }
         }
 
-        Blog.withTransaction {
+        Blog.withTransaction { status ->
+            String tags = params.remove("tags")
             contentService.update(params, blogInstance, params.meta.list("type"), params.meta.list("value"))
 
             if (blogInstance.hasErrors()) {
+                status.setRollbackOnly()
                 render(view: "edit", model: [blogInstance: blogInstance])
                 return
             }
 
-            blogService.addTags(blogInstance, params.tags)
-            blogInstance.save()
+            blogInstance.setTags(tags.tokenize(",")*.trim())
+            blogInstance.save(flush: true)
 
             flash.message = message(code: 'default.updated.message', args: [message(code: 'blog.label'), blogInstance.id])
             redirect(action: "show", id: blogInstance.id)
@@ -138,11 +151,6 @@ class BlogController {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'blog.label'), id])
             redirect(action: "show", id: id)
         }
-    }
-
-    def findByTag(String tag) {
-        def blogList= Blog.findAllByTag(tag)
-        render(view: "list", model: [blogInstanceList: blogList, blogInstanceTotal: blogList.size()])
     }
 
     def comment(Long commentId) {

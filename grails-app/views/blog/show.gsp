@@ -11,56 +11,60 @@
     <meta http-equiv="blog-Type" blog="text/html; charset=UTF-8" />
     <meta name="layout" content="main" />
     <g:set var="entityName" value="${message(code: 'blog.label')}" />
-    <title>${blogInstance.title }</title>
     <content:renderMetaTags contentInstance="${blogInstance }" />
+    <title>${blogInstance.title }</title>
     <style type="text/css">
-        div.comment {
+        .comment .comment-info {
+            margin-bottom: 6px;
+        }
+        .comment.nested {
             margin-left: 50px;
+        }
+        .comment a i.icon-reply {
+            font-size: 76%;
         }
     </style>
 </head>
 
 <body>
     <div class="page-header">
-        <h1>
+        <h1 class="inline">
             ${blogInstance.title }
         </h1>
-        <h4>
-            ${blogInstance.subTitle}
-        </h4>
-        <g:render template="/blog/templates/additionalInfo" model="[instance: blogInstance]" />
+        <content:canEdit>
+            <g:link action="edit" id="${blogInstance.id}" class="clear-hover"><i class="icon-edit"></i></g:link>
+            <g:link action="delete" id="${blogInstance.id }"  class="clear-hover"><i class="icon-trash"></i></g:link>
+        </content:canEdit>
+        <g:link class="pull-right btn btn-default" title="Blogs"><i class="icon-th-list"></i></g:link>
+        <g:if test="${blogInstance.subTitle }">
+            <h4>
+                ${blogInstance.subTitle}
+            </h4>
+        </g:if>
+        <g:render template="/blog/templates/additionalInfo" model="[id: blogInstance.id,
+            dateCreated: blogInstance.dateCreated]" />
     </div>
-    <%= blogInstance.body %>
+    <div class="blog-body">
+        <%= blogInstance.body %>
+    </div>
     <g:if test="${blogInstance.tags }">
-        <b>Tags: </b>
-        <g:each in="${blogInstance.tags}" var="tag">
-            <g:link action="findByTag" params="[tag: tag]">${tag}</g:link>
+        <i class="icon-tags"></i>
+        <g:each in="${blogInstance.tags}" var="tag" status="i">
+            <g:link action="list" params="[tag: tag]">${tag}</g:link>${i < blogInstance.tags.size() - 1 ? ',' : '' }
         </g:each>
     </g:if>
-    <content:canEdit>
-        <g:form>
-            <fieldset>
-                <div class="form-actions">
-                    <g:hiddenField name="id" value="${blogInstance?.id}" />
-                    <g:link class="edit btn btn-default btn-primary" action="edit" id="${blogInstance?.id}">
-                        <g:message code="default.button.edit.label" default="Edit" />
-                    </g:link>
-                    <g:actionSubmit class="delete btn btn-default btn-danger" action="delete"
-                        value="${message(code: 'default.button.delete.label')}"
-                        onclick="return confirm('${message(code: 'default.button.delete.confirm.message')}');" />
-                </div>
-            </fieldset>
-        </g:form>
-    </content:canEdit>
 
     <div class="page-header">
         <h2 class="inline">Comments</h2>
-        &nbsp;&nbsp;<a href="#comment-overlay" class="commentButton" data-toggle="modal" data-comment-id="">Add</a>
+        &nbsp;&nbsp;
+        <a href="#comment-overlay" class="commentButton" data-toggle="modal" data-comment-id="">Add</a>
     </div>
 
-    <g:each in="${comments}">
-        <g:render template="/blog/templates/comments" model="[commentInstance: it]" />
-    </g:each>
+    <ul class="media-list">
+        <g:each in="${comments}" var="commentInstance">
+            <content:comment commentInstance="${commentInstance}" />
+        </g:each>
+    </ul>
     <g:if test="${!comments }">
         Sorry, no comments to display.
     </g:if>

@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta name="layout" content="main">
-<g:set var="entityName" value="${message(code: 'menu.label', default: 'Menu')}" />
+<g:set var="entityName" value="${message(code: 'menu.label')}" />
 <title><g:message code="default.list.label" args="[entityName]" /></title>
 </head>
 <body>
@@ -32,8 +32,7 @@
             </g:each>
             <g:if test="${!menuInstanceList }">
                 <tr>
-                    <td>No record found. <g:link action="create">Create new</g:link>.
-                    </td>
+                    <td colspan="3">No record found. <g:link action="create">Create new</g:link></td>
                 </tr>
             </g:if>
         </tbody>

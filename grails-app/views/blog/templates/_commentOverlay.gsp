@@ -11,30 +11,34 @@
                         <div class="form-group">
                             <label class="control-label col-sm-3">Subject </label>
                             <div class="col-sm-7">
-                                <g:textField name="subject" class="form-control" required="" autofocus="autofocus" />
+                                <g:textField name="subject" class="form-control" required="" autofocus="autofocus"
+                                    placeholder="" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-3">Name </label>
                             <div class="col-sm-7">
-                                <g:textField name="name" class="form-control" />
+                                <g:textField name="name" class="form-control" required=""
+                                    placeholder="John Doe" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-3">Email </label>
                             <div class="col-sm-7">
-                                <g:textField name="email" class="form-control" />
+                                <g:textField name="email" class="form-control" required=""
+                                    placeholder="test@example.com" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-sm-3">Comment </label>
                             <div class="col-sm-7">
-                                <g:textArea name="commentText" class="form-control" />
+                                <g:textArea name="commentText" class="form-control" required=""
+                                    placeholder="Your Comment" />
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <g:submitButton class="btn btn-primary" name="Comment" />
+                        <button class="btn btn-primary" type="submit"><i class="icon-comment"></i> Comment</button>
                         <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                         <g:hiddenField name="id" value="${blogInstance.id}" />
                         <g:hiddenField name="commentId" />
