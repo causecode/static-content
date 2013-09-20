@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <g:submitButton class="btn btn-primary" name="Comment" />
+                        <button class="btn btn-primary" type="submit"><i class="icon-comment"></i> Comment</button>
                         <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
                         <g:hiddenField name="id" value="${blogInstance.id}" />
                         <g:hiddenField name="commentId" />

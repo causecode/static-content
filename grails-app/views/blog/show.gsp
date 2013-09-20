@@ -35,6 +35,7 @@
             <g:link action="edit" id="${blogInstance.id}" class="clear-hover"><i class="icon-edit"></i></g:link>
             <g:link action="delete" id="${blogInstance.id }"  class="clear-hover"><i class="icon-trash"></i></g:link>
         </content:canEdit>
+        <g:link class="pull-right btn btn-default" title="Blogs"><i class="icon-th-list"></i></g:link>
         <g:if test="${blogInstance.subTitle }">
             <h4>
                 ${blogInstance.subTitle}
@@ -47,9 +48,9 @@
         <%= blogInstance.body %>
     </div>
     <g:if test="${blogInstance.tags }">
-        <b>Tags: </b>
-        <g:each in="${blogInstance.tags}" var="tag">
-            <g:link action="findByTag" params="[tag: tag]">${tag}</g:link>
+        <i class="icon-tags"></i>
+        <g:each in="${blogInstance.tags}" var="tag" status="i">
+            <g:link action="list" params="[tag: tag]">${tag}</g:link>${i < blogInstance.tags.size() - 1 ? ',' : '' }
         </g:each>
     </g:if>
 

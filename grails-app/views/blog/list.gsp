@@ -34,7 +34,7 @@
                 <h4>
                     ${it.subTitle}
                 </h4>
-                <g:render template="/blog/templates/additionalInfo" model="[instance: it]" />
+                <g:render template="/blog/templates/additionalInfo" model="[dateCreated: it.dateCreated, id: it.id]" />
                 <div class="blog-body">
                     <br>
                     <strong>Description:</strong>
