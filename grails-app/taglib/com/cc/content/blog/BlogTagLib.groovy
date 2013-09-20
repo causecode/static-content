@@ -14,10 +14,19 @@ class BlogTagLib {
 
     static namespace = "content"
 
+    def comment = { attrs, body ->
+        Comment commentInstance = attrs.commentInstance
+        out << """<li class="media comment">"""
+        out << render(template: '/blog/templates/commentBody', model: [commentInstance: commentInstance], plugin: "content")
+        out << """</li>"""
+    }
+
     def nestedComment = { attrs, body ->
         List blogReplyComments = Comment.findAllByReplyTo(attrs.commentInstance)
         blogReplyComments.each {
-            out << render(template: '/blog/templates/comments', model: [commentInstance: it], plugin: "content")
+            out << """<div class="media comment nested">"""
+            out << render(template: '/blog/templates/commentBody', model: [commentInstance: it, nested: true], plugin: "content")
+            out << """</div>"""
         }
     }
 
