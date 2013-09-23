@@ -2,7 +2,7 @@
 <head>
 <meta name="layout" content="main">
 <g:set var="entityName" value="${message(code: 'news.label', default: 'News')}" />
-<title><g:message code="default.list.label" args="[entityName]" /></title>
+    <title><g:message code="default.list.label" args="[entityName]" /></title>
 </head>
 <body>
     <content tag="breadcrumb">

@@ -28,7 +28,7 @@
     <label class="control-label col-sm-4" for="roles"> <g:message code="menuItem.roles.label" default="Role" />
     </label>
     <div class="col-sm-6">
-        <g:select name="roles" from="${grailsApplication.config.cc.plugins.content.contentManagerRole}"
+        <g:select name="roles" from="${grailsApplication.config.cc.plugins.content.rolesForMenuMenuItem}"
             value="${menuItemInstance?.roles}" multiple="true" class="form-control" />
     </div>
 </div>
