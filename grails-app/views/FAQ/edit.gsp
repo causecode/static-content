@@ -5,6 +5,9 @@
 <title><g:message code="default.edit.label" args="[entityName]" /></title>
 </head>
 <body>
+    <content tag="breadcrumb">
+            <content:breadcrumb map="['/FAQ/list': 'FAQs', 'active':'Edit FAQ']"/>
+    </content>
     <div class="page-header">
         <h1>
             <g:message code="default.edit.label" args="[entityName]" />

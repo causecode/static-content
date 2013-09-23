@@ -27,6 +27,7 @@ class BlogController {
 
     def contentService
     def springSecurityService
+    def simpleCaptchaService
 
     private Blog blogInstance
 
@@ -71,7 +72,8 @@ class BlogController {
             query.append("WHERE b.publish = true")
             blogInstanceTotal = Blog.countByPublish(true)
         }
-        query.append("order by b.dateCreated desc")
+        query.append(" order by b.dateCreated desc")
+
         List<Map> blogList = Blog.executeQuery(query.toString(), [max: params.max, offset: params.offset])
         Pattern patternTag = Pattern.compile(HTML_P_TAG_PATTERN)
 
@@ -154,6 +156,12 @@ class BlogController {
 
     def comment(Long commentId) {
         Comment.withTransaction { status ->
+            boolean captchaValid = simpleCaptchaService.validateCaptcha(params.captcha)
+            if(!captchaValid) {
+                flash.message = message(code: 'default.captcha.invalid.message', args: [message(code: 'captcha.label')])
+                redirect uri: blogInstance.searchLink()
+                return
+            }
             Comment commentInstance = new Comment()
             bindData(commentInstance, params, [include: ['subject', 'name', 'email', 'commentText']])
             if(!commentInstance.save(flush: true)) {

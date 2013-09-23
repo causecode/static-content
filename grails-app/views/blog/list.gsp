@@ -9,12 +9,13 @@
 <html>
 <head>
     <meta name="layout" content="main">
-    <g:set var="entityName" value="${message(code: 'blog.label', default: 'Latest Blog')}" />
+    <meta name="revisit-after" content="2 days">
+    <g:set var="entityName" value="${message(code: 'blog.list.label', default: 'Latest Blogs')}" />
     <title><g:message code="default.list.label" args="[entityName]" /></title>
 </head>
 <body>
     <content tag="breadcrumb">
-            <content:breadcrumb map="['active': 'Blog List']"/>
+            <content:breadcrumb map="['active': 'Blogs']"/>
     </content>
     <div class="page-header">
         <h1 class="inline">Blog</h1>
@@ -40,7 +41,6 @@
                 <g:render template="/blog/templates/additionalInfo" model="[dateCreated: it.dateCreated, id: it.id]" />
                 <div class="blog-body">
                     <br>
-                    <strong>Description:</strong>
                     ${it.body}
                     <a href="<content:searchLink id='${it.id }' />">...more</a>
                 </div>

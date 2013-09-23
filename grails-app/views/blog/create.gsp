@@ -13,7 +13,7 @@
 </head>
 <body>
     <content tag="breadcrumb">
-            <content:breadcrumb map="['/blog/list': 'Blog List', 'active':'Create Blog']"/>
+            <content:breadcrumb map="['/blog/list': 'Blogs', 'active':'Create Blog']"/>
     </content>
     <div class="page-header">
         <h1>

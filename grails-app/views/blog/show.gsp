@@ -10,7 +10,6 @@
 <head>
     <meta http-equiv="blog-Type" blog="text/html; charset=UTF-8" />
     <meta name="layout" content="main" />
-    <meta name="revisit-after" content="2 days">
     <g:set var="entityName" value="${message(code: 'blog.label')}" />
     <content:renderMetaTags contentInstance="${blogInstance }" />
     <title>${blogInstance.title }</title>
@@ -29,7 +28,7 @@
 
 <body>
     <content tag="breadcrumb">
-            <content:breadcrumb map="['/blog/list': 'Blog List', 'active':(blogInstance.title)]"/>
+            <content:breadcrumb map="['/blog/list': 'Blogs', 'active':(blogInstance.title)]"/>
     </content>
     <div class="page-header">
         <h1 class="inline">

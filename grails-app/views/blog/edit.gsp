@@ -17,7 +17,7 @@
 </head>
 <body>
     <content tag="breadcrumb">
-            <content:breadcrumb map="['/blog/list': 'Blog List', 'active':'Edit Blog']"/>
+            <content:breadcrumb map="['/blog/list': 'Blogs', 'active':'Edit Blog']"/>
     </content>
     <div id="edit-blog" class="content page-header" role="main">
         <h1>

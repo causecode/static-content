@@ -36,6 +36,15 @@
                                     placeholder="Your Comment" />
                             </div>
                         </div>
+                        <div class="captcha form-group">
+                            <div class="col-sm-3" for="captcha">
+                                <img class="thumbnail" src="${createLink(controller: 'simpleCaptcha', action: 'captcha')}"/>
+                            </div>
+                            <div class="col-sm-7">
+                                <g:textField name="captcha" class="form-control" 
+                                    placeholder="Enter the words"/>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" type="submit"><i class="icon-comment"></i> Comment</button>
