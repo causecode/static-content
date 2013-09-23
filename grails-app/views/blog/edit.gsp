@@ -16,6 +16,9 @@
 <title><g:message code="default.edit.label" args="[entityName]" /></title>
 </head>
 <body>
+    <content tag="breadcrumb">
+            <content:breadcrumb map="['/blog/list': 'Blog List', 'active':'Edit Blog']"/>
+    </content>
     <div id="edit-blog" class="content page-header" role="main">
         <h1>
             <g:message code="default.edit.label" args="[entityName]" />

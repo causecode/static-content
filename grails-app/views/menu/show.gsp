@@ -6,6 +6,9 @@
     <r:require modules="menuItem" />
 </head>
 <body>
+    <content tag="breadcrumb">
+            <content:breadcrumb map="['/menu/list': 'Menu List', 'active':(menuInstance.name)]"/>
+    </content>
     <div class="page-header">
         <h1 class="inline">
             Sort Menu Items

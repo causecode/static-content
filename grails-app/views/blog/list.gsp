@@ -13,6 +13,9 @@
     <title><g:message code="default.list.label" args="[entityName]" /></title>
 </head>
 <body>
+    <content tag="breadcrumb">
+            <content:breadcrumb map="['active': 'Blog List']"/>
+    </content>
     <div class="page-header">
         <h1 class="inline">Blog</h1>
         <sec:ifAnyGranted roles="ROLE_EMPLOYEE,ROLE_CONTENT_MANAGER">

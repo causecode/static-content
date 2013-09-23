@@ -71,9 +71,8 @@ class BlogController {
             query.append("WHERE b.publish = true")
             blogInstanceTotal = Blog.countByPublish(true)
         }
-
+        query.append("order by b.dateCreated desc")
         List<Map> blogList = Blog.executeQuery(query.toString(), [max: params.max, offset: params.offset])
-
         Pattern patternTag = Pattern.compile(HTML_P_TAG_PATTERN)
 
         blogList.each {

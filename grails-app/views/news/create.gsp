@@ -5,6 +5,9 @@
 <title><g:message code="default.create.label" args="[entityName]" /></title>
 </head>
 <body>
+    <content tag="breadcrumb">
+            <content:breadcrumb map="['/news/list': 'News List', 'active':'Create News']"/>
+    </content>
     <div class="page-header">
         <h1>
             <g:message code="default.create.label" args="[entityName]" />

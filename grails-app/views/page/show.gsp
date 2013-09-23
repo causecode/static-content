@@ -5,6 +5,9 @@
     <title>${pageInstance.title }</title>
 </head>
 <body>
+    <content tag="breadcrumb">
+        <content:breadcrumb map="['/page/list': 'Page List', 'active':(pageInstance.title)]"/>
+    </content>
     <div class="page-header">
         <h1>
             ${pageInstance.title }

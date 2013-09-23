@@ -10,6 +10,7 @@
 <head>
     <meta http-equiv="blog-Type" blog="text/html; charset=UTF-8" />
     <meta name="layout" content="main" />
+    <meta name="revisit-after" content="2 days">
     <g:set var="entityName" value="${message(code: 'blog.label')}" />
     <content:renderMetaTags contentInstance="${blogInstance }" />
     <title>${blogInstance.title }</title>
@@ -27,6 +28,9 @@
 </head>
 
 <body>
+    <content tag="breadcrumb">
+            <content:breadcrumb map="['/blog/list': 'Blog List', 'active':(blogInstance.title)]"/>
+    </content>
     <div class="page-header">
         <h1 class="inline">
             ${blogInstance.title }
@@ -48,10 +52,12 @@
         <%= blogInstance.body %>
     </div>
     <g:if test="${blogInstance.tags }">
-        <i class="icon-tags"></i>
-        <g:each in="${blogInstance.tags}" var="tag" status="i">
-            <g:link action="list" params="[tag: tag]">${tag}</g:link>${i < blogInstance.tags.size() - 1 ? ',' : '' }
-        </g:each>
+        <div class="blog-tags" style="margin-top: 20px;">
+            <i class="icon-tags"></i>
+            <g:each in="${blogInstance.tags}" var="tag" status="i">
+                <g:link action="list" params="[tag: tag]">${tag}</g:link>${i < blogInstance.tags.size() - 1 ? ',' : '' }
+            </g:each>
+        </div>
     </g:if>
 
     <div class="page-header">

@@ -15,6 +15,9 @@
 <title><g:message code="default.edit.label" args="[entityName]" /></title>
 </head>
 <body>
+    <content tag="breadcrumb">
+            <content:breadcrumb map="['/pageLayout/list': 'PageLayout List', 'active':'Edit PageLayout']"/>
+    </content>
     <div id="edit-pageLayout" class="content page-header">
         <h1>
             <g:message code="default.edit.label" args="[entityName]" />

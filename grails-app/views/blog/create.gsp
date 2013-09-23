@@ -12,6 +12,9 @@
     <title><g:message code="default.create.label" args="[entityName]" /></title>
 </head>
 <body>
+    <content tag="breadcrumb">
+            <content:breadcrumb map="['/blog/list': 'Blog List', 'active':'Create Blog']"/>
+    </content>
     <div class="page-header">
         <h1>
             <g:message code="default.create.label" args="[entityName]" />

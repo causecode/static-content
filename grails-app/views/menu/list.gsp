@@ -5,6 +5,9 @@
 <title><g:message code="default.list.label" args="[entityName]" /></title>
 </head>
 <body>
+    <content tag="breadcrumb">
+            <content:breadcrumb map="['active': 'Menu List']"/>
+    </content>
     <div class="page-header">
         <h1>
             <g:message code="default.list.label" args="[entityName]" />
