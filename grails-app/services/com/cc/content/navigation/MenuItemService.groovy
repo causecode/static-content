@@ -27,7 +27,6 @@ class MenuItemService {
     }
 
     MenuItem update(MenuItem menuItemInstance , Map args) {
-        println args
         def menuInstance
         def mainMenuInstance
         def subMenuItemInstance
@@ -79,7 +78,6 @@ class MenuItemService {
     }
 
     MenuItem editMenuItemsOrder(Map args){
-        println args
         def menuId = args.menuId
         def menuItemId = args.menuItemId
         def parentId = args.parentId

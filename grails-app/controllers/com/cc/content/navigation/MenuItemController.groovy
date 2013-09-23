@@ -60,7 +60,7 @@ class MenuItemController {
         render itemData as JSON
     }
 
-    def updateMenuItem(){
+    def update(){
         menuItemInstance = menuItemService.update(menuItemInstance, params)
     }
 
