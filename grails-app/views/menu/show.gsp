@@ -21,7 +21,7 @@
 
     <div id="menu-item-sorting">
         <div id="alertMessageLink" class="alert alert-success hide"></div>
-        <ul id="menuItemList" class="sortable thumbnails menuItem" data-parent-id="" data-menu-id="${menuInstance?.id }">
+        <ul id="menuItemList" class="thumbnails menuItem" data-parent-id="" data-menu-id="${menuInstance?.id }">
             <g:each in="${menuItemInstanceList}" var="menuItemInstance">
                 <g:if test="${menuItemInstance && !menuItemInstance?.parent }">
                     <li id="${menuItemInstance?.id }" class="thumbnail" data-menu-item-id="${menuItemInstance?.id }">

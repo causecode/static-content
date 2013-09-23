@@ -61,12 +61,7 @@ class MenuController {
     }
 
     def show(Long id) {
-        if(request.xhr){
-            menuItemInstance = menuItemService.editMenuItemsOrder(params)
-            render ([success: true]) as JSON
-            return
-        }
-        [menuItemInstanceList: menuInstance?.menuItems, menuInstanceTotal: Menu.count(),menuInstance:menuInstance]
+        [menuItemInstanceList: menuInstance.menuItems, menuInstanceTotal: Menu.count(), menuInstance: menuInstance]
     }
 
     def edit(Long id) {

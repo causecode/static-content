@@ -1,38 +1,35 @@
-/*
+/**
  * JS for calling function which contain Ajax call for sorting Menu Items.
  */
-$(document).ready(function() {
-    $("#menuItemList").sortable({
-        revert:true,
-        update: function( event, ui ) {
-            var $sortedMenuItem = $(ui.item[0])
-            if(!$sortedMenuItem.hasClass('temporaryMenuItem')) {
-                var $sortedParentMenuItem = $sortedMenuItem.parent()
-                var parentId = $sortedParentMenuItem.data('parent-id');
-                var menuItemId = $sortedMenuItem.data('menu-item-id');
-                var menuId = $sortedParentMenuItem.data('menu-id')
-                var index = $sortedMenuItem.index();
-                getMenuItemIndex(menuId,menuItemId,parentId,index)
-            }
+
+var $createMenuItemOverlay = $("#create-menu-item-overlay");
+var $editMenuItemOverlay;
+
+$("ul#menuItemList").sortable({
+    revert:true,
+    update: function( event, ui ) {
+        var $sortedMenuItem = $(ui.item[0]);
+        if($sortedMenuItem.hasClass('temporaryMenuItem')) {
+            return;
         }
-    });
-    $( "ul, li" ).disableSelection();
+        var $sortedParentMenuItem = $sortedMenuItem.parent()
+        var parentId = $sortedParentMenuItem.data('parent-id');
+        var menuItemId = $sortedMenuItem.data('menu-item-id');
+        var menuId = $sortedParentMenuItem.data('menu-id')
+        var index = $sortedMenuItem.index();
+        $.ajax({
+            type: 'POST',
+            url: '/menuItem/reorder',
+            data: {menuId: menuId, menuItemId: menuItemId, parentId: parentId, index: index},
+            success: function(result) {
+            }
+        });
+    }
 });
 
-/**
- * Function used to make Ajax call which sorts Menu Items. 
- */
-function getMenuItemIndex(menuId,menuItemId,parentId,index) {
-    $.ajax({
-        type: 'POST',
-        url: '/menu/show',
-        data: {'menuId':menuId,'menuItemId':menuItemId,'parentId':parentId,'index':index},
-        success: function(result) {
-        }
-    });
-}
+$( "ul, li" ).disableSelection();
 
-$('a#create').click(function(){
+$("a#create", $createMenuItemOverlay).click(function(){
     var title = $('input#title').val(); 
     var roles = $('select#roles').val();
     var url = $('input#url').val();

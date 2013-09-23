@@ -4,3 +4,4 @@
 stacktrace.log
 target/*
 target-eclipse/*
+*.zip*
