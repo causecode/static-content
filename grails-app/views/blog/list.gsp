@@ -10,15 +10,17 @@
 <head>
     <meta name="layout" content="main">
     <meta name="revisit-after" content="2 days">
-    <g:set var="entityName" value="${message(code: 'blog.list.label', default: 'Latest Blogs')}" />
-    <title><g:message code="default.list.label" args="[entityName]" /></title>
+    <g:set var="entityName" value="${message(code: 'blog.label', default: 'Blogs')}" />
+    <title><g:message code="default.blog.list.label" args="[entityName]" /></title>
 </head>
 <body>
     <content tag="breadcrumb">
             <content:breadcrumb map="['active': 'Blogs']"/>
     </content>
     <div class="page-header">
-        <h1 class="inline">Blog</h1>
+        <h1 class="inline">
+            <g:message code="default.blog.list.label" args="[entityName]" />
+        </h1>
         <sec:ifAnyGranted roles="ROLE_EMPLOYEE,ROLE_CONTENT_MANAGER">
             <g:link action='create' controller='blog'>Create a Blog</g:link>
         </sec:ifAnyGranted>

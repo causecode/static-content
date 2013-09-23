@@ -26,6 +26,7 @@ A plugin used to manage contents like static pages, menus etc. at one place.
     cc.plugins.content.authorProperty = "username"
     cc.plugins.content.contentManagerRole = "ROLE_MANAGER_CONTENT"
     cc.plugins.content.default.layout.name = "main"
+    cc.plugins.content.RoleForMenuItem = ["ROLE_ADMIN","ROLE_CONTENT_MANAGER","ROLE_EMPLOYEE","ROLE_USER"]
 
 ## Access protect controllers: (according to application need)
 

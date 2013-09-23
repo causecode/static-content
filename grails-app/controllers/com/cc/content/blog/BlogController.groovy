@@ -100,7 +100,7 @@ class BlogController {
             blogInstance.setTags(params.tags.tokenize(",")*.trim())
             blogInstance.save(flush: true)
             flash.message = message(code: 'default.created.message', args: [message(code: 'blog.label'), blogInstance.id])
-            redirect(action: "show", id: blogInstance.id)
+            redirect uri: blogInstance.searchLink()
         }
     }
 
@@ -138,7 +138,7 @@ class BlogController {
             blogInstance.save(flush: true)
 
             flash.message = message(code: 'default.updated.message', args: [message(code: 'blog.label'), blogInstance.id])
-            redirect(action: "show", id: blogInstance.id)
+            redirect uri: blogInstance.searchLink()
         }
     }
 
@@ -150,7 +150,7 @@ class BlogController {
         }
         catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'blog.label'), id])
-            redirect(action: "show", id: id)
+            redirect uri: blogInstance.searchLink()
         }
     }
 
@@ -166,7 +166,7 @@ class BlogController {
             bindData(commentInstance, params, [include: ['subject', 'name', 'email', 'commentText']])
             if(!commentInstance.save(flush: true)) {
                 status.setRollbackOnly()
-                redirect(action: "show", id: params.id)
+                redirect uri: blogInstance.searchLink()
                 return
             }
             if(commentId) {
@@ -178,7 +178,7 @@ class BlogController {
                 blogCommentInstance.comment = commentInstance
                 blogCommentInstance.save()
             }
-            redirect(action: "show", id: params.id)
+            redirect uri: blogInstance.searchLink()
         }
     }
 

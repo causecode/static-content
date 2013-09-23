@@ -1,8 +1,8 @@
 <html>
 <head>
 <meta name="layout" content="main">
-<g:set var="entityName" value="${message(code: 'menu.label')}" />
-<title><g:message code="default.list.label" args="[entityName]" /></title>
+<g:set var="entityName" value="${message(code: 'menu.label', default: 'Menu')}" />
+    <title><g:message code="default.list.label" args="[entityName]" /></title>
 </head>
 <body>
     <content tag="breadcrumb">

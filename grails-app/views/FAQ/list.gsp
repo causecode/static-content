@@ -1,8 +1,8 @@
 <html>
 <head>
 <meta name="layout" content="main">
-<g:set var="entityName" value="${message(code: 'FAQ.label', default: 'FAQ')}" />
-<title><g:message code="default.list.label" args="[entityName]" /></title>
+<g:set var="entityName" value="${message(code: 'FAQ.label', default: 'FAQs')}" />
+<title><g:message code="default.faq.list.label" args="[entityName]" /></title>
 </head>
 <body>
     <content tag="breadcrumb">
@@ -10,7 +10,7 @@
     </content>
     <div class="page-header">
         <h1>
-            <g:message code="default.list.label" args="[entityName]" />
+            <g:message code="default.faq.list.label" args="[entityName]" />
         </h1>
     </div>
     <table class="table table-bordered table-hover table-striped">

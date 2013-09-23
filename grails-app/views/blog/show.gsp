@@ -10,9 +10,9 @@
 <head>
     <meta http-equiv="blog-Type" blog="text/html; charset=UTF-8" />
     <meta name="layout" content="main" />
-    <g:set var="entityName" value="${message(code: 'blog.label')}" />
+    <g:set var="entityName" value="${blogInstance}" />
     <content:renderMetaTags contentInstance="${blogInstance }" />
-    <title>${blogInstance.title }</title>
+    <title><g:message code="default.show.label" args="[entityName]" /></title>
     <style type="text/css">
         .comment .comment-info {
             margin-bottom: 6px;
