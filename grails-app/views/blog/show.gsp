@@ -28,24 +28,27 @@
 
 <body>
     <content tag="breadcrumb">
-            <content:breadcrumb map="['/blog/list': 'Blogs', 'active':(blogInstance.title)]"/>
+        <content:breadcrumb map="['/blog/list': 'Blogs', 'active':(blogInstance.title)]"/>
     </content>
     <div class="page-header">
-        <h1 class="inline">
+        <h1>
             ${blogInstance.title }
         </h1>
-        <content:canEdit>
-            <g:link action="edit" id="${blogInstance.id}" class="clear-hover"><i class="icon-edit"></i></g:link>
-            <g:link action="delete" id="${blogInstance.id }"  class="clear-hover"><i class="icon-trash"></i></g:link>
-        </content:canEdit>
-        <g:link class="pull-right btn btn-default" title="Blogs"><i class="icon-th-list"></i></g:link>
         <g:if test="${blogInstance.subTitle }">
-            <h4>
+            <h4 class="blog-subtitle">
                 ${blogInstance.subTitle}
             </h4>
         </g:if>
-        <g:render template="/blog/templates/additionalInfo" model="[id: blogInstance.id,
-            dateCreated: blogInstance.dateCreated]" />
+        <div class="blog-info">
+            <g:render template="/blog/templates/additionalInfo" model="[id: blogInstance.id,
+                dateCreated: blogInstance.dateCreated]" />
+            <content:canEdit>
+                &nbsp;<small>
+                    <g:link action="edit" id="${blogInstance.id}" class="clear-hover"><i class="icon-edit"></i></g:link>
+                    <g:link action="delete" id="${blogInstance.id }"  class="clear-hover"><i class="icon-trash"></i></g:link>
+                </small>
+            </content:canEdit>
+        </div>
     </div>
     <div class="blog-body">
         <%= blogInstance.body %>

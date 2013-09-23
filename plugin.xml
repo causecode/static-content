@@ -1,4 +1,4 @@
-<plugin name='content' version='1.9.1' grailsVersion='2.1 &gt; *'>
+<plugin name='content' version='1.9.2' grailsVersion='2.1 &gt; *'>
   <author>CauseCode</author>
   <title>Content Plugin</title>
   <description>A plugin used to manage contents like static pages, menus etc. at one place.
@@ -12,6 +12,7 @@ Also provides shortened and user friendly urls.
     <resource>com.cc.content.ContentFilters</resource>
     <resource>com.cc.content.PageLayoutController</resource>
     <resource>com.cc.content.blog.BlogController</resource>
+    <resource>com.cc.content.blog.comment.CommentController</resource>
     <resource>com.cc.content.faq.FAQController</resource>
     <resource>com.cc.content.inputWidget.InputWidgetController</resource>
     <resource>com.cc.content.meta.MetaController</resource>
@@ -33,6 +34,7 @@ Also provides shortened and user friendly urls.
     <resource>com.cc.content.news.News</resource>
     <resource>com.cc.page.Page</resource>
     <resource>com.cc.content.ContentService</resource>
+    <resource>com.cc.content.blog.BlogService</resource>
     <resource>com.cc.content.inputWidget.InputWidgetService</resource>
     <resource>com.cc.content.navigation.MenuItemService</resource>
     <resource>com.cc.seo.friendlyurl.FriendlyUrlService</resource>
