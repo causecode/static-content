@@ -14,15 +14,14 @@ class InputWidgetTagLib {
 
     /**
      * Renders input widget based on given id.
-     * @attr id REQUIRED identity of InputWidget domain to render
+     * @attr inputWidgetInstance REQUIRED identity of InputWidget domain to render
      */
     def renderWidget = { attrs , body ->
-        InputWidget inputWidgetInstance = InputWidget.get(attrs.remove("id"))
-        String inputWidgetValidation = inputWidgetInstance?.validation
+        InputWidget inputWidgetInstance = attrs.remove("inputWidgetInstance")
+
         out << render(template: '/inputWidget/renderWidget', plugin: 'content', model: [
-            attrs: attrs,
+            additionalAttrs: attrs,
             inputWidgetInstance: inputWidgetInstance,
-            inputWidgetValidation: inputWidgetValidation.toLowerCase(),
             inputWidgetValue: attrs.remove("inputWidgetValue")
         ])
     }
@@ -41,18 +40,27 @@ class InputWidgetTagLib {
      * @attr id REQUIRED identity of InputWidget domain to render
      */
     def widgetHelper = { attrs , body ->
-        InputWidget inputWidgetInstance = InputWidget.get(attrs.id)
+        InputWidget inputWidgetInstance = attrs.inputWidgetInstance
 
-        if(inputWidgetInstance.helpType.equals(InputWidgetHelpType.BLOCK))
-            //out << """ <p class="help-block">$inputWidgetInstance.helpText </p>  """ // Need to insert after Element
+        if(inputWidgetInstance.helpType.equals(InputWidgetHelpType.BLOCK)) {}
+        //out << """ <p class="help-block">$inputWidgetInstance.helpText </p>  """ // Need to insert after Element
+
         if(inputWidgetInstance.helpType.equals(InputWidgetHelpType.INLINE))
             out << """ title="$inputWidgetInstance.helpText"  """
+
         if(inputWidgetInstance.helpType.equals(InputWidgetHelpType.PLACEHOLDER))
             out << """ placeholder="$inputWidgetInstance.helpText"  """
+
         if(inputWidgetInstance.helpType.equals(InputWidgetHelpType.TOOLTIP))
             out << """ title="$inputWidgetInstance.helpText" data-toggle="tooltip" rel="tooltip" """
+
         if(inputWidgetInstance.helpType.equals(InputWidgetHelpType.POPOVER))
             out << """ data-toggle="popover" data-placement="right" data-content="$inputWidgetInstance.helpText"
                        data-trigger="hover" rel="popover" """
+
+        pageScope.additionalAttrs?.each { key, value ->
+            out << """ $key="$value" """
+        }
     }
+
 }
