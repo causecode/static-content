@@ -15,6 +15,10 @@ $("ul.menuItem").sortable({
         $(this).css('min-height', '0px');
     },
     update: function( event, ui ) {
+        if(this != ui.item.parent()[0]) {
+            //@see http://forum.jquery.com/topic/sortables-update-callback-and-connectwith
+            return; // Needs to prevent duplicate call due to connectWith.
+        }
         var $sortedMenuItem = $(ui.item[0]);
         if($sortedMenuItem.hasClass('temporaryMenuItem')) {
             return;
@@ -24,8 +28,7 @@ $("ul.menuItem").sortable({
         var menuItemId = $sortedMenuItem.data('menu-item-id');
         var menuId = $sortedParentMenuItem.data('menu-id')
         var index = $sortedMenuItem.index();
-        console.log($sortedMenuItem)
-        console.log("sa",parentId)
+
         $.ajax({
             type: 'POST',
             url: '/menuItem/reorder',
@@ -33,6 +36,7 @@ $("ul.menuItem").sortable({
             success: function(result) {
             }
         });
+        $sortedMenuItem.toggleClass("thumbnail");
     }
 });
 

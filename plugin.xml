@@ -52,8 +52,8 @@ Also provides shortened and user friendly urls.
   <dependencies />
   <plugins>
     <compile>
-      <plugin group='org.grails.plugins' name='taggable' version='1.0.1' />
       <plugin group='org.grails.plugins' name='spring-security-core' version='1.2.7.3' />
+      <plugin group='org.grails.plugins' name='taggable' version='1.0.1' />
     </compile>
     <runtime>
       <plugin group='org.grails.plugins' name='resources' version='1.2.RC2' />
