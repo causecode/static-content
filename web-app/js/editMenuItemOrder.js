@@ -7,7 +7,7 @@ var $editMenuItemOverlay;
 
 $("ul.menuItem").sortable({
     revert: true,
-    connectWith: "ul.menu-item-nested",
+    connectWith: "ul.menuItem",
     activate: function(en, ui) {
         $(this).css('min-height', '13px');
     },
