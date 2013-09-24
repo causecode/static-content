@@ -21,14 +21,14 @@
 
     <div id="menu-item-sorting">
         <div id="alertMessageLink" class="alert alert-success hide"></div>
-        <ul id="menuItemList" class="thumbnails menuItem" data-parent-id="" data-menu-id="${menuInstance?.id }">
+        <ul class="thumbnails menuItem" data-parent-id="" data-menu-id="${menuInstance?.id }">
             <g:each in="${menuItemInstanceList}" var="menuItemInstance">
                 <g:if test="${menuItemInstance && !menuItemInstance?.parent }">
                     <li id="${menuItemInstance?.id }" class="thumbnail" data-menu-item-id="${menuItemInstance?.id }">
                         <i class="icon-move"></i>
                         <strong>${menuItemInstance?.title}</strong>
                         <a id="editMenuItem" href="#" class="pull-right"><i class="icon-pencil"></i></a>
-                        <com:bootstrapMediaMenu id="${menuItemInstance?.id}" />
+                        <g:render template="/menu/templates/renderSubMenu" model="[menuItemInstance: menuItemInstance]" />
                     </li>
                 </g:if>
             </g:each>

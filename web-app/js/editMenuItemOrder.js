@@ -5,18 +5,27 @@
 var $createMenuItemOverlay = $("#create-menu-item-overlay");
 var $editMenuItemOverlay;
 
-$("ul#menuItemList").sortable({
-    revert:true,
+$("ul.menuItem").sortable({
+    revert: true,
+    connectWith: "ul.menu-item-nested",
+    activate: function(en, ui) {
+        $(this).css('min-height', '13px');
+    },
+    deactivate: function(en, ui) {
+        $(this).css('min-height', '0px');
+    },
     update: function( event, ui ) {
         var $sortedMenuItem = $(ui.item[0]);
         if($sortedMenuItem.hasClass('temporaryMenuItem')) {
             return;
         }
-        var $sortedParentMenuItem = $sortedMenuItem.parent()
+        var $sortedParentMenuItem = $sortedMenuItem.parent();
         var parentId = $sortedParentMenuItem.data('parent-id');
         var menuItemId = $sortedMenuItem.data('menu-item-id');
         var menuId = $sortedParentMenuItem.data('menu-id')
         var index = $sortedMenuItem.index();
+        console.log($sortedMenuItem)
+        console.log("sa",parentId)
         $.ajax({
             type: 'POST',
             url: '/menuItem/reorder',

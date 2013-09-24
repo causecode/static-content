@@ -17,7 +17,7 @@ class MenuTagLib {
     def springSecurityService
 
     /**
-     * Used to render menubars.
+     * Used to render menu bars.
      * @attr id REQUIRED The identifier of the Menu domain for which menu bar should be rendered.
      */
     def menu = { attrs, body ->
@@ -26,18 +26,10 @@ class MenuTagLib {
             log.info "No menu found with id [$attrs.id]."
             return
         }
-        def menuItemList = menuInstance.menuItems
-        out << render(template: '/menu/menu', plugin: 'content', model: ['menuInstance': menuInstance,
-            'menuItemList': menuItemList].plus(attrs))
-    }
+        List<MenuItem> menuItemList = menuInstance.menuItems
 
-    def menuItem = { attrs, body ->
-        def menuItemInstance = MenuItem.get(attrs.id)
-        if(!menuItemInstance) {
-            log.info "Menu item instance not found with id [${attrs.id}]"
-        }
-        out << render(template: '/menuItem/menuItem', plugin: 'content',
-        model: ['menuItemInstance': menuItemInstance , renderingSubMenu: attrs.renderingSubMenu])
+        out << render(template: '/menu/templates/menu', plugin: 'content', model: [menuInstance: menuInstance,
+            menuItemList: menuItemList].plus(attrs))
     }
 
     /**
@@ -57,15 +49,10 @@ class MenuTagLib {
             if(SpringSecurityUtils.ifAnyGranted(instance.roles)) {
                 out << body()
                 return
-            } 
+            }
         } else {
             out << body()
         }
     }
 
-    def bootstrapMediaMenu = { attrs, body ->
-        def menuItemInstance = MenuItem.get(attrs.id)
-        out << render(template: '/menu/bootstrapMediaMenu', plugin: 'content',
-        model: ['menuItemInstance': menuItemInstance])
-    }
 }

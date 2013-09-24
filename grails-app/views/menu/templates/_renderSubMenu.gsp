@@ -1,4 +1,4 @@
-<ul id="menuItemList" class="childWrapper" data-parent-id="${menuItemInstance?.id }" data-menu-id="${menuInstance?.id }">
+<ul class="menu-item-nested" data-parent-id="${menuItemInstance?.id }" data-menu-id="${menuInstance?.id }">
     <g:if test="${menuItemInstance?.childItems}">
         <g:each in="${menuItemInstance?.childItems}" var="childItemInstance">
             <li id="${childItemInstance?.id }" class="" data-menu-item-id="${childItemInstance?.id}">
