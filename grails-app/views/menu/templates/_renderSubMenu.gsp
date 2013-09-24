@@ -6,7 +6,7 @@
                 <strong>${childItemInstance?.title}</strong>
                 <a id="editMenuItem" href="#" class="pull-right"><i class="icon-pencil"></i></a>
                 <g:if test="${childItemInstance.childItems }">
-                    <com:bootstrapMediaMenu id="${childItemInstance?.id}"></com:bootstrapMediaMenu>
+                    <g:render template="/menu/templates/renderSubMenu" model="[menuItemInstance: childItemInstance]" />
                 </g:if>
             </li>
         </g:each>
