@@ -59,7 +59,9 @@ class InputWidgetTagLib {
                        data-trigger="hover" rel="popover" """
 
         pageScope.additionalAttrs?.each { key, value ->
-            out << """ $key="$value" """
+            if(value != "false" && value != false) {
+                out << """ $key="$value" """
+            }
         }
     }
 
