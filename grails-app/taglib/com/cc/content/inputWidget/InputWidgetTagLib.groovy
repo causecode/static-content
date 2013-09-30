@@ -21,6 +21,7 @@ class InputWidgetTagLib {
 
         out << render(template: '/inputWidget/renderWidget', plugin: 'content', model: [
             additionalAttrs: attrs,
+            classes: attrs.classes,
             inputWidgetInstance: inputWidgetInstance,
             inputWidgetValue: attrs.remove("inputWidgetValue")
         ])
@@ -31,8 +32,11 @@ class InputWidgetTagLib {
      * @attr id REQUIRED identity of InputWidget domain to render
      */
     def widget = { attrs , body ->
-        InputWidget inputWidgetInstance = InputWidget.get(attrs.id)
-        out << render(template: '/inputWidget/form', plugin: 'content', model: [inputWidgetInstance: inputWidgetInstance])
+        String prefix = attrs.prefix ? attrs.prefix + "." : ""
+        InputWidget inputWidgetInstance = InputWidget.get(attrs.id) ?: new InputWidget()
+
+        out << render(template: '/inputWidget/form', plugin: 'content', model: [inputWidgetInstance: inputWidgetInstance,
+            prefix: prefix])
     }
 
     /**
