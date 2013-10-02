@@ -22,7 +22,7 @@ class InputWidgetTagLib {
         out << render(template: '/inputWidget/renderWidget', plugin: 'content', model: [
             attrs: attrs,
             inputWidgetInstance: inputWidgetInstance,
-            inputWidgetValidation: inputWidgetValidation.toLowerCase(),
+            inputWidgetValidation: inputWidgetValidation?.toLowerCase(),
             inputWidgetValue: attrs.remove("inputWidgetValue")
         ])
     }
