@@ -16,18 +16,23 @@ class BlogTagLib {
 
     def comment = { attrs, body ->
         Comment commentInstance = attrs.commentInstance
-        out << """<li class="media comment">"""
-        out << render(template: '/blog/templates/commentBody', model: [commentInstance: commentInstance], plugin: "content")
-        out << """</li>"""
+        commentContent(commentInstance, out, attrs, attrs.nested ?: false)
     }
 
     def nestedComment = { attrs, body ->
         List blogReplyComments = Comment.findAllByReplyTo(attrs.commentInstance)
         blogReplyComments.each {
-            out << """<div class="media comment nested">"""
-            out << render(template: '/blog/templates/commentBody', model: [commentInstance: it, nested: true], plugin: "content")
-            out << """</div>"""
+            commentContent(it, out, attrs, true)
         }
+    }
+
+    private void commentContent(Comment commentInstance, out, Map attrs, boolean nested) {
+        out << """<${nested ? 'div' : 'li'} class="media comment ${nested ? 'nested' : ''} ${attrs.classes ?: ''}">"""
+
+        out << render(template: '/blog/templates/commentBody', model: [commentInstance: commentInstance,
+            nested: nested], plugin: "content")
+
+        out << """</${nested ? 'div' : 'li'}>"""
     }
 
     def searchLink = { attrs, body ->
