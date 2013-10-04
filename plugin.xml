@@ -1,4 +1,4 @@
-<plugin name='content' version='1.9.2' grailsVersion='2.1 &gt; *'>
+<plugin name='content' version='1.9.3' grailsVersion='2.1 &gt; *'>
   <author>CauseCode</author>
   <title>Content Plugin</title>
   <description>A plugin used to manage contents like static pages, menus etc. at one place.
@@ -52,8 +52,8 @@ Also provides shortened and user friendly urls.
   <dependencies />
   <plugins>
     <compile>
-      <plugin group='org.grails.plugins' name='spring-security-core' version='1.2.7.3' />
       <plugin group='org.grails.plugins' name='taggable' version='1.0.1' />
+      <plugin group='org.grails.plugins' name='spring-security-core' version='1.2.7.3' />
     </compile>
     <runtime>
       <plugin group='org.grails.plugins' name='resources' version='1.2.RC2' />
