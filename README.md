@@ -2,15 +2,21 @@
 
 A plugin used to manage contents like static pages, menus etc. at one place.
 
+## ChnageLog
+
+See ChangeLog.md file.
+
 ## Configurations for this plugin:
 
     cc.plugins.content.authorProperty = "username"
     cc.plugins.content.contentManagerRole = "ROLE_MANAGER_CONTENT"
     cc.plugins.content.default.layout.name = "main"
+    cc.plugins.content.RoleForMenuItem = ["ROLE_ADMIN","ROLE_CONTENT_MANAGER","ROLE_EMPLOYEE","ROLE_USER"]
 
 ## Access protect controllers: (according to application need)
 
     '/blog/**' : ['ROLE_MANAGER_ORGS'],
+    '/comment/**' : ['ROLE_ADMIN'],
     '/pageLayout/**' : ['ROLE_MANAGER_ORGS'],
     '/faq/**' : ['ROLE_MANAGER_ORGS'],
     '/news/**' : ['ROLE_MANAGER_ORGS'],
@@ -86,3 +92,6 @@ Also add a private method:
 And add a private field as:
 
     static Map shorthandControllers = [:]
+
+NOTE : Secure domains
+

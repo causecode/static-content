@@ -1,59 +1,63 @@
-/*
+/**
  * JS for calling function which contain Ajax call for sorting Menu Items.
  */
-$(document).ready(function() {
-    $("#menuItemList").sortable({
-        revert:true,
-        update: function( event, ui ) {
-            var $sortedMenuItem = $(ui.item[0])
-            if(!$sortedMenuItem.hasClass('temporaryMenuItem')) {
-                var $sortedParentMenuItem = $sortedMenuItem.parent()
-                var parentId = $sortedParentMenuItem.data('parent-id');
-                var menuItemId = $sortedMenuItem.data('menu-item-id');
-                var menuId = $sortedParentMenuItem.data('menu-id')
-                var index = $sortedMenuItem.index();
-                getMenuItemIndex(menuId,menuItemId,parentId,index)
+
+var $createMenuItemOverlay = $("#create-menu-item-overlay");
+var $editMenuItemOverlay;
+
+$("ul.menuItem").sortable({
+    revert: true,
+    connectWith: "ul.menuItem",
+    activate: function(en, ui) {
+        $(this).css('min-height', '13px');
+    },
+    deactivate: function(en, ui) {
+        $(this).css('min-height', '0px');
+    },
+    update: function( event, ui ) {
+        if(this != ui.item.parent()[0]) {
+            //@see http://forum.jquery.com/topic/sortables-update-callback-and-connectwith
+            return; // Needs to prevent duplicate call due to connectWith.
+        }
+        var $sortedMenuItem = $(ui.item[0]);
+        if($sortedMenuItem.hasClass('temporaryMenuItem')) {
+            return;
+        }
+        var $sortedParentMenuItem = $sortedMenuItem.parent();
+        var parentId = $sortedParentMenuItem.data('parent-id');
+        var menuItemId = $sortedMenuItem.data('menu-item-id');
+        var menuId = $sortedParentMenuItem.data('menu-id')
+        var index = $sortedMenuItem.index();
+
+        $.ajax({
+            type: 'POST',
+            url: '/menuItem/reorder',
+            data: {menuId: menuId, menuItemId: menuItemId, parentId: parentId, index: index},
+            success: function(result) {
             }
-        }
-    });
-    $( "ul, li" ).disableSelection();
-});
-/*
- * Function used to make Ajax call which sorts Menu Items. 
- */
-function getMenuItemIndex(menuId,menuItemId,parentId,index) {
-    $.ajax({
-        type: 'POST',
-        url: '/menu/show',
-        data: {'menuId':menuId,'menuItemId':menuItemId,'parentId':parentId,'index':index},
-        success: function(result) {
-        }
-    });
-}
-/*
- * JS for Creating Menu Item.
- */
-$('a#create-menu-item').click(function() {
-    $('#createMenuItemModal').modal('show');
+        });
+        $sortedMenuItem.toggleClass("thumbnail");
+    }
 });
 
-$('a#create').click(function(){
+$( "ul, li" ).disableSelection();
+
+$("a#create", $createMenuItemOverlay).click(function(){
     var title = $('input#title').val(); 
     var roles = $('select#roles').val();
     var url = $('input#url').val();
     var showOnlyWhenLoggedIn = $('input#showOnlyWhenLoggedIn').val();
-    $('ul.menuItem').prepend("<li id=\"\"class=\"thumbnail temporaryMenuItem\" data-title=\""+title+ "\""+
+    $('ul.menuItem').prepend("<li id=\"\"class=\"thumbnail clearfix temporaryMenuItem\" data-title=\""+title+ "\""+
                              " data-roles=\"" + roles + "\"" +
                              " data-url=\""+ url + "\"" +
                              " data-show-only-when-logged-in=\"" + showOnlyWhenLoggedIn + "\">" +
                              "<i class=\"icon-move\"></i>"+
                              "<strong>" + title + "</strong>" + 
-                             "<a id=\"save-button\" role=\"button\" href=\"#\" class=\"btn btn-mini\">Save</a></li>");
+                             "<a id=\"save-button\" role=\"button\" href=\"#\" class=\"btn btn-default btn-xs\">Save</a></li>");
 });
 
 $(document).on("click", "a#save-button", function(){ 
-    $('#alertMessageLink').text('MenuItem Created Successfully!');
-    $('#alertMessageLink').show();
+    $('#alertMessageLink').text('MenuItem Created Successfully!').show();
 
     var $menuItem = $(this).parents('li.temporaryMenuItem');
     var title = $menuItem.data('title');
@@ -69,24 +73,23 @@ $(document).on("click", "a#save-button", function(){
     $('li.temporaryMenuItem').removeClass('temporaryMenuItem');
     $.ajax({
         type: 'POST',
-        url: '/menuItem/saveMenuItem',
+        url: '/menuItem/save',
         data: {'title':title,'roles':roles,'url':url,'showOnlyWhenLoggedIn':showOnlyWhenLoggedIn,
                'parentId':parentId,'menuId':menuId,'index':index},
         success: function(response) {
-                if(response) {
-                    var menuItemId = response ;
-                    $menuItem.attr('id',menuItemId);
-                    $menuItem.data('menu-item-id',menuItemId);
-                    $menuItem.removeAttr('data-title');
-                    $menuItem.removeAttr('data-url');
-                    $menuItem.removeAttr('data-roles');
-                    $menuItem.removeAttr('data-show-only-when-logged-in');
-                    $menuItem.append('<a  id="editMenuItem" href="#" class="pull-right"><i class="icon-pencil"></i></a>');
-                }
+            var menuItemId = response ;
+            $menuItem.attr('id',menuItemId);
+            $menuItem.data('menu-item-id',menuItemId);
+            $menuItem.removeAttr('data-title');
+            $menuItem.removeAttr('data-url');
+            $menuItem.removeAttr('data-roles');
+            $menuItem.removeAttr('data-show-only-when-logged-in');
+            $menuItem.append('<a  id="editMenuItem" href="#" class="pull-right"><i class="icon-pencil"></i></a>');
         }
     });
 });
-/*
+
+/**
  * JS for editing Menu Item.
  */
 $(document).on("click", "a#editMenuItem", function(){
@@ -94,24 +97,23 @@ $(document).on("click", "a#editMenuItem", function(){
     menuItemId = $menuItem.data('menu-item-id')
     $.ajax({
         type: 'POST',
-        url: '/menuItem/editMenuItem',
-        data: {'menuItemId':menuItemId},
+        url: '/menuItem/edit',
+        data: {id: menuItemId},
         success: function(response) {
-                if(response) {
-                    var itemInstance = response
-                    $menuItem.data('item-instance',itemInstance)
-                    $('#editMenuItemModal #title').val(itemInstance.title)
-                    $('#editMenuItemModal #url').val(itemInstance.url)
-                    $('#editMenuItemModal #roles').val(itemInstance.roles)
-                    $('#editMenuItemModal #showOnlyWhenLoggedIn').val(itemInstance.showOnlyWhenLoggedIn)
-                    $('#editMenuItemModal').modal('show');
-                    $('#updateMenuItem').data('menu-item-id',menuItemId);
-                }
+            var itemInstance = response
+            $menuItem.data('item-instance',itemInstance)
+            $('#editMenuItemModal #title').val(itemInstance.title)
+            $('#editMenuItemModal #url').val(itemInstance.url)
+            $('#editMenuItemModal #roles').val(itemInstance.roles)
+            $('#editMenuItemModal #showOnlyWhenLoggedIn').val(itemInstance.showOnlyWhenLoggedIn)
+            $('#editMenuItemModal').modal('show');
+            $('#updateMenuItem').data('menu-item-id',menuItemId);
         }
     });
     
 });
-/*
+
+/**
  * JS for updating Menu Item.
  */
 $(document).on("click", "a#updateMenuItem", function(){
@@ -129,14 +131,14 @@ $(document).on("click", "a#updateMenuItem", function(){
     var roles = rolesArray + "";
     $.ajax({
         type: 'POST',
-        url: '/menuItem/updateMenuItem',
-        data: {'title':title,'roles':roles,'url':url,'showOnlyWhenLoggedIn':showOnlyWhenLoggedIn,'menuItemId':menuItemId},
+        url: '/menuItem/update',
+        data: {'title':title,'roles':roles,'url':url,'showOnlyWhenLoggedIn':showOnlyWhenLoggedIn, id: menuItemId},
         success: function(response) {
         }
     });
 });
 
-/*
+/**
  * JS for delete Menu Item.
  */
 $('a#deleteMenuItem').click(function(){

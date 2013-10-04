@@ -13,9 +13,11 @@
     <g:form action="save" <%= multiPart ? ' enctype="multipart/form-data"' : '' %> class="form-horizontal">
         <fieldset>
             <g:render template="form" />
-            <div class="form-actions">
-                <g:submitButton name="create" class="btn btn-primary"
+            <div class="form-actions well form-group">
+                        <div class="col-lg-offset-2">
+                <g:submitButton name="create" class="btn btn-default btn btn-default-primary"
                     value="\${message(code: 'default.button.create.label')}" />
+            </div>
             </div>
         </fieldset>
     </g:form>

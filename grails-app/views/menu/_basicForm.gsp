@@ -1,46 +1,43 @@
 <g:hasErrors bean="${menuItemInstance}">
-    <ul class="text-error">
+    <ul class="text-danger field-error icons-ul">
         <g:eachError bean="${menuItemInstance}" var="error">
-            <li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>>
-                <g:message error="${error}" /></li>
+            <li>
+                <i class="icon-li icon-exclamation-sign"></i><g:message error="${error}"/>
+            </li>
         </g:eachError>
     </ul>
 </g:hasErrors>
 
-<div class="control-group ${hasErrors(bean: menuItemInstance, field: 'title', 'error')}">
-    <label class="control-label" for="title">
-        <g:message code="menuItem.title.label" default="Title" />
+<div class="form-group ${hasErrors(bean: menuItemInstance, field: 'title', 'error')}">
+    <label class="control-label col-sm-4" for="title"> <g:message code="menuItem.title.label" default="Title" />
     </label>
-    <div class="controls">
-        <g:textField name="title" value="${menuItemInstance?.title}"/>
+    <div class="col-sm-6">
+        <g:textField name="title" value="${menuItemInstance?.title}" class="form-control" autofocus="autofocus" />
     </div>
 </div>
 
-<div class="control-group ${hasErrors(bean: menuItemInstance, field: 'url', 'error')}">
-    <label class="control-label" for="url">
-        <g:message code="menuItem.url.label" default="Url" />
+<div class="form-group ${hasErrors(bean: menuItemInstance, field: 'url', 'error')}">
+    <label class="control-label col-sm-4" for="url"> <g:message code="menuItem.url.label" default="Url" />
     </label>
-    <div class="controls">
-        <g:textField name="url" value="${menuItemInstance?.url}"/>
+    <div class="col-sm-6">
+        <g:textField name="url" value="${menuItemInstance?.url}" class="form-control" />
     </div>
 </div>
 
-<div class="control-group ${hasErrors(bean: menuItemInstance, field: 'roles', 'error')}">
-    <label class="control-label" for="roles">
-        <g:message code="menuItem.roles.label" default="Role" />
+<div class="form-group ${hasErrors(bean: menuItemInstance, field: 'roles', 'error')}">
+    <label class="control-label col-sm-4" for="roles"> <g:message code="menuItem.roles.label" default="Role" />
     </label>
-    <div class="controls">
-        <g:select name="roles" from="${['ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN','ROLE_JOB_BOARD_MANAGER']}" 
-            value="${menuItemInstance?.roles}" multiple="true" />
+    <div class="col-sm-6">
+        <g:select name="roles" from="${grailsApplication.config.cc.plugins.content.rolesForMenuMenuItem}"
+            value="${menuItemInstance?.roles}" multiple="true" class="form-control" />
     </div>
 </div>
 
-<div class="control-group ${hasErrors(bean: menuItemInstance, field: 'showOnlyWhenLoggedIn', 'error')}">
-    <label class="control-label" for="showOnlyWhenLoggedIn">
-        <g:message code='menuItem.showOnlyWhenLoggedIn.label' default="Show Only When Logged In" />
+<div class="form-group ${hasErrors(bean: menuItemInstance, field: 'showOnlyWhenLoggedIn', 'error')}">
+    <label class="control-label col-sm-4" for="showOnlyWhenLoggedIn"> <g:message
+            code='menuItem.showOnlyWhenLoggedIn.label' default="Show Only When Logged In" />
     </label>
-    <div class="controls">
-        <g:checkBox name="showOnlyWhenLoggedIn" optionKey="id" 
-            value="${menuItemInstance?.showOnlyWhenLoggedIn}"/>
+    <div class="col-sm-6">
+        <g:checkBox name="showOnlyWhenLoggedIn" optionKey="id" value="${menuItemInstance?.showOnlyWhenLoggedIn}"/>
     </div>
 </div>

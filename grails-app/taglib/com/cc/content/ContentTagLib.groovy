@@ -14,12 +14,24 @@ class ContentTagLib {
 
     def contentService
 
+    def breadcrumb = {attrs, body ->
+        if(!attrs.map)
+            throwTagError("Tag [content:breadcrumb] is missing required attribute [map]")
+
+        if(!(attrs.map instanceof Map))
+            throwTagError("Tag [content:breadcrumb] attribute [map] must be of type java.util.Map")
+
+        LinkedHashMap baseURLMap = grailsApplication.config.cc.plugins.content.breadcrumbs.baseMap
+        out << g.render(template: "/home/templates/breadcrumb", model: [baseURLMap: baseURLMap,
+            urlMap: attrs.map])
+    }
+
     /**
      * Used when current user have content role
      * described by cc.plugins.content.contentManagerRole
      */
     def canEdit = { attrs, body ->
-        if(contentService.canEdit()) {
+        if(contentService.contentManager) {
             out << body()
         }
     }
@@ -56,6 +68,13 @@ class ContentTagLib {
             throwTagError("Tag content:createLink missing required attribute domain")
 
         out << contentService.createLink(attrs)
+    }
+
+    /**
+     * @attr id REQUIRED
+     */
+    def resolveAuthor = { attrs, body ->
+        out << contentService.resolveAuthor(Content.get(attrs.id), attrs.authorProperty ?: "fullName")
     }
 
 }

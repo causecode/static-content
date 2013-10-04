@@ -6,100 +6,77 @@
  * without modification, are not permitted.
  */ -->
 
-<%@ page import="com.cc.blog.Blog" %>
-<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta http-equiv="blog-Type" blog="text/html; charset=UTF-8" />
-  <meta name="layout" content="main" />
-  <r:require module="jquery"/>
-  <g:set var="entityName" value="${message(code: 'blog.label', default: 'blog')}" />
-  <title><g:message code="default.show.label" args="[entityName]" /></title>
-  <style type="text/css">
-	div.comment {  
-	  margin-left : 50px;
-	}
-	</style>
+    <meta http-equiv="blog-Type" blog="text/html; charset=UTF-8" />
+    <meta name="layout" content="main" />
+    <g:set var="entityName" value="${blogInstance}" />
+    <content:renderMetaTags contentInstance="${blogInstance }" />
+    <title>${entityName }</title>
+    <style type="text/css">
+        .comment .comment-info {
+            margin-bottom: 6px;
+        }
+        .comment.nested {
+            margin-left: 50px;
+        }
+        .comment a i.icon-reply {
+            font-size: 76%;
+        }
+    </style>
 </head>
 
 <body>
-	<div class="page-header">
-	    <h1>${blogInstance.title }</h1><span><h6>${blogInstance.subTitle }</h6></span>
-	    <small>By: <b> ${username} &nbsp;&nbsp;</b></small>|&nbsp;&nbsp;Posted on: <small>${blogInstance.dateCreated.format('dd-MM-yyyy')}</small>
-	    </div>
-	    <%= blogInstance.body %>
-	    <br>
-	    <b> Tags: </b>
-	    <g:each in="${blogInstance.tags}">
-	      <g:link action="findByTag"  params="[tag:it]">${it}</g:link>
-	    </g:each>
-	    <sec:ifLoggedIn>
-	           <g:form>
-			        <fieldset class="buttons">
-			          <g:hiddenField name="id" value="${blogInstance?.id}" />
-			          <g:link class="edit" action="edit" id="${blogInstance?.id}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
-			          <g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
-			        </fieldset>
-	      	    </g:form>
-	 	</sec:ifLoggedIn>
-	 	<br>
-	 	<a href="#commentModal" role="button" class="btn commentButton" data-toggle="modal">Comment</a>
-	<g:form class="form-horizontal"> 
-		<div id="commentModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
-			<div class="modal-header control-group">
-				<button type="button" class="close controls" data-dismiss="modal" aria-hidden="true">×</button>
-				<label class="control-label" id="commentModalLabel"><h3>Comment</h3></label>
-			</div>
-			<div class="modal-body">
-				<div class="control-group">
-					<label class="control-label">Subject : </label>
-					<div class="controls">
-						<g:textField name="subject"/>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">Name : </label>
-					<div class="controls">
-						<g:textField name="name"/>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">E-Mail : </label>
-					<div class="controls">
-						<g:textField name="email"/>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label">Comment : </label>
-					<div class="controls">
-						<g:textArea name="commentText"/>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<div class="control-group">
-					<div class="controls">
-						<g:actionSubmit class="comment" class="btn btn-primary" action="comment" value="Comment"/>
-						<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-						<g:hiddenField name="blog_id" value="${blogInstance?.id}" />
-						<g:hiddenField name="replyCommentId"/>
-					</div>
-				</div>
-			</div>
-		</div>
-	</g:form>
-	<h2>Comments</h2>
+    <content tag="breadcrumb">
+        <content:breadcrumb map="['/blog/list': 'Blogs', 'active':(blogInstance.title)]"/>
+    </content>
+    <div class="page-header">
+        <h1>
+            ${blogInstance.title }
+        </h1>
+        <g:if test="${blogInstance.subTitle }">
+            <h4 class="blog-subtitle">
+                ${blogInstance.subTitle}
+            </h4>
+        </g:if>
+        <div class="blog-info">
+            <g:render template="/blog/templates/additionalInfo" model="[id: blogInstance.id,
+                dateCreated: blogInstance.dateCreated]" />
+            <content:canEdit>
+                &nbsp;<small>
+                    <g:link action="edit" id="${blogInstance.id}" class="clear-hover"><i class="icon-edit"></i></g:link>
+                    <g:link action="delete" id="${blogInstance.id }"  class="clear-hover"><i class="icon-trash"></i></g:link>
+                </small>
+            </content:canEdit>
+        </div>
+    </div>
+    <div class="blog-body">
+        <%= blogInstance.body %>
+    </div>
+    <g:if test="${blogInstance.tags }">
+        <div class="blog-tags" style="margin-top: 20px;">
+            <i class="icon-tags"></i>
+            <g:each in="${blogInstance.tags}" var="tag" status="i">
+                <g:link action="list" params="[tag: tag]">${tag}</g:link>${i < blogInstance.tags.size() - 1 ? ',' : '' }
+            </g:each>
+        </div>
+    </g:if>
 
-	<g:each in="${comments}">
-		<g:render template='comments' model="['it':it]"></g:render>
-	</g:each>
+    <div class="page-header">
+        <h2 class="inline">Comments</h2>
+        &nbsp;&nbsp;
+        <a href="#comment-overlay" class="commentButton" data-toggle="modal" data-comment-id="">Add</a>
+    </div>
 
-	<script type="text/javascript">
-		$("a.commentButton").on("click", function() { 
-	 		var replyCommentId = $(this).closest("div").attr("data-comment");
-	   		$("input[type=hidden][name=replyCommentId]").val(replyCommentId);
-		});
-	</script>
+    <ul class="media-list">
+        <g:each in="${comments}" var="commentInstance">
+            <content:comment commentInstance="${commentInstance}" />
+        </g:each>
+    </ul>
+    <g:if test="${!comments }">
+        Sorry, no comments to display.
+    </g:if>
+
+    <g:render template="/blog/templates/commentOverlay" plugin="comment" />
 </body>
 </html>
