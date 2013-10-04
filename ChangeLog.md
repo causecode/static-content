@@ -4,6 +4,10 @@ A plugin used to manage contents like static pages, menus etc. at one place.
 
 ## ChnageLog
 
+### Version 1.9.3
+
+Small fixes & helper methods for input widget, blog etc.
+
 ### Version 1.9.2
 
 #### Breaking change
