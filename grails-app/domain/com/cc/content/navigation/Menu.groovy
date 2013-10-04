@@ -11,12 +11,13 @@ package com.cc.content.navigation
 class Menu {
 
     String name
+    String roles
 
     Date dateCreated
     Date lastUpdated
 
     boolean showOnlyWhenLoggedIn
-    String roles
+
     List menuItems
 
     static hasMany = [menuItems: MenuItem]
@@ -26,8 +27,7 @@ class Menu {
         name blank: false
         dateCreated bindable: false
         lastUpdated bindable: false
-        roles blank:true
-        showOnlyWhenLoggedIn nullable:true
+        roles nullable: true
     }
 
     static mapping = {

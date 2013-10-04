@@ -1,38 +1,48 @@
-/*
+/**
  * JS for calling function which contain Ajax call for sorting Menu Items.
  */
-$(document).ready(function() {
-    $("#menuItemList").sortable({
-        revert:true,
-        update: function( event, ui ) {
-            var $sortedMenuItem = $(ui.item[0])
-            if(!$sortedMenuItem.hasClass('temporaryMenuItem')) {
-                var $sortedParentMenuItem = $sortedMenuItem.parent()
-                var parentId = $sortedParentMenuItem.data('parent-id');
-                var menuItemId = $sortedMenuItem.data('menu-item-id');
-                var menuId = $sortedParentMenuItem.data('menu-id')
-                var index = $sortedMenuItem.index();
-                getMenuItemIndex(menuId,menuItemId,parentId,index)
-            }
+
+var $createMenuItemOverlay = $("#create-menu-item-overlay");
+var $editMenuItemOverlay;
+
+$("ul.menuItem").sortable({
+    revert: true,
+    connectWith: "ul.menuItem",
+    activate: function(en, ui) {
+        $(this).css('min-height', '13px');
+    },
+    deactivate: function(en, ui) {
+        $(this).css('min-height', '0px');
+    },
+    update: function( event, ui ) {
+        if(this != ui.item.parent()[0]) {
+            //@see http://forum.jquery.com/topic/sortables-update-callback-and-connectwith
+            return; // Needs to prevent duplicate call due to connectWith.
         }
-    });
-    $( "ul, li" ).disableSelection();
+        var $sortedMenuItem = $(ui.item[0]);
+        if($sortedMenuItem.hasClass('temporaryMenuItem')) {
+            return;
+        }
+        var $sortedParentMenuItem = $sortedMenuItem.parent();
+        var parentId = $sortedParentMenuItem.data('parent-id');
+        var menuItemId = $sortedMenuItem.data('menu-item-id');
+        var menuId = $sortedParentMenuItem.data('menu-id')
+        var index = $sortedMenuItem.index();
+
+        $.ajax({
+            type: 'POST',
+            url: '/menuItem/reorder',
+            data: {menuId: menuId, menuItemId: menuItemId, parentId: parentId, index: index},
+            success: function(result) {
+            }
+        });
+        $sortedMenuItem.toggleClass("thumbnail");
+    }
 });
 
-/**
- * Function used to make Ajax call which sorts Menu Items. 
- */
-function getMenuItemIndex(menuId,menuItemId,parentId,index) {
-    $.ajax({
-        type: 'POST',
-        url: '/menu/show',
-        data: {'menuId':menuId,'menuItemId':menuItemId,'parentId':parentId,'index':index},
-        success: function(result) {
-        }
-    });
-}
+$( "ul, li" ).disableSelection();
 
-$('a#create').click(function(){
+$("a#create", $createMenuItemOverlay).click(function(){
     var title = $('input#title').val(); 
     var roles = $('select#roles').val();
     var url = $('input#url').val();

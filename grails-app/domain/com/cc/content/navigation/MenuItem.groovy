@@ -8,10 +8,9 @@
 
 package com.cc.content.navigation
 
-import java.util.Date;
-
 class MenuItem {
 
+    String roles
     String title
     String url
 
@@ -19,7 +18,7 @@ class MenuItem {
     Date lastUpdated
 
     boolean showOnlyWhenLoggedIn
-    String roles
+
     List childItems
 
     MenuItem parent
@@ -29,7 +28,7 @@ class MenuItem {
     static mappedBy = [childItems: "parent"]
 
     static constraints = {
-        roles nullable:true
+        roles nullable: true
         dateCreated bindable: false
         lastUpdated bindable: false
     }

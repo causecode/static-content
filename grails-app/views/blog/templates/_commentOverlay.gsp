@@ -42,7 +42,7 @@
                             </div>
                             <div class="col-sm-7">
                                 <g:textField name="captcha" class="form-control" 
-                                    placeholder="Enter the words"/>
+                                    placeholder="Enter the words (Case Insensitive)"/>
                             </div>
                         </div>
                     </div>

@@ -9,7 +9,8 @@
             </a>
             <ul class="dropdown-menu">
                 <g:each in="${menuItemInstance.childItems}" var="childItemInstance">
-                    <com:menuItem id="${childItemInstance?.id}" renderingSubMenu="true"></com:menuItem>
+                    <g:render template="/menuItem/templates/menuItem" model="[menuItemInstance: childItemInstance,
+                        renderingSubMenu: true]" plugin="content" />
                 </g:each>
             </ul>
         </li>

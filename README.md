@@ -4,22 +4,7 @@ A plugin used to manage contents like static pages, menus etc. at one place.
 
 ## ChnageLog
 
-### Version 1.9.1
-
-#### Breaking change
-
-1. Changed package name of *Menu, MenuItem, Blog, Comment, BlogComment*.
-
-#### Database changes
-
-1. Added new InputWidget domain,
-2. Change in structure of menu & menu item.
-
-#### Improvements
-
-1. Bootstrap upgraded to 3.0,
-2. Blog/comment UI & code restructured,
-3. Added meta tag property in blog show page.
+See ChangeLog.md file.
 
 ## Configurations for this plugin:
 
@@ -31,6 +16,7 @@ A plugin used to manage contents like static pages, menus etc. at one place.
 ## Access protect controllers: (according to application need)
 
     '/blog/**' : ['ROLE_MANAGER_ORGS'],
+    '/comment/**' : ['ROLE_ADMIN'],
     '/pageLayout/**' : ['ROLE_MANAGER_ORGS'],
     '/faq/**' : ['ROLE_MANAGER_ORGS'],
     '/news/**' : ['ROLE_MANAGER_ORGS'],

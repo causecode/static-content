@@ -8,22 +8,22 @@
 
 package com.cc.content.blog.comment
 
-import org.springframework.dao.DataIntegrityViolationException
+import com.cc.content.blog.Blog
 
 class CommentController {
 
     def blogService
-    def index() { }
 
-    def delete(Long id) {
+    def delete(Long id, Long blogId) {
         Comment.withTransaction { status ->
+            Blog blogInstance = Blog.get(blogId)
             Comment commentInstance = Comment.get(id)
-            BlogComment blogCommentInstance = BlogComment.findByComment(commentInstance)
-            if(blogCommentInstance) {
-                blogCommentInstance.delete()
-            }
-            List<Comment> nestedCommentList = blogService.getNestedCommentAndDelete(commentInstance)
-            redirect(action: "list", controller: "blog")
+            BlogComment.findByComment(commentInstance)?.delete()
+
+            blogService.deleteNestedComment(commentInstance)
+
+            flash.message = "Comments deleted successfully."
+            redirect uri: blogInstance.searchLink()
         }
     }
 
