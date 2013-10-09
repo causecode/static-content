@@ -33,7 +33,8 @@
         <g:message code="inputWidget.widgetKeys.label" default="Widget Key" />
     </label>
     <div class=" col-lg-6">
-        <g:textField name="${prefix}widgetKeys" value="${inputWidgetInstance.widgetKeys}" class="form-control" />
+        <g:textField name="${prefix}widgetKeys" value="${inputWidgetInstance.widgetKeys}" class="form-control" 
+        placeholder="Enter comma seperated Keys"/>
     </div>
 </div>
 
@@ -43,7 +44,7 @@
     </label>
     <div class=" col-lg-6">
         <g:textField name="${prefix}widgetValues" value="${inputWidgetInstance.widgetValues}"
-            class="form-control" />
+            class="form-control" placeholder="Enter comma seperated Values"/>
     </div>
 </div>
 
@@ -52,7 +53,8 @@
         <g:message code="inputWidget.defaultValue.label" default="Default Value" />
     </label>
     <div class=" col-lg-6">
-        <g:textField name="${prefix}defaultValue" value="${inputWidgetInstance.defaultValue}" class="form-control" />
+        <g:textField name="${prefix}defaultValue" value="${inputWidgetInstance.defaultValue}" class="form-control" 
+            placeholder="Enter comma seperated Values"/>
     </div>
 </div>
 
