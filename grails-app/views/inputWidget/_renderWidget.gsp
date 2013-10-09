@@ -7,7 +7,10 @@
     <select class="inputWidget form-control ${classes }" data-input-widget-id="${inputWidgetInstance.id }" 
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>>
         <g:each in="${inputWidgetInstance.widgetKeys.tokenize(',')}" status="index" var="key">
-            <option value="${key }">${inputWidgetInstance.widgetValues.tokenize(',')[index]?.trim()}</option>
+            <option value="${key}"
+                <content:widgetSelect inputWidgetValue="${inputWidgetValue}" inputWidgetKey="${inputWidgetInstance.widgetValues.tokenize(',')[index]?.trim()}" type="${inputWidgetType}"/>>
+                ${inputWidgetInstance.widgetValues.tokenize(',')[index]?.trim()}
+            </option>
         </g:each>
     </select>
 </g:if>
@@ -16,7 +19,10 @@
     <select class="inputWidget form-control ${classes }" multiple data-input-widget-id="${inputWidgetInstance.id }" 
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>>
         <g:each in="${inputWidgetInstance.widgetKeys.tokenize(',')}" status="index" var="key">
-            <option value="${key }">${inputWidgetInstance.widgetValues.tokenize(',')[index]?.trim()}</option>
+            <option value="${key }" 
+                <content:widgetSelect inputWidgetValue="${inputWidgetValue}" inputWidgetKey="${inputWidgetInstance.widgetValues.tokenize(',')[index]?.trim()}" type="${inputWidgetType}"/>>
+                ${inputWidgetInstance.widgetValues.tokenize(',')[index]?.trim()}
+            </option>
         </g:each>
     </select>
 </g:if>
