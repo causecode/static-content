@@ -34,8 +34,9 @@ class FAQController {
         redirect(action: "list", params: params)
     }
 
-    def list(Integer max) {
+    def list(Integer max, Integer offset) {
         params.max = Math.min(max ?: 10, 100)
+        params.offset = offset ? offset: 0
         [FAQInstanceList: FAQ.list(params), FAQInstanceTotal: FAQ.count()]
     }
 
@@ -66,8 +67,8 @@ class FAQController {
         if(version != null) {
             if (FAQInstance.version > version) {
                 FAQInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                [message(code: 'FAQ.label', default: 'FAQ')] as Object[],
-                "Another user has updated this FAQ while you were editing")
+                        [message(code: 'FAQ.label', default: 'FAQ')] as Object[],
+                        "Another user has updated this FAQ while you were editing")
                 render(view: "edit", model: [FAQInstance: FAQInstance])
                 return
             }
