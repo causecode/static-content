@@ -4,9 +4,9 @@ A plugin used to manage contents like static pages, menus etc. at one place.
 
 ## ChnageLog
 
-### Version 1.9.3 & 1.9.4
+### Version 1.9.3, 1.9.4, 1.9.5
 
-Small fixes & helper methods for input widget, blog etc.
+Small fixes & helper methods for input widget, blog etc, merged commit containg fix for out of bound request exception.
 
 ### Version 1.9.2
 
