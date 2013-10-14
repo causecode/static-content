@@ -22,7 +22,7 @@ class ContentGrailsPlugin {
         ".gitmodules",
         "src/templates/*"
     ]
-    //def loadAfter = ['hibernate']
+
     def title = "Content Plugin"
     def author = "CauseCode"
     def authorEmail = ""
@@ -30,8 +30,6 @@ class ContentGrailsPlugin {
 A plugin used to manage contents like static pages, menus etc. at one place.
 Also provides shortened and user friendly urls.
 '''
-    //def loadBefore = ['grails-plugin-url-mappings']
-
     def documentation = "http://grails.org/plugin/content"
 
     //    def license = "APACHE"
@@ -78,4 +76,5 @@ Also provides shortened and user friendly urls.
             }
         }
     }
+
 }

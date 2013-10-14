@@ -17,7 +17,7 @@ import grails.plugins.springsecurity.SpringSecurityService;
  */
 @TestMixin([DomainClassUnitTestMixin, ServiceUnitTestMixin])
 @Mock([Content])
-@TestFor(ContentController)
+//@TestFor(ContentController)
 class ContentControllerTests {
 	
 	def springSecurityService
