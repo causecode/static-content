@@ -19,7 +19,7 @@ class InputWidget {
 
     InputWidgetType type
     InputWidgetHelpType helpType
-    InputWidgetValidation validation
+    String validation
 
     String defaultSelected
     String noSelected
@@ -60,5 +60,5 @@ enum InputWidgetHelpType {
 }
 
 enum InputWidgetValidation {
-    TEXT, EMAIL, INTEGER, DATE, TIME, URL, ZIP_CODE
+    TEXT, EMAIL, INTEGER, DATE, TIME, URL, ZIP_CODE, REQUIRED
 }

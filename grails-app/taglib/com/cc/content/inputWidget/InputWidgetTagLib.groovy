@@ -18,7 +18,10 @@ class InputWidgetTagLib {
      */
     def renderWidget = { attrs , body ->
         InputWidget inputWidgetInstance = attrs.remove("inputWidgetInstance")
-
+        List<String> validationTypes = inputWidgetInstance.validation.tokenize(",")*.trim();
+        validationTypes.each {
+             attrs.classes = attrs.classes.toString().concat(" " + it.toString().toLowerCase())
+        }
         out << render(template: '/inputWidget/renderWidget', plugin: 'content', model: [
             additionalAttrs: attrs,
             classes: attrs.classes,
@@ -69,4 +72,15 @@ class InputWidgetTagLib {
         }
     }
 
+    /**
+     * Renders required field validator based on validation selected.
+     * @attr id REQUIRED identity of InputWidget domain to render
+     */
+    def widgetValidation = { attrs, body ->
+        InputWidget inputWidgetInstance = attrs.inputWidgetInstance
+        List<String> validationTypes = inputWidgetInstance.validation.tokenize(",")*.trim()
+        if("REQUIRED" in validationTypes) {
+            out << """ required="" """
+        }
+    }
 }
