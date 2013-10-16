@@ -4,7 +4,7 @@
 <g:set var="additionalAttrs" value="${additionalAttrs }" />
 
 <g:if test="${inputWidgetType == InputWidgetType.SELECT}">
-    <select class="inputWidget select form-control ${classes }" data-input-widget-id="${inputWidgetInstance.id }" 
+    <select class="select form-control ${classes }" data-input-widget-id="${inputWidgetInstance.id }" 
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
         <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>>
         <g:each in="${inputWidgetInstance.widgetKeys.tokenize(',')}" status="index" var="key">
@@ -16,7 +16,8 @@
 </g:if>
 
 <g:if test="${inputWidgetType == InputWidgetType.MULTI_SELECT}">
-    <select class="inputWidget multiselect form-control ${classes }" multiple data-input-widget-id="${inputWidgetInstance.id }" 
+    <select class="form-control ${classes }" multiple data-input-widget-id="${inputWidgetInstance.id }" 
+        name="${inputWidgetInstance.name ?: 'select' }${inputWidgetInstance.id}"
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
         <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>>
         <g:each in="${inputWidgetInstance.widgetKeys.tokenize(',')}" status="index" var="key">
@@ -28,7 +29,7 @@
 </g:if>
 
 <g:if test="${inputWidgetType == InputWidgetType.TEXT_AREA}">
-    <textArea name="textArea" class="inputWidget form-control ${classes } textAreaWidget" 
+    <textArea name="${inputWidgetInstance.name ?: 'textArea' }${inputWidgetInstance.id}" class="form-control ${classes }" 
         data-input-widget-id="${inputWidgetInstance.id }"
         minlenght="${inputWidgetInstance.minChar ?: ''}" maxlenght="${inputWidgetInstance.maxChar ?: ''}"
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
@@ -36,7 +37,7 @@
 </g:if>
 
 <g:if test="${inputWidgetType == InputWidgetType.TEXT_FIELD}">
-    <input type="text" class="inputWidget form-control ${classes }" 
+    <input type="text" class="form-control ${classes }" 
         data-input-widget-id="${inputWidgetInstance.id }" value="${inputWidgetValue}"
         minlenght="${inputWidgetInstance.minChar ?: ''}" maxlenght="${inputWidgetInstance.maxChar ?: ''}"
         min="${inputWidgetInstance.minValueRange}" max="${inputWidgetInstance.maxValueRange}"
@@ -46,26 +47,32 @@
 
 <g:if test="${inputWidgetType == InputWidgetType.CHECKBOX}">
      <g:each in="${inputWidgetInstance.defaultValue.tokenize(',')}" status="index" var="value">
-        <div class="row">
-            <input type="checkbox" name="${inputWidgetInstance.label}" class="inputWidget col-sm-1 checkbox ${classes }" 
-                data-input-widget-id="${inputWidgetInstance.id }" value="${value}" style="min-height: 15px;"
-                <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}" />
-                <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>
-                ${value in inputWidgetValue?.tokenize(',')*.trim() ? 'checked' : '' }/>
-            <label class="control-label col-lg-2" for="defaultValue">${value}</label>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="${inputWidgetInstance.name ?: 'checkBox' }${inputWidgetInstance.id}" 
+                    class="${classes }" 
+                    data-input-widget-id="${inputWidgetInstance.id }" value="${value}"
+                    <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}" />
+                    <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>
+                    ${value in inputWidgetValue?.tokenize(',')*.trim() ? 'checked' : '' }/>
+                <strong>${value}</strong>
+            </label>
         </div>
     </g:each>
 </g:if>
 
 <g:if test="${inputWidgetType == InputWidgetType.RADIO}">
      <g:each in="${inputWidgetInstance.defaultValue.tokenize(',')}" status="index" var="value">
-        <div class="row">
-            <input type="radio" name="${inputWidgetInstance.label}" class="inputWidget col-sm-1 radio ${classes }" 
-                data-input-widget-id="${inputWidgetInstance.id }" value="${value}" style="min-height: 15px;"
-                <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
-                <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>
-                ${value == inputWidgetValue ? 'checked' : '' }/>
-            <label class="control-label col-lg-2" for="defaultValue">${value}</label>
-            </div>
+        <div class="radio">
+            <label>
+                <input type="radio" name="${inputWidgetInstance.name ?: 'radio' }${inputWidgetInstance.id}"
+                    class="${classes }" 
+                    data-input-widget-id="${inputWidgetInstance.id }" value="${value}"
+                    <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
+                    <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>
+                    ${value == inputWidgetValue ? 'checked' : '' }/>
+                <strong>${value}</strong>
+            </label>
+        </div>
     </g:each>
 </g:if>

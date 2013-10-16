@@ -18,13 +18,15 @@ class InputWidgetTagLib {
      */
     def renderWidget = { attrs , body ->
         InputWidget inputWidgetInstance = attrs.remove("inputWidgetInstance")
-        List<String> validationTypes = inputWidgetInstance.validation.tokenize(",")*.trim();
+        List<String> validationTypes = inputWidgetInstance.validation.tokenize(",")*.trim()
+        StringBuilder classes = new StringBuilder(attrs.remove('classes') ?: "")
         validationTypes.each {
-             attrs.classes = attrs.classes.toString().concat(" " + it.toString().toLowerCase())
+             classes.append(" " + it.toString().toLowerCase())
         }
+        classes.append(" inputWidget")
         out << render(template: '/inputWidget/renderWidget', plugin: 'content', model: [
             additionalAttrs: attrs,
-            classes: attrs.classes,
+            classes: classes.toString(),
             inputWidgetInstance: inputWidgetInstance,
             inputWidgetValue: attrs.remove("inputWidgetValue")
         ])
