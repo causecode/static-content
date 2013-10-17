@@ -5,3 +5,9 @@ width: 20%;
 input #score {
 width: 20px;
 }
+div.tab-pane .radio{
+line-height: 25px;
+}
+div.tab-pane .checkbox{
+line-height: 25px;
+}
