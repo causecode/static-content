@@ -60,5 +60,5 @@ enum InputWidgetHelpType {
 }
 
 enum InputWidgetValidation {
-    TEXT, EMAIL, INTEGER, DATE, TIME, URL, ZIP_CODE, REQUIRED
+    EMAIL, INTEGER, TIME, URL, ZIP_CODE, REQUIRED
 }

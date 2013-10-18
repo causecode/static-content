@@ -18,7 +18,7 @@ class InputWidgetTagLib {
      */
     def renderWidget = { attrs , body ->
         InputWidget inputWidgetInstance = attrs.remove("inputWidgetInstance")
-        List<String> validationTypes = inputWidgetInstance.validation.tokenize(",")*.trim()
+        List<String> validationTypes = inputWidgetInstance.validation?.tokenize(",")*.trim()
         StringBuilder classes = new StringBuilder(attrs.remove('classes') ?: "")
         validationTypes.each {
              classes.append(" " + it.toString().toLowerCase())
@@ -80,7 +80,7 @@ class InputWidgetTagLib {
      */
     def widgetValidation = { attrs, body ->
         InputWidget inputWidgetInstance = attrs.inputWidgetInstance
-        List<String> validationTypes = inputWidgetInstance.validation.tokenize(",")*.trim()
+        List<String> validationTypes = inputWidgetInstance.validation?.tokenize(",")*.trim()
         if("REQUIRED" in validationTypes) {
             out << """ required="" """
         }

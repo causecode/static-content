@@ -4,7 +4,8 @@
     <div class=" col-lg-6">
         <g:select name="${prefix}type" from="${com.cc.content.inputWidget.InputWidgetType?.values()}"
             keys="${com.cc.content.inputWidget.InputWidgetType.values()*.name()}" required=""
-            class="form-control ${prefix?'':'inputWidgetSelector' }" value="${inputWidgetInstance.type}" />
+            class="form-control ${prefix?'':'inputWidgetSelector' }" value="${inputWidgetInstance.type.toString()}" 
+            noSelection="${['null':'Select One...']}"/>
     </div>
     <g:hiddenField name="${prefix}widgetType" value="${inputWidgetInstance.type}" />
 </div>
@@ -65,7 +66,7 @@
     <div class=" col-lg-6">
         <g:select name="${prefix}helpType" from="${com.cc.content.inputWidget.InputWidgetHelpType?.values()}"
             keys="${com.cc.content.inputWidget.InputWidgetHelpType.values()*.name()}"
-            value="${inputWidgetInstance.helpType}" required="" class="form-control " />
+            value="${inputWidgetInstance.helpType.toString()}" required="" class="form-control " />
     </div>
 </div>
 
@@ -86,7 +87,7 @@
     <div class=" col-lg-6">
         <g:select name="${prefix}validation" from="${com.cc.content.inputWidget.InputWidgetValidation?.values()}"
             keys="${com.cc.content.inputWidget.InputWidgetValidation.values()*.name()}" required=""
-            class="form-control " value="${inputWidgetInstance.validation}"
+            class="form-control " value="${inputWidgetInstance.validation.toString()}"
             multiple="true" />
     </div>
 </div>
@@ -117,7 +118,7 @@
     </label>
     <div class="col-sm-3">
         <g:field name="${prefix}minChar" type="number" value="${inputWidgetInstance.minChar}"
-            class="form-control " />
+            class="form-control digits " />
     </div>
 </div>
 
@@ -127,7 +128,7 @@
     </label>
     <div class="col-sm-3">
         <g:field name="${prefix}maxChar" type="number" value="${inputWidgetInstance.maxChar}"
-            class="form-control " />
+            class="form-control digits " />
     </div>
 </div>
 
@@ -137,7 +138,7 @@
     </label>
     <div class="col-sm-3">
         <g:field name="${prefix}minValueRange" type="number" value="${inputWidgetInstance.minValueRange}"
-            class="form-control " />
+            class="form-control digits " />
     </div>
 </div>
 
@@ -147,6 +148,6 @@
     </label>
     <div class="col-sm-3">
         <g:field name="${prefix}maxValueRange" type="number" value="${inputWidgetInstance.maxValueRange}"
-            class="form-control " />
+            class="form-control digits " />
     </div>
 </div>
