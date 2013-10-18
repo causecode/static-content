@@ -19,7 +19,12 @@ class InputWidgetService {
     }
 
     InputWidget create(params) {
-        InputWidget inputWidgetInstance = new InputWidget(params)
+        InputWidget inputWidgetInstance = new InputWidget()
+        update(params, inputWidgetInstance)
+    }
+    
+    InputWidget update(params, InputWidget inputWidgetInstance) {
+        inputWidgetInstance.properties = params
         inputWidgetInstance.save()
         if(inputWidgetInstance.hasErrors()) {
             log.warn "Error saving inputWidget instance: $inputWidgetInstance.errors"
