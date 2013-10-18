@@ -1,7 +1,8 @@
 <%@ page import="com.cc.content.meta.Meta"%>
 
 <div class="form-group">
-    <label class="control-label col-sm-2" for="type"> <g:remoteLink controller="meta" action="deleteMeta"
+    <label class="control-label col-sm-2" for="type">
+        <g:remoteLink controller="meta" action="deleteMeta"
             id="${metaInstance?.id }" before="\$this = \$(this); var c=confirm('Are you sure');if(!c) return false"
             onSuccess="\$this.parents('.form-group').remove()">
             <span><i class="icon-remove"></i></span>

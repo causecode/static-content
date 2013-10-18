@@ -12,6 +12,10 @@ class Meta {
 
     public static final String KEYWORDS = "keywords"
     public static final String DESCRIPTION = "description"
+    public static final String OG_DESCRIPTION = "og:description"
+    public static final String OG_TITLE = "og:title"
+    public static final String OG_IMAGE = "og:image"
+    public static final String OG_URL = "og:url"
 
     String type
     String value
@@ -31,7 +35,7 @@ class Meta {
     }
 
     static List<String> getTypeList() {
-        return [KEYWORDS, DESCRIPTION]
+        return [KEYWORDS, DESCRIPTION, OG_DESCRIPTION, OG_TITLE, OG_IMAGE, OG_URL]
     }
 
 }
