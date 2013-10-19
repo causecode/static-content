@@ -5,18 +5,20 @@
 
 $("select.input-widget-type-selector").on("change", function(){
     var $parent = $(this).parents('div.widget-container');
-    console.log('dd');
-    console.log($parent);
     $("div.minChar", $parent).addClass("hide");
     $("div.maxChar", $parent).addClass("hide");
     $("div.minValueRange", $parent).addClass("hide");
     $("div.maxValueRange", $parent).addClass("hide");
     $("div.widgetKeyValue", $parent).addClass("hide");
-    $("div.noSelected", $parent).addClass("hide");
+    $("div.noSelectionText", $parent).addClass("hide");
     $("div.defaultSelected", $parent).addClass("hide");
 
     var $type = $(this).val()
-    if($type == 'SELECT' || $type == 'MULTI_SELECT' || $type == 'CHECKBOX' || $type == 'RADIO') {
+    if($type == 'SELECT' || $type == 'MULTI_SELECT') {
+        $("div.widgetKeyValue", $parent).removeClass("hide");
+        $("div.noSelectionText", $parent).removeClass("hide");
+    }
+    if($type == 'CHECKBOX' || $type == 'RADIO') {
         $("div.widgetKeyValue", $parent).removeClass("hide");
     }
     if($type == 'TEXT_AREA') {

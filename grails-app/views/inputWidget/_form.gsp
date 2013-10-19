@@ -102,12 +102,12 @@
     </div>
 </div>
 
-<div class="form-group noSelected hide ">
-    <label class="control-label col-sm-3" for="noSelected"> <g:message code="inputWidget.noSelected.label"
-            default="No Selected" />
+<div class="form-group noSelectionText hide ">
+    <label class="control-label col-sm-3" for="noSelectionText"> <g:message code="inputWidget.noSelectionText.label"
+            default="No Selection Text" />
     </label>
     <div class=" col-lg-6">
-        <g:textField name="${prefix}noSelected" value="${inputWidgetInstance.noSelected}"
+        <g:textField name="${prefix}noSelectionText" value="${inputWidgetInstance.noSelectionText}"
             class="form-control " />
     </div>
 </div>

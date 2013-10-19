@@ -28,6 +28,7 @@ class Comment {
 
     static mapping = {
         table "cc_content_comment"
+        commentText type: "text"
     }
 
 }

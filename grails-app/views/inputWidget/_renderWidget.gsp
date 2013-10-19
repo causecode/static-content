@@ -12,6 +12,9 @@
                 ${inputWidgetInstance.widgetValues?.tokenize(',')[index]?.trim()}
             </option>
         </g:each>
+        <g:if test="${inputWidgetInstance.noSelectionText }">
+            <option value="">${inputWidgetInstance.noSelectionText }</option>
+        </g:if>
     </select>
 </g:if>
 
@@ -25,6 +28,9 @@
                 ${inputWidgetInstance.widgetValues?.tokenize(',')[index]?.trim()}
             </option>
         </g:each>
+        <g:if test="${inputWidgetInstance.noSelectionText }">
+            <option value="">${inputWidgetInstance.noSelectionText }</option>
+        </g:if>
     </select>
 </g:if>
 

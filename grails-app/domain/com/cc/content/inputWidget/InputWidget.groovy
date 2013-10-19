@@ -22,7 +22,7 @@ class InputWidget {
     String validation
 
     String defaultSelected
-    String noSelected
+    String noSelectionText
     Integer minChar
     Integer maxChar
     Integer minValueRange
@@ -37,7 +37,7 @@ class InputWidget {
         widgetKeys nullable: true
         widgetValues nullable: true
         defaultSelected nullable: true
-        noSelected nullable: true
+        noSelectionText nullable: true
         minChar nullable: true
         maxChar nullable: true
         minValueRange nullable: true
