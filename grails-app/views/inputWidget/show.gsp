@@ -59,15 +59,6 @@
 				</li>
 				</g:if>
 			
-				<g:if test="${inputWidgetInstance?.defaultSelected}">
-				<li class="fieldcontain">
-					<span id="defaultSelected-label" class="property-label"><g:message code="inputWidget.defaultSelected.label" default="Default Selected" /></span>
-					
-						<span class="property-value" aria-labelledby="defaultSelected-label"><g:fieldValue bean="${inputWidgetInstance}" field="defaultSelected"/></span>
-					
-				</li>
-				</g:if>
-			
 				<g:if test="${inputWidgetInstance?.noSelected}">
 				<li class="fieldcontain">
 					<span id="noSelected-label" class="property-label"><g:message code="inputWidget.noSelected.label" default="No Selected" /></span>

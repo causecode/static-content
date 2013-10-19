@@ -24,8 +24,6 @@
 					
                 <g:sortableColumn property="widgetValues" title="${message(code: 'inputWidget.widgetValues.label', default: 'Widget Values')}" />
 					
-                <g:sortableColumn property="defaultSelected" title="${message(code: 'inputWidget.defaultSelected.label', default: 'Default Selected')}" />
-					
             </tr>
         </thead>
         <tbody>
@@ -41,9 +39,6 @@
                     <td>${fieldValue(bean: inputWidgetInstance, field: "widgetKeys")}</td>
 					
                     <td>${fieldValue(bean: inputWidgetInstance, field: "widgetValues")}</td>
-					
-                    <td>${fieldValue(bean: inputWidgetInstance, field: "defaultSelected")}</td>
-					
                 </tr>
             </g:each>
             <g:if test="${!inputWidgetInstanceList }">

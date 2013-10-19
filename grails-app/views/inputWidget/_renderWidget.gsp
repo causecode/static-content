@@ -7,14 +7,14 @@
     <select class="select form-control ${classes }" data-input-widget-id="${inputWidgetInstance.id }" 
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
         <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>>
+        <g:if test="${inputWidgetInstance.noSelectionText }">
+            <option value="">${inputWidgetInstance.noSelectionText }</option>
+        </g:if>
         <g:each in="${inputWidgetInstance.widgetKeys?.tokenize(',')}" status="index" var="key">
             <option value="${key}" ${key == inputWidgetValue ? 'selected' : '' } >
                 ${inputWidgetInstance.widgetValues?.tokenize(',')[index]?.trim()}
             </option>
         </g:each>
-        <g:if test="${inputWidgetInstance.noSelectionText }">
-            <option value="">${inputWidgetInstance.noSelectionText }</option>
-        </g:if>
     </select>
 </g:if>
 
@@ -23,14 +23,14 @@
         name="${inputWidgetInstance.name ?: 'select' }${inputWidgetInstance.id}"
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
         <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>>
+        <g:if test="${inputWidgetInstance.noSelectionText }">
+            <option value="">${inputWidgetInstance.noSelectionText }</option>
+        </g:if>
         <g:each in="${inputWidgetInstance.widgetKeys?.tokenize(',')}" status="index" var="key">
             <option value="${key }" ${key in inputWidgetValue?.tokenize(',')*.trim() ? 'selected' : '' }>
                 ${inputWidgetInstance.widgetValues?.tokenize(',')[index]?.trim()}
             </option>
         </g:each>
-        <g:if test="${inputWidgetInstance.noSelectionText }">
-            <option value="">${inputWidgetInstance.noSelectionText }</option>
-        </g:if>
     </select>
 </g:if>
 
