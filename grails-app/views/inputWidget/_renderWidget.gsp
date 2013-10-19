@@ -7,22 +7,22 @@
     <select class="select form-control ${classes }" data-input-widget-id="${inputWidgetInstance.id }" 
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
         <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>>
-        <g:each in="${inputWidgetInstance.widgetKeys.tokenize(',')}" status="index" var="key">
+        <g:each in="${inputWidgetInstance.widgetKeys?.tokenize(',')}" status="index" var="key">
             <option value="${key}" ${key == inputWidgetValue ? 'selected' : '' } >
-                ${inputWidgetInstance.widgetValues.tokenize(',')[index]?.trim()}
+                ${inputWidgetInstance.widgetValues?.tokenize(',')[index]?.trim()}
             </option>
         </g:each>
     </select>
 </g:if>
 
 <g:if test="${inputWidgetType == InputWidgetType.MULTI_SELECT}">
-    <select class="form-control ${classes }" multiple data-input-widget-id="${inputWidgetInstance.id }" 
+    <select class="form-control ${classes } multiselect" multiple data-input-widget-id="${inputWidgetInstance.id }" 
         name="${inputWidgetInstance.name ?: 'select' }${inputWidgetInstance.id}"
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
         <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>>
-        <g:each in="${inputWidgetInstance.widgetKeys.tokenize(',')}" status="index" var="key">
+        <g:each in="${inputWidgetInstance.widgetKeys?.tokenize(',')}" status="index" var="key">
             <option value="${key }" ${key in inputWidgetValue?.tokenize(',')*.trim() ? 'selected' : '' }>
-                ${inputWidgetInstance.widgetValues.tokenize(',')[index]?.trim()}
+                ${inputWidgetInstance.widgetValues?.tokenize(',')[index]?.trim()}
             </option>
         </g:each>
     </select>
@@ -46,32 +46,34 @@
 </g:if>
 
 <g:if test="${inputWidgetType == InputWidgetType.CHECKBOX}">
-     <g:each in="${inputWidgetInstance.defaultValue.tokenize(',')}" status="index" var="value">
+    <g:each in="${inputWidgetInstance.widgetKeys?.tokenize(',')}" status="index" var="key">
         <div class="checkbox">
             <label>
-                <input type="checkbox" name="${inputWidgetInstance.name ?: 'checkBox' }${inputWidgetInstance.id}" 
-                    class="${classes }" 
-                    data-input-widget-id="${inputWidgetInstance.id }" value="${value}"
+                <input type="checkbox" name="${inputWidgetInstance.name ?: 'checkbox' }${inputWidgetInstance.id}" 
+                    class="${classes } " 
+                    data-input-widget-id="${inputWidgetInstance.id }" 
+                    value="${key}"
                     <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}" />
                     <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>
-                    ${value in inputWidgetValue?.tokenize(',')*.trim() ? 'checked' : '' }/>
-                <strong>${value}</strong>
+                    ${key in inputWidgetValue?.tokenize(',')*.trim() ? 'checked' : '' }/>
+                <strong>${inputWidgetInstance.widgetValues?.tokenize(',')[index]?.trim() }</strong>
             </label>
         </div>
     </g:each>
 </g:if>
 
 <g:if test="${inputWidgetType == InputWidgetType.RADIO}">
-     <g:each in="${inputWidgetInstance.defaultValue.tokenize(',')}" status="index" var="value">
+    <g:each in="${inputWidgetInstance.widgetKeys?.tokenize(',')}" status="index" var="key">
         <div class="radio">
             <label>
-                <input type="radio" name="${inputWidgetInstance.name ?: 'radio' }${inputWidgetInstance.id}"
+                <input type="radio" name="${inputWidgetInstance.name ?: 'radio' }${inputWidgetInstance.id}" 
                     class="${classes }" 
-                    data-input-widget-id="${inputWidgetInstance.id }" value="${value}"
-                    <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
+                    data-input-widget-id="${inputWidgetInstance.id }" 
+                    value="${key}"
+                    <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}" />
                     <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>
-                    ${value == inputWidgetValue ? 'checked' : '' }/>
-                <strong>${value}</strong>
+                    ${key == inputWidgetValue ? 'checked' : '' }/>
+                <strong>${key}</strong>
             </label>
         </div>
     </g:each>

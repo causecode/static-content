@@ -4,7 +4,7 @@
     <div class=" col-lg-6">
         <g:select name="${prefix}type" from="${com.cc.content.inputWidget.InputWidgetType?.values()}"
             keys="${com.cc.content.inputWidget.InputWidgetType.values()*.name()}" required=""
-            class="form-control ${prefix?'':'inputWidgetSelector' }" value="${inputWidgetInstance.type.toString()}" 
+            class="form-control input-widget-type-selector" value="${inputWidgetInstance.type.toString()}" 
             noSelection="${['null':'Select One...']}"/>
     </div>
     <g:hiddenField name="${prefix}widgetType" value="${inputWidgetInstance.type}" />
@@ -14,7 +14,7 @@
     <label class="control-label col-sm-3" for="label"> <g:message code="inputWidget.label.label" default="Label" />
     </label>
     <div class=" col-lg-6">
-        <g:textField name="${prefix}label" required="" value="${inputWidgetInstance.label}"
+        <g:textField name="${prefix}label" value="${inputWidgetInstance.label}"
             class="form-control " />
     </div>
 </div>
@@ -28,7 +28,7 @@
     </div>
 </div>
 
-<div class="form-group widgetKeyValue hide ${prefix?'':'inputWidgetSelector' }">
+<div class="form-group widgetKeyValue hide ">
     <label class="control-label col-sm-3" for="widgetKeys"> <g:message code="inputWidget.widgetKeys.label"
             default="Widget Key" />
     </label>
@@ -38,7 +38,7 @@
     </div>
 </div>
 
-<div class="form-group widgetKeyValue hide ${prefix?'':'inputWidgetSelector' }">
+<div class="form-group widgetKeyValue hide ">
     <label class="control-label col-sm-3" for="widgetValues"> <g:message code="inputWidget.widgetValues.label"
             default="Widget Value" />
     </label>
@@ -48,7 +48,7 @@
     </div>
 </div>
 
-<div class="form-group defaultValue hide ${prefix?'':'inputWidgetSelector' }">
+<div class="form-group defaultValue hide ">
     <label class="control-label col-sm-3" for="defaultValue"> <g:message code="inputWidget.defaultValue.label"
             default="Default Value" />
     </label>
@@ -92,7 +92,7 @@
     </div>
 </div>
 
-<div class="form-group defaultSelected hide ${prefix?'':'inputWidgetSelector' }">
+<div class="form-group defaultSelected hide ">
     <label class="control-label col-sm-3 " for="defaultSelected"> <g:message
             code="inputWidget.defaultSelected.label" default="Default Selected" />
     </label>
@@ -102,7 +102,7 @@
     </div>
 </div>
 
-<div class="form-group noSelected hide ${prefix?'':'inputWidgetSelector' }">
+<div class="form-group noSelected hide ">
     <label class="control-label col-sm-3" for="noSelected"> <g:message code="inputWidget.noSelected.label"
             default="No Selected" />
     </label>
@@ -112,7 +112,7 @@
     </div>
 </div>
 
-<div class="form-group minChar hide ${prefix?'':'inputWidgetSelector' }">
+<div class="form-group minChar hide ">
     <label class="control-label col-sm-3" for="minChar"> <g:message code="inputWidget.minChar.label"
             default="Min Char" />
     </label>
@@ -122,7 +122,7 @@
     </div>
 </div>
 
-<div class="form-group maxChar hide ${prefix?'':'inputWidgetSelector' }">
+<div class="form-group maxChar hide ">
     <label class="control-label col-sm-3" for="maxChar"> <g:message code="inputWidget.maxChar.label"
             default="Max Char" />
     </label>
@@ -132,7 +132,7 @@
     </div>
 </div>
 
-<div class="form-group minValueRange hide ${prefix?'':'inputWidgetSelector' }">
+<div class="form-group minValueRange hide ">
     <label class="control-label col-sm-3" for="minValueRange"> <g:message code="inputWidget.minValueRange.label"
             default="Min Value Range" />
     </label>
@@ -142,7 +142,7 @@
     </div>
 </div>
 
-<div class="form-group maxValueRange hide ${prefix?'':'inputWidgetSelector' }">
+<div class="form-group maxValueRange hide ">
     <label class="control-label col-sm-3" for="maxValueRange"> <g:message code="inputWidget.maxValueRange.label"
             default="Max Value Range" />
     </label>
