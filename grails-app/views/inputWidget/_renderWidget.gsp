@@ -6,7 +6,8 @@
 
 <g:if test="${inputWidgetType == InputWidgetType.SELECT}">
     <select class="select form-control ${classes }" data-input-widget-id="${inputWidgetInstance.id }"
-        name="${inputWidgetInstance.name ?: 'select' }${inputWidgetInstance.id}" 
+        name="${inputWidgetInstance.name ?: 'select' }${inputWidgetInstance.id}"
+        id="${inputWidgetInstance.name ?: 'select' }${inputWidgetInstance.id}"  
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
         <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>>
         <g:if test="${inputWidgetInstance.noSelectionText }">
@@ -23,6 +24,7 @@
 <g:if test="${inputWidgetType == InputWidgetType.MULTI_SELECT}">
     <select class="form-control ${classes } multiselect" multiple data-input-widget-id="${inputWidgetInstance.id }" 
         name="${inputWidgetInstance.name ?: 'select' }${inputWidgetInstance.id}"
+        id="${inputWidgetInstance.name ?: 'select' }${inputWidgetInstance.id}"
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
         <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>>
         <g:if test="${inputWidgetInstance.noSelectionText }">
@@ -37,8 +39,9 @@
 </g:if>
 
 <g:if test="${inputWidgetType == InputWidgetType.TEXT_AREA}">
-    <textArea name="${inputWidgetInstance.name ?: 'textArea' }${inputWidgetInstance.id}" class="form-control ${classes }" 
-        data-input-widget-id="${inputWidgetInstance.id }"
+    <textArea name="${inputWidgetInstance.name ?: 'textArea' }${inputWidgetInstance.id}"
+        id="${inputWidgetInstance.name ?: 'textArea' }${inputWidgetInstance.id}"
+        data-input-widget-id="${inputWidgetInstance.id }" class="form-control ${classes }"
         style="${inputWidgetInstance.maxChar && inputWidgetInstance.maxChar > 400 ? 'min-height: 225px' : ''}"
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
         <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>>${fieldValue}</textArea>
@@ -47,6 +50,7 @@
 <g:if test="${inputWidgetType == InputWidgetType.TEXT_FIELD}">
     <input type="text" class="form-control ${classes }"
         name="${inputWidgetInstance.name ?: 'textfield' }${inputWidgetInstance.id}"
+        id="${inputWidgetInstance.name ?: 'textfield' }${inputWidgetInstance.id}"
         data-input-widget-id="${inputWidgetInstance.id }" value="${fieldValue}"
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
         <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>/>

@@ -11,4 +11,7 @@ modules = {
     draggableAndSortable {
         resource id: 'js', url: [dir: 'js/jquery-ui', file: 'jquery-ui-1.10.3.custom.js']
     }
+    wordAndCharacterCounter {
+        resource url: [dir: "js", file: "word-and-character-counter.js"]
+    }
 }

@@ -92,10 +92,10 @@ class InputWidgetTagLib {
             out << """ required="" """
         }
         if(inputWidgetInstance.minChar && type in [TEXT_AREA, TEXT_FIELD]) {
-            out << """ minlenght="${inputWidgetInstance.minChar}" """
+            out << """ minlength="${inputWidgetInstance.minChar}" """
         }
         if(inputWidgetInstance.maxChar && type in [TEXT_AREA, TEXT_FIELD]) {
-            out << """ maxlenght="${inputWidgetInstance.maxChar}" """
+            out << """ maxlength="${inputWidgetInstance.maxChar}" """
         }
         if(inputWidgetInstance.minValueRange && type in [TEXT_FIELD]) {
             out << """ min="${inputWidgetInstance.minValueRange}" """
