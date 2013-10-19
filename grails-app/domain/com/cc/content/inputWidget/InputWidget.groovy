@@ -47,6 +47,14 @@ class InputWidget {
     String toString() {
         return name
     }
+
+    boolean isRequired() {
+        if(!this.validation) {
+            return false
+        }
+        "REQUIRED" in this.validation.tokenize(",")*.trim()
+    }
+
 }
 
 enum InputWidgetType {

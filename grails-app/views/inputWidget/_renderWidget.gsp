@@ -5,7 +5,8 @@
 <g:set var="fieldValue" value="${inputWidgetValue ?: (inputWidgetInstance?.defaultValue ?: '') }" />
 
 <g:if test="${inputWidgetType == InputWidgetType.SELECT}">
-    <select class="select form-control ${classes }" data-input-widget-id="${inputWidgetInstance.id }" 
+    <select class="select form-control ${classes }" data-input-widget-id="${inputWidgetInstance.id }"
+        name="${inputWidgetInstance.name ?: 'select' }${inputWidgetInstance.id}" 
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
         <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>>
         <g:if test="${inputWidgetInstance.noSelectionText }">
@@ -38,16 +39,15 @@
 <g:if test="${inputWidgetType == InputWidgetType.TEXT_AREA}">
     <textArea name="${inputWidgetInstance.name ?: 'textArea' }${inputWidgetInstance.id}" class="form-control ${classes }" 
         data-input-widget-id="${inputWidgetInstance.id }"
-        minlenght="${inputWidgetInstance.minChar ?: ''}" maxlenght="${inputWidgetInstance.maxChar ?: ''}"
+        style="${inputWidgetInstance.maxChar && inputWidgetInstance.maxChar > 400 ? 'min-height: 225px' : ''}"
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
         <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>>${fieldValue}</textArea>
 </g:if>
 
 <g:if test="${inputWidgetType == InputWidgetType.TEXT_FIELD}">
-    <input type="text" class="form-control ${classes }" 
+    <input type="text" class="form-control ${classes }"
+        name="${inputWidgetInstance.name ?: 'textfield' }${inputWidgetInstance.id}"
         data-input-widget-id="${inputWidgetInstance.id }" value="${fieldValue}"
-        minlenght="${inputWidgetInstance.minChar ?: ''}" maxlenght="${inputWidgetInstance.maxChar ?: ''}"
-        min="${inputWidgetInstance.minValueRange}" max="${inputWidgetInstance.maxValueRange}"
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
         <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>/>
 </g:if>
@@ -57,9 +57,7 @@
         <div class="checkbox">
             <label>
                 <input type="checkbox" name="${inputWidgetInstance.name ?: 'checkbox' }${inputWidgetInstance.id}" 
-                    class="${classes } " 
-                    data-input-widget-id="${inputWidgetInstance.id }" 
-                    value="${key}"
+                    class="${classes }" data-input-widget-id="${inputWidgetInstance.id }" value="${key}"
                     <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}" />
                     <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>
                     ${key in fieldValue?.tokenize(',')*.trim() ? 'checked' : '' }/>

@@ -8,6 +8,9 @@
 
 package com.cc.content.inputWidget
 
+import static com.cc.content.inputWidget.InputWidgetHelpType.*
+import static com.cc.content.inputWidget.InputWidgetType.*
+
 class InputWidgetTagLib {
 
     static namespace = "content"
@@ -21,7 +24,10 @@ class InputWidgetTagLib {
         List<String> validationTypes = inputWidgetInstance.validation?.tokenize(",")*.trim()
         StringBuilder classes = new StringBuilder(attrs.remove('classes') ?: "")
         validationTypes.each {
-             classes.append(" " + it.toString().toLowerCase())
+            classes.append(" " + it.toString().toLowerCase())
+        }
+        if(inputWidgetInstance.defaultValue && !attrs.inputWidgetValue) {
+            classes.append(" having-default-value")
         }
         classes.append(" inputWidget")
         out << render(template: '/inputWidget/renderWidget', plugin: 'content', model: [
@@ -51,19 +57,19 @@ class InputWidgetTagLib {
     def widgetHelper = { attrs , body ->
         InputWidget inputWidgetInstance = attrs.inputWidgetInstance
 
-        if(inputWidgetInstance.helpType.equals(InputWidgetHelpType.BLOCK)) {}
+        if(inputWidgetInstance.helpType.equals(BLOCK)) {}
         //out << """ <p class="help-block">$inputWidgetInstance.helpText </p>  """ // Need to insert after Element
 
-        if(inputWidgetInstance.helpType.equals(InputWidgetHelpType.INLINE))
+        if(inputWidgetInstance.helpType.equals(INLINE))
             out << """ title="$inputWidgetInstance.helpText"  """
 
-        if(inputWidgetInstance.helpType.equals(InputWidgetHelpType.PLACEHOLDER))
+        if(inputWidgetInstance.helpType.equals(PLACEHOLDER))
             out << """ placeholder="$inputWidgetInstance.helpText"  """
 
-        if(inputWidgetInstance.helpType.equals(InputWidgetHelpType.TOOLTIP))
+        if(inputWidgetInstance.helpType.equals(TOOLTIP))
             out << """ title="$inputWidgetInstance.helpText" data-toggle="tooltip" rel="tooltip" """
 
-        if(inputWidgetInstance.helpType.equals(InputWidgetHelpType.POPOVER))
+        if(inputWidgetInstance.helpType.equals(POPOVER))
             out << """ data-toggle="popover" data-placement="right" data-content="$inputWidgetInstance.helpText"
                        data-trigger="hover" rel="popover" """
 
@@ -80,9 +86,22 @@ class InputWidgetTagLib {
      */
     def widgetValidation = { attrs, body ->
         InputWidget inputWidgetInstance = attrs.inputWidgetInstance
-        List<String> validationTypes = inputWidgetInstance.validation?.tokenize(",")*.trim()
-        if("REQUIRED" in validationTypes) {
+        InputWidgetType type = inputWidgetInstance.type
+
+        if(inputWidgetInstance.required) {
             out << """ required="" """
+        }
+        if(inputWidgetInstance.minChar && type in [TEXT_AREA, TEXT_FIELD]) {
+            out << """ minlenght="${inputWidgetInstance.minChar}" """
+        }
+        if(inputWidgetInstance.maxChar && type in [TEXT_AREA, TEXT_FIELD]) {
+            out << """ maxlenght="${inputWidgetInstance.maxChar}" """
+        }
+        if(inputWidgetInstance.minValueRange && type in [TEXT_FIELD]) {
+            out << """ min="${inputWidgetInstance.minValueRange}" """
+        }
+        if(inputWidgetInstance.maxValueRange && type in [TEXT_FIELD]) {
+            out << """ max="${inputWidgetInstance.maxValueRange}" """
         }
     }
 }
