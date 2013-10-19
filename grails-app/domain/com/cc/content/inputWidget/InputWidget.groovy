@@ -21,7 +21,6 @@ class InputWidget {
     InputWidgetHelpType helpType
     String validation
 
-    String defaultSelected
     String noSelected
     Integer minChar
     Integer maxChar
@@ -36,7 +35,6 @@ class InputWidget {
         validation nullable: true
         widgetKeys nullable: true
         widgetValues nullable: true
-        defaultSelected nullable: true
         noSelected nullable: true
         minChar nullable: true
         maxChar nullable: true

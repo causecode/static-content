@@ -92,16 +92,6 @@
     </div>
 </div>
 
-<div class="form-group defaultSelected hide ">
-    <label class="control-label col-sm-3 " for="defaultSelected"> <g:message
-            code="inputWidget.defaultSelected.label" default="Default Selected" />
-    </label>
-    <div class=" col-lg-6">
-        <g:textField name="${prefix}defaultSelected" value="${inputWidgetInstance.defaultSelected}"
-            class="form-control " />
-    </div>
-</div>
-
 <div class="form-group noSelected hide ">
     <label class="control-label col-sm-3" for="noSelected"> <g:message code="inputWidget.noSelected.label"
             default="No Selected" />

@@ -1,19 +1,16 @@
-/*
+/**
  * JS Used to show and hide Input Widget fields on widgetTypeSelection
  * while creating Input Widget.
  */
 
 $("select.input-widget-type-selector").on("change", function(){
     var $parent = $(this).parents('div.widget-container');
-    console.log('dd');
-    console.log($parent);
     $("div.minChar", $parent).addClass("hide");
     $("div.maxChar", $parent).addClass("hide");
     $("div.minValueRange", $parent).addClass("hide");
     $("div.maxValueRange", $parent).addClass("hide");
     $("div.widgetKeyValue", $parent).addClass("hide");
     $("div.noSelected", $parent).addClass("hide");
-    $("div.defaultSelected", $parent).addClass("hide");
 
     var $type = $(this).val()
     if($type == 'SELECT' || $type == 'MULTI_SELECT' || $type == 'CHECKBOX' || $type == 'RADIO') {
