@@ -13,7 +13,7 @@
             ${commentInstance.commentText}
         </p>
         <a href="#comment-overlay" class="btn btn-default btn-xs commentButton" data-toggle="modal"
-            data-comment-id="${commentInstance.id}" data-parent-comment-subject="${commentInstance?.replyTo?.subject}"><i class="icon-reply"></i> Reply</a>
+            data-comment-id="${commentInstance.id}"><i class="icon-reply"></i> Reply</a>
     </article>
     <content:nestedComment commentInstance="${commentInstance}" />
 </div>
