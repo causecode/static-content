@@ -2,6 +2,7 @@
 
 <g:set var="inputWidgetType" value="${inputWidgetInstance.type}"></g:set>
 <g:set var="additionalAttrs" value="${additionalAttrs }" />
+<g:set var="fieldValue" value="${inputWidgetValue ?: (inputWidgetInstance?.defaultValue ?: '') }" />
 
 <g:if test="${inputWidgetType == InputWidgetType.SELECT}">
     <select class="select form-control ${classes }" data-input-widget-id="${inputWidgetInstance.id }" 
@@ -11,7 +12,7 @@
             <option value="">${inputWidgetInstance.noSelectionText }</option>
         </g:if>
         <g:each in="${inputWidgetInstance.widgetKeys?.tokenize(',')}" status="index" var="key">
-            <option value="${key}" ${key == inputWidgetValue ? 'selected' : '' } >
+            <option value="${key}" ${key == fieldValue ? 'selected' : '' } >
                 ${inputWidgetInstance.widgetValues?.tokenize(',')[index]?.trim()}
             </option>
         </g:each>
@@ -27,7 +28,7 @@
             <option value="">${inputWidgetInstance.noSelectionText }</option>
         </g:if>
         <g:each in="${inputWidgetInstance.widgetKeys?.tokenize(',')}" status="index" var="key">
-            <option value="${key }" ${key in inputWidgetValue?.tokenize(',')*.trim() ? 'selected' : '' }>
+            <option value="${key }" ${key in fieldValue?.tokenize(',')*.trim() ? 'selected' : '' }>
                 ${inputWidgetInstance.widgetValues?.tokenize(',')[index]?.trim()}
             </option>
         </g:each>
@@ -39,12 +40,12 @@
         data-input-widget-id="${inputWidgetInstance.id }"
         minlenght="${inputWidgetInstance.minChar ?: ''}" maxlenght="${inputWidgetInstance.maxChar ?: ''}"
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
-        <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>>${inputWidgetValue}</textArea>
+        <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>>${fieldValue}</textArea>
 </g:if>
 
 <g:if test="${inputWidgetType == InputWidgetType.TEXT_FIELD}">
     <input type="text" class="form-control ${classes }" 
-        data-input-widget-id="${inputWidgetInstance.id }" value="${inputWidgetValue}"
+        data-input-widget-id="${inputWidgetInstance.id }" value="${fieldValue}"
         minlenght="${inputWidgetInstance.minChar ?: ''}" maxlenght="${inputWidgetInstance.maxChar ?: ''}"
         min="${inputWidgetInstance.minValueRange}" max="${inputWidgetInstance.maxValueRange}"
         <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}"/>
@@ -61,7 +62,7 @@
                     value="${key}"
                     <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}" />
                     <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>
-                    ${key in inputWidgetValue?.tokenize(',')*.trim() ? 'checked' : '' }/>
+                    ${key in fieldValue?.tokenize(',')*.trim() ? 'checked' : '' }/>
                 <strong>${inputWidgetInstance.widgetValues?.tokenize(',')[index]?.trim() }</strong>
             </label>
         </div>
@@ -78,7 +79,7 @@
                     value="${key}"
                     <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}" />
                     <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>
-                    ${key == inputWidgetValue ? 'checked' : '' }/>
+                    ${key == fieldValue ? 'checked' : '' }/>
                 <strong>${inputWidgetInstance.widgetValues?.tokenize(',')[index]?.trim() }</strong>
             </label>
         </div>

@@ -21,7 +21,6 @@ class InputWidget {
     InputWidgetHelpType helpType
     String validation
 
-    String defaultSelected
     String noSelectionText
     Integer minChar
     Integer maxChar
@@ -36,7 +35,6 @@ class InputWidget {
         validation nullable: true
         widgetKeys nullable: true
         widgetValues nullable: true
-        defaultSelected nullable: true
         noSelectionText nullable: true
         minChar nullable: true
         maxChar nullable: true
@@ -60,5 +58,5 @@ enum InputWidgetHelpType {
 }
 
 enum InputWidgetValidation {
-    EMAIL, INTEGER, TIME, URL, ZIP_CODE, REQUIRED
+    REQUIRED, EMAIL, INTEGER, TIME, URL, ZIP_CODE
 }

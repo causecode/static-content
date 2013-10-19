@@ -48,14 +48,13 @@
     </div>
 </div>
 
-<div class="form-group defaultValue hide ">
+<div class="form-group defaultValue ">
     <label class="control-label col-sm-3" for="defaultValue"> <g:message code="inputWidget.defaultValue.label"
             default="Default Value" />
     </label>
     <div class=" col-lg-6">
         <g:textField name="${prefix}defaultValue" value="${inputWidgetInstance.defaultValue}"
-            class="form-control "
-            placeholder="Enter comma seperated Values" />
+            class="form-control " />
     </div>
 </div>
 
@@ -89,16 +88,6 @@
             keys="${com.cc.content.inputWidget.InputWidgetValidation.values()*.name()}" required=""
             class="form-control " value="${inputWidgetInstance.validation.toString()}"
             multiple="true" />
-    </div>
-</div>
-
-<div class="form-group defaultSelected hide ">
-    <label class="control-label col-sm-3 " for="defaultSelected"> <g:message
-            code="inputWidget.defaultSelected.label" default="Default Selected" />
-    </label>
-    <div class=" col-lg-6">
-        <g:textField name="${prefix}defaultSelected" value="${inputWidgetInstance.defaultSelected}"
-            class="form-control " />
     </div>
 </div>
 

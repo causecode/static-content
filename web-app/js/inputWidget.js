@@ -10,12 +10,7 @@ $("select.input-widget-type-selector").on("change", function(){
     $("div.minValueRange", $parent).addClass("hide");
     $("div.maxValueRange", $parent).addClass("hide");
     $("div.widgetKeyValue", $parent).addClass("hide");
-<<<<<<< HEAD
     $("div.noSelectionText", $parent).addClass("hide");
-    $("div.defaultSelected", $parent).addClass("hide");
-=======
-    $("div.noSelected", $parent).addClass("hide");
->>>>>>> 5d808b1b7aa167434dc6f69e75ac66d4317d370e
 
     var $type = $(this).val()
     if($type == 'SELECT' || $type == 'MULTI_SELECT') {
