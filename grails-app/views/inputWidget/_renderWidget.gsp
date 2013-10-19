@@ -73,7 +73,7 @@
                     <content:widgetHelper inputWidgetInstance="${inputWidgetInstance}" />
                     <content:widgetValidation inputWidgetInstance="${inputWidgetInstance}"/>
                     ${key == inputWidgetValue ? 'checked' : '' }/>
-                <strong>${key}</strong>
+                <strong>${inputWidgetInstance.widgetValues?.tokenize(',')[index]?.trim() }</strong>
             </label>
         </div>
     </g:each>
