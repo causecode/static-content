@@ -29,8 +29,10 @@ class BlogTagLib {
     private void commentContent(Comment commentInstance, out, Map attrs, boolean nested) {
         out << """<${nested ? 'div' : 'li'} class="media comment ${nested ? 'nested' : ''} ${attrs.classes ?: ''}">"""
 
-        out << render(template: '/blog/templates/commentBody', model: [commentInstance: commentInstance,
-            nested: nested], plugin: "content")
+        String template = attrs.bodyTemplate ?: "/blog/templates/commentBody"
+        String plugin = attrs.inPlugin ?: "content"
+
+        out << render(template: template, model: [commentInstance: commentInstance, nested: nested, attrs: attrs], plugin: plugin)
 
         out << """</${nested ? 'div' : 'li'}>"""
     }
