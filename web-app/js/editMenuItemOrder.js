@@ -47,7 +47,7 @@ $("a#create", $createMenuItemOverlay).click(function(){
     var roles = $('select#roles').val();
     var url = $('input#url').val();
     var showOnlyWhenLoggedIn = $('input#showOnlyWhenLoggedIn').val();
-    $('ul.menuItem').prepend("<li id=\"\"class=\"thumbnail clearfix temporaryMenuItem\" data-title=\""+title+ "\""+
+    $('ul.menuItem.main-container').prepend("<li id=\"\"class=\"thumbnail clearfix temporaryMenuItem\" data-title=\""+title+ "\""+
                              " data-roles=\"" + roles + "\"" +
                              " data-url=\""+ url + "\"" +
                              " data-show-only-when-logged-in=\"" + showOnlyWhenLoggedIn + "\">" +
