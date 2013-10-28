@@ -16,6 +16,7 @@ import org.codehaus.groovy.grails.commons.metaclass.GroovyDynamicMethodsIntercep
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.web.mapping.LinkGenerator
 import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
+import org.springframework.transaction.annotation.Transactional
 
 import com.cc.annotation.sanitizedTitle.SanitizedTitle
 import com.cc.content.blog.Blog
@@ -24,8 +25,9 @@ import com.cc.page.Page
 
 class ContentService {
 
-    private static final String ANONYMOUS_USER = "anonymousUser"
+    static transactional = false
 
+    private static final String ANONYMOUS_USER = "anonymousUser"
 
     Class authorClass
     String authorClassName
@@ -85,6 +87,7 @@ class ContentService {
         return SpringSecurityUtils.ifAnyGranted(contentManagerRole)
     }
 
+    @Transactional
     Content create(Map args, List metaTypes, List metaValues, Class clazz = Content.class) {
         Content contentInstance = clazz.newInstance()
         contentInstance.author = resolveAuthor(contentInstance)
@@ -92,6 +95,7 @@ class ContentService {
         return contentInstance
     }
 
+    @Transactional
     Content update(Map args, Content contentInstance, List metaTypes, List metaValues) {
         bindData(contentInstance, args)
         contentInstance.validate()
@@ -138,11 +142,8 @@ class ContentService {
      * @return String SEO friendly url.
      */
     String createLink(Map attrs) {
-        if(!attrs.domain)
-            return ""
-
         Class DomainClass = grailsApplication.getDomainClass(attrs.domain).clazz
-        def domainClassInstance = DomainClass.get(attrs.id)     // Get actual domainInstance
+        def domainClassInstance = DomainClass.read(attrs.id)     // Get actual domainInstance
         List<Field> fields = []
 
         if(DomainClass.superclass && DomainClass.superclass != Object)
