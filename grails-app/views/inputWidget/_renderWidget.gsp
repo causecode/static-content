@@ -13,7 +13,7 @@
         <g:if test="${inputWidgetInstance.noSelectionText }">
             <option value="">${inputWidgetInstance.noSelectionText }</option>
         </g:if>
-        <g:each in="${inputWidgetInstance.widgetKeys?.tokenize(',')}" status="index" var="key">
+        <g:each in="${inputWidgetInstance.widgetKeys?.tokenize(',')*.trim()}" status="index" var="key">
             <option value="${key}" ${key == fieldValue ? 'selected' : '' } >
                 ${inputWidgetInstance.widgetValues?.tokenize(',')[index]?.trim()}
             </option>
@@ -30,7 +30,7 @@
         <g:if test="${inputWidgetInstance.noSelectionText }">
             <option value="">${inputWidgetInstance.noSelectionText }</option>
         </g:if>
-        <g:each in="${inputWidgetInstance.widgetKeys?.tokenize(',')}" status="index" var="key">
+        <g:each in="${inputWidgetInstance.widgetKeys?.tokenize(',')*.trim()}" status="index" var="key">
             <option value="${key }" ${key in fieldValue?.tokenize(',')*.trim() ? 'selected' : '' }>
                 ${inputWidgetInstance.widgetValues?.tokenize(',')[index]?.trim()}
             </option>
@@ -58,6 +58,17 @@
 
 <g:if test="${inputWidgetType == InputWidgetType.CHECKBOX}">
     <g:each in="${inputWidgetInstance.widgetKeys?.tokenize(',')}" status="index" var="key">
+        <g:if test="${index == 1}">
+            <%
+                /*
+                 * Needs to do this because if same class is added to same name of checkbox, than
+                 * jquery selector of type $('.inputWidget.having-default-value') will return all
+                 * records which will cause some kind of problems. Like firing some event for this
+                 * will fired 3 times of 3 same checkboxes.
+                 */
+             %>
+            <g:set var="classes" value="${classes?.replace('having-default-value', '') }" />
+        </g:if>
         <div class="checkbox">
             <label>
                 <input type="checkbox" name="${inputWidgetInstance.name ?: 'checkbox' }${inputWidgetInstance.id}" 
@@ -73,6 +84,9 @@
 
 <g:if test="${inputWidgetType == InputWidgetType.RADIO}">
     <g:each in="${inputWidgetInstance.widgetKeys?.tokenize(',')}" status="index" var="key">
+        <g:if test="${index == 1}">
+            <g:set var="classes" value="${classes?.replace('having-default-value', '') }" />
+        </g:if>
         <div class="radio">
             <label>
                 <input type="radio" name="${inputWidgetInstance.name ?: 'radio' }${inputWidgetInstance.id}" 
