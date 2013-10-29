@@ -2,7 +2,7 @@
     list-style: none;
 }
 
-#menu-item-sorting ul.thumbnails {
+#menu-item-sorting ul.top-level-container {
     margin-left: -40px;
 }
 
@@ -27,7 +27,7 @@ li.ui-sortable-placeholder {
     background-color: whitesmoke;
 }
 
-#menu-item-sorting li.temporaryMenuItem {
+li.un-saved {
     background-color: #FFFFCC;
 }
 
@@ -42,8 +42,10 @@ i.icon-move {
     line-height:25px;
 }
 
-i.icon-pencil {
-    font-size:11px;
-    margin-right:5px;
-    line-height:25px;
+a.edit-menu-item, a.delete-menu-item, a.save-menu-item {
+    padding: 5px;
+}
+
+a.edit-menu-item:hover, a.delete-menu-item:hover, a.save-menu-item:hover {
+    text-decoration: none;
 }

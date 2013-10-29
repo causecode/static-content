@@ -2,38 +2,35 @@
 <head>
     <meta name="layout" content="main">
     <g:set var="entityName" value="${message(code: 'menu.label')}" />
-    <title>Sort ${entityName } - ${menuInstance.name }</title>
+    <title>Sort Menu Items - ${menuInstance.name }</title>
     <r:require modules="menuItem" />
 </head>
 <body>
     <content tag="breadcrumb">
-            <content:breadcrumb map="['/menu/list': 'Menu List', 'active':(menuInstance.name)]"/>
+        <content:breadcrumb map="['/menu/list': 'Menu List', 'active':(menuInstance.name)]"/>
     </content>
     <div class="page-header">
         <h1 class="inline">
-            Sort Menu Items
+            Menu Items
+            <small>${menuInstance.name }</small>
         </h1>
         <span class="btn-group pull-right">
             <a href="#create-menu-item-overlay" class="btn btn-primary btn-sm" data-toggle="modal">
-                <i class="icon-plus"></i> Menu Item</a>
+                <i class="icon-plus"></i> &nbsp;Menu Item</a>
         </span>
     </div>
+    <div id="menu-item-alert" class="alert alert-success hide"></div>
 
     <div id="menu-item-sorting">
-        <div id="alertMessageLink" class="alert alert-success hide"></div>
-        <ul class="thumbnails menuItem main-container" data-parent-id="" data-menu-id="${menuInstance?.id }">
+        <ul class="menu-item-container top-level-container" data-parent-id="">
             <g:each in="${menuItemInstanceList}" var="menuItemInstance">
-                <g:if test="${menuItemInstance && !menuItemInstance?.parent }">
-                    <li id="${menuItemInstance?.id }" class="thumbnail" data-menu-item-id="${menuItemInstance?.id }">
-                        <i class="icon-move"></i>
-                        <strong>${menuItemInstance?.title}</strong>
-                        <a id="editMenuItem" href="#" class="pull-right"><i class="icon-pencil"></i></a>
-                        <g:render template="/menu/templates/renderSubMenu" model="[menuItemInstance: menuItemInstance]" />
-                    </li>
+                <g:if test="${menuItemInstance && !menuItemInstance.parent }">
+                    <g:render template="/menuItem/templates/forEdit" model="[instance: menuItemInstance, topLevel: true]" />
                 </g:if>
             </g:each>
         </ul>
     </div>
+    <g:hiddenField name="id" value="${menuInstance.id }" />
     <g:render template="/menuItem/templates/createMenuItemOverlay" plugin="content" />
     <g:render template="/menuItem/templates/editMenuItemOverlay" plugin="content" />
 

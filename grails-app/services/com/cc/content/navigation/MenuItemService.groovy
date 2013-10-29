@@ -26,29 +26,17 @@ class MenuItemService {
         return menuItemInstance
     }
 
-    MenuItem update(MenuItem menuItemInstance , Map args) {
-        def menuInstance
-        def mainMenuInstance
-        def subMenuItemInstance
+    MenuItem update(MenuItem menuItemInstance , Map args = [:]) {
+        int index = args.index as int
         menuItemInstance.properties = args
-        if(args?.menuId ) {
-            menuInstance = Menu.get(args.menuId)
-            if(args?.index) {
-                menuInstance?.menuItems.add(args?.index as int,menuItemInstance)
-            } else {
-                menuInstance?.menuItems.add(0,menuItemInstance)
-            }
-            menuItemInstance.menu = menuInstance
+
+        if(!menuItemInstance.id) {
+            Menu menuInstance = Menu.get(args.menuId)
+            menuInstance.addToMenuItems(menuItemInstance)
+            menuInstance.save(flush: true)
         }
-        if(args?.parentId) {
-            subMenuItemInstance = MenuItem.get(args?.parentId)
-            if(args?.index) {
-                subMenuItemInstance.childItems.add(args.index as int,menuItemInstance)
-            } else {
-                subMenuItemInstance?.childItems.add(0,menuItemInstance)
-            }
-        }
-        menuItemInstance.save()
+
+        reorder(menuItemInstance, args)
         return menuItemInstance
     }
 

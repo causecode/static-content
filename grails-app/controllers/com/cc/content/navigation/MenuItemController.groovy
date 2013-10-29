@@ -37,15 +37,10 @@ class MenuItemController {
 
     def delete(Long id) {
         try {
-            if(request.xhr) {
-                MenuItem menuItemInstance = MenuItem.get(params.menuItemId)
-                menuItemInstance = menuItemService.deleteMenuItem(menuItemInstance)
-                render menuItemInstance as JSON
-            }
+            menuItemInstance = menuItemService.deleteMenuItem(menuItemInstance)
+            render menuItemInstance as JSON
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message',
-            args: [message(code: 'menuItem.label'), menuItemInstance.title])
-            redirect(action: "show", id: id)
+            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'menuItem.label'), menuItemInstance.title])
         }
     }
 
