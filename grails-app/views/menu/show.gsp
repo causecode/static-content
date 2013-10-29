@@ -9,6 +9,7 @@
     <content tag="breadcrumb">
         <content:breadcrumb map="['/menu/list': 'Menu List', 'active':(menuInstance.name)]"/>
     </content>
+    <div id="menu-item-alert" class="alert alert-success hid"><p></p></div>
     <div class="page-header">
         <h1 class="inline">
             Menu Items
@@ -19,7 +20,6 @@
                 <i class="icon-plus"></i> &nbsp;Menu Item</a>
         </span>
     </div>
-    <div id="menu-item-alert" class="alert alert-success hide"></div>
 
     <div id="menu-item-sorting">
         <ul class="menu-item-container top-level-container" data-parent-id="">
@@ -30,7 +30,7 @@
             </g:each>
         </ul>
     </div>
-    <g:hiddenField name="id" value="${menuInstance.id }" />
+    <g:hiddenField name="menuId" value="${menuInstance.id }" />
     <g:render template="/menuItem/templates/createMenuItemOverlay" plugin="content" />
     <g:render template="/menuItem/templates/editMenuItemOverlay" plugin="content" />
 

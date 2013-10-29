@@ -8,17 +8,7 @@
 
 package com.cc.content.navigation
 
-import com.cc.content.navigation.MenuItem
-import com.cc.content.navigation.Menu
-import org.codehaus.groovy.grails.commons.metaclass.GroovyDynamicMethodsInterceptor
-import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
-
 class MenuItemService {
-
-    MenuItemService() {
-        GroovyDynamicMethodsInterceptor i = new GroovyDynamicMethodsInterceptor(this)
-        i.addDynamicMethodInvocation(new BindDynamicMethod())
-    }
 
     MenuItem create(Map args) {
         def menuItemInstance = new MenuItem()
@@ -27,42 +17,33 @@ class MenuItemService {
     }
 
     MenuItem update(MenuItem menuItemInstance , Map args = [:]) {
-        int index = args.index as int
         menuItemInstance.properties = args
 
         if(!menuItemInstance.id) {
+            int index = args.index as int
             Menu menuInstance = Menu.get(args.menuId)
             menuInstance.addToMenuItems(menuItemInstance)
             menuInstance.save(flush: true)
+            reorder(menuItemInstance, args)
         }
 
-        reorder(menuItemInstance, args)
         return menuItemInstance
     }
 
-    MenuItem removeFromParentMenuItem(MenuItem menuItemInstance){
-        def menuInstance
-        MenuItem parentMenuItemInstance
-
-        if(menuItemInstance?.menu) {
-            menuInstance = Menu.findById(menuItemInstance.menu?.id)
-            //menuInstance?.menuItems.remove(menuItemInstance)
-            menuInstance.removeFromMenuItems(menuItemInstance)
-            menuInstance.save()
+    void delete(MenuItem menuItemInstance, boolean flush = true) {
+        Menu menuInstance = menuItemInstance.menu
+        menuInstance.removeFromMenuItems(menuItemInstance)
+        menuInstance.save()
+        if(menuItemInstance.childItems) {
+            List childItems = menuItemInstance.childItems.toArray()
+            childItems.each { delete(it, false) }
         }
-        if(menuItemInstance?.parent) {
-            parentMenuItemInstance = MenuItem.get(menuItemInstance.parent?.id)
+        if(menuItemInstance.parent) {
+            MenuItem parentMenuItemInstance = menuItemInstance.parent
             parentMenuItemInstance.removeFromChildItems(menuItemInstance)
-            parentMenuItemInstance.save()
+            parentMenuItemInstance.save(flush: flush)
         }
-        return menuItemInstance
-    }
-
-    MenuItem deleteMenuItem(MenuItem menuItemInstance){
-        removeFromParentMenuItem(menuItemInstance)
-        menuItemInstance?.childItems?.each { deleteMenuItem(it) }
-        menuItemInstance?.delete()
-        return menuItemInstance
+        menuItemInstance.delete(flush: flush)
     }
 
     void reorder(MenuItem menuItemInstance, Map args) {

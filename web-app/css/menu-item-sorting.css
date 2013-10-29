@@ -26,6 +26,18 @@ li.ui-sortable-placeholder {
     visibility:visible !important;
     background-color: whitesmoke;
 }
+ul.menu-item-container li.ui-sortable-placeholder {
+    padding: 4px;
+    margin-bottom: 10px;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    line-height: 1.428571429;
+}
+ul.menu-item-container:not(.top-level-container) li.ui-sortable-placeholder {
+    padding: 0;
+    margin-bottom: 0;
+    border: none;
+}
 
 li.un-saved {
     background-color: #FFFFCC;

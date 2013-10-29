@@ -38,20 +38,20 @@ class MenuTagLib {
      */
     def canBeVisible = { attrs, body ->
         def instance = attrs.instance
-        if(!instance?.showOnlyWhenLoggedIn) {
-            out << body()
-            return
-        } else if(springSecurityService.isLoggedIn()) {
-            out << body()
+        if(!instance) {
             return
         }
-        if(instance?.roles) {
+        if(instance.roles) {
             if(SpringSecurityUtils.ifAnyGranted(instance.roles)) {
                 out << body()
-                return
             }
+            return
         } else {
-            out << body()
+            if(!instance.showOnlyWhenLoggedIn) {
+                out << body()
+            } else if(springSecurityService.isLoggedIn()) {
+                out << body()
+            }
         }
     }
 

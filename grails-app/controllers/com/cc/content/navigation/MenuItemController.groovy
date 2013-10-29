@@ -37,8 +37,8 @@ class MenuItemController {
 
     def delete(Long id) {
         try {
-            menuItemInstance = menuItemService.deleteMenuItem(menuItemInstance)
-            render menuItemInstance as JSON
+            menuItemInstance = menuItemService.delete(menuItemInstance)
+            render true
         } catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'menuItem.label'), menuItemInstance.title])
         }
@@ -50,13 +50,14 @@ class MenuItemController {
     }
 
     def edit(){
-        def itemData = ['title':menuItemInstance.title,'url':menuItemInstance.url,'roles':menuItemInstance.roles,
-            'showOnlyWhenLoggedIn':menuItemInstance.showOnlyWhenLoggedIn]
-        render itemData as JSON
+        Map responseResult = [title: menuItemInstance.title, url: menuItemInstance.url, roles: menuItemInstance.roles,
+            showOnlyWhenLoggedIn: menuItemInstance.showOnlyWhenLoggedIn]
+        render responseResult as JSON
     }
 
     def update(){
         menuItemInstance = menuItemService.update(menuItemInstance, params)
+        render ([success: true] as JSON)
     }
 
     def reorder() {

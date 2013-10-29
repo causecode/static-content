@@ -1,5 +1,5 @@
 <g:if test="${instance }">
-    <li class="${topLevel ? 'thumbnail ' : '' }menu-item" data-menu-item-id="${instance.id}">
+    <li class="${topLevel ? 'thumbnail ' : '' }menu-item" data-menu-item-id="${instance.id}" id="menu-item-${instance.id }">
         <i class="icon-move"></i>
         <strong class="title">${instance.title}</strong>
         <span class="pull-right">

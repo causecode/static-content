@@ -24,10 +24,11 @@
 </div>
 
 <div class="form-group">
-    <label class="control-label col-sm-4" for="showOnlyWhenLoggedIn"> <g:message
-            code='menuItem.showOnlyWhenLoggedIn.label' default="Show Only When Logged In" />
+    <label class="control-label col-sm-4" for="showOnlyWhenLoggedIn">
+        <g:message code='menuItem.showOnlyWhenLoggedIn.label' default="Show Only When Logged In" />
     </label>
     <div class="col-sm-6">
-        <g:checkBox name="showOnlyWhenLoggedIn" optionKey="id" />
+        <g:checkBox name="showOnlyWhenLoggedIn" />
     </div>
 </div>
+<g:hiddenField name="id" />
