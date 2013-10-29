@@ -65,7 +65,7 @@ class MenuItemController {
     }
 
     def reorder() {
-        menuItemInstance = menuItemService.editMenuItemsOrder(params)
+        menuItemInstance = menuItemService.reorder(menuItemInstance, params)
         render ([success: true]) as JSON
     }
 

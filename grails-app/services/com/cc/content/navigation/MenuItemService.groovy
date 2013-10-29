@@ -58,8 +58,8 @@ class MenuItemService {
 
         if(menuItemInstance?.menu) {
             menuInstance = Menu.findById(menuItemInstance.menu?.id)
-            menuInstance?.menuItems.remove(menuItemInstance)
-            //menuInstance.removeFromMenuItems(menuItemInstance)
+            //menuInstance?.menuItems.remove(menuItemInstance)
+            menuInstance.removeFromMenuItems(menuItemInstance)
             menuInstance.save()
         }
         if(menuItemInstance?.parent) {
@@ -77,51 +77,54 @@ class MenuItemService {
         return menuItemInstance
     }
 
-    MenuItem editMenuItemsOrder(Map args){
-        def menuId = args.menuId
-        def menuItemId = args.menuItemId
+    void reorder(MenuItem menuItemInstance, Map args) {
+        int index = args.index as int
         def parentId = args.parentId
-        def index = args.index as int
-        def parentIndex
-        MenuItem parentMenuItemInstance
-        MenuItem newParentMenuItemInstance
 
-        Menu menuInstance = Menu.get(menuId)
-        MenuItem menuItemInstance = MenuItem.get(menuItemId)
+        Menu menuInstance = menuItemInstance.menu
 
-        /**
-         * When performing any actions regarding top level MenuItem
-         */
+        log.info "Sorting $menuItemInstance at ${parentId ? 'non ' : ''}top level."
+
+        // Removing from parent menu item (if exist) in every case
+        if(menuItemInstance.parent) {
+            MenuItem parentMenuItemInstance = menuItemInstance.parent
+            parentMenuItemInstance.removeFromChildItems(menuItemInstance)
+            parentMenuItemInstance.save()
+            log.info "Removing $menuItemInstance from parent $parentMenuItemInstance"
+        }
+
+        // When dropping a menu item to top level menu item
         if(!parentId) {
-            /**
-             * When making a MenuItem a top level MenuItem
-             */
-            if(menuItemInstance?.parent) {
-                parentMenuItemInstance = menuItemInstance?.parent
-                parentMenuItemInstance.childItems.remove(menuItemInstance)
-            }
-            menuInstance?.menuItems.remove(menuItemInstance)
-            menuInstance?.menuItems.add(index as int,menuItemInstance)
+            fixOrder(menuInstance, menuItemInstance, index)
             return
         }
-        /**
-         * When sorting any non-top level MenuItem
-         */
-        if(menuItemInstance?.parent) {
-            parentMenuItemInstance = menuItemInstance?.parent
-            parentMenuItemInstance?.childItems.remove(menuItemInstance)
-        }
-        /**
-         * When making a top level MenuItem a child MenuItem
-         */
-        else {
-            menuInstance.removeFromMenuItems(menuItemInstance)
-            menuInstance.save()
-        }
-        newParentMenuItemInstance = MenuItem.get(parentId)
-        newParentMenuItemInstance.childItems.add(index as int,menuItemInstance)
+        MenuItem newParentMenuItemInstance = MenuItem.get(parentId)
+        log.info "Adding $menuItemInstance to parent $newParentMenuItemInstance at position [$index]"
+
+        newParentMenuItemInstance.childItems.add(index, menuItemInstance)
         newParentMenuItemInstance.save()
-        parentIndex = menuInstance?.menuItems.indexOf(newParentMenuItemInstance) as int
-        menuInstance?.menuItems.add(++parentIndex,menuItemInstance)
+        fixOrder(menuInstance)
     }
+
+    void fixOrder(Menu menuInstance, MenuItem menuItemInstance = null, int index = 0) {
+        if(!menuInstance.menuItems) {
+            log.info "No menuitems in $menuInstance to sort."
+            return
+        }
+
+        List<MenuItem> allMenuItems = menuInstance.menuItems.toArray().findAll { it } //MenuItem.findAllByMenu(menuInstance)
+        List<MenuItem> nonTopLevelMenuItems = allMenuItems.findAll { it.parent }
+        List<MenuItem> topLevelMenuItems = allMenuItems.findAll { !it.parent }
+
+        if(menuItemInstance) {
+            log.info "Adding $menuItemInstance to $menuInstance at position [$index]."
+            topLevelMenuItems.remove(menuItemInstance)
+            topLevelMenuItems.add(index, menuItemInstance)
+        }
+
+        menuInstance.menuItems.clear()
+        menuInstance.menuItems.addAll(topLevelMenuItems + nonTopLevelMenuItems)
+        menuInstance.save()
+    }
+
 }

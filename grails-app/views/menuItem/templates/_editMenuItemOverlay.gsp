@@ -1,4 +1,4 @@
-<div id="editMenuItemModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="edit-menu-item-title"
+<div id="edit-menu-item-overlay" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="edit-menu-item-title"
     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

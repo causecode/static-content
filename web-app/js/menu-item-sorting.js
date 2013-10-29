@@ -2,8 +2,8 @@
  * JS for calling function which contain Ajax call for sorting Menu Items.
  */
 
-var $createMenuItemOverlay = $("#create-menu-item-overlay");
-var $editMenuItemOverlay;
+var $createMenuItemOverlay = $("div#create-menu-item-overlay");
+var $editMenuItemOverlay = $("div#edit-menu-item-overlay");
 
 $("ul.menuItem").sortable({
     revert: true,
@@ -26,17 +26,17 @@ $("ul.menuItem").sortable({
         var $sortedParentMenuItem = $sortedMenuItem.parent();
         var parentId = $sortedParentMenuItem.data('parent-id');
         var menuItemId = $sortedMenuItem.data('menu-item-id');
-        var menuId = $sortedParentMenuItem.data('menu-id')
         var index = $sortedMenuItem.index();
+        console.log(parentId)
 
         $.ajax({
             type: 'POST',
             url: '/menuItem/reorder',
-            data: {menuId: menuId, menuItemId: menuItemId, parentId: parentId, index: index},
+            data: {id: menuItemId, parentId: parentId, index: index},
             success: function(result) {
             }
         });
-        $sortedMenuItem.toggleClass("thumbnail");
+        $sortedMenuItem.toggleClass("thumbnail", (parentId == undefined || parentId == ""));
     }
 });
 

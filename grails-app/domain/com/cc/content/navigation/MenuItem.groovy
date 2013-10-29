@@ -37,4 +37,9 @@ class MenuItem {
         table "cc_content_menu_item"
     }
 
+    @Override
+    String toString() {
+        "MenuItem [$title][$id]"
+    }
+
 }
