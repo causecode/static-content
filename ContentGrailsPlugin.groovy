@@ -13,7 +13,7 @@ import com.cc.content.ContentService
 
 class ContentGrailsPlugin {
 
-    def version = "2.0"
+    def version = "2.1"
     def groupId = "com.cc.plugins"
     def grailsVersion = "2.1 > *"
     def dependsOn = ["hibernate": "2.1 > *"]

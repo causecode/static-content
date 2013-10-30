@@ -4,11 +4,11 @@ A plugin used to manage contents like static pages, menus etc. at one place.
 
 ## ChnageLog
 
-### Version 1.9.3 to 1.9.9, 2.0
+### Version 1.9.3 to 1.9.9, 2.0, 2.1
 
 1. Small fixes & helper methods for input widget, blog etc, merged commit containg fix for out of bound request exception.
 2. Added some more meta properties. (From 1.9.7),
-3. Fixed creating menu item.
+3. Fixed creating & sorting menu item.
 
 ### Version 1.9.2
 
