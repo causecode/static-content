@@ -6,7 +6,7 @@
 </head>
 <body>
     <content tag="breadcrumb">
-        <content:breadcrumb map="['/page/list': 'Page List', 'active':(pageInstance.title)]"/>
+        <content:breadcrumb map="['active':(pageInstance.title)]"/>
     </content>
     <div class="page-header">
         <h1>
@@ -19,8 +19,8 @@
     <content:canEdit>
         <g:form>
             <fieldset class="form-actions">
-                <g:hiddenField name="id" value="${pageInstance?.id}" />
-                <g:link class="btn btn-primary" action="edit" id="${pageInstance?.id}">
+                <g:hiddenField name="id" value="${pageInstance.id}" />
+                <g:link class="btn btn-primary" action="edit" id="${pageInstance.id}">
                     <g:message code="default.button.edit.label" />
                 </g:link>
                 <g:actionSubmit class="btn btn-danger" action="delete"
