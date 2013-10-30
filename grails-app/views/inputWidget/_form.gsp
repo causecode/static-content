@@ -87,7 +87,7 @@
         <g:select name="${prefix}validation" from="${com.cc.content.inputWidget.InputWidgetValidation?.values()}"
             keys="${com.cc.content.inputWidget.InputWidgetValidation.values()*.name()}" required=""
             class="form-control " value="${inputWidgetInstance.validation.toString()}"
-            multiple="true" />
+            multiple="true" noSelection="['':'Select Validation']" />
     </div>
 </div>
 
