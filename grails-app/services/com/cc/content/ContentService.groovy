@@ -143,7 +143,7 @@ class ContentService {
      */
     String createLink(Map attrs) {
         Class DomainClass = grailsApplication.getDomainClass(attrs.domain).clazz
-        def domainClassInstance = DomainClass.read(attrs.id)     // Get actual domainInstance
+        def domainClassInstance = DomainClass.get(attrs.id)     // Get actual domainInstance
         List<Field> fields = []
 
         if(DomainClass.superclass && DomainClass.superclass != Object)
