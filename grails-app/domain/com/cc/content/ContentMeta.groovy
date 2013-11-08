@@ -24,7 +24,8 @@ class ContentMeta {
     }
 
     static mapping = {
-        versioin: false
+        version false
+        meta cascade: "delete"
         table "cc_content_content_meta"
     }
 
