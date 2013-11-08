@@ -6,7 +6,7 @@
  * without modification, are not permitted.
  */
 
-package com.cc.page
+package com.cc.content.page
 
 import com.cc.content.Content
 import com.cc.content.PageLayout

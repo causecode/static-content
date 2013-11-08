@@ -6,13 +6,14 @@
  * without modification, are not permitted.
  */
 
-package com.cc.page
+package com.cc.content.page
 
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.ContentMeta
+import com.cc.content.page.Page;
 
 @ControllerShorthand(value = "c")
 class PageController {

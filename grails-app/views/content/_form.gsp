@@ -47,7 +47,7 @@
     </div>
 </g:if>
 
-<g:if test="${contentInstance instanceof com.cc.page.Page }">
+<g:if test="${contentInstance instanceof com.cc.content.page.Page }">
     <div class="form-group ${hasErrors(bean: contentInstance, field: 'pageLayout', 'error')}">
         <label class="control-label col-sm-2" for="pageLayout"> <g:message code="page.pageLayout.label"
                 default="Page Layout" />
