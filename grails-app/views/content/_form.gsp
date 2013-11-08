@@ -49,35 +49,117 @@
 
 <g:if test="${contentInstance instanceof com.cc.content.page.Page }">
     <div class="form-group ${hasErrors(bean: contentInstance, field: 'pageLayout', 'error')}">
-        <label class="control-label col-sm-2" for="pageLayout"> <g:message code="page.pageLayout.label"
-                default="Page Layout" />
+        <label class="control-label col-sm-2" for="pageLayout">
+            <g:message code="page.pageLayout.label" default="Page Layout" />
         </label>
         <div class="col-sm-5">
             <g:select id="pageLayout" name="pageLayout.id" from="${com.cc.content.PageLayout.list()}" optionKey="id"
-                value="${contentInstance?.pageLayout?.id}" class="many-to-one" noSelection="['null': '']" class="form-control" />
+                value="${contentInstance?.pageLayout?.id}" noSelection="['null': '']" class="form-control" />
         </div>
     </div>
+    <g:if test="${contentInstance.id }">
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="createRevision">
+                <g:message code="content.revision.create.label" default="Create Revision" />
+                <i class="icon-question-sign" title="Page Revision will be created after saving new changes"
+                    rel="tooltip" data-container="body"></i>
+            </label>
+            <div class="col-sm-5">
+                <div class="checkbox">
+                    <label>
+                        <g:checkBox name="createRevision" checked="false" />
+                    </label>
+                </div>
+            </div>
+        </div>
+    </g:if>
 </g:if>
 
 <div class="form-group ${hasErrors(bean: contentInstance, field: 'publish', 'error')}">
-    <label class="control-label col-sm-2" for="publish"> <g:message code="page.publish.label" default="Publish" />
+    <label class="control-label col-sm-2" for="publish">
+        <g:message code="page.publish.label" default="Publish" />
     </label>
     <div class="col-sm-5">
-        <g:checkBox name="publish" value="${contentInstance?.publish}" />
+        <div class="checkbox">
+            <label>
+                <g:checkBox name="publish" value="${contentInstance?.publish}" />
+            </label>
+        </div>
     </div>
 </div>
 
 <div class="page-header">
-    <h2 style="display: inline">Meta Tags</h2>
-    <small style="padding-left: 43px"> <a href="javascript:void(0)"
-        onclick="$('.form-actions').before($('#meta-form').html())"> <i class="icon-plus"></i>
+    <h2 class="inline">Meta Tags</h2>
+    &nbsp;
+    <a href="javascript:void(0)" onclick="$('.form-actions').before($('#meta-form').html())">
+        <i class="icon-plus"></i>
     </a>
-    </small>
 </div>
-
 <g:each in="${contentInstance?.metaTags }" var="metaInstance">
     <g:render template="/meta/form" model="[metaInstance: metaInstance]" />
 </g:each>
+
+<g:if test="${contentInstance instanceof com.cc.content.page.Page && contentInstance.id }">
+    <div class="page-header">
+        <h2>Revisions</h2>
+    </div>
+    <ul>
+        <g:each in="${contentRevisionList }" var="contentRevisionInstance">
+            <li>
+                Revised on
+                <a href="${createLink(controller: 'contentRevision', id: contentRevisionInstance.id) }" target="_blank">
+                    <g:formatDate date="${contentRevisionInstance.dateCreated }" timezone="${session.usersTimeZone }"
+                        format="MM/dd/yyyy hh:mm a" />
+                </a>&nbsp;
+                <a href="#" id="load-revision" rel="tooltip" title="Load this revision" data-revision-id="${contentRevisionInstance.id }">
+                    <i class="icon-exchange"></i>
+                </a>&nbsp;
+                <a href="#" id="delete-revision" rel="tooltip" title="Delete" data-revision-id="${contentRevisionInstance.id }">
+                    <i class="icon-remove"></i>
+                </a>
+            </li>
+        </g:each>
+        <g:if test="${!contentRevisionList }">
+            <li>Sorry, no revision found.</li>
+        </g:if>
+    </ul>
+    <r:script>
+        $("a#delete-revision").click(function() {
+            var $this = $(this);
+            var confirmDelete = confirm("Are you sure want to delete this.");
+            if(!confirmDelete) return false;
+
+            $.ajax({
+                method: "POST",
+                url: "/contentRevision/delete/" + $this.data('revision-id'),
+                success: function(resp) {
+                    $this.parents("li").fadeOut().remove();
+                },
+                error: function() {
+                    showAlertMessage("Sorry, somthing went wrong.", "danger", {scrollToAlert: true});
+                }
+            })
+            return false;
+        })
+        $("a#load-revision").click(function() {
+            var $this = $(this);
+            $.ajax({
+                url: "/contentRevision/load/" + $this.data('revision-id'),
+                success: function(resp) {
+                    $("input#title").val(resp.title);
+                    $("input#subTitle").val(resp.subTitle);
+                    CKEDITOR.instances['body'].setData(resp.body);
+                    showAlertMessage("Revision content loaded.", "info", {scrollToAlert: true});
+                },
+                error: function() {
+                    showAlertMessage("Sorry, somthing went wrong.", "danger", {scrollToAlert: true});
+                }
+            })
+            return false;
+        })
+    </r:script>
+</g:if>
+
 <g:if test="${!contentInstance?.metaTags }">
     <g:render template="/meta/form" />
 </g:if>

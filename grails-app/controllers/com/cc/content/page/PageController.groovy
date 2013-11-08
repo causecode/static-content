@@ -13,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.ContentMeta
+import com.cc.content.ContentRevision;
 import com.cc.content.page.Page;
 
 @ControllerShorthand(value = "c")
@@ -74,7 +75,7 @@ class PageController {
     }
 
     def edit(Long id) {
-        [pageInstance: pageInstance]
+        [pageInstance: pageInstance, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)]
     }
 
     def update(Long id, Long version) {
@@ -93,6 +94,9 @@ class PageController {
             render(view: "edit", model: [pageInstance: pageInstance])
             return
         }
+        if(params.createRevision) {
+            contentService.createRevision(pageInstance, PageRevision.class)
+        }
 
         flash.message = message(code: 'default.updated.message', args: [message(code: 'page.label'), pageInstance.id])
         redirect(action: "show", id: pageInstance.id)
@@ -100,13 +104,7 @@ class PageController {
 
     def delete(Long id) {
         try {
-            Page.withTransaction {
-                List<ContentMeta> contentMetaList = ContentMeta.findAllByContent(pageInstance)
-                List metaList = contentMetaList*.meta
-                contentMetaList*.delete()
-                metaList*.delete()
-                pageInstance.delete()
-            }
+            contentService.delete(pageInstance)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'page.label'), id])
             redirect(action: "list")
         } catch (DataIntegrityViolationException e) {

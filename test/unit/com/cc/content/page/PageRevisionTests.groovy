@@ -1,0 +1,17 @@
+package com.cc.content.page
+
+
+
+import grails.test.mixin.*
+import org.junit.*
+
+/**
+ * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
+ */
+@TestFor(PageRevision)
+class PageRevisionTests {
+
+    void testSomething() {
+       fail "Implement me"
+    }
+}

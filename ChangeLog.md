@@ -4,6 +4,22 @@ A plugin used to manage contents like static pages, menus etc. at one place.
 
 ## ChnageLog
 
+### Version 2.2
+
+#### Breaking change
+
+1. Page domain package refactored to com.cc.content.page
+
+#### Database change
+
+1. Added new domain for content revision,
+2. Removed version from join class,
+3. Modify value for column **class** in **cc_content_content** to replace **com.cc.page.Page** to **com.cc.content.page.Page**.
+
+#### New Features
+
+1. Added feature to support content revision for Page.
+
 ### Version 1.9.3 to 1.9.9, 2.0, 2.1
 
 1. Small fixes & helper methods for input widget, blog etc, merged commit containg fix for out of bound request exception.

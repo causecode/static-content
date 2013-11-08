@@ -130,6 +130,24 @@ class ContentService {
         return contentInstance
     }
 
+    @Transactional
+    boolean delete(Content contentInstance) {
+        ContentMeta.findAllByContent(contentInstance)*.delete()
+        ContentRevision.findAllByRevisionOf(contentInstance)*.delete()
+        contentInstance.delete()
+    }
+
+    @Transactional
+    ContentRevision createRevision(Content contentInstance, Class clazz) {
+        ContentRevision contentRevisionInstance = clazz.newInstance()
+        contentRevisionInstance.title = contentInstance.title
+        contentRevisionInstance.body = contentInstance.body
+        contentRevisionInstance.subTitle = contentInstance.subTitle
+        contentRevisionInstance.revisionOf = contentInstance
+        contentRevisionInstance.save()
+        contentRevisionInstance
+    }
+
     /**
      * Used to create SEO friendly search url like /o/151/hewlet-packard
      * @param attrs
