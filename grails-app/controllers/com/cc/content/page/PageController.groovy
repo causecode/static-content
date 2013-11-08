@@ -94,11 +94,12 @@ class PageController {
             render(view: "edit", model: [pageInstance: pageInstance])
             return
         }
+        flash.message = "<em>$pageInstance</em> Page updated successfully."
         if(params.createRevision) {
             contentService.createRevision(pageInstance, PageRevision.class)
+            flash.message += " Revision created successfully."
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'page.label'), pageInstance.id])
         redirect(action: "show", id: pageInstance.id)
     }
 

@@ -91,13 +91,22 @@
 <div class="page-header">
     <h2 class="inline">Meta Tags</h2>
     &nbsp;
-    <a href="javascript:void(0)" onclick="$('.form-actions').before($('#meta-form').html())">
+    <a href="javascript:void(0)" onclick="$('div#meta-tags').append($('#meta-form').html())">
         <i class="icon-plus"></i>
     </a>
 </div>
-<g:each in="${contentInstance?.metaTags }" var="metaInstance">
-    <g:render template="/meta/form" model="[metaInstance: metaInstance]" />
-</g:each>
+<div id="meta-tags">
+    <g:each in="${contentInstance?.metaTags }" var="metaInstance">
+        <g:render template="/meta/form" model="[metaInstance: metaInstance]" />
+    </g:each>
+    <g:if test="${!contentInstance?.metaTags }">
+        <g:render template="/meta/form" />
+    </g:if>
+</div>
+
+<div class="hide" id="meta-form">
+    <g:render template="/meta/form" />
+</div>
 
 <g:if test="${contentInstance instanceof com.cc.content.page.Page && contentInstance.id }">
     <div class="page-header">
@@ -159,11 +168,3 @@
         })
     </r:script>
 </g:if>
-
-<g:if test="${!contentInstance?.metaTags }">
-    <g:render template="/meta/form" />
-</g:if>
-
-<div class="hide" id="meta-form">
-    <g:render template="/meta/form" />
-</div>
