@@ -12,9 +12,7 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.annotation.shorthand.ControllerShorthand
-import com.cc.content.ContentMeta
-import com.cc.content.ContentRevision;
-import com.cc.content.page.Page;
+import com.cc.content.ContentRevision
 
 @ControllerShorthand(value = "c")
 class PageController {
