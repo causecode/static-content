@@ -6,13 +6,13 @@
  * without modification, are not permitted.
  */
 
-package com.cc.page
+package com.cc.content.page
 
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.annotation.shorthand.ControllerShorthand
-import com.cc.content.ContentMeta
+import com.cc.content.ContentRevision
 
 @ControllerShorthand(value = "c")
 class PageController {
@@ -73,7 +73,7 @@ class PageController {
     }
 
     def edit(Long id) {
-        [pageInstance: pageInstance]
+        [pageInstance: pageInstance, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)]
     }
 
     def update(Long id, Long version) {
@@ -92,20 +92,18 @@ class PageController {
             render(view: "edit", model: [pageInstance: pageInstance])
             return
         }
+        flash.message = "<em>$pageInstance</em> Page updated successfully."
+        if(params.createRevision) {
+            contentService.createRevision(pageInstance, PageRevision.class)
+            flash.message += " Revision created successfully."
+        }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'page.label'), pageInstance.id])
         redirect(action: "show", id: pageInstance.id)
     }
 
     def delete(Long id) {
         try {
-            Page.withTransaction {
-                List<ContentMeta> contentMetaList = ContentMeta.findAllByContent(pageInstance)
-                List metaList = contentMetaList*.meta
-                contentMetaList*.delete()
-                metaList*.delete()
-                pageInstance.delete()
-            }
+            contentService.delete(pageInstance)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'page.label'), id])
             redirect(action: "list")
         } catch (DataIntegrityViolationException e) {

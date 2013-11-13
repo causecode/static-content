@@ -8,25 +8,29 @@
 
 package com.cc.content
 
-import com.cc.content.meta.Meta
+class ContentRevision {
 
-class ContentMeta {
+    String title
+    String subTitle
+    String body
 
-    Content content
-    Meta meta
+    Content revisionOf
 
     Date dateCreated
     Date lastUpdated
 
     static constraints = {
+        //importFrom Content
+        body blank: false
+        title blank: false
+        subTitle nullable: true
         dateCreated bindable: false
         lastUpdated bindable: false
     }
 
     static mapping = {
-        version false
-        meta cascade: "delete"
-        table "cc_content_content_meta"
+        body type: 'text'
+        table "cc_content_content_revision"
     }
 
 }

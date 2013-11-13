@@ -32,7 +32,7 @@ Also provides shortened and user friendly urls.
     <resource>com.cc.content.navigation.Menu</resource>
     <resource>com.cc.content.navigation.MenuItem</resource>
     <resource>com.cc.content.news.News</resource>
-    <resource>com.cc.page.Page</resource>
+    <resource>com.cc.content.page.Page</resource>
     <resource>com.cc.content.ContentService</resource>
     <resource>com.cc.content.blog.BlogService</resource>
     <resource>com.cc.content.inputWidget.InputWidgetService</resource>

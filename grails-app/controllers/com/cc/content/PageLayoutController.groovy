@@ -34,14 +34,14 @@ class PageLayoutController {
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'pageLayout.label', default: 'PageLayout'), pageLayoutInstance.id])
+        flash.message = message(code: 'default.created.message', args: [message(code: 'pageLayout.label'), pageLayoutInstance.id])
         redirect(action: "show", id: pageLayoutInstance.id)
     }
 
     def show(Long id) {
         def pageLayoutInstance = PageLayout.get(id)
         if (!pageLayoutInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label', default: 'PageLayout'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), id])
             redirect(action: "list")
             return
         }
@@ -52,7 +52,7 @@ class PageLayoutController {
     def edit(Long id) {
         def pageLayoutInstance = PageLayout.get(id)
         if (!pageLayoutInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label', default: 'PageLayout'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), id])
             redirect(action: "list")
             return
         }
@@ -63,7 +63,7 @@ class PageLayoutController {
     def update(Long id, Long version) {
         def pageLayoutInstance = PageLayout.get(id)
         if (!pageLayoutInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label', default: 'PageLayout'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), id])
             redirect(action: "list")
             return
         }
@@ -71,7 +71,7 @@ class PageLayoutController {
         if (version != null) {
             if (pageLayoutInstance.version > version) {
                 pageLayoutInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'pageLayout.label', default: 'PageLayout')] as Object[],
+                        [message(code: 'pageLayout.label')] as Object[],
                         "Another user has updated this PageLayout while you were editing")
                 render(view: "edit", model: [pageLayoutInstance: pageLayoutInstance])
                 return
@@ -85,25 +85,25 @@ class PageLayoutController {
             return
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'pageLayout.label', default: 'PageLayout'), pageLayoutInstance.id])
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'pageLayout.label'), pageLayoutInstance.id])
         redirect(action: "show", id: pageLayoutInstance.id)
     }
 
     def delete(Long id) {
         def pageLayoutInstance = PageLayout.get(id)
         if (!pageLayoutInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label', default: 'PageLayout'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), id])
             redirect(action: "list")
             return
         }
 
         try {
             pageLayoutInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'pageLayout.label', default: 'PageLayout'), id])
+            flash.message = message(code: 'default.deleted.message', args: [message(code: 'pageLayout.label'), id])
             redirect(action: "list")
         }
         catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'pageLayout.label', default: 'PageLayout'), id])
+            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'pageLayout.label'), id])
             redirect(action: "show", id: id)
         }
     }

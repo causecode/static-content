@@ -6,17 +6,10 @@
  * without modification, are not permitted.
  */
 
-package com.cc.page
+package com.cc.content.page
 
-import com.cc.content.Content
-import com.cc.content.PageLayout
- 
-class Page extends Content {
+class PageTagLib {
 
-    PageLayout pageLayout
-
-    static constraints = {
-        pageLayout nullable:true
-    }
+    static namespace = "page"
 
 }

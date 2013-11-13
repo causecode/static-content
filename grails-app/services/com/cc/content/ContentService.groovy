@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 import com.cc.annotation.sanitizedTitle.SanitizedTitle
 import com.cc.content.blog.Blog
 import com.cc.content.meta.Meta
-import com.cc.page.Page
+import com.cc.content.page.Page
 
 class ContentService {
 
@@ -128,6 +128,24 @@ class ContentService {
             }
         }
         return contentInstance
+    }
+
+    @Transactional
+    boolean delete(Content contentInstance) {
+        ContentMeta.findAllByContent(contentInstance)*.delete()
+        ContentRevision.findAllByRevisionOf(contentInstance)*.delete()
+        contentInstance.delete()
+    }
+
+    @Transactional
+    ContentRevision createRevision(Content contentInstance, Class clazz) {
+        ContentRevision contentRevisionInstance = clazz.newInstance()
+        contentRevisionInstance.title = contentInstance.title
+        contentRevisionInstance.body = contentInstance.body
+        contentRevisionInstance.subTitle = contentInstance.subTitle
+        contentRevisionInstance.revisionOf = contentInstance
+        contentRevisionInstance.save()
+        contentRevisionInstance
     }
 
     /**

@@ -15,7 +15,7 @@ class Content {
 
     transient contentService
     transient friendlyUrlService
-    def grailsApplication
+    transient grailsApplication
 
     Date dateCreated
     Date lastUpdated
@@ -33,7 +33,7 @@ class Content {
         table "cc_content_content"
     }
 
-    static constraints = {
+    static constraints = {  // Any modification here -> confirm in ContentRevision domain
         body blank: false
         title blank: false
         subTitle nullable: true
@@ -60,12 +60,5 @@ class Content {
 
         ContentMeta.findAllByContent(this)*.meta
     }
-
-    //    def beforeDelete() {
-    //            List contentMetaList = ContentMeta.findAllByContent(this)
-    //            List metaList = contentMetaList*.meta
-    //            contentMetaList*.delete()
-    //            metaList*.delete()
-    //    }
 
 }

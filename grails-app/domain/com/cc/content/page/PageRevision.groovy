@@ -6,10 +6,10 @@
  * without modification, are not permitted.
  */
 
-package com.cc.page
+package com.cc.content.page
 
-class PageTagLib {
+import com.cc.content.ContentRevision
 
-    static namespace = "page"
+class PageRevision extends ContentRevision {
 
 }
