@@ -11,8 +11,6 @@ class FAQControllerTests {
 
     def populateValidParams(params) {
         assert params != null
-        // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
     }
 
     void testIndex() {
@@ -51,11 +49,6 @@ class FAQControllerTests {
     }
 
     void testShow() {
-        controller.show()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/FAQ/list'
-
         populateValidParams(params)
         def FAQ = new FAQ(params)
 
@@ -63,17 +56,13 @@ class FAQControllerTests {
 
         params.id = FAQ.id
 
+        controller.validate()
         def model = controller.show()
 
         assert model.FAQInstance == FAQ
     }
 
     void testEdit() {
-        controller.edit()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/FAQ/list'
-
         populateValidParams(params)
         def FAQ = new FAQ(params)
 
@@ -81,28 +70,21 @@ class FAQControllerTests {
 
         params.id = FAQ.id
 
+        controller.validate()
         def model = controller.edit()
 
         assert model.FAQInstance == FAQ
     }
 
     void testUpdate() {
-        controller.update()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/FAQ/list'
-
-        response.reset()
-
         populateValidParams(params)
         def FAQ = new FAQ(params)
 
         assert FAQ.save() != null
 
-        // test invalid parameters in update
         params.id = FAQ.id
-        //TODO: add invalid values to params object
 
+        controller.validate()
         controller.update()
 
         assert view == "/FAQ/edit"
@@ -111,18 +93,19 @@ class FAQControllerTests {
         FAQ.clearErrors()
 
         populateValidParams(params)
+        controller.validate()
         controller.update()
 
         assert response.redirectedUrl == "/FAQ/show/$FAQ.id"
         assert flash.message != null
 
-        //test outdated version number
         response.reset()
         FAQ.clearErrors()
 
         populateValidParams(params)
         params.id = FAQ.id
         params.version = -1
+        controller.validate()
         controller.update()
 
         assert view == "/FAQ/edit"
@@ -132,12 +115,6 @@ class FAQControllerTests {
     }
 
     void testDelete() {
-        controller.delete()
-        assert flash.message != null
-        assert response.redirectedUrl == '/FAQ/list'
-
-        response.reset()
-
         populateValidParams(params)
         def FAQ = new FAQ(params)
 
@@ -146,6 +123,7 @@ class FAQControllerTests {
 
         params.id = FAQ.id
 
+        controller.validate()
         controller.delete()
 
         assert FAQ.count() == 0

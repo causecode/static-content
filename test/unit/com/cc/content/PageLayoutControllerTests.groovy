@@ -11,8 +11,7 @@ class PageLayoutControllerTests {
 
     def populateValidParams(params) {
         assert params != null
-        // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
+        params.layoutName == "Test Layout"
     }
 
     void testIndex() {
@@ -51,11 +50,6 @@ class PageLayoutControllerTests {
     }
 
     void testShow() {
-        controller.show()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/pageLayout/list'
-
         populateValidParams(params)
         def pageLayout = new PageLayout(params)
 
@@ -69,11 +63,6 @@ class PageLayoutControllerTests {
     }
 
     void testEdit() {
-        controller.edit()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/pageLayout/list'
-
         populateValidParams(params)
         def pageLayout = new PageLayout(params)
 
@@ -87,21 +76,12 @@ class PageLayoutControllerTests {
     }
 
     void testUpdate() {
-        controller.update()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/pageLayout/list'
-
-        response.reset()
-
-        populateValidParams(params)
         def pageLayout = new PageLayout(params)
 
         assert pageLayout.save() != null
 
-        // test invalid parameters in update
         params.id = pageLayout.id
-        //TODO: add invalid values to params object
+        params.layoutName = "Invalid Layout name"
 
         controller.update()
 
@@ -116,7 +96,6 @@ class PageLayoutControllerTests {
         assert response.redirectedUrl == "/pageLayout/show/$pageLayout.id"
         assert flash.message != null
 
-        //test outdated version number
         response.reset()
         pageLayout.clearErrors()
 
@@ -132,12 +111,6 @@ class PageLayoutControllerTests {
     }
 
     void testDelete() {
-        controller.delete()
-        assert flash.message != null
-        assert response.redirectedUrl == '/pageLayout/list'
-
-        response.reset()
-
         populateValidParams(params)
         def pageLayout = new PageLayout(params)
 

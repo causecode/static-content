@@ -6,13 +6,23 @@ import org.junit.*
 import grails.test.mixin.*
 
 @TestFor(MenuItemController)
-@Mock(MenuItem)
+@Mock(MenuItem, Menu)
 class MenuItemControllerTests {
 
+    Menu menu
+
+    void setUp() {
+        menu = new Menu(name: "Menu", roles: "ROLE_USER", showOnlyWhenLoggedIn: true)
+        assert menu.save()
+    }
     def populateValidParams(params) {
         assert params != null
-        // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
+        params.title = "MenuItem1"
+        params.url = "/"
+        params.roles = "ROLE_USER"
+        params.showOnlyWhenLoggedIn = true
+        params['menu'] = [:]
+        params['menu'].id = menu.id
     }
 
     void testIndex() {
@@ -35,13 +45,6 @@ class MenuItemControllerTests {
     }
 
     void testSave() {
-        controller.save()
-
-        assert model.menuItemInstance != null
-        assert view == '/menuItem/create'
-
-        response.reset()
-
         populateValidParams(params)
         controller.save()
 
@@ -51,11 +54,6 @@ class MenuItemControllerTests {
     }
 
     void testShow() {
-        controller.show()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/menuItem/list'
-
         populateValidParams(params)
         def menuItem = new MenuItem(params)
 
@@ -63,17 +61,13 @@ class MenuItemControllerTests {
 
         params.id = menuItem.id
 
+        controller.validate()
         def model = controller.show()
 
         assert model.menuItemInstance == menuItem
     }
 
     void testEdit() {
-        controller.edit()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/menuItem/list'
-
         populateValidParams(params)
         def menuItem = new MenuItem(params)
 
@@ -81,28 +75,25 @@ class MenuItemControllerTests {
 
         params.id = menuItem.id
 
+        controller.validate()
         def model = controller.edit()
 
         assert model.menuItemInstance == menuItem
     }
 
     void testUpdate() {
-        controller.update()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/menuItem/list'
-
-        response.reset()
-
         populateValidParams(params)
         def menuItem = new MenuItem(params)
 
         assert menuItem.save() != null
 
-        // test invalid parameters in update
         params.id = menuItem.id
-        //TODO: add invalid values to params object
+        params.title = "Invalid MenuItem1"
+        params.url = ""
+        params.roles = ""
+        params.showOnlyWhenLoggedIn = false
 
+        controller.validate()
         controller.update()
 
         assert view == "/menuItem/edit"
@@ -111,18 +102,19 @@ class MenuItemControllerTests {
         menuItem.clearErrors()
 
         populateValidParams(params)
+        controller.validate()
         controller.update()
 
         assert response.redirectedUrl == "/menuItem/show/$menuItem.id"
         assert flash.message != null
 
-        //test outdated version number
         response.reset()
         menuItem.clearErrors()
 
         populateValidParams(params)
         params.id = menuItem.id
         params.version = -1
+        controller.validate()
         controller.update()
 
         assert view == "/menuItem/edit"
@@ -132,12 +124,6 @@ class MenuItemControllerTests {
     }
 
     void testDelete() {
-        controller.delete()
-        assert flash.message != null
-        assert response.redirectedUrl == '/menuItem/list'
-
-        response.reset()
-
         populateValidParams(params)
         def menuItem = new MenuItem(params)
 
@@ -146,6 +132,7 @@ class MenuItemControllerTests {
 
         params.id = menuItem.id
 
+        controller.validate()
         controller.delete()
 
         assert MenuItem.count() == 0

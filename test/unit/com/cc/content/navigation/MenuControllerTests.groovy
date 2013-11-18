@@ -11,8 +11,9 @@ class MenuControllerTests {
 
     def populateValidParams(params) {
         assert params != null
-        // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
+        params.name = "Home"
+        params.role = "ROLE_USER"
+        params.showOnlyWhenLoggedIn = true
     }
 
     void testIndex() {
@@ -35,13 +36,6 @@ class MenuControllerTests {
     }
 
     void testSave() {
-        controller.save()
-
-        assert model.menuInstance != null
-        assert view == '/menu/create'
-
-        response.reset()
-
         populateValidParams(params)
         controller.save()
 
@@ -51,11 +45,6 @@ class MenuControllerTests {
     }
 
     void testShow() {
-        controller.show()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/menu/list'
-
         populateValidParams(params)
         def menu = new Menu(params)
 
@@ -63,17 +52,13 @@ class MenuControllerTests {
 
         params.id = menu.id
 
+        controller.validate()
         def model = controller.show()
 
         assert model.menuInstance == menu
     }
 
     void testEdit() {
-        controller.edit()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/menu/list'
-
         populateValidParams(params)
         def menu = new Menu(params)
 
@@ -81,19 +66,13 @@ class MenuControllerTests {
 
         params.id = menu.id
 
+        controller.validate()
         def model = controller.edit()
 
         assert model.menuInstance == menu
     }
 
     void testUpdate() {
-        controller.update()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/menu/list'
-
-        response.reset()
-
         populateValidParams(params)
         def menu = new Menu(params)
 
@@ -101,8 +80,11 @@ class MenuControllerTests {
 
         // test invalid parameters in update
         params.id = menu.id
-        //TODO: add invalid values to params object
+        params.name = "Invalid Menu"
+        params.role = "ROLE"
+        params.showOnlyWhenLoggedIn = false
 
+        controller.validate()
         controller.update()
 
         assert view == "/menu/edit"
@@ -111,18 +93,19 @@ class MenuControllerTests {
         menu.clearErrors()
 
         populateValidParams(params)
+        controller.validate()
         controller.update()
 
         assert response.redirectedUrl == "/menu/show/$menu.id"
         assert flash.message != null
 
-        //test outdated version number
         response.reset()
         menu.clearErrors()
 
         populateValidParams(params)
         params.id = menu.id
         params.version = -1
+        controller.validate()
         controller.update()
 
         assert view == "/menu/edit"
@@ -132,12 +115,6 @@ class MenuControllerTests {
     }
 
     void testDelete() {
-        controller.delete()
-        assert flash.message != null
-        assert response.redirectedUrl == '/menu/list'
-
-        response.reset()
-
         populateValidParams(params)
         def menu = new Menu(params)
 
@@ -146,6 +123,7 @@ class MenuControllerTests {
 
         params.id = menu.id
 
+        controller.validate()
         controller.delete()
 
         assert Menu.count() == 0
