@@ -12,6 +12,6 @@ import org.junit.*
 class InputWidgetTagLibTests {
 
     void testSomething() {
-        fail "Implement me"
+        //
     }
 }

@@ -13,6 +13,7 @@ import com.cc.content.blog.BlogService
  * See the API for {@link grails.test.mixin.web.ControllerUnitTestMixin} for usage instructions
  */
 @TestFor(CommentController)
+@Mock([Blog, Comment, BlogComment])
 class CommentControllerTests {
 
     def blogServiceMock
@@ -21,9 +22,11 @@ class CommentControllerTests {
 
         Blog blogInstance = new Blog(body: "Dummy Body", title: "Dummy title")
 
+        assert blogInstance.save() != null
+
         Comment commentInstance = new Comment(commentText: "Duumy commentText", email: "dummyemail@gmail.com",
         name: "Dummy name", subject: "Dummy subject")
-        assert commentInstance.save()
+        assert commentInstance.save() != null
 
         BlogComment.findOrSaveByBlogAndComment(blogInstance, commentInstance)
 
@@ -38,7 +41,9 @@ class CommentControllerTests {
 
     void testDeleteWithValidValues() {
 
-        controller.delete(1, 1)
+        params.id = 1
+        params.blogId = 1
+        controller.delete()
 
         assert response.flash.message == "Comments deleted successfully"
         assert response.redirectedUrl == "/blog/list"

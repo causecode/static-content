@@ -3,15 +3,62 @@ package com.cc.content
 
 
 import grails.test.mixin.*
+
 import org.junit.*
 
-/**
- * See the API for {@link grails.test.mixin.web.ControllerUnitTestMixin} for usage instructions
- */
 @TestFor(ContentRevisionController)
+@Mock([Content, ContentRevision])
 class ContentRevisionControllerTests {
 
-    void testSomething() {
-       fail "Implement me"
+    void populateValidParams(params) {
+        assert params != null
+        params.title = "Dummy Title"
+        params.subTitle = "Dummy SubTitle"
+        params.body = "Dummy Body"
+    }
+
+    void testShow() {
+        populateValidParams(params)
+        def contentRevision = new ContentRevision(params)
+
+        assert contentRevision.save() != null
+
+        params.id = contentRevision.id
+
+        def model = controller.show()
+
+        assert model.contentRevisionInstance == contentRevision
+    }
+
+    void testDelete() {
+        populateValidParams(params)
+        def contentRevision = new ContentRevision(params)
+
+        assert contentRevision.save() != null
+        assert ContentRevision.count() == 1
+
+        params.id = contentRevision.id
+
+        controller.delete()
+
+        assert ContentRevision.count() == 0
+        assert ContentRevision.get(contentRevision.id) == null
+        assert response.text == true
+    }
+
+    void testLoad() {
+        populateValidParams(params)
+        def contentRevision = new ContentRevision(params)
+
+        assert contentRevision.save() != null
+        assert ContentRevision.count() == 1
+
+        params.id = contentRevision.id
+
+        def model = controller.load()
+
+        assert "Dummy Title" == response.json.title
+        assert "Dummy SubTitle" == response.json.subTitle
+        assert "Dummy Body" == response.json.body
     }
 }

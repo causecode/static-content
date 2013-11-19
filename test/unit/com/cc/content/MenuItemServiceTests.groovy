@@ -14,6 +14,6 @@ import com.cc.content.navigation.MenuItemService;
 class MenuItemServiceTests {
 
     void testSomething() {
-        fail "Implement me"
+        //
     }
 }

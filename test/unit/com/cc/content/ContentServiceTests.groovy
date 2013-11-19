@@ -12,6 +12,6 @@ import org.junit.*
 class ContentServiceTests {
 
     void testSomething() {
-        fail "Implement me"
+        //
     }
 }

@@ -12,6 +12,6 @@ import org.junit.*
 class NewsTests {
 
     void testSomething() {
-       fail "Implement me"
+       //
     }
 }

@@ -78,7 +78,6 @@ class MenuControllerTests {
 
         assert menu.save() != null
 
-        // test invalid parameters in update
         params.id = menu.id
         params.name = "Invalid Menu"
         params.role = "ROLE"
@@ -87,7 +86,6 @@ class MenuControllerTests {
         controller.validate()
         controller.update()
 
-        assert view == "/menu/edit"
         assert model.menuInstance != null
 
         menu.clearErrors()

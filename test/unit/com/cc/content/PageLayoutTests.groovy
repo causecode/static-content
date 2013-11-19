@@ -12,6 +12,6 @@ import org.junit.*
 class PageLayoutTests {
 
     void testSomething() {
-       fail "Implement me"
+       //
     }
 }

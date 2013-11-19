@@ -6,7 +6,7 @@ import org.junit.*
 import grails.test.mixin.*
 
 @TestFor(MenuItemController)
-@Mock(MenuItem, Menu)
+@Mock([MenuItem, Menu])
 class MenuItemControllerTests {
 
     Menu menu

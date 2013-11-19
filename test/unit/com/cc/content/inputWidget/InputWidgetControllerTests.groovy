@@ -2,8 +2,9 @@ package com.cc.content.inputWidget
 
 
 
-import org.junit.*
 import grails.test.mixin.*
+
+import org.junit.*
 
 @TestFor(InputWidgetController)
 @Mock(InputWidget)
@@ -11,8 +12,22 @@ class InputWidgetControllerTests {
 
     def populateValidParams(params) {
         assert params != null
-        // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
+        params.name = "Dummy name "
+        params.label = "Dummy label "
+        params.widgetKeys = "Dummy widgetKeys"
+        params.widgetValues = "Dummy widgetValues"
+        params.defaultValue = "Dummy defaultValue"
+        params.helpText = "Dummy helpText"
+
+        params.type = InputWidgetType.TEXT_FIELD
+        params.helpType = InputWidgetHelpType.PLACEHOLDER
+        params.validation = InputWidgetValidation.REQUIRED
+
+        params.noSelectionText = "Select One"
+        params.minChar = 1
+        params.maxChar = 2
+        params.minValueRange = 1
+        params.maxValueRange = 99
     }
 
     void testIndex() {
@@ -35,13 +50,6 @@ class InputWidgetControllerTests {
     }
 
     void testSave() {
-        controller.save()
-
-        assert model.inputWidgetInstance != null
-        assert view == '/inputWidget/create'
-
-        response.reset()
-
         populateValidParams(params)
         controller.save()
 
@@ -51,11 +59,6 @@ class InputWidgetControllerTests {
     }
 
     void testShow() {
-        controller.show()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/inputWidget/list'
-
         populateValidParams(params)
         def inputWidget = new InputWidget(params)
 
@@ -63,17 +66,13 @@ class InputWidgetControllerTests {
 
         params.id = inputWidget.id
 
+        controller.validate()
         def model = controller.show()
 
         assert model.inputWidgetInstance == inputWidget
     }
 
     void testEdit() {
-        controller.edit()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/inputWidget/list'
-
         populateValidParams(params)
         def inputWidget = new InputWidget(params)
 
@@ -81,28 +80,37 @@ class InputWidgetControllerTests {
 
         params.id = inputWidget.id
 
+        controller.validate()
         def model = controller.edit()
 
         assert model.inputWidgetInstance == inputWidget
     }
 
     void testUpdate() {
-        controller.update()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/inputWidget/list'
-
-        response.reset()
-
         populateValidParams(params)
         def inputWidget = new InputWidget(params)
 
         assert inputWidget.save() != null
 
-        // test invalid parameters in update
         params.id = inputWidget.id
-        //TODO: add invalid values to params object
+        params.name = "Dummy Invalid name "
+        params.label = "Dummy Invalid label "
+        params.widgetKeys = "Dummy Invalid widgetKeys"
+        params.widgetValues = "Dummy Invalid widgetValues"
+        params.defaultValue = "Dummy Invalid defaultValue"
+        params.helpText = "Dummy Invalid helpText"
 
+        params.type = InputWidgetType.TEXT_FIELD
+        params.helpType = InputWidgetHelpType.PLACEHOLDER
+        params.validation = InputWidgetValidation.REQUIRED
+
+        params.noSelectionText = "Invalid Select One"
+        params.minChar = 0
+        params.maxChar = 0
+        params.minValueRange = 0
+        params.maxValueRange = 0
+
+        controller.validate()
         controller.update()
 
         assert view == "/inputWidget/edit"
@@ -111,18 +119,19 @@ class InputWidgetControllerTests {
         inputWidget.clearErrors()
 
         populateValidParams(params)
+        controller.validate()
         controller.update()
 
         assert response.redirectedUrl == "/inputWidget/show/$inputWidget.id"
         assert flash.message != null
 
-        //test outdated version number
         response.reset()
         inputWidget.clearErrors()
 
         populateValidParams(params)
         params.id = inputWidget.id
         params.version = -1
+        controller.validate()
         controller.update()
 
         assert view == "/inputWidget/edit"
@@ -132,12 +141,6 @@ class InputWidgetControllerTests {
     }
 
     void testDelete() {
-        controller.delete()
-        assert flash.message != null
-        assert response.redirectedUrl == '/inputWidget/list'
-
-        response.reset()
-
         populateValidParams(params)
         def inputWidget = new InputWidget(params)
 
@@ -146,6 +149,7 @@ class InputWidgetControllerTests {
 
         params.id = inputWidget.id
 
+        controller.validate()
         controller.delete()
 
         assert InputWidget.count() == 0

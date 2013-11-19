@@ -10,7 +10,7 @@ import com.cc.content.ContentMeta;
 import grails.test.mixin.*
 
 @TestFor(MetaController)
-@Mock(Meta, Content, ContentMeta)
+@Mock([Meta, Content, ContentMeta])
 class MetaControllerTests {
 
     def populateValidParams(params) {

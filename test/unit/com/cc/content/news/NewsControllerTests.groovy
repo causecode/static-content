@@ -11,8 +11,9 @@ class NewsControllerTests {
 
     def populateValidParams(params) {
         assert params != null
-        // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
+        params.title = "Dummy Title"
+        params.subTitle = "Dummy SubTitle"
+        params.body = "Dummy Body"
     }
 
     void testIndex() {
@@ -35,13 +36,6 @@ class NewsControllerTests {
     }
 
     void testSave() {
-        controller.save()
-
-        assert model.newsInstance != null
-        assert view == '/news/create'
-
-        response.reset()
-
         populateValidParams(params)
         controller.save()
 
@@ -51,11 +45,6 @@ class NewsControllerTests {
     }
 
     void testShow() {
-        controller.show()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/news/list'
-
         populateValidParams(params)
         def news = new News(params)
 
@@ -63,17 +52,13 @@ class NewsControllerTests {
 
         params.id = news.id
 
+        controller.validate()
         def model = controller.show()
 
         assert model.newsInstance == news
     }
 
     void testEdit() {
-        controller.edit()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/news/list'
-
         populateValidParams(params)
         def news = new News(params)
 
@@ -81,28 +66,24 @@ class NewsControllerTests {
 
         params.id = news.id
 
+        controller.validate()
         def model = controller.edit()
 
         assert model.newsInstance == news
     }
 
     void testUpdate() {
-        controller.update()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/news/list'
-
-        response.reset()
-
         populateValidParams(params)
         def news = new News(params)
 
         assert news.save() != null
 
-        // test invalid parameters in update
         params.id = news.id
-        //TODO: add invalid values to params object
+        params.title = "Dummy Invalid Title"
+        params.subTitle = "Dummy Invalid SubTitle"
+        params.body = "Dummy Invalid Body"
 
+        controller.validate()
         controller.update()
 
         assert view == "/news/edit"
@@ -111,18 +92,19 @@ class NewsControllerTests {
         news.clearErrors()
 
         populateValidParams(params)
+        controller.validate()
         controller.update()
 
         assert response.redirectedUrl == "/news/show/$news.id"
         assert flash.message != null
 
-        //test outdated version number
         response.reset()
         news.clearErrors()
 
         populateValidParams(params)
         params.id = news.id
         params.version = -1
+        controller.validate()
         controller.update()
 
         assert view == "/news/edit"
@@ -132,12 +114,6 @@ class NewsControllerTests {
     }
 
     void testDelete() {
-        controller.delete()
-        assert flash.message != null
-        assert response.redirectedUrl == '/news/list'
-
-        response.reset()
-
         populateValidParams(params)
         def news = new News(params)
 
@@ -146,6 +122,7 @@ class NewsControllerTests {
 
         params.id = news.id
 
+        controller.validate()
         controller.delete()
 
         assert News.count() == 0
