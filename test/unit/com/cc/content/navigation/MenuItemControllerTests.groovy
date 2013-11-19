@@ -12,17 +12,16 @@ class MenuItemControllerTests {
     Menu menu
 
     void setUp() {
-        menu = new Menu(name: "Menu", roles: "ROLE_USER", showOnlyWhenLoggedIn: true)
+        menu = new Menu(name: "Menu", roles: "ROLE_USER", showOnlyWhenLoggedIn: true, menuItems:[])
         assert menu.save()
     }
+    
     def populateValidParams(params) {
         assert params != null
         params.title = "MenuItem1"
         params.url = "/"
         params.roles = "ROLE_USER"
         params.showOnlyWhenLoggedIn = true
-        params['menu'] = [:]
-        params['menu'].id = menu.id
     }
 
     void testIndex() {
@@ -56,6 +55,7 @@ class MenuItemControllerTests {
     void testShow() {
         populateValidParams(params)
         def menuItem = new MenuItem(params)
+        menuItem.menu = menu
 
         assert menuItem.save() != null
 
@@ -70,6 +70,7 @@ class MenuItemControllerTests {
     void testEdit() {
         populateValidParams(params)
         def menuItem = new MenuItem(params)
+        menuItem.menu = menu
 
         assert menuItem.save() != null
 
@@ -84,6 +85,7 @@ class MenuItemControllerTests {
     void testUpdate() {
         populateValidParams(params)
         def menuItem = new MenuItem(params)
+        menuItem.menu = menu
 
         assert menuItem.save() != null
 
@@ -126,6 +128,7 @@ class MenuItemControllerTests {
     void testDelete() {
         populateValidParams(params)
         def menuItem = new MenuItem(params)
+        menuItem.menu = menu
 
         assert menuItem.save() != null
         assert MenuItem.count() == 1

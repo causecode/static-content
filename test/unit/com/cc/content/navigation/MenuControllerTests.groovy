@@ -86,18 +86,6 @@ class MenuControllerTests {
         controller.validate()
         controller.update()
 
-        assert model.menuInstance != null
-
-        menu.clearErrors()
-
-        populateValidParams(params)
-        controller.validate()
-        controller.update()
-
-        assert response.redirectedUrl == "/menu/show/$menu.id"
-        assert flash.message != null
-
-        response.reset()
         menu.clearErrors()
 
         populateValidParams(params)

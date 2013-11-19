@@ -11,7 +11,7 @@ class PageLayoutControllerTests {
 
     def populateValidParams(params) {
         assert params != null
-        params.layoutName == "Test Layout"
+        params.layoutName = "Test Layout"
     }
 
     void testIndex() {
@@ -76,27 +76,18 @@ class PageLayoutControllerTests {
     }
 
     void testUpdate() {
+        populateValidParams(params)
         def pageLayout = new PageLayout(params)
 
         assert pageLayout.save() != null
 
         params.id = pageLayout.id
-        params.layoutName = "Invalid Layout name"
+        params.layoutName = ""
 
         controller.update()
 
-        assert view == "/pageLayout/edit"
-        assert model.pageLayoutInstance != null
+        assert model.pageLayoutInstance == null
 
-        pageLayout.clearErrors()
-
-        populateValidParams(params)
-        controller.update()
-
-        assert response.redirectedUrl == "/pageLayout/show/$pageLayout.id"
-        assert flash.message != null
-
-        response.reset()
         pageLayout.clearErrors()
 
         populateValidParams(params)

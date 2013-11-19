@@ -30,5 +30,8 @@ grails.project.dependency.resolution = {
         build (":tomcat:$grailsVersion", ":release:2.0.3", ":rest-client-builder:1.0.2", ":resources:1.2.RC2") {
             export = false
         }
+        /*test(":spock:0.7") {
+            export = false
+            exclude "spock-grails-support" }*/
     }
 }

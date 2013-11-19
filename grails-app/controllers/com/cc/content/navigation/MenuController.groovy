@@ -93,10 +93,10 @@ class MenuController {
     def delete(Long id) {
         try {
             menuInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'menu.label'), name])
+            flash.message = message(code: 'default.deleted.message', args: [message(code: 'menu.label'), menuInstance.name])
             redirect(action: "list")
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'menu.label'), name])
+            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'menu.label'), menuInstance.name])
             redirect(action: "show", id: id)
         }
     }

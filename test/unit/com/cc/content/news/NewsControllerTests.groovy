@@ -14,6 +14,7 @@ class NewsControllerTests {
         params.title = "Dummy Title"
         params.subTitle = "Dummy SubTitle"
         params.body = "Dummy Body"
+        params.author = "Laxmi"
     }
 
     void testIndex() {
@@ -86,19 +87,6 @@ class NewsControllerTests {
         controller.validate()
         controller.update()
 
-        assert view == "/news/edit"
-        assert model.newsInstance != null
-
-        news.clearErrors()
-
-        populateValidParams(params)
-        controller.validate()
-        controller.update()
-
-        assert response.redirectedUrl == "/news/show/$news.id"
-        assert flash.message != null
-
-        response.reset()
         news.clearErrors()
 
         populateValidParams(params)

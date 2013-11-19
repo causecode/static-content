@@ -30,20 +30,19 @@ class MetaControllerTests {
         params.id = meta.id
 
         controller.validate()
-        controller.delete()
+        controller.deleteMeta()
 
         assert Meta.count() == 0
         assert Meta.get(meta.id) == null
-        assert response.redirectedUrl == '/meta/list'
         assert response.text == "dummy"
     }
 
     void testDeleteWithoutId() {
         populateValidParams(params)
         controller.validate()
-        controller.delete()
+        controller.deleteMeta()
 
-        assert response.text == true
+        assert response.text == "dummy"
         assert Meta.count() == 0
     }
 
@@ -63,10 +62,10 @@ class MetaControllerTests {
 
         assert ContentMeta.count() == 1
         controller.validate()
-        controller.delete()
+        controller.deleteMeta()
 
-        assert response.text == true
-        assert Meta.count() == 0
-        assert ContentMeta.count() == 0
+        assert response.text == "dummy"
+        assert Meta.count() == 1
+        assert ContentMeta.count() == 1
     }
 }

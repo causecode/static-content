@@ -1,7 +1,6 @@
 package com.cc.content
 
 
-
 import grails.test.mixin.*
 
 import org.junit.*
@@ -15,11 +14,21 @@ class ContentRevisionControllerTests {
         params.title = "Dummy Title"
         params.subTitle = "Dummy SubTitle"
         params.body = "Dummy Body"
+
+    }
+
+    Content createContent() {
+        Content contentInstance = new Content(title: "Dummy Title", subTitle: "Dummy SubTitle", body: "Dummy Body",
+        author:"Laxmi")
+
+        assert contentInstance.save() != null
+        return contentInstance
     }
 
     void testShow() {
         populateValidParams(params)
         def contentRevision = new ContentRevision(params)
+        contentRevision.revisionOf = createContent()
 
         assert contentRevision.save() != null
 
@@ -33,6 +42,7 @@ class ContentRevisionControllerTests {
     void testDelete() {
         populateValidParams(params)
         def contentRevision = new ContentRevision(params)
+        contentRevision.revisionOf = createContent()
 
         assert contentRevision.save() != null
         assert ContentRevision.count() == 1
@@ -43,12 +53,12 @@ class ContentRevisionControllerTests {
 
         assert ContentRevision.count() == 0
         assert ContentRevision.get(contentRevision.id) == null
-        assert response.text == true
     }
 
     void testLoad() {
         populateValidParams(params)
         def contentRevision = new ContentRevision(params)
+        contentRevision.revisionOf = createContent()
 
         assert contentRevision.save() != null
         assert ContentRevision.count() == 1

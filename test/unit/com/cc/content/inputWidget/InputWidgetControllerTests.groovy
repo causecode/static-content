@@ -13,21 +13,11 @@ class InputWidgetControllerTests {
     def populateValidParams(params) {
         assert params != null
         params.name = "Dummy name "
-        params.label = "Dummy label "
-        params.widgetKeys = "Dummy widgetKeys"
-        params.widgetValues = "Dummy widgetValues"
         params.defaultValue = "Dummy defaultValue"
         params.helpText = "Dummy helpText"
 
         params.type = InputWidgetType.TEXT_FIELD
         params.helpType = InputWidgetHelpType.PLACEHOLDER
-        params.validation = InputWidgetValidation.REQUIRED
-
-        params.noSelectionText = "Select One"
-        params.minChar = 1
-        params.maxChar = 2
-        params.minValueRange = 1
-        params.maxValueRange = 99
     }
 
     void testIndex() {
@@ -94,38 +84,15 @@ class InputWidgetControllerTests {
 
         params.id = inputWidget.id
         params.name = "Dummy Invalid name "
-        params.label = "Dummy Invalid label "
-        params.widgetKeys = "Dummy Invalid widgetKeys"
-        params.widgetValues = "Dummy Invalid widgetValues"
         params.defaultValue = "Dummy Invalid defaultValue"
         params.helpText = "Dummy Invalid helpText"
 
         params.type = InputWidgetType.TEXT_FIELD
         params.helpType = InputWidgetHelpType.PLACEHOLDER
-        params.validation = InputWidgetValidation.REQUIRED
-
-        params.noSelectionText = "Invalid Select One"
-        params.minChar = 0
-        params.maxChar = 0
-        params.minValueRange = 0
-        params.maxValueRange = 0
 
         controller.validate()
         controller.update()
 
-        assert view == "/inputWidget/edit"
-        assert model.inputWidgetInstance != null
-
-        inputWidget.clearErrors()
-
-        populateValidParams(params)
-        controller.validate()
-        controller.update()
-
-        assert response.redirectedUrl == "/inputWidget/show/$inputWidget.id"
-        assert flash.message != null
-
-        response.reset()
         inputWidget.clearErrors()
 
         populateValidParams(params)

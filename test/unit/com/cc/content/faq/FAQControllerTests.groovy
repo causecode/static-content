@@ -11,6 +11,10 @@ class FAQControllerTests {
 
     def populateValidParams(params) {
         assert params != null
+        params.title = "Dummy Title"
+        params.subTitle = "Dummy SubTitle"
+        params.body = "Dummy Body"
+        params.author = "Laxmi"
     }
 
     void testIndex() {
@@ -87,19 +91,6 @@ class FAQControllerTests {
         controller.validate()
         controller.update()
 
-        assert view == "/FAQ/edit"
-        assert model.FAQInstance != null
-
-        FAQ.clearErrors()
-
-        populateValidParams(params)
-        controller.validate()
-        controller.update()
-
-        assert response.redirectedUrl == "/FAQ/show/$FAQ.id"
-        assert flash.message != null
-
-        response.reset()
         FAQ.clearErrors()
 
         populateValidParams(params)
