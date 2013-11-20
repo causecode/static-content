@@ -26,9 +26,12 @@ class MenuTagLib {
             log.info "No menu found with id [$attrs.id]."
             return
         }
+        String template = attrs.menuTemplate ?: "/menu/templates/menu"
+        String plugin = attrs.inPlugin ?: "content"
+
         List<MenuItem> menuItemList = menuInstance.menuItems
 
-        out << render(template: '/menu/templates/menu', plugin: 'content', model: [menuInstance: menuInstance,
+        out << render(template: template, plugin: plugin, model: [menuInstance: menuInstance,
             menuItemList: menuItemList].plus(attrs))
     }
 
