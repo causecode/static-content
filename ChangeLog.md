@@ -12,9 +12,10 @@ A plugin used to manage contents like static pages, menus etc. at one place.
 
 #### Database change
 
-1. Added new domain for content revision,
-2. Removed version from join class,
-3. Modify value for column **class** in **cc_content_content** to replace **com.cc.page.Page** to **com.cc.content.page.Page**.
+1. Removed version from join class,
+2. Added new domain for content revision,
+3. Some field made nullable in InputWidget.
+4. Modify value for column **class** in **cc_content_content** to replace **com.cc.page.Page** to **com.cc.content.page.Page**,
 
 #### New Features
 

@@ -1,6 +1,6 @@
 <g:if test="${instance }">
     <li class="${topLevel ? 'thumbnail ' : '' }menu-item" data-menu-item-id="${instance.id}" id="menu-item-${instance.id }">
-        <i class="icon-move"></i>
+        <i class="icon-move fa fa-arrows"></i>
         <strong class="title">${instance.title}</strong>
         <span class="pull-right">
             <a class="edit-menu-item" href="#"><i class="icon-pencil"></i></a>

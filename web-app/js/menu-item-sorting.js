@@ -56,12 +56,12 @@ $("a#create", $createMenuItemOverlay).click(function() {
     var data = $form.serialize();
     var $newMenuItem
         = $("<li class=\"thumbnail menu-item un-saved\">" +
-                "<i class=\"icon-move\"></i> " +
+                "<i class=\"icon-move fa fa-arrows\"></i> " +
                 "<strong>" + title + "</strong>" +
                 "<span class=\"pull-right\">" +
-                    "<a href=\"#\" class=\"save-menu-item\"><i class=\"icon-ok\"></i></a> " +
-                    "<a href=\"#\" class=\"edit-menu-item hid\"><i class=\"icon-pencil\"></i></a> " +
-                    "<a href=\"#\" class=\"delete-menu-item\"><i class=\"icon-remove\"></i></a>" +
+                    "<a href=\"#\" class=\"save-menu-item\"><i class=\"fa fa-check icon-ok\"></i></a> " +
+                    "<a href=\"#\" class=\"edit-menu-item hid\"><i class=\"fa fa-pencil icon-pencil\"></i></a> " +
+                    "<a href=\"#\" class=\"delete-menu-item\"><i class=\"fa fa-trash-o icon-remove\"></i></a>" +
                 "</span>" +
                 "<ul class=\"menu-item-container\" data-parent-id=\"\">" +
              "</li>").data("formData", data);

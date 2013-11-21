@@ -35,6 +35,9 @@ class InputWidget {
         validation nullable: true
         widgetKeys nullable: true
         widgetValues nullable: true
+        defaultValue nullable: true
+        helpText nullable: true
+        helpType nullable: true
         noSelectionText nullable: true
         minChar nullable: true
         maxChar nullable: true
