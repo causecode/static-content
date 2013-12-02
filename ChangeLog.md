@@ -2,9 +2,9 @@
 
 A plugin used to manage contents like static pages, menus etc. at one place.
 
-## ChnageLog
+## ChangeLog
 
-### Version 2.2
+### Version 2.1.1
 
 #### Breaking change
 
