@@ -94,7 +94,7 @@ class PageController {
         }
         flash.message = "<em>$pageInstance</em> Page updated successfully."
         if(params.createRevision) {
-            contentService.createRevision(pageInstance, PageRevision.class)
+            contentService.createRevision(pageInstance, PageRevision.class, params)
             flash.message += " Revision created successfully."
         }
 

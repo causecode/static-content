@@ -13,7 +13,7 @@
             <g:message code="default.create.label" args="[entityName]" />
         </h1>
     </div>
-    <g:form action="save" class="form-horizontal">
+    <g:form action="save" class="form-horizontal jquery-form">
         <fieldset>
             <g:render template="/content/form" model="[contentInstance: pageInstance]" plugin="content" />
             <div class="form-actions">

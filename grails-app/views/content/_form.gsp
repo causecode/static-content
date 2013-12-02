@@ -1,4 +1,5 @@
 <ckeditor:resources />
+<r:require module="validation" />
 
 <g:hasErrors bean="${contentInstance}">
     <ul class="text-danger field-error icons-ul">
@@ -10,7 +11,7 @@
     </ul>
 </g:hasErrors>
 
-<div class="form-group ${hasErrors(bean: contentInstance, field: 'title', 'error')}">
+<div class="form-group ${hasErrors(bean: contentInstance, field: 'title', 'has-error')}">
     <label class="control-label col-sm-2" for="title"> <g:message code="page.title.label" default="Title" />
     </label>
     <div class="col-sm-5">
@@ -19,7 +20,7 @@
     </div>
 </div>
 
-<div class="form-group ${hasErrors(bean: contentInstance, field: 'subTitle', 'error')}">
+<div class="form-group ${hasErrors(bean: contentInstance, field: 'subTitle', 'has-error')}">
     <label class="control-label col-sm-2" for="subTitle"> <g:message code="page.subTitle.label"
             default="Sub Title" />
     </label>
@@ -28,7 +29,7 @@
     </div>
 </div>
 
-<div class="form-group ${hasErrors(bean: contentInstance, field: 'body', 'error')}">
+<div class="form-group ${hasErrors(bean: contentInstance, field: 'body', 'has-error')}">
     <label class="control-label col-sm-2" for="body"> <g:message code="page.body.label" default="Body" />
     </label>
     <div class="col-sm-8">
@@ -48,7 +49,7 @@
 </g:if>
 
 <g:if test="${contentInstance instanceof com.cc.content.page.Page }">
-    <div class="form-group ${hasErrors(bean: contentInstance, field: 'pageLayout', 'error')}">
+    <div class="form-group ${hasErrors(bean: contentInstance, field: 'pageLayout', 'has-error')}">
         <label class="control-label col-sm-2" for="pageLayout">
             <g:message code="page.pageLayout.label" default="Page Layout" />
         </label>
@@ -72,10 +73,23 @@
                 </div>
             </div>
         </div>
+        <div class="form-group hide">
+            <label class="control-label col-sm-2" for="revisionComment">
+                <g:message code="content.revision.comment.label" default="Comment" />
+            </label>
+            <div class="col-sm-5">
+                <g:textField name="revisionComment" class="form-control required" placeholder="Comment this revision" />
+            </div>
+        </div>
+        <r:script>
+            $("input#createRevision").change(function() {
+                $("input#revisionComment").parents('.form-group').toggleClass("hide", !$(this).is(":checked"));
+            })
+        </r:script>
     </g:if>
 </g:if>
 
-<div class="form-group ${hasErrors(bean: contentInstance, field: 'publish', 'error')}">
+<div class="form-group ${hasErrors(bean: contentInstance, field: 'publish', 'has-error')}">
     <label class="control-label col-sm-2" for="publish">
         <g:message code="page.publish.label" default="Publish" />
     </label>
@@ -119,7 +133,8 @@
                 <a href="${createLink(controller: 'contentRevision', id: contentRevisionInstance.id) }" target="_blank">
                     <g:formatDate date="${contentRevisionInstance.dateCreated }" timezone="${session.usersTimeZone }"
                         format="MM/dd/yyyy hh:mm a" />
-                </a>&nbsp;
+                </a>
+                : <span class="text-muted">${contentRevisionInstance.comment }</span>&nbsp;
                 <a href="#" id="load-revision" rel="tooltip" title="Load this revision" data-revision-id="${contentRevisionInstance.id }">
                     <i class="icon-exchange"></i>
                 </a>&nbsp;

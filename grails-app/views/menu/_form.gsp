@@ -1,3 +1,5 @@
+<r:require module="validation" />
+
 <g:hasErrors bean="${menuInstance}">
     <ul class="text-danger field-error icons-ul">
         <g:eachError bean="${menuInstance}" var="error">
@@ -8,7 +10,7 @@
     </ul>
 </g:hasErrors>
 
-<div class="form-group ${hasErrors(bean: menuInstance, field: 'name', 'error')}">
+<div class="form-group ${hasErrors(bean: menuInstance, field: 'name', 'has-error')}">
     <label class="control-label col-sm-3" for="name"> <g:message code="menu.name.label" default="Name" />
     </label>
     <div class="col-sm-5">
@@ -16,16 +18,16 @@
     </div>
 </div>
 
-<div class="form-group ${hasErrors(bean: menuInstance, field: 'roles', 'error')}">
+<div class="form-group ${hasErrors(bean: menuInstance, field: 'roles', 'has-error')}">
     <label class="control-label col-sm-3" for="roles"> <g:message code="menu.roles.label" default="Role" />
     </label>
     <div class="col-sm-5">
-        <g:select name="roles" from="${['ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN','ROLE_JOB_BOARD_MANAGER']}"
+        <g:select name="roles" from="${grailsApplication.config.cc.plugins.content.rolesForMenuMenuItem}"
             value="${menuInstance?.roles}" multiple="true" class="form-control" />
     </div>
 </div>
 
-<div class="form-group ${hasErrors(bean: menuInstance, field: 'showOnlyWhenLoggedIn', 'error')}">
+<div class="form-group ${hasErrors(bean: menuInstance, field: 'showOnlyWhenLoggedIn', 'has-error')}">
     <label class="control-label col-sm-3" for="showOnlyWhenLoggedIn"> <g:message
             code='menu.showOnlyWhenLoggedIn.label' default="Show Only When Logged In" />
     </label>
@@ -35,7 +37,7 @@
 </div>
 
 
-<div class="form-group ${hasErrors(bean: menuInstance, field: 'menuItems', 'error')}">
+<div class="form-group ${hasErrors(bean: menuInstance, field: 'menuItems', 'has-error')}">
     <label class="control-label col-sm-3" for="menuItems"><g:message code="menu.menuItems.label"
             default="Menu Items" />
     </label>

@@ -13,7 +13,7 @@
             <g:message code="default.edit.label" args="[entityName]" />
         </h1>
     </div>
-    <g:form class="form-horizontal">
+    <g:form class="form-horizontal jquery-form">
         <g:hiddenField name="id" value="${pageInstance?.id}" />
         <g:hiddenField name="version" value="${pageInstance?.version}" />
         <fieldset>

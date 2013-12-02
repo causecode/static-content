@@ -14,6 +14,8 @@ class ContentRevision {
     String subTitle
     String body
 
+    String comment
+
     Content revisionOf
 
     Date dateCreated

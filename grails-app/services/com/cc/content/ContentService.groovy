@@ -138,12 +138,13 @@ class ContentService {
     }
 
     @Transactional
-    ContentRevision createRevision(Content contentInstance, Class clazz) {
+    ContentRevision createRevision(Content contentInstance, Class clazz, Map params) {
         ContentRevision contentRevisionInstance = clazz.newInstance()
         contentRevisionInstance.title = contentInstance.title
         contentRevisionInstance.body = contentInstance.body
         contentRevisionInstance.subTitle = contentInstance.subTitle
         contentRevisionInstance.revisionOf = contentInstance
+        contentRevisionInstance.comment = params.revisionComment ?: ""
         contentRevisionInstance.save()
         contentRevisionInstance
     }
