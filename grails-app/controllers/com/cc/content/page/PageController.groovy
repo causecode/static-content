@@ -13,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.ContentRevision
+import com.cc.content.format.TextFormat
 
 @ControllerShorthand(value = "c")
 class PageController {
@@ -21,6 +22,8 @@ class PageController {
 
     def beforeInterceptor = [action: this.&validate]
     def contentService
+    def springSecurityService
+    def textFormatService
 
     private Page pageInstance
 
@@ -54,16 +57,31 @@ class PageController {
     }
 
     def create() {
-        [pageInstance: new Page(params)]
+        if(!params.editor) {
+            params.editor = true
+        }
+        if(!pageInstance) {
+            pageInstance = new Page(params)
+        }
+        [pageInstance: pageInstance, formatsAvailable: textFormatService.applicableFormats,
+            editor:params.boolean('editor')]
     }
 
     def save() {
-        pageInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Page.class)
-        if(!pageInstance.save(flush: true)) {
+        def textFormatInstance = TextFormat.findById(params.textFormat.id)
+        if(SpringSecurityUtils.ifNotGranted(textFormatInstance?.roles)) {
+            flash.message = "Sorry! You do not possess previleges to use " + textFormatInstance.name + " format"
             render(view: "create", model: [pageInstance: pageInstance])
             return
         }
+        params.body = contentService.formatBody(params.body,textFormatInstance)
 
+        pageInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Page.class)
+        if(pageInstance.hasErrors()) {
+            flash.message = "Error saving Instance in controller action: " + pageInstance.errors
+            render(view: "create", model: [pageInstance: pageInstance])
+            return
+        }
         flash.message = message(code: 'default.created.message', args: [message(code: 'page.label'), pageInstance.id])
         redirect(action: "show", id: pageInstance.id)
     }
@@ -73,7 +91,8 @@ class PageController {
     }
 
     def edit(Long id) {
-        [pageInstance: pageInstance, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)]
+        [pageInstance: pageInstance, formatsAvailable: textFormatService.applicableFormats,
+            editor:pageInstance?.textFormat?.editor, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)]
     }
 
     def update(Long id, Long version) {
@@ -86,6 +105,16 @@ class PageController {
                 return
             }
         }
+
+        def textFormatInstance = TextFormat.findById(params.textFormat.id)
+        if(SpringSecurityUtils.ifNotGranted(textFormatInstance?.roles)) {
+            flash.message = "Sorry! You do not possess previleges to use " + textFormatInstance.name + " format"
+            render(view: "create", model: [pageInstance: pageInstance])
+            return
+        }
+
+        params.body = contentService.formatBody(params.body,textFormatInstance)
+
         pageInstance = contentService.update(params, pageInstance, params.meta.list("type"), params.meta.list("value"))
 
         if(pageInstance.hasErrors()) {
@@ -110,5 +139,13 @@ class PageController {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'page.label'), id])
             redirect(action: "show", id: id)
         }
+    }
+
+    /**
+     * To switch between Text Area and Ckeditor
+     */
+    def editorSwitch() {
+        render(template: "bodyEditor", plugin:"content",
+        model: [textFormatInstance: TextFormat.get(params.textInstanceId), useEditor:params.boolean('useEditor')])
     }
 }

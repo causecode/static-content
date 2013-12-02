@@ -16,4 +16,8 @@ modules = {
     wordAndCharacterCounter {
         resource url: [dir: "js", file: "word-and-character-counter.js"]
     }
+
+    editorswitch {
+        resource url: '/js/editor.js'
+    }
 }
