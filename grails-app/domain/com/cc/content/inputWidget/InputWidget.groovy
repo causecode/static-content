@@ -65,13 +65,13 @@ class InputWidget {
     List getKeys() {
         if(!widgetKeys) return [];
 
-        widgetKeys.tokenize(",").trim()
+        widgetKeys.tokenize(",")*.trim()
     }
 
     List getValues() {
         if(!widgetValues) return [];
 
-        widgetValues.tokenize(",").trim()
+        widgetValues.tokenize(",")*.trim()
     }
 
 }

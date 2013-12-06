@@ -57,8 +57,7 @@ class MenuController {
             return
         }
 
-        flash.message = message(code: 'default.created.message',
-        args: [message(code: 'menu.label'), menuInstance.name])
+        flash.message = message(code: 'default.created.message', args: [message(code: 'menu.label'), menuInstance.name])
         redirect(action: "show", id: menuInstance.id)
     }
 
@@ -76,7 +75,7 @@ class MenuController {
                 menuInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'menu.label')] as Object[],
                         "Another user has updated this Menu while you were editing")
-                render(view: "edit", model: [menuInstance: menuInstance])
+                render(view: "edit", model: [menuInstance: menuInstance, Role: contentService.getRoleClass()])
                 return
             }
         }
@@ -84,7 +83,7 @@ class MenuController {
         menuInstance.properties = params
 
         if (!menuInstance.save(flush: true)) {
-            render(view: "edit", model: [menuInstance: menuInstance])
+            render(view: "edit", model: [menuInstance: menuInstance, Role: contentService.getRoleClass()])
             return
         }
 

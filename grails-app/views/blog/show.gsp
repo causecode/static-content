@@ -24,6 +24,7 @@
             font-size: 76%;
         }
     </style>
+    <r:require module="prettyprint"/>
 </head>
 
 <body>

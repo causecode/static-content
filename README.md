@@ -16,6 +16,11 @@ cc.plugins.content.contentManagerRole = "ROLE_CONTENT_MANAGER,ROLE_EMPLOYEE"
 cc.plugins.content.breadcrumbs.baseMap = ['/': 'Home']
 ```
 
+## Required Modules
+
+1. **validation** in all forms,
+2. **prettyprint** for blog show page.
+
 ## Changes in URLMappings.groovy file:
 
 Remove default url mapping.

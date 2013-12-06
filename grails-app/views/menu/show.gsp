@@ -3,7 +3,7 @@
     <meta name="layout" content="main">
     <g:set var="entityName" value="${message(code: 'menu.label')}" />
     <title>Sort Menu Items - ${menuInstance.name }</title>
-    <r:require modules="menuItem, validation" strict="false" />
+    <r:require modules="menuItem, validation" />
 </head>
 <body>
     <content tag="breadcrumb">

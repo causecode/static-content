@@ -1,4 +1,4 @@
-<r:require module="validation" strict="false" />
+<r:require module="validation" />
 
 <g:hasErrors bean="${menuInstance}">
     <ul class="text-danger field-error icons-ul">
@@ -21,7 +21,7 @@
 <div class="form-group ${hasErrors(bean: menuInstance, field: 'roles', 'has-error')}">
     <label class="control-label col-sm-3" for="roles"><g:message code="menu.roles.label" default="Role" /></label>
     <div class="col-sm-5">
-        <g:select name="roles" from="${Role.findAll()}"
+        <g:select name="roles" from="${Role.findAll()}" optionKey="authority" optionValue="authority"
             value="${menuInstance?.roles}" multiple="true" class="form-control" noSelection="['':'Select Roles']" />
     </div>
 </div>
