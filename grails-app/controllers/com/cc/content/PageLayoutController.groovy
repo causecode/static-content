@@ -8,8 +8,11 @@
 
 package com.cc.content
 
+import grails.plugins.springsecurity.Secured
+
 import org.springframework.dao.DataIntegrityViolationException
 
+@Secured(["ROLE_CONTENT_MANAGER"])
 class PageLayoutController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]

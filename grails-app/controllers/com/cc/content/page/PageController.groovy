@@ -8,12 +8,15 @@
 
 package com.cc.content.page
 
+import grails.plugins.springsecurity.Secured
+
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.ContentRevision
 
+@Secured(["ROLE_CONTENT_MANAGER"])
 @ControllerShorthand(value = "c")
 class PageController {
 
@@ -68,6 +71,7 @@ class PageController {
         redirect(action: "show", id: pageInstance.id)
     }
 
+    @Secured(["permitAll"])
     def show(Long id) {
         [pageInstance: pageInstance]
     }

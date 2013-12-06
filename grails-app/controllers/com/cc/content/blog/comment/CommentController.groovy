@@ -8,8 +8,11 @@
 
 package com.cc.content.blog.comment
 
+import grails.plugins.springsecurity.Secured
+
 import com.cc.content.blog.Blog
 
+@Secured(["ROLE_CONTENT_MANAGER"])
 class CommentController {
 
     def delete(Long id, Long blogId) {

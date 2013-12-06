@@ -8,6 +8,8 @@
 
 package com.cc.content.blog
 
+import grails.plugins.springsecurity.Secured
+
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -17,6 +19,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import com.cc.content.blog.comment.BlogComment
 import com.cc.content.blog.comment.Comment
 
+@Secured(["ROLE_CONTENT_MANAGER"])
 class BlogController {
 
     static defaultAction = "list"
@@ -46,6 +49,7 @@ class BlogController {
         return true
     }
 
+    @Secured(["permitAll"])
     def list(Integer max, Integer offset, String tag) {
         long blogInstanceTotal
         boolean publish = false
@@ -105,6 +109,7 @@ class BlogController {
         }
     }
 
+    @Secured(["permitAll"])
     def show(Long id) {
         List blogComments = BlogComment.findAllByBlog(blogInstance)*.comment
         [blogInstance: blogInstance, comments: blogComments]
@@ -155,6 +160,7 @@ class BlogController {
         }
     }
 
+    @Secured(["permitAll"])
     def comment(Long commentId) {
         Comment.withTransaction { status ->
             boolean captchaValid = simpleCaptchaService.validateCaptcha(params.captcha)

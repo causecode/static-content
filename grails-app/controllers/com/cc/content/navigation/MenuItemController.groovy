@@ -9,9 +9,11 @@
 package com.cc.content.navigation
 
 import grails.converters.JSON
+import grails.plugins.springsecurity.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
 
+@Secured(["ROLE_CONTENT_MANAGER"])
 class MenuItemController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
