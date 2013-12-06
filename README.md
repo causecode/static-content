@@ -2,32 +2,18 @@
 
 A plugin used to manage contents like static pages, menus etc. at one place.
 
-## ChnageLog
+## ChangeLog
 
 See ChangeLog.md file.
 
 ## Configurations for this plugin:
 
 ```
+#!groovy
 cc.plugins.content.authorProperty = "username"
 cc.plugins.content.blog.list.max = 10
 cc.plugins.content.contentManagerRole = "ROLE_CONTENT_MANAGER,ROLE_EMPLOYEE"
 cc.plugins.content.breadcrumbs.baseMap = ['/': 'Home']
-```
-
-## Access protect controllers: (according to application need)
-
-```
-#!groovy
-    '/blog/**' : ['ROLE_MANAGER_ORGS'],
-    '/comment/**' : ['ROLE_ADMIN'],
-    '/pageLayout/**' : ['ROLE_MANAGER_ORGS'],
-    '/faq/**' : ['ROLE_MANAGER_ORGS'],
-    '/news/**' : ['ROLE_MANAGER_ORGS'],
-    '/menu/**' : ['ROLE_MANAGER_ORGS'],
-    '/menuItem/**' : ['ROLE_MANAGER_ORGS'],
-    '/page/show/**' : ['IS_AUTHENTICATED_ANONYMOUSLY'],
-    '/page/**' : ['ROLE_MANAGER_ORGS'],
 ```
 
 ## Changes in URLMappings.groovy file:

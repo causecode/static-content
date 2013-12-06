@@ -8,10 +8,13 @@
 
 package com.cc.content.news
 
+import grails.plugins.springsecurity.Secured
+
 import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.iframe.Scraper
 
+@Secured(["ROLE_CONTENT_MANAGER"])
 class NewsController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]

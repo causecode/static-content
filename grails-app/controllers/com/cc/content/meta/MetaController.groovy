@@ -8,10 +8,13 @@
 
 package com.cc.content.meta
 
+import grails.plugins.springsecurity.Secured
+
 import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.content.ContentMeta
 
+@Secured(["ROLE_CONTENT_MANAGER"])
 class MetaController {
 
     def beforeInterceptor = [action: this.&validate]
