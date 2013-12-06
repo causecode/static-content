@@ -58,6 +58,22 @@ class InputWidget {
         "REQUIRED" in this.validation.tokenize(",")*.trim()
     }
 
+    boolean isKeyValueSupported() {
+        type in [InputWidgetType.CHECKBOX, InputWidgetType.MULTI_SELECT, InputWidgetType.SELECT, InputWidgetType.RADIO]
+    }
+
+    List getKeys() {
+        if(!widgetKeys) return [];
+
+        widgetKeys.tokenize(",").trim()
+    }
+
+    List getValues() {
+        if(!widgetValues) return [];
+
+        widgetValues.tokenize(",").trim()
+    }
+
 }
 
 enum InputWidgetType {
