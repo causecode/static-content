@@ -53,9 +53,7 @@ class ContentService {
     }
 
     /**
-     * A method to check if current user have authority to view the 
-     * current content instance, based on the role configured by
-     * cc.plugins.content.contentManagerRole
+     * A method to check if current user have authority to view the current content instance
      */
     boolean isVisible(def id) {
         if(contentManager) return true;

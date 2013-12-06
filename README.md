@@ -10,9 +10,9 @@ See ChangeLog.md file.
 
 ```
 cc.plugins.content.authorProperty = "username"
-cc.plugins.content.contentManagerRole = "ROLE_MANAGER_CONTENT"
-cc.plugins.content.default.layout.name = "main"
-cc.plugins.content.RoleForMenuItem = ["ROLE_ADMIN","ROLE_CONTENT_MANAGER","ROLE_EMPLOYEE","ROLE_USER"]
+cc.plugins.content.blog.list.max = 10
+cc.plugins.content.contentManagerRole = "ROLE_CONTENT_MANAGER,ROLE_EMPLOYEE"
+cc.plugins.content.breadcrumbs.baseMap = ['/': 'Home']
 ```
 
 ## Access protect controllers: (according to application need)

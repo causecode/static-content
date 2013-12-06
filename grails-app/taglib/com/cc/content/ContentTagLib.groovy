@@ -30,6 +30,7 @@ class ContentTagLib {
      * Used when current user have content role
      * described by cc.plugins.content.contentManagerRole
      */
+    @Deprecated
     def canEdit = { attrs, body ->
         if(contentService.contentManager) {
             out << body()

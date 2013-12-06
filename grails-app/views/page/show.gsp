@@ -16,7 +16,7 @@
     </div>
     <%= pageInstance.body %>
 
-    <content:canEdit>
+    <sec:access url="/page/create">
         <g:form>
             <fieldset class="form-actions">
                 <g:hiddenField name="id" value="${pageInstance.id}" />
@@ -28,6 +28,6 @@
                     onclick="return confirm('${message(code: 'default.button.delete.confirm.message')}');" />
             </fieldset>
         </g:form>
-    </content:canEdit>
+    </sec:access>
 </body>
 </html>
