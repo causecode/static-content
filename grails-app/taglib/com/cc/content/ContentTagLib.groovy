@@ -78,4 +78,17 @@ class ContentTagLib {
         out << contentService.resolveAuthor(Content.get(attrs.id), attrs.authorProperty ?: "fullName")
     }
 
+    /**
+     * @attr id REQUIRED
+     */
+    def renderContent = { attrs, body ->
+        if(!attrs.id) {
+            throwTagError("Required id")
+        }
+        Content contentInstance = Content.get(attrs.id)
+        if(contentInstance) {
+            out << body(contentInstance)
+        }
+    }
+
 }
