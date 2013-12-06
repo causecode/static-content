@@ -10,6 +10,8 @@ package com.cc.content.blog.comment
 
 class Comment {
 
+    transient commentService
+
     String commentText
     String email
     String name
@@ -29,6 +31,12 @@ class Comment {
     static mapping = {
         table "cc_content_comment"
         commentText type: "text"
+    }
+
+    def beforeDelete() {
+        Comment.withNewSession {
+            commentService.deleteNestedComment(this, false)
+        }
     }
 
 }

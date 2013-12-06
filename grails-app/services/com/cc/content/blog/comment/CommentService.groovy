@@ -6,18 +6,20 @@
  * without modification, are not permitted.
  */
 
-package com.cc.content.blog
+package com.cc.content.blog.comment
 
-import com.cc.content.blog.comment.Comment
+class CommentService {
 
-class BlogService {
+    static transactional = false
 
-    void deleteNestedComment(Comment commentInstance) {
+    void deleteNestedComment(Comment commentInstance, boolean deleteCommentAlso = true) {
         List<Comment> nestedCommentList = Comment.findAllByReplyTo(commentInstance)
         nestedCommentList.each {
-            List<Comment> nestedSubCommentList = deleteNestedComment(it)
+            deleteNestedComment(it)
         }
-        commentInstance.delete()
+        if(deleteCommentAlso) {
+            commentInstance.delete(flush: true)
+        }
     }
 
 }

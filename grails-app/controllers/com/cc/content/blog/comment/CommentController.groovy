@@ -12,15 +12,16 @@ import com.cc.content.blog.Blog
 
 class CommentController {
 
-    def blogService
-
     def delete(Long id, Long blogId) {
         Comment.withTransaction { status ->
             Blog blogInstance = Blog.get(blogId)
             Comment commentInstance = Comment.get(id)
-            BlogComment.findByComment(commentInstance)?.delete()
 
-            blogService.deleteNestedComment(commentInstance)
+            if(commentInstance.replyTo) {
+                commentInstance.delete()
+            } else {
+                BlogComment.findByComment(commentInstance)?.delete()
+            }
 
             flash.message = "Comments deleted successfully."
             redirect uri: blogInstance.searchLink()

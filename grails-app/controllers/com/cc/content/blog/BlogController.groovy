@@ -40,7 +40,7 @@ class BlogController {
         blogInstance = Blog.get(params.id)
         if (!blogInstance) {
             flash.message = "Sorry, no blog found with Id $params.id"
-            redirect(action: "list")
+            redirect(uri: "/blog")
             return false
         }
         return true
@@ -49,9 +49,10 @@ class BlogController {
     def list(Integer max, Integer offset, String tag) {
         long blogInstanceTotal
         boolean publish = false
+        //int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max
 
         params.offset = offset ? offset: 0
-        params.max = Math.min(max ?: 2, 100)
+        params.max = Math.min(max ?: 10, 100)
 
         StringBuilder query = new StringBuilder("""SELECT new Map(b.id as id, b.body as body, b.title as title,
                             b.subTitle as subTitle, b.author as author, b.dateCreated as dateCreated) FROM Blog b """)
@@ -144,11 +145,11 @@ class BlogController {
 
     def delete(Long id) {
         try {
-            blogInstance.delete(flush: true)
+            contentService.delete(blogInstance)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'blog.label'), id])
-            redirect(action: "list")
-        }
-        catch (DataIntegrityViolationException e) {
+            redirect(uri: "/blog")
+        } catch (DataIntegrityViolationException e) {
+            log.warn "Error deleting blog.", e
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'blog.label'), id])
             redirect uri: blogInstance.searchLink()
         }

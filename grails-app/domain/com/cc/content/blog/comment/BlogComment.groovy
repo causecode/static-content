@@ -15,11 +15,14 @@ class BlogComment {
     Blog blog
     Comment comment
 
-    static constraints = {
-    }
-
     static mapping = {
         table "cc_content_blog_comment"
+    }
+
+    def afterDelete() {
+        Comment.withNewSession {
+            comment.delete(flush: true)
+        }
     }
 
 }

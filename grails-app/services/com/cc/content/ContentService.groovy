@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 
 import com.cc.annotation.sanitizedTitle.SanitizedTitle
 import com.cc.content.blog.Blog
+import com.cc.content.blog.comment.BlogComment
 import com.cc.content.meta.Meta
 import com.cc.content.page.Page
 
@@ -134,6 +135,10 @@ class ContentService {
     boolean delete(Content contentInstance) {
         ContentMeta.findAllByContent(contentInstance)*.delete()
         ContentRevision.findAllByRevisionOf(contentInstance)*.delete()
+        if(contentInstance instanceof Blog) {
+            contentInstance.setTags([])
+            BlogComment.findAllByBlog(contentInstance)*.delete()
+        }
         contentInstance.delete()
     }
 
