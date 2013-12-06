@@ -22,6 +22,7 @@ class MenuController {
     private Menu menuInstance
     private MenuItem menuItemInstance
 
+    def contentService
     def menuItemService
 
     private validate() {
@@ -46,13 +47,13 @@ class MenuController {
     }
 
     def create() {
-        [menuInstance: new Menu(params)]
+        [menuInstance: new Menu(params), Role: contentService.getRoleClass()]
     }
 
     def save() {
         menuInstance = new Menu(params)
         if (!menuInstance.save(flush: true)) {
-            render(view: "create", model: [menuInstance: menuInstance])
+            render(view: "create", model: [menuInstance: menuInstance, Role: contentService.getRoleClass()])
             return
         }
 
@@ -62,7 +63,7 @@ class MenuController {
     }
 
     def show(Long id) {
-        [menuItemInstanceList: menuInstance.menuItems, menuInstanceTotal: Menu.count(), menuInstance: menuInstance]
+        [menuItemInstanceList: menuInstance.menuItems, menuInstance: menuInstance, Role: contentService.getRoleClass()]
     }
 
     def edit(Long id) {

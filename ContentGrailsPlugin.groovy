@@ -8,6 +8,8 @@
 
 import java.lang.annotation.Annotation
 
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.ContentService
 
@@ -58,7 +60,8 @@ Also provides shortened and user friendly urls.
 
     private void addServiceMethod(ctx) {
         def application = ctx.grailsApplication
-        MetaClass metaClassInstance = application.getServiceClass(ContentService.class.name)?.metaClass
+        MetaClass metaClassInstance = application.getServiceClass(ContentService.class.name).metaClass
+
         if (!metaClassInstance.respondsTo(null, 'getShorthandAnnotatedControllers')) {
             Map shorthandAnnotatedControllerMap = [:]
             for(controller in application.controllerClasses) {
@@ -69,11 +72,17 @@ Also provides shortened and user friendly urls.
                     shorthandAnnotatedControllerMap.put(camelCaseName, controllerAnnotation.value())
                 }
             }
-            println "\nShorthand annotated controller map: $shorthandAnnotatedControllerMap"
-            println ""
             metaClassInstance.getShorthandAnnotatedControllers {
                 return shorthandAnnotatedControllerMap
             }
+            metaClassInstance.getRoleClass {
+                application.getDomainClass(SpringSecurityUtils.securityConfig.authority.className).clazz
+            }
+            metaClassInstance.getAuthorClass {
+                application.getDomainClass(SpringSecurityUtils.securityConfig.userLookup.userDomainClassName).clazz
+            }
+            println "\nShorthand annotated controller map: $shorthandAnnotatedControllerMap"
+            println ""
         }
     }
 

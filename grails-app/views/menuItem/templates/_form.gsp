@@ -15,7 +15,7 @@
 <div class="form-group">
     <label class="control-label col-sm-4" for="roles"><g:message code="menuItem.roles.label" default="Role" /></label>
     <div class="col-sm-6">
-        <g:select name="roles" from="${grailsApplication.config.cc.plugins.content.rolesForMenuMenuItem}"
+        <g:select name="roles" from="${Role.findAll()}" optionKey="authority" optionValue="authority"
             multiple="true" class="form-control" noSelection="['':'Select Roles']" />
     </div>
 </div>

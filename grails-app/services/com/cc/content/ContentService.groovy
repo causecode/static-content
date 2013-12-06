@@ -30,30 +30,23 @@ class ContentService {
 
     private static final String ANONYMOUS_USER = "anonymousUser"
 
-    Class authorClass
-    String authorClassName
-
     LinkGenerator grailsLinkGenerator
     def friendlyUrlService
     def grailsApplication
     def springSecurityService
 
     ContentService() {
-        authorClassName = SpringSecurityUtils.securityConfig.userLookup.userDomainClassName
         GroovyDynamicMethodsInterceptor i = new GroovyDynamicMethodsInterceptor(this)
         i.addDynamicMethodInvocation(new BindDynamicMethod())
     }
 
     String resolveAuthor(Content contentInstance, String authorProperty = "username") {
-        if(!authorClass) {  // Using singleton property of grails service
-            authorClass = grailsApplication.getDomainClass(authorClassName).clazz
-        }
         if(!contentInstance?.id) {
             def currentUser = springSecurityService.currentUser
             return currentUser ? currentUser.id.toString() : ANONYMOUS_USER
         }
         if(contentInstance.author.isNumber()) {
-            def authorInstance = authorClass.get(contentInstance.author)
+            def authorInstance = getAuthorClass().get(contentInstance.author)
             return authorInstance[authorProperty]
         }
         return ANONYMOUS_USER
