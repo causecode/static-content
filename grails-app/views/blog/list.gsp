@@ -61,7 +61,7 @@
         </g:if>
 
         <ul class="pagination">
-            <g:paginate action="list" total="${total}" />
+            <g:paginate action="list" total="${total}" params="[tag: params.tag]" />
         </ul>
     </div>
 </body>

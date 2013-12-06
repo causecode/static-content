@@ -19,7 +19,7 @@ class ContentUrlMappings {
             }
         }
         "/blog" (controller: "blog", action: "list")
-        "/blog/byTag/$tag" {
+        /*"/blog/byTag/$tag" {      // Not working
             controller = "blog"
             action = "list"
             constraints {
@@ -27,7 +27,7 @@ class ContentUrlMappings {
                     !it.isNumber()
                 }
             }
-        }
+        }*/
     }
 
 }
