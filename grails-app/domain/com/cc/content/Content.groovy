@@ -15,10 +15,10 @@ class Content {
 
     transient contentService
     transient friendlyUrlService
-    transient grailsApplication
 
     Date dateCreated
     Date lastUpdated
+    Date publishedDate
 
     @SanitizedTitle
     String title
@@ -40,6 +40,7 @@ class Content {
         author nullable: true, bindable: false
         dateCreated bindable: false
         lastUpdated bindable: false
+        publishedDate nullable: true, bindable: false
     }
 
     @Override
@@ -59,6 +60,18 @@ class Content {
         if(!this.id) return [];
 
         ContentMeta.findAllByContent(this)*.meta
+    }
+
+    def beforeInsert() {
+        if(publish) {
+            publishedDate = new Date()
+        }
+    }
+
+    def beforeUpdate() {
+        if(!this.getPersistentValue("publish") && publish) {
+            publishedDate = new Date()
+        }
     }
 
 }

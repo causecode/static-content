@@ -41,7 +41,7 @@
         </g:if>
         <div class="blog-info">
             <g:render template="/blog/templates/additionalInfo" model="[id: blogInstance.id,
-                dateCreated: blogInstance.dateCreated]" />
+                publishedDate: blogInstance.publishedDate]" />
             <sec:access url="/blog/create">
                 &nbsp;<small>
                     <g:link action="edit" id="${blogInstance.id}" class="clear-hover"><i class="icon-edit"></i></g:link>

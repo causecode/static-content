@@ -12,14 +12,16 @@ A plugin used to manage contents like static pages, menus etc. at one place.
 
 #### Database change
 
-1. Removed version from join class,
+1. Removed version from join class **ContentMeta**,
 2. Added new domain for content revision,
-3. Some field made nullable in InputWidget.
+3. Some field made nullable in InputWidget,
 4. Modify value for column **class** in **cc_content_content** to replace **com.cc.page.Page** to **com.cc.content.page.Page**,
+5. Added publishedDate column in **Content** domain.
 
 #### New Features
 
-1. Added feature to support content revision for Page.
+1. Added feature to support content revision for Page,
+2. Added published date concept in Content domain.
 
 ### Version 1.9.3 to 1.9.9, 2.0, 2.1
 

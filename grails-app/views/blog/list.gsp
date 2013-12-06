@@ -40,7 +40,7 @@
                 <h4>
                     ${it.subTitle}
                 </h4>
-                <g:render template="/blog/templates/additionalInfo" model="[dateCreated: it.dateCreated, id: it.id]" />
+                <g:render template="/blog/templates/additionalInfo" model="[publishedDate: it.publishedDate, id: it.id]" />
                 <div class="blog-body">
                     <br>
                     ${it.body}

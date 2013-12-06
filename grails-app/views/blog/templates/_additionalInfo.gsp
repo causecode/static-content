@@ -6,7 +6,9 @@
     <g:else>
         <content:resolveAuthor id="${id }" />
     </g:else>
-    &nbsp;&nbsp;|&nbsp;&nbsp;
-    <i class="icon-time" title="Posted On"></i>&nbsp;
-    ${dateCreated.format('dd MMM yyyy')}
+    <g:if test="${publishedDate }">
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <i class="icon-time" title="Posted On"></i>&nbsp;
+        ${publishedDate.format('dd MMM yyyy')}
+    </g:if>
 </small>
