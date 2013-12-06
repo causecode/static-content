@@ -1,4 +1,4 @@
-<plugin name='content' version='2.1' grailsVersion='2.1 &gt; *'>
+<plugin name='content' version='2.1.1' grailsVersion='2.1 &gt; *'>
   <author>CauseCode</author>
   <title>Content Plugin</title>
   <description>A plugin used to manage contents like static pages, menus etc. at one place.
@@ -10,6 +10,7 @@ Also provides shortened and user friendly urls.
     <resource>ContentResources</resource>
     <resource>ContentUrlMappings</resource>
     <resource>com.cc.content.ContentFilters</resource>
+    <resource>com.cc.content.ContentRevisionController</resource>
     <resource>com.cc.content.PageLayoutController</resource>
     <resource>com.cc.content.blog.BlogController</resource>
     <resource>com.cc.content.blog.comment.CommentController</resource>
@@ -19,9 +20,10 @@ Also provides shortened and user friendly urls.
     <resource>com.cc.content.navigation.MenuController</resource>
     <resource>com.cc.content.navigation.MenuItemController</resource>
     <resource>com.cc.content.news.NewsController</resource>
-    <resource>com.cc.page.PageController</resource>
+    <resource>com.cc.content.page.PageController</resource>
     <resource>com.cc.content.Content</resource>
     <resource>com.cc.content.ContentMeta</resource>
+    <resource>com.cc.content.ContentRevision</resource>
     <resource>com.cc.content.PageLayout</resource>
     <resource>com.cc.content.blog.Blog</resource>
     <resource>com.cc.content.blog.comment.BlogComment</resource>
@@ -33,8 +35,9 @@ Also provides shortened and user friendly urls.
     <resource>com.cc.content.navigation.MenuItem</resource>
     <resource>com.cc.content.news.News</resource>
     <resource>com.cc.content.page.Page</resource>
+    <resource>com.cc.content.page.PageRevision</resource>
     <resource>com.cc.content.ContentService</resource>
-    <resource>com.cc.content.blog.BlogService</resource>
+    <resource>com.cc.content.blog.comment.CommentService</resource>
     <resource>com.cc.content.inputWidget.InputWidgetService</resource>
     <resource>com.cc.content.navigation.MenuItemService</resource>
     <resource>com.cc.seo.friendlyurl.FriendlyUrlService</resource>
@@ -42,7 +45,7 @@ Also provides shortened and user friendly urls.
     <resource>com.cc.content.blog.BlogTagLib</resource>
     <resource>com.cc.content.inputWidget.InputWidgetTagLib</resource>
     <resource>com.cc.content.navigation.MenuTagLib</resource>
-    <resource>com.cc.page.PageTagLib</resource>
+    <resource>com.cc.content.page.PageTagLib</resource>
   </resources>
   <repositories>
     <repository name='grailsCentral' url='http://grails.org/plugins' />
@@ -50,11 +53,7 @@ Also provides shortened and user friendly urls.
     <repository name='http://grails.org/plugins' url='http://grails.org/plugins' />
   </repositories>
   <dependencies />
-  <plugins>
-    <compile>
-      <plugin group='org.grails.plugins' name='taggable' version='1.0.1' />
-    </compile>
-  </plugins>
+  <plugins />
   <runtimePluginRequirements>
     <plugin name='hibernate' version='2.1 &gt; *' />
   </runtimePluginRequirements>
