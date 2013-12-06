@@ -19,6 +19,8 @@ class ContentUrlMappings {
             }
         }
         "/blog" (controller: "blog", action: "list")
+        "/blogs" (controller: "blog", action: "list")
+
         /*"/blog/byTag/$tag" {      // Not working
             controller = "blog"
             action = "list"

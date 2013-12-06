@@ -42,13 +42,13 @@
         <div class="blog-info">
             <g:render template="/blog/templates/additionalInfo" model="[id: blogInstance.id,
                 dateCreated: blogInstance.dateCreated]" />
-            <content:canEdit>
+            <sec:access url="/blog/create">
                 &nbsp;<small>
                     <g:link action="edit" id="${blogInstance.id}" class="clear-hover"><i class="icon-edit"></i></g:link>
                     <g:link action="delete" id="${blogInstance.id }" class="clear-hover"
                         onclick="return confirm('${message(code: 'default.button.delete.confirm.message')}');"><i class="icon-trash"></i></g:link>
                 </small>
-            </content:canEdit>
+            </sec:access>
         </div>
     </div>
     <div class="blog-body">

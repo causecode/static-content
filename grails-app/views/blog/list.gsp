@@ -21,9 +21,9 @@
         <h1 class="inline">
             <g:message code="default.blog.list.label" args="[entityName]" />
         </h1>
-        <sec:ifAnyGranted roles="ROLE_EMPLOYEE,ROLE_CONTENT_MANAGER">
+        <sec:access url="/blog/create">
             <g:link action='create' controller='blog'>Create a Blog</g:link>
-        </sec:ifAnyGranted>
+        </sec:access>
     </div>
     <g:if test="${!blogInstanceList }">
         <i class="icon-frown"></i> Sorry, no blog to display.

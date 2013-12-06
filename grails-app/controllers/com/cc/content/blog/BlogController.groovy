@@ -22,8 +22,6 @@ import com.cc.content.blog.comment.Comment
 @Secured(["ROLE_CONTENT_MANAGER"])
 class BlogController {
 
-    static defaultAction = "list"
-
     static allowedMethods = [save: "POST", update: "POST"]
 
     def beforeInterceptor = [action: this.&validate]
@@ -56,7 +54,7 @@ class BlogController {
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
 
         params.offset = offset ? offset: 0
-        params.max = Math.min(max ?: defaultMax, 100)
+        params.max = Math.min(max ?: 2, 100)
 
         StringBuilder query = new StringBuilder("""SELECT new Map(b.id as id, b.body as body, b.title as title,
                             b.subTitle as subTitle, b.author as author, b.dateCreated as dateCreated) FROM Blog b """)
