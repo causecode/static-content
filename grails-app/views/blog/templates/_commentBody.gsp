@@ -3,6 +3,7 @@
         <h4 class="media-heading inline">${commentInstance.subject}&nbsp;</h4>
         <content:canEdit>
             <g:link controller="comment" action="delete" id="${commentInstance.id }" class="clear-hover"
+                onclick="return confirm('${message(code: 'default.button.delete.confirm.message')}');"
                 params="[blogId: blogInstance.id]"><i class="icon-trash"></i></g:link>
         </content:canEdit>
         <div class="comment-info">
