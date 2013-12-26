@@ -29,40 +29,60 @@
         <i class="icon-frown"></i> Sorry, no blog to display.
     </g:if>
 
-    <div class="blog-list">
-        <g:each in="${blogInstanceList}">
-            <div class="blog-entry summary">
-                <h2>
-                    <a href="<content:searchLink id='${it.id }' />">
-                        ${it.title }
-                    </a>
-                </h2>
-                <h4>
-                    ${it.subTitle}
-                </h4>
-                <g:render template="/blog/templates/additionalInfo" model="[publishedDate: it.publishedDate, id: it.id]" />
-                <div class="blog-body">
-                    <br>
-                    ${it.body}
-                    <a href="<content:searchLink id='${it.id }' />">...more</a>
-                </div>
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="blog-list">
+                <g:each in="${blogInstanceList}">
+                    <div class="blog-entry summary">
+                        <h2>
+                            <a href="<content:searchLink id='${it.id }' />">
+                                ${it.title }
+                            </a>
+                        </h2>
+                        <h4>
+                            ${it.subTitle}
+                        </h4>
+                        <g:render template="/blog/templates/additionalInfo" model="[publishedDate: it.publishedDate, id: it.id]" />
+                        <div class="blog-body">
+                            <br>
+                            ${it.body}
+                            <a href="<content:searchLink id='${it.id }' />">...more</a>
+                        </div>
+                    </div>
+                    <hr style="border: 1px solid #DEDEDE;">
+                </g:each>
+        
+                <g:set var="total" value="${blogInstanceTotal }" />
+                <g:set var="limit" value="${params.offset.toInteger() + params.max.toInteger() }" />
+                <g:if test="${total }">
+                    <span class="muted help-block" style="margin-top: -20px">
+                        <small>Showing: <strong> ${params.int('offset') + 1 }-${limit > total ? total : limit }</strong>
+                            of <strong> ${total }</strong>
+                        </small>
+                    </span>
+                </g:if>
+        
+                <ul class="pagination">
+                    <g:paginate action="list" total="${total}" params="[monthFilter: month, tag: params.tag]" />
+                </ul>
             </div>
-            <hr style="border: 1px solid #DEDEDE;">
-        </g:each>
-
-        <g:set var="total" value="${blogInstanceTotal }" />
-        <g:set var="limit" value="${params.offset.toInteger() + params.max.toInteger() }" />
-        <g:if test="${total }">
-            <span class="muted help-block" style="margin-top: -20px">
-                <small>Showing: <strong> ${params.int('offset') + 1 }-${limit > total ? total : limit }</strong>
-                    of <strong> ${total }</strong>
-                </small>
-            </span>
-        </g:if>
-
-        <ul class="pagination">
-            <g:paginate action="list" total="${total}" params="[tag: params.tag]" />
-        </ul>
+        </div>
+        <div class="col-sm-3" style="border-left: 1px solid #eeeeee">
+            <g:if test="${monthFilterList}">
+                <div  class="btn-group-vertical">
+                    <g:link action="list" style="display: inherit;"
+                        class="btn btn-default month-filter-item ${params.monthFilter ?'':'active' }">
+                        ALL
+                    </g:link>
+                    <g:each in="${monthFilterList}" var="month">
+                        <g:link action="list" params="[monthFilter: month, tag: params.tag]" style="display: inherit;"
+                            class="btn btn-default month-filter-item ${params.monthFilter == month ?'active':'' }">
+                            ${month}
+                        </g:link>
+                    </g:each>
+                </div>
+            </g:if>
+        </div>
     </div>
 </body>
 </html>

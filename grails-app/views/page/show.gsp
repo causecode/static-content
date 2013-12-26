@@ -6,7 +6,7 @@
 </head>
 <body>
     <content tag="breadcrumb">
-        <content:breadcrumb map="['active':(pageInstance.title)]"/>
+        <content:breadcrumb map="['/page/list':'Page List','active':(pageInstance.title)]"/>
     </content>
     <div class="page-header">
         <h1>

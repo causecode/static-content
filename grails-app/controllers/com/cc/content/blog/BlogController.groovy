@@ -10,6 +10,7 @@ package com.cc.content.blog
 
 import grails.plugins.springsecurity.Secured
 
+import java.text.DateFormatSymbols
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -48,10 +49,11 @@ class BlogController {
     }
 
     @Secured(["permitAll"])
-    def list(Integer max, Integer offset, String tag) {
+    def list(Integer max, Integer offset, String tag, String monthFilter) {
         long blogInstanceTotal
         boolean publish = false
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
+        List<String> monthFilterList = []
 
         params.offset = offset ? offset: 0
         params.max = Math.min(max ?: defaultMax, 100)
@@ -63,16 +65,21 @@ class BlogController {
             query.append(", ${TagLink.class.name} tagLink WHERE b.id = tagLink.tagRef ")
             query.append("AND tagLink.type = 'blog' AND tagLink.tag.name = '$tag' ")
         }
+        if(monthFilter) {
+            tag ? query.append(" AND ") : query.append(" WHERE ")
+            query.append(" monthname(b.publishedDate) = '$monthFilter' ")
+        }
 
         if(contentService.contentManager) {
             blogInstanceTotal = tag ? Blog.countByTag(tag) : Blog.count()
-        } else if(tag) {
+        } else if(tag ) {
             query.append("AND b.publish = true")
             blogInstanceTotal = Blog.findAllByTagWithCriteria(tag) {
                 eq("publish", true)
             }.size()
         } else {
-            query.append("WHERE b.publish = true")
+            (monthFilter) ? query.append(" AND ") : query.append(" where ")
+            query.append(" b.publish = true")
             blogInstanceTotal = Blog.countByPublish(true)
         }
         query.append(" order by b.dateCreated desc")
@@ -84,8 +91,13 @@ class BlogController {
             Matcher matcherTag = patternTag.matcher(it.body)
             it.body = matcherTag.find() ? matcherTag.group(2) : ""
         }
-
-        [blogInstanceList: blogList, blogInstanceTotal: blogInstanceTotal]
+        if(monthFilter) {
+            blogInstanceTotal = blogList.size()
+        }
+        Blog.list().each {
+            monthFilterList.add( new DateFormatSymbols().months[it.publishedDate.month])
+        }
+        [blogInstanceList: blogList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique()]
     }
 
     def create() {
