@@ -95,6 +95,7 @@ class BlogController {
     def save() {
         Blog.withTransaction { status ->
             blogInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Blog.class)
+            println "*********"+blogInstance.dump()
             if (blogInstance.hasErrors()) {
                 status.setRollbackOnly()
                 render(view: "create", model: [blogInstance: blogInstance])
