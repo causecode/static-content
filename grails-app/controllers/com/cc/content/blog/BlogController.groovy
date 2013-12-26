@@ -95,7 +95,6 @@ class BlogController {
     def save() {
         Blog.withTransaction { status ->
             blogInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Blog.class)
-            println "*********"+blogInstance.dump()
             if (blogInstance.hasErrors()) {
                 status.setRollbackOnly()
                 render(view: "create", model: [blogInstance: blogInstance])
@@ -103,7 +102,7 @@ class BlogController {
             }
             blogInstance.setTags(params.tags.tokenize(",")*.trim())
             blogInstance.save(flush: true)
-            flash.message = message(code: 'default.created.message', args: [message(code: 'blog.label'), blogInstance.id])
+            flash.message = message(code: 'default.created.message', args: [message(code: 'blog.label'), blogInstance.title])
             redirect uri: blogInstance.searchLink()
         }
     }

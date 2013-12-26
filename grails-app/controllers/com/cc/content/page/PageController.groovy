@@ -68,7 +68,7 @@ class PageController {
         }
 
         flash.message = message(code: 'default.created.message', args: [message(code: 'page.label'), pageInstance.id])
-        redirect(action: "show", id: pageInstance.id)
+        redirect uri: pageInstance.searchLink()
     }
 
     @Secured(["permitAll"])
@@ -102,7 +102,7 @@ class PageController {
             flash.message += " Revision created successfully."
         }
 
-        redirect(action: "show", id: pageInstance.id)
+        redirect uri: pageInstance.searchLink()
     }
 
     def delete(Long id) {
@@ -112,7 +112,7 @@ class PageController {
             redirect(action: "list")
         } catch (DataIntegrityViolationException e) {
             flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'page.label'), id])
-            redirect(action: "show", id: id)
+            redirect uri: pageInstance.searchLink()
         }
     }
 }

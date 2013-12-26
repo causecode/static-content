@@ -29,7 +29,7 @@
         <tbody>
             <g:each in="${pageInstanceList}" var="pageInstance">
                 <tr>
-                    <td><g:link action="show" id="${pageInstance.id}">
+                    <td><g:link url="${pageInstance.searchLink()}">
                             ${fieldValue(bean: pageInstance, field: "title")}
                         </g:link></td>
                     <td>

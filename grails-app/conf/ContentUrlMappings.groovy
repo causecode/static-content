@@ -18,6 +18,15 @@ class ContentUrlMappings {
                 }
             }
         }
+        "/page/$id/$sanitizedTitle" {
+            controller = "page"
+            action = "show"
+            constraints {
+                id validator: {  //Used to distinguish other Url like '/page/edit/1'
+                    it.isLong()
+                }
+            }
+        }
         "/blog" (controller: "blog", action: "list")
         "/blogs" (controller: "blog", action: "list")
 
