@@ -12,6 +12,7 @@
     <meta name="revisit-after" content="2 days">
     <g:set var="entityName" value="${message(code: 'blog.label', default: 'Blogs')}" />
     <title><g:message code="default.blog.list.label" args="[entityName]" /></title>
+    <r:require modules="tagcloud"/>
 </head>
 <body>
     <content tag="breadcrumb">
@@ -69,20 +70,50 @@
         </div>
         <div class="col-sm-3" style="border-left: 1px solid #eeeeee">
             <g:if test="${monthFilterList}">
-                <div  class="btn-group-vertical">
-                    <g:link action="list" style="display: inherit;"
-                        class="btn btn-default month-filter-item ${params.monthFilter ?'':'active' }">
+                <h4>Blogs Posted in</h4>
+                <hr>
+                <div>
+                    <g:link action="list" style="display: inherit;margin-bottom:5px;"
+                        class=" month-filter-item ${params.monthFilter ?'':'selected' }">
                         ALL
                     </g:link>
                     <g:each in="${monthFilterList}" var="month">
-                        <g:link action="list" params="[monthFilter: month, tag: params.tag]" style="display: inherit;"
-                            class="btn btn-default month-filter-item ${params.monthFilter == month ?'active':'' }">
+                        <g:link action="list" params="[monthFilter: month, tag: params.tag]" style="display: inherit;margin-bottom:5px;"
+                            class="bt month-filter-item ${params.monthFilter == month ?'selected':'' }">
                             ${month}
                         </g:link>
+                    </g:each>
+                </div><br>
+            </g:if>
+            <g:if test="${tagNameList}">
+                <h4>
+                    <i class="icon-tags"></i>
+                    Tags
+                </h4>
+                <hr>
+                <div class="blog-tags">
+                    <g:each in="${tagNameList}" var="tag" status="index">
+                        <g:link action="list" params="[tag: tag, monthFilter: params.monthFilter]" rel="${tagFrequesncyList[index]}" 
+                            style="line-height: normal;">
+                            ${tag}
+                            <span>&nbsp;</span>
+                        </g:link>${index < tagNameList.size() - 1 ? ' ' : '' }
                     </g:each>
                 </div>
             </g:if>
         </div>
     </div>
+    <r:script>
+        var startSize = ${grailsApplication.config.cc.plugins.content.tags.startSize }
+        var endSize = ${grailsApplication.config.cc.plugins.content.tags.endSize }
+        var startColor = "${grailsApplication.config.cc.plugins.content.tags.startColor }"
+        var endColor = "${grailsApplication.config.cc.plugins.content.tags.endColor }"
+        $(function () {
+          $('div.blog-tags a').tagcloud({
+              size: {start: parseInt(startSize), end: parseInt(endSize), unit:'px'},
+              color: {start: "#"+startColor, end: "#"+endColor}
+          });
+        });
+    </r:script>
 </body>
 </html>

@@ -56,6 +56,14 @@ class BlogController {
         boolean publish = false
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
         List<String> monthFilterList = []
+        List tagNameList = []
+        List tagFrequesncyList = []
+        String month, year
+        if(monthFilter) {
+            List blogFilter =  monthFilter.split("-")
+            month = blogFilter[0]
+            year = blogFilter[1]
+        }
 
         params.offset = offset ? offset: 0
         params.max = Math.min(max ?: defaultMax, 100)
@@ -69,7 +77,7 @@ class BlogController {
         }
         if(monthFilter) {
             tag ? query.append(" AND ") : query.append(" WHERE ")
-            query.append(" monthname(b.publishedDate) = '$monthFilter' ")
+            query.append(" monthname(b.publishedDate) = '$month' AND year(b.publishedDate) = '$year'")
         }
 
         if(contentService.contentManager) {
@@ -98,9 +106,23 @@ class BlogController {
             blogInstanceTotal = Blog.executeQuery(query.toString()).size()
         }
         Blog.list().each {
-            monthFilterList.add( new DateFormatSymbols().months[it.publishedDate.month])
+            monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
         }
-        [blogInstanceList: blogList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique()]
+        Blog.allTags.each { tagName ->
+            tagNameList.add(tagName)
+            int tagFrequencyCount = TagLink.withCriteria(uniqueResult: true) {
+                createAlias('tag', 'tagInstance')
+                projections {
+                    count('id')
+                }
+                eq('type','blog')
+                eq('tagInstance.name', tagName)
+            }
+            tagFrequesncyList.add( tagFrequencyCount?:1 )
+        }
+
+        [blogInstanceList: blogList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
+            tagFrequesncyList: tagFrequesncyList, tagNameList: tagNameList]
     }
 
     def create() {
