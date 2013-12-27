@@ -17,10 +17,12 @@ import java.util.regex.Pattern
 import org.grails.taggable.TagLink
 import org.springframework.dao.DataIntegrityViolationException
 
+import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.blog.comment.BlogComment
 import com.cc.content.blog.comment.Comment
 
 @Secured(["ROLE_CONTENT_MANAGER"])
+@ControllerShorthand(value = "blog")
 class BlogController {
 
     static allowedMethods = [save: "POST", update: "POST"]
@@ -88,11 +90,12 @@ class BlogController {
         Pattern patternTag = Pattern.compile(HTML_P_TAG_PATTERN)
 
         blogList.each {
+            // Extracting content from first <p> tag of body to display
             Matcher matcherTag = patternTag.matcher(it.body)
             it.body = matcherTag.find() ? matcherTag.group(2) : ""
         }
         if(monthFilter) {
-            blogInstanceTotal = blogList.size()
+            blogInstanceTotal = Blog.executeQuery(query.toString()).size()
         }
         Blog.list().each {
             monthFilterList.add( new DateFormatSymbols().months[it.publishedDate.month])
@@ -122,7 +125,22 @@ class BlogController {
     @Secured(["permitAll"])
     def show(Long id) {
         List blogComments = BlogComment.findAllByBlog(blogInstance)*.comment
-        [blogInstance: blogInstance, comments: blogComments]
+        List tagNameList = []
+        List tagFrequesncyList = []
+
+        blogInstance.tags.each { tagName ->
+            tagNameList.add(tagName)
+            int tagFrequencyCount = TagLink.withCriteria(uniqueResult: true) {
+                createAlias('tag', 'tagInstance')
+                projections {
+                    count('id')
+                }
+                eq('type','blog')
+                eq('tagInstance.name', tagName)
+            }
+            tagFrequesncyList.add( tagFrequencyCount?:1 )
+        }
+        [blogInstance: blogInstance, comments: blogComments, tagNameList: tagNameList, tagFrequesncyList: tagFrequesncyList]
     }
 
     def edit(Long id) {

@@ -14,8 +14,4 @@ import com.cc.content.Content
 
 class Blog extends Content implements Taggable {
 
-    String searchLink() {
-        "/blog/$id/$sanitizedTitle"
-    }
-
 }

@@ -18,7 +18,7 @@ class ContentUrlMappings {
                 }
             }
         }
-        "/page/$id/$sanitizedTitle" {
+        "/c/$id/$sanitizedTitle" {
             controller = "page"
             action = "show"
             constraints {

@@ -24,7 +24,7 @@
             font-size: 76%;
         }
     </style>
-    <r:require module="prettyprint"/>
+    <r:require modules="prettyprint, tagcloud"/>
 </head>
 
 <body>
@@ -47,7 +47,7 @@
                 &nbsp;<small>
                     <g:link action="edit" id="${blogInstance.id}" class="clear-hover"><i class="icon-edit"></i></g:link>
                     <g:link action="delete" id="${blogInstance.id }" class="clear-hover"
-                        onclick="return confirm('${message(code: 'default.button.delete.confirm.message')}');"><i class="icon-trash"></i></g:link>
+                            onclick="return confirm('${message(code: 'default.button.delete.confirm.message')}');"><i class="icon-trash"></i></g:link>
                 </small>
             </sec:access>
         </div>
@@ -55,11 +55,13 @@
     <div class="blog-body">
         <%= blogInstance.body %>
     </div>
-    <g:if test="${blogInstance.tags }">
+    <g:if test="${tagNameList}">
         <div class="blog-tags" style="margin-top: 20px;">
             <i class="icon-tags"></i>
-            <g:each in="${blogInstance.tags}" var="tag" status="i">
-                <g:link action="list" params="[tag: tag]">${tag}</g:link>${i < blogInstance.tags.size() - 1 ? ',' : '' }
+            <g:each in="${tagNameList}" var="tag" status="index">
+                <g:link action="list" params="[tag: tag]" rel="${tagFrequesncyList[index]}" >
+                    ${tag}
+                </g:link>${index < blogInstance.tags.size() - 1 ? ',' : '' }
             </g:each>
         </div>
     </g:if>
@@ -80,5 +82,18 @@
     </g:if>
 
     <g:render template="/blog/templates/commentOverlay" plugin="comment" />
+
+    <r:script>
+        var startSize = ${grailsApplication.config.cc.plugins.content.tags.startSize }
+        var endSize = ${grailsApplication.config.cc.plugins.content.tags.endSize }
+        var startColor = "${grailsApplication.config.cc.plugins.content.tags.startColor }"
+        var endColor = "${grailsApplication.config.cc.plugins.content.tags.endColor }"
+        $(function () {
+          $('div.blog-tags a').tagcloud({
+              size: {start: parseInt(startSize), end: parseInt(endSize), unit:'px'},
+              color: {start: "#"+startColor, end: "#"+endColor}
+          });
+        });
+    </r:script>
+
 </body>
-</html>

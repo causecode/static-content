@@ -19,7 +19,4 @@ class Page extends Content {
         pageLayout nullable:true
     }
 
-    String searchLink() {
-        "/page/$id/$sanitizedTitle"
-    }
 }
