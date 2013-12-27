@@ -152,15 +152,13 @@ class BlogController {
 
         blogInstance.tags.each { tagName ->
             tagNameList.add(tagName)
-            int tagFrequencyCount = TagLink.withCriteria(uniqueResult: true) {
-                createAlias('tag', 'tagInstance')
-                projections {
-                    count('id')
+            def result = TagLink.withCriteria {
+                eq('type','blog') 
+                tag {
+                    eq('name', tagName)
                 }
-                eq('type','blog')
-                eq('tagInstance.name', tagName)
             }
-            tagFrequesncyList.add( tagFrequencyCount?:1 )
+            tagFrequesncyList.add( result.size() ?:1 )
         }
         [blogInstance: blogInstance, comments: blogComments, tagNameList: tagNameList, tagFrequesncyList: tagFrequesncyList]
     }

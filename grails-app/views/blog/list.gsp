@@ -70,8 +70,7 @@
         </div>
         <div class="col-sm-3" style="border-left: 1px solid #eeeeee">
             <g:if test="${monthFilterList}">
-                <h4>Blogs Posted in</h4>
-                <hr>
+                <h4>Posted On</h4>
                 <div>
                     <g:link action="list" style="display: inherit;margin-bottom:5px;"
                         class=" month-filter-item ${params.monthFilter ?'':'selected' }">
@@ -86,11 +85,7 @@
                 </div><br>
             </g:if>
             <g:if test="${tagNameList}">
-                <h4>
-                    <i class="icon-tags"></i>
-                    Tags
-                </h4>
-                <hr>
+                <h4><i class="icon-tags"></i>Tags</h4>
                 <div class="blog-tags">
                     <g:each in="${tagNameList}" var="tag" status="index">
                         <g:link action="list" params="[tag: tag, monthFilter: params.monthFilter]" rel="${tagFrequesncyList[index]}" 
