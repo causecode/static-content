@@ -1,4 +1,4 @@
-<plugin name='content' version='2.1.1' grailsVersion='2.1 &gt; *'>
+<plugin name='content' version='2.1.2' grailsVersion='2.1 &gt; *'>
   <author>CauseCode</author>
   <title>Content Plugin</title>
   <description>A plugin used to manage contents like static pages, menus etc. at one place.
@@ -54,8 +54,6 @@ Also provides shortened and user friendly urls.
   </repositories>
   <dependencies />
   <plugins />
-  <runtimePluginRequirements>
-    <plugin name='hibernate' version='2.1 &gt; *' />
-  </runtimePluginRequirements>
+  <runtimePluginRequirements />
   <behavior />
 </plugin>
