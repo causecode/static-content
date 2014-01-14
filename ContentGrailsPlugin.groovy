@@ -18,7 +18,6 @@ class ContentGrailsPlugin {
     def version = "2.1.1"
     def groupId = "com.cc.plugins"
     def grailsVersion = "2.1 > *"
-    def dependsOn = ["hibernate": "2.1 > *"]
     def pluginExcludes = [
         "grails-app/views/error.gsp",
         ".gitmodules",
