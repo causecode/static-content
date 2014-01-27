@@ -91,7 +91,6 @@
                         <g:link action="list" params="[tag: tag[1], monthFilter: params.monthFilter]" rel="${tag[0]}" 
                             style="line-height: normal;">
                             ${tag[1]}
-                            ${tag[0]}
                             <span>&nbsp;</span>
                         </g:link>${index < tagList.size() - 1 ? ' ' : '' }
                     </g:each>

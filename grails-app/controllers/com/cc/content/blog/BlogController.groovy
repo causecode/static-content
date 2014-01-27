@@ -57,9 +57,8 @@ class BlogController {
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
         List tagList = []
         List<String> monthFilterList = []
-        //List tagNameList = []
-        //List tagFrequesncyList = []
         String month, year
+
         if(monthFilter) {
             List blogFilter =  monthFilter.split("-")
             month = blogFilter[0]
@@ -103,12 +102,15 @@ class BlogController {
             Matcher matcherTag = patternTag.matcher(it.body)
             it.body = matcherTag.find() ? matcherTag.group(2) : ""
         }
+
         if(monthFilter) {
             blogInstanceTotal = Blog.executeQuery(query.toString()).size()
         }
+
         blogList.each {
             monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
         }
+
         Blog.allTags.each { tagName ->
             def tagListInstance = TagLink.withCriteria(uniqueResult: true) {
                 createAlias('tag', 'tagInstance')
