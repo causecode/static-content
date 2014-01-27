@@ -84,25 +84,26 @@
                     </g:each>
                 </div><br>
             </g:if>
-            <g:if test="${tagNameList}">
+            <g:if test="${tagList}">
                 <h4><i class="icon-tags"></i>Tags</h4>
                 <div class="blog-tags">
-                    <g:each in="${tagNameList}" var="tag" status="index">
-                        <g:link action="list" params="[tag: tag, monthFilter: params.monthFilter]" rel="${tagFrequesncyList[index]}" 
+                    <g:each in="${tagList}" var="tag" status="index">
+                        <g:link action="list" params="[tag: tag[1], monthFilter: params.monthFilter]" rel="${tag[0]}" 
                             style="line-height: normal;">
-                            ${tag}
+                            ${tag[1]}
+                            ${tag[0]}
                             <span>&nbsp;</span>
-                        </g:link>${index < tagNameList.size() - 1 ? ' ' : '' }
+                        </g:link>${index < tagList.size() - 1 ? ' ' : '' }
                     </g:each>
                 </div>
             </g:if>
         </div>
     </div>
     <r:script>
-        var startSize = ${grailsApplication.config.cc.plugins.content.tags.startSize }
-        var endSize = ${grailsApplication.config.cc.plugins.content.tags.endSize }
-        var startColor = "${grailsApplication.config.cc.plugins.content.tags.startColor }"
-        var endColor = "${grailsApplication.config.cc.plugins.content.tags.endColor }"
+        var startSize = ${grailsApplication.config.cc.plugins.content.tags.startSize ?:'15'}
+        var endSize = ${grailsApplication.config.cc.plugins.content.tags.endSize ?:'25'}
+        var startColor = "${grailsApplication.config.cc.plugins.content.tags.startColor ?:'#428bca'}"
+        var endColor = "${grailsApplication.config.cc.plugins.content.tags.endColor ?:'#428bca'}"
         $(function () {
           $('div.blog-tags a').tagcloud({
               size: {start: parseInt(startSize), end: parseInt(endSize), unit:'px'},

@@ -55,9 +55,10 @@ class BlogController {
         long blogInstanceTotal
         boolean publish = false
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
+        List tagList = []
         List<String> monthFilterList = []
-        List tagNameList = []
-        List tagFrequesncyList = []
+        //List tagNameList = []
+        //List tagFrequesncyList = []
         String month, year
         if(monthFilter) {
             List blogFilter =  monthFilter.split("-")
@@ -105,24 +106,24 @@ class BlogController {
         if(monthFilter) {
             blogInstanceTotal = Blog.executeQuery(query.toString()).size()
         }
-        Blog.list().each {
+        blogList.each {
             monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
         }
         Blog.allTags.each { tagName ->
-            tagNameList.add(tagName)
-            int tagFrequencyCount = TagLink.withCriteria(uniqueResult: true) {
+            def tagListInstance = TagLink.withCriteria(uniqueResult: true) {
                 createAlias('tag', 'tagInstance')
                 projections {
-                    count('id')
+                    countDistinct 'id'
+                    property("tagInstance.name")
                 }
                 eq('type','blog')
                 eq('tagInstance.name', tagName)
             }
-            tagFrequesncyList.add( tagFrequencyCount?:1 )
+            tagList.add(tagListInstance)
         }
 
         [blogInstanceList: blogList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
-            tagFrequesncyList: tagFrequesncyList, tagNameList: tagNameList]
+            tagList: tagList]
     }
 
     def create() {
@@ -153,7 +154,7 @@ class BlogController {
         blogInstance.tags.each { tagName ->
             tagNameList.add(tagName)
             def result = TagLink.withCriteria {
-                eq('type','blog') 
+                eq('type','blog')
                 tag {
                     eq('name', tagName)
                 }
