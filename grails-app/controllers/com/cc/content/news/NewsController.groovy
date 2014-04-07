@@ -8,6 +8,7 @@
 
 package com.cc.content.news
 
+import grails.plugin.springsecurity.annotation.Secured
 import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.iframe.Scraper

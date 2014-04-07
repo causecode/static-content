@@ -9,8 +9,8 @@ import org.junit.*
 import grails.test.*
 import grails.test.mixin.domain.DomainClassUnitTestMixin;
 import grails.test.mixin.services.ServiceUnitTestMixin;
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils;
-import grails.plugins.springsecurity.SpringSecurityService;
+import grails.plugin.springsecurity.SpringSecurityUtils;
+import grails.plugin.springsecurity.SpringSecurityService;
 
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
@@ -60,7 +60,7 @@ class ContentControllerTests {
 		params.subTitle = "Testing XML and JSON Responses"
 		params.body = "XML and JSON response are also written directly to the response. Grails' mocking capabilities provide some conveniences for testing XML and JSON response. For example consider the following action:"
 		params.author = "Deepa"
-		def mockSpringSecurityService =	mockFor(grails.plugins.springsecurity.SpringSecurityService)
+		def mockSpringSecurityService =	mockFor(grails.plugin.springsecurity.SpringSecurityService)
 		mockSpringSecurityService.demand.getPrincipal() { ->
 			[id:1, username: 'admin', firstName:"Vishesh", lastName:"Duggar",
 			password: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
@@ -79,7 +79,7 @@ class ContentControllerTests {
 		params.subTitle = "Testing XML and JSON Responses"
 		params.body
 		params.author = "Deepa"
-		def mockSpringSecurityService =	mockFor(grails.plugins.springsecurity.SpringSecurityService)
+		def mockSpringSecurityService =	mockFor(grails.plugin.springsecurity.SpringSecurityService)
 		mockSpringSecurityService.demand.getPrincipal() { ->
 			[id:1, username: 'admin', firstName:"Vishesh", lastName:"Duggar",
 			password: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
@@ -98,7 +98,7 @@ class ContentControllerTests {
 		params.subTitle
 		params.body
 		params.author
-		def mockSpringSecurityService =	mockFor(grails.plugins.springsecurity.SpringSecurityService)
+		def mockSpringSecurityService =	mockFor(grails.plugin.springsecurity.SpringSecurityService)
 		mockSpringSecurityService.demand.getPrincipal() { ->
 			[id:1, username: 'admin', firstName:"Vishesh", lastName:"Duggar",
 			password: '4cf6829aa93728e8f3c97df913fb1bfa95fe5810e2933a05943f8312a98d9cf2',
@@ -117,7 +117,7 @@ class ContentControllerTests {
 		params.subTitle = "Testing XML and JSON Responses"
 		params.body = "XML and JSON response are also written directly to the response. Grails' mocking capabilities provide some conveniences for testing XML and JSON response. For example consider the following action:"
 		params.author = "anonymousUser"
-		def mockSpringSecurityService =	mockFor(grails.plugins.springsecurity.SpringSecurityService)
+		def mockSpringSecurityService =	mockFor(grails.plugin.springsecurity.SpringSecurityService)
 		mockSpringSecurityService.demand.getPrincipal() { -> return "anonymousUser" }
 		controller.springSecurityService = mockSpringSecurityService.createMock()
 		controller.save()

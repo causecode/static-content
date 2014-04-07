@@ -8,6 +8,7 @@
 
 package com.cc.content
 
+import grails.plugin.springsecurity.annotation.Secured
 import org.springframework.dao.DataIntegrityViolationException
 
 class PageLayoutController {

@@ -8,6 +8,7 @@
 
 package com.cc.content.blog.comment
 
+import grails.plugin.springsecurity.annotation.Secured
 import com.cc.content.blog.Blog
 
 class CommentController {

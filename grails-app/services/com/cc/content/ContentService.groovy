@@ -13,7 +13,7 @@ import grails.util.Environment
 import java.lang.reflect.Field
 
 import org.codehaus.groovy.grails.commons.metaclass.GroovyDynamicMethodsInterceptor
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.web.mapping.LinkGenerator
 import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
 import org.springframework.transaction.annotation.Transactional

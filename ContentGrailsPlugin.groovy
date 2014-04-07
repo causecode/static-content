@@ -7,11 +7,12 @@
  */
 
 import java.lang.annotation.Annotation
-
+import grails.plugin.springsecurity.SpringSecurityUtils
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.ContentService
 
 class ContentGrailsPlugin {
+
 
     def version = "2.1"
     def groupId = "com.cc.plugins"
