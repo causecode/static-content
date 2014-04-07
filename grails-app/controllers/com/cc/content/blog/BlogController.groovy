@@ -8,7 +8,7 @@
 
 package com.cc.content.blog
 
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern

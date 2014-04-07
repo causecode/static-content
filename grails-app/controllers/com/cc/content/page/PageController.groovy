@@ -8,9 +8,9 @@
 
 package com.cc.content.page
 
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.annotation.shorthand.ControllerShorthand

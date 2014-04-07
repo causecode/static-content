@@ -17,20 +17,27 @@ grails.project.dependency.resolution = {
 
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
+		inherits true
+		grailsHome()
+		grailsPlugins()
+        mavenRepo "http://repo.spring.io/milestone/"
+        mavenRepo "http://maven.causecode.com"
         grailsCentral()
+        mavenLocal()
+        mavenCentral()
     }
 
     dependencies {
     }
 
     plugins {
-        compile (":spring-security-core:1.2.7.3", ":taggable:1.0.1") {
+        compile (":spring-security-core:2.0-RC2", ":taggable:1.0.1") {
             export = false
         }
         runtime (":resources:1.2.1") {
             export = false
         }
-        build (":tomcat:$grailsVersion", ":release:2.0.3", ":rest-client-builder:1.0.2") {
+        build (":tomcat:7.0.50", ":release:2.0.3", ":rest-client-builder:1.0.2") {
             export = false
         }
     }
