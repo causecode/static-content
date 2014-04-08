@@ -17,9 +17,9 @@ grails.project.dependency.resolution = {
 
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
-		inherits true
-		grailsHome()
-		grailsPlugins()
+        inherits true
+        grailsHome()
+        grailsPlugins()
         mavenRepo "http://repo.spring.io/milestone/"
         mavenRepo "http://maven.causecode.com"
         grailsCentral()
@@ -34,9 +34,9 @@ grails.project.dependency.resolution = {
         compile (":spring-security-core:2.0-RC2", ":taggable:1.0.1") {
             export = false
         }
-		compile (":rest-client-builder:2.0.1") {
+        compile (":rest-client-builder:2.0.1") {
             export = true
-		}
+        }
         runtime (":resources:1.2.1") {
             export = false
         }
