@@ -8,6 +8,7 @@
 
 package com.cc.content.page
 
+import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 
 import grails.plugin.springsecurity.SpringSecurityUtils
@@ -73,6 +74,10 @@ class PageController {
 
     @Secured(["permitAll"])
     def show(Long id) {
+        if(request.xhr) {
+            render text:([pageInstance: pageInstance] as JSON)
+            return
+        }
         [pageInstance: pageInstance]
     }
 
