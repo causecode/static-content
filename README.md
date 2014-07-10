@@ -2,6 +2,7 @@
 
 ## Architecture Overview
 
+# Domains
 ```
 Content = A generic domain used to store generic fields for storing any content.
 Meta = Used for storing meta tags for contents.
@@ -19,6 +20,44 @@ Menu = used for rendering menu bar with menu items.
 ContentRevision = Used to support old content reference if required.
 PageRevision = These domain in type of ContentRevision.
 ```
+# Controllers
+
+1. **Blog**, **PageLayout**, **Page**, **News**, **FAQ**, **InputWidget**, **Menu**
+    Provides default CRUD end point for Content Manager.
+2. **Meta**
+    Provides end point to delete any meta information of content for Content Manager.
+3. **Blog**
+    End point for comment on any blog for all.
+4. **Comment**
+    Provides end point for delete comment for Content Manager.
+5. **FAQ**
+    Provides default CRUD end point for Content Manager.
+6. **News**
+    Provides end point to link news information of type content for Content Manager.
+7. **MenuItem**
+    Provides end point to reorder menu items for Content Manager.
+8. **ContentRevision**
+    Provides end point to show, load and delete content revision for Content Manager.
+
+# Utility Classes
+
+1. **ControllerShorthand**
+    Java Class Provides annotation used to mark any controller's short hand value for creating link. 
+    Example: 'c' for content controller
+2. **SanitizedTitle**
+    Java Class Provides annotation used to mark a domain field as sanitizable value used in generating link.
+3. **ContentService**
+    Provides methods which check is current logged-in user have authority to view the current content instance.
+    Provides method which resolves given Content author.
+    Provides method which checks current logged-in user has role Content Manager or not.
+    Provides create Content revision method.
+    Provides create link method which return user friendly URL on basis of attributes passed.
+4. **FriendlyUrlService**
+    Provides method which transforms the text passed as an argument to a text without spaces.
+    Provides method which converts all accent characters to ASCII characters.
+5. **MenuItemService**
+    Provides methods which reorders menu items.
+    Provides methods which fixes ordering of menu items to default.
 
 A plugin used to manage contents like static pages, menus etc. at one place.
 
