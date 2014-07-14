@@ -33,7 +33,7 @@ Used for storing meta tags for contents.
 - **ContentMeta** : 
 Join class provides meta tags for content.
 - **Blog** : 
-These domain is type of Content implements taggable(Taggable Plugin Required).
+These domain is type of Content implements taggable(`Taggable` Plugin Required).
 - **Comment** : 
 Used for storing comment contains reference for nested comment.
 - **BlogComment** : 
@@ -62,19 +62,19 @@ These domain in type of ContentRevision.
 - **Blog**, **PageLayout**, **Page**, **News**, **FAQ**, **InputWidget**, **Menu** : 
 Provides default CRUD end point for Content Manager.
 - **Meta** : 
-Provides end point to delete any meta information of content for Content Manager.
+Provides end point to `delete` any meta information of content for Content Manager.
 - **Blog** : 
-Provides End point for comment on any blog for all.
+Provides End point for `comment` on any blog for all.
 - **Comment** : 
-Provides end point for delete comment for Content Manager.
+Provides end point for `delete` comment for Content Manager.
 - **FAQ** : 
 Provides default CRUD end point for Content Manager.
 - **News** : 
-Provides end point to link news information of type content for Content Manager.
+Provides end point to `link` news information of type content for Content Manager.
 - **MenuItem** : 
-Provides end point to reorder menu items for Content Manager.
+Provides end point to `reorder` menu items for Content Manager.
 - **ContentRevision** : 
-Provides end point to show, load and delete content revision for Content Manager.
+Provides end point to `show`, `load` and `delete` content revision for Content Manager.
 
 ### Utility Classes
 
@@ -84,10 +84,10 @@ Example: 'c' for content controller
 - **SanitizedTitle** : 
 Java Class Provides annotation used to mark a domain field as sanitizable value used in generating link.
 - **ContentService** : 
-    - Provides methods which check is current logged-in user have authority to view the current content instance.
-    - Provides method which resolves given Content author.
+    - Provides methods which check is current logged-in user have authority to view the current `Content` instance.
+    - Provides method which resolves given `Content` author.
     - Provides method which checks current logged-in user has role Content Manager or not.
-    - Provides create Content revision method.
+    - Provides create `ContentRevision` method.
     - Provides create link method which return user friendly URL on basis of attributes passed.
 - **FriendlyUrlService** : 
     - Provides method which transforms the text passed as an argument to a text without spaces.
@@ -175,10 +175,13 @@ And add a private field as:
 ```
 static Map shorthandControllers = [:]
 ```
+
 ### Use of Sanitized Title Annotation
 
 This annotation is used to mark a domain field as sanitizable value used in generating link.
-**Example**: URLMapping for User controller will use fullName field to generate link as mentioned in above URLMapping section. ```"/user/{actionName}/{identity}?/{fullName}?"```
+**Example**: URLMapping for User controller will use fullName field to generate link as mentioned in above URLMapping 
+section. ```"/user/{actionName}/{identity}?/{fullName}?"```
+
 ```
 Class User {
     String firstName
@@ -203,9 +206,9 @@ Class UserController {
 
 ### Use of Menu-MenuItems Feature
 
-- Create Menu with the help of CRUD screens.
-- Edit Menu and add menu items to menu.
-- Menu Items position can be changed after creating.
+- Create `Menu` with the help of CRUD screens.
+- Edit `Menu` and add menu items to menu.
+- `MenuItems` position can be changed after creating.
 - Use Menu TagLib to render menu item as follows
 
 ```
@@ -218,8 +221,8 @@ Options:
 
 ### Use of Blog Feature
 
-- Create Blog with the help of CRUD screens.
-- Blog provides comment end point , Use comment and nested comment tagLib for rendering comments as follows:
+- Create `Blog` with the help of CRUD screens.
+- `Blog` provides comment end point , Use `Comment` and nested comment tagLib for rendering comments as follows:
 ```
 <content:comment commentInstance="{commentInstance}" />
 <content:nestedComment commentInstance="{commentInstance}" />
