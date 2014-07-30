@@ -10,6 +10,9 @@ package com.cc.seo.friendlyurl
 
 import java.util.regex.Pattern
 
+/**
+ * This service provides methods to create  friendly URL's.
+ */
 class FriendlyUrlService {
 
     static transactional = false

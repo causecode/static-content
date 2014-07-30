@@ -11,13 +11,22 @@ package com.cc.content.inputWidget
 import static com.cc.content.inputWidget.InputWidgetHelpType.*
 import static com.cc.content.inputWidget.InputWidgetType.*
 
+/**
+ * This taglib provides tags for rendering comments on blog.
+ * @author Laxmi Salunkhe
+ * @author Shashank Agrawal
+ *
+ */
 class InputWidgetTagLib {
 
     static namespace = "content"
 
     /**
-     * Renders input widget based on given id.
+     * Renders input widget based on given id with the help of template.
      * @attr inputWidgetInstance REQUIRED identity of InputWidget domain to render
+     * @attr classes Used to apply styling to widget.
+     * @attr inputWidgetValue Used to check whether widget has default value or not and 
+     * accordingly apply CSS class 'having-default-value' to widget.
      */
     def renderWidget = { attrs , body ->
         InputWidget inputWidgetInstance = attrs.remove("inputWidgetInstance")
@@ -41,6 +50,7 @@ class InputWidgetTagLib {
     /**
      * Renders template used while creating and updating input widget.
      * @attr id REQUIRED identity of InputWidget domain to render
+     * @attr prefix Used to set HTML components fields names prefixed with some common string value.
      */
     def widget = { attrs , body ->
         String prefix = attrs.prefix ? attrs.prefix + "." : ""

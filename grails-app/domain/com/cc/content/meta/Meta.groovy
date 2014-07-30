@@ -8,6 +8,11 @@
 
 package com.cc.content.meta
 
+/**
+ * Used for storing meta tags for contents.
+ * @author Shashank Agrawal
+ *
+ */
 class Meta {
 
     public static final String KEYWORDS = "keywords"

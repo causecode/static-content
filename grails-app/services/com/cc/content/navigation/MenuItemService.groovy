@@ -8,14 +8,31 @@
 
 package com.cc.content.navigation
 
+/**
+ * This Service used to perform CRUD operation for menu items and also updates order of menu Items.
+ * @author Laxmi Salunkhe
+ * @author Shashank Agrawal
+ */
 class MenuItemService {
 
+    /**
+     * Used to create menuItem instance with given parameters. 
+     * @param args REQUIRED Map containing parameters required to create menuItem instance.
+     * @return Newly created MenuItem Instance.
+     */
     MenuItem create(Map args) {
         def menuItemInstance = new MenuItem()
         update(menuItemInstance , args)
         return menuItemInstance
     }
 
+    /**
+     * Used to update menuItem instance with given new parameters. 
+     * If menuItem instance is newly created, this method add menuItem to menu and reorder it.
+     * @param menuItemInstance REQUIRED MenuItem Instance to be updated.
+     * @param args Map containing parameters required to create menuItem instance.
+     * @return Updated MenuItem Instance.
+     */
     MenuItem update(MenuItem menuItemInstance , Map args = [:]) {
         menuItemInstance.properties = args
 
@@ -30,6 +47,17 @@ class MenuItemService {
         return menuItemInstance
     }
 
+    /**
+     * Used to delete menuItem instance.
+     * 
+     * This method removes menuItem from menu and also deletes all its child 
+     * menuItems. 
+     * 
+     * If menuItem to be removed is child of MenuItem then it removes menuItem from its parent menuItem.
+     * 
+     * After removing all references it deletes menuItem instance.
+     * @param menuItemInstance
+     */
     void delete(MenuItem menuItemInstance, boolean flush = true) {
         Menu menuInstance = menuItemInstance.menu
         menuInstance.removeFromMenuItems(menuItemInstance)
@@ -46,6 +74,11 @@ class MenuItemService {
         menuItemInstance.delete(flush: flush)
     }
 
+    /**
+     * Used to reorder menuItems inside menu.
+     * @param menuItemInstance REQUIRED Menu Item Instance to be reordered within other menuItems.
+     * @param args REQUIRED Map containing parameters for parentId and index where menuItem is placed after reordering.
+     */
     void reorder(MenuItem menuItemInstance, Map args) {
         int index = args.index as int
         def parentId = args.parentId
@@ -75,6 +108,12 @@ class MenuItemService {
         fixOrder(menuInstance)
     }
 
+    /**
+     * Used to fix order of menuItems  after reordering.
+     * @param menuInstance REQUIRED Menu Instance whose menuItems order need to be fixed.
+     * @param menuItemInstance MenuItem Instance whose order is changed and will get fixed.
+     * @param index New position of menuItem instance.
+     */
     void fixOrder(Menu menuInstance, MenuItem menuItemInstance = null, int index = 0) {
         if(!menuInstance.menuItems) {
             log.info "No menuitems in $menuInstance to sort."

@@ -11,18 +11,28 @@ package com.cc.content.inputWidget
 import org.codehaus.groovy.grails.commons.metaclass.GroovyDynamicMethodsInterceptor
 import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
 
+/**
+ * This taglib provides tags for rendering comments on blog.
+ * @author Laxmi Salunkhe
+ */
 class InputWidgetService {
 
-    InputWidgetService() {
-        GroovyDynamicMethodsInterceptor i = new GroovyDynamicMethodsInterceptor(this)
-        i.addDynamicMethodInvocation(new BindDynamicMethod())
-    }
-
+    /**
+     * Used to create InputWidget instance with given parameters.
+     * @param params REQUIRED Map containing parameters required to create InputWidget instance.
+     * @return Newly created InputWidget Instance.
+     */
     InputWidget create(params) {
         InputWidget inputWidgetInstance = new InputWidget()
         update(params, inputWidgetInstance)
     }
-    
+
+    /**
+     * Used to update InputWidget instance with given new parameters.
+     * @param inputWidgetInstance REQUIRED InputWidget Instance to be updated.
+     * @param params Map containing parameters required to create InputWidget instance.
+     * @return Updated InputWidget Instance.
+     */
     InputWidget update(params, InputWidget inputWidgetInstance) {
         inputWidgetInstance.properties = params
         inputWidgetInstance.save()

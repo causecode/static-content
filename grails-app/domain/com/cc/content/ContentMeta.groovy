@@ -10,6 +10,11 @@ package com.cc.content
 
 import com.cc.content.meta.Meta
 
+/**
+ * Join class provides meta tags for content.
+ * @author Shashank Agrawal
+ *
+ */
 class ContentMeta {
 
     Content content

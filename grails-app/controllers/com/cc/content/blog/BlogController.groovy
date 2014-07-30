@@ -19,6 +19,13 @@ import org.springframework.dao.DataIntegrityViolationException
 import com.cc.content.blog.comment.BlogComment
 import com.cc.content.blog.comment.Comment
 
+/**
+ * Provides default CRUD end point for Content Manager.
+ * @author Vishesh Duggar
+ * @author Shashank Agrawal
+ * @author Laxmi Salunkhe
+ *
+ */
 @Secured(["ROLE_CONTENT_MANAGER"])
 class BlogController {
 
@@ -47,6 +54,15 @@ class BlogController {
         return true
     }
 
+    /**
+     * Action list filters blog list with tags and returns Blog list and total matched result count.
+     * If current user has role content manager then all Blog list will be returned otherwise blog with publish field 
+     * set to true will be returned.
+     * @param max Pagination parameters used to specify maximum number of list items to be returned.
+     * @param offset Pagination parameter 
+     * @param tag String Used to filter Blogs with tag.
+     * @return Map containing blog list and total count.
+     */
     @Secured(["permitAll"])
     def list(Integer max, Integer offset, String tag) {
         long blogInstanceTotal
@@ -92,6 +108,9 @@ class BlogController {
         [blogInstance: new Blog(params)]
     }
 
+    /**
+     * Create Blog instance and also sets tags for blog.
+     */
     def save() {
         Blog.withTransaction { status ->
             blogInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Blog.class)
@@ -117,6 +136,9 @@ class BlogController {
         [blogInstance: blogInstance]
     }
 
+    /**
+     * Update blog instance also sets tags for blog instance.
+     */
     def update(Long id, Long version) {
         if (version != null) {
             if (blogInstance.version > version) {
@@ -158,6 +180,12 @@ class BlogController {
         }
     }
 
+    /**
+     * This action adds comments for blog with verified Captcha and redirects to blog show page.
+     * If captcha is invalid comments will not be added for blog.
+     * @param commentId Identity of Comment domain.If these parameter received then newly created comment will be added 
+     * as reply to given comment instance otherwise comment will be added as reference to blog instance instance.
+     */
     @Secured(["permitAll"])
     def comment(Long commentId) {
         Comment.withTransaction { status ->
