@@ -5,7 +5,7 @@ package com.cc.content.currency
 import org.junit.*
 import grails.test.mixin.*
 
-@TestFor(CurrencyController)
+//@TestFor(CurrencyController)
 @Mock(Currency)
 class CurrencyControllerTests {
 

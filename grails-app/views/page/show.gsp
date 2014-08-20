@@ -6,13 +6,17 @@
 </head>
 <body>
     <content tag="breadcrumb">
-        <content:breadcrumb map="['active':(pageInstance.title)]"/>
+        <content:breadcrumb map="['/page/list':'Page List','active':(pageInstance.title)]"/>
     </content>
     <div class="page-header">
         <h1>
             ${pageInstance.title }
-            <small>${pageInstance.subTitle }</small>
         </h1>
+         <g:if test="${pageInstance.subTitle }">
+            <h4 class="page-subtitle">
+                ${pageInstance.subTitle }
+            </h4>
+        </g:if>
     </div>
     <%= pageInstance.body %>
 

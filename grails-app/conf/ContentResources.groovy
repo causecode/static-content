@@ -16,4 +16,8 @@ modules = {
     wordAndCharacterCounter {
         resource url: [dir: "js", file: "word-and-character-counter.js"]
     }
+
+    tagcloud {
+        resource id: 'js', url: [dir: "js/jquery-tagcloud", file: "jquery.tagcloud.js"]
+    }
 }

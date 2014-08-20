@@ -10,16 +10,19 @@ package com.cc.content.blog
 
 import grails.plugin.springsecurity.annotation.Secured
 
+import java.text.DateFormatSymbols
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 import org.grails.taggable.TagLink
 import org.springframework.dao.DataIntegrityViolationException
 
+import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.blog.comment.BlogComment
 import com.cc.content.blog.comment.Comment
 
 @Secured(["ROLE_CONTENT_MANAGER"])
+@ControllerShorthand(value = "blog")
 class BlogController {
 
     static allowedMethods = [save: "POST", update: "POST"]
@@ -48,10 +51,19 @@ class BlogController {
     }
 
     @Secured(["permitAll"])
-    def list(Integer max, Integer offset, String tag) {
+    def list(Integer max, Integer offset, String tag, String monthFilter) {
         long blogInstanceTotal
         boolean publish = false
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
+        List tagList = []
+        List<String> monthFilterList = []
+        String month, year
+
+        if(monthFilter) {
+            List blogFilter =  monthFilter.split("-")
+            month = blogFilter[0]
+            year = blogFilter[1]
+        }
 
         params.offset = offset ? offset: 0
         params.max = Math.min(max ?: defaultMax, 100)
@@ -63,16 +75,21 @@ class BlogController {
             query.append(", ${TagLink.class.name} tagLink WHERE b.id = tagLink.tagRef ")
             query.append("AND tagLink.type = 'blog' AND tagLink.tag.name = '$tag' ")
         }
+        if(monthFilter) {
+            tag ? query.append(" AND ") : query.append(" WHERE ")
+            query.append(" monthname(b.publishedDate) = '$month' AND year(b.publishedDate) = '$year'")
+        }
 
         if(contentService.contentManager) {
             blogInstanceTotal = tag ? Blog.countByTag(tag) : Blog.count()
-        } else if(tag) {
+        } else if(tag ) {
             query.append("AND b.publish = true")
             blogInstanceTotal = Blog.findAllByTagWithCriteria(tag) {
                 eq("publish", true)
             }.size()
         } else {
-            query.append("WHERE b.publish = true")
+            (monthFilter) ? query.append(" AND ") : query.append(" where ")
+            query.append(" b.publish = true")
             blogInstanceTotal = Blog.countByPublish(true)
         }
         query.append(" order by b.dateCreated desc")
@@ -81,11 +98,34 @@ class BlogController {
         Pattern patternTag = Pattern.compile(HTML_P_TAG_PATTERN)
 
         blogList.each {
+            // Extracting content from first <p> tag of body to display
             Matcher matcherTag = patternTag.matcher(it.body)
             it.body = matcherTag.find() ? matcherTag.group(2) : ""
         }
 
-        [blogInstanceList: blogList, blogInstanceTotal: blogInstanceTotal]
+        if(monthFilter) {
+            blogInstanceTotal = Blog.executeQuery(query.toString()).size()
+        }
+
+        blogList.each {
+            monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
+        }
+
+        Blog.allTags.each { tagName ->
+            def tagListInstance = TagLink.withCriteria(uniqueResult: true) {
+                createAlias('tag', 'tagInstance')
+                projections {
+                    countDistinct 'id'
+                    property("tagInstance.name")
+                }
+                eq('type','blog')
+                eq('tagInstance.name', tagName)
+            }
+            tagList.add(tagListInstance)
+        }
+
+        [blogInstanceList: blogList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
+            tagList: tagList]
     }
 
     def create() {
@@ -102,7 +142,7 @@ class BlogController {
             }
             blogInstance.setTags(params.tags.tokenize(",")*.trim())
             blogInstance.save(flush: true)
-            flash.message = message(code: 'default.created.message', args: [message(code: 'blog.label'), blogInstance.id])
+            flash.message = message(code: 'default.created.message', args: [message(code: 'blog.label'), blogInstance.title])
             redirect uri: blogInstance.searchLink()
         }
     }
@@ -110,7 +150,20 @@ class BlogController {
     @Secured(["permitAll"])
     def show(Long id) {
         List blogComments = BlogComment.findAllByBlog(blogInstance)*.comment
-        [blogInstance: blogInstance, comments: blogComments]
+        List tagNameList = []
+        List tagFrequesncyList = []
+
+        blogInstance.tags.each { tagName ->
+            tagNameList.add(tagName)
+            def result = TagLink.withCriteria {
+                eq('type','blog')
+                tag {
+                    eq('name', tagName)
+                }
+            }
+            tagFrequesncyList.add( result.size() ?:1 )
+        }
+        [blogInstance: blogInstance, comments: blogComments, tagNameList: tagNameList, tagFrequesncyList: tagFrequesncyList]
     }
 
     def edit(Long id) {

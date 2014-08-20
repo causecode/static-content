@@ -12,6 +12,7 @@
     <meta name="revisit-after" content="2 days">
     <g:set var="entityName" value="${message(code: 'blog.label', default: 'Blogs')}" />
     <title><g:message code="default.blog.list.label" args="[entityName]" /></title>
+    <r:require modules="tagcloud"/>
 </head>
 <body>
     <content tag="breadcrumb">
@@ -29,40 +30,85 @@
         <i class="icon-frown"></i> Sorry, no blog to display.
     </g:if>
 
-    <div class="blog-list">
-        <g:each in="${blogInstanceList}">
-            <div class="blog-entry summary">
-                <h2>
-                    <a href="<content:searchLink id='${it.id }' />">
-                        ${it.title }
-                    </a>
-                </h2>
-                <h4>
-                    ${it.subTitle}
-                </h4>
-                <g:render template="/blog/templates/additionalInfo" model="[publishedDate: it.publishedDate, id: it.id]" />
-                <div class="blog-body">
-                    <br>
-                    ${it.body}
-                    <a href="<content:searchLink id='${it.id }' />">...more</a>
-                </div>
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="blog-list">
+                <g:each in="${blogInstanceList}">
+                    <div class="blog-entry summary">
+                        <h2>
+                            <a href="<content:searchLink id='${it.id }' />">
+                                ${it.title }
+                            </a>
+                        </h2>
+                        <h4>
+                            ${it.subTitle}
+                        </h4>
+                        <g:render template="/blog/templates/additionalInfo" model="[publishedDate: it.publishedDate, id: it.id]" />
+                        <div class="blog-body">
+                            <br>
+                            ${it.body}
+                            <a href="<content:searchLink id='${it.id }' />">...more</a>
+                        </div>
+                    </div>
+                    <hr style="border: 1px solid #DEDEDE;">
+                </g:each>
+        
+                <g:set var="total" value="${blogInstanceTotal }" />
+                <g:set var="limit" value="${params.offset.toInteger() + params.max.toInteger() }" />
+                <g:if test="${total }">
+                    <span class="muted help-block" style="margin-top: -20px">
+                        <small>Showing: <strong> ${params.int('offset') + 1 }-${limit > total ? total : limit }</strong>
+                            of <strong> ${total }</strong>
+                        </small>
+                    </span>
+                </g:if>
+        
+                <ul class="pagination">
+                    <g:paginate action="list" total="${total}" params="[monthFilter: month, tag: params.tag]" />
+                </ul>
             </div>
-            <hr style="border: 1px solid #DEDEDE;">
-        </g:each>
-
-        <g:set var="total" value="${blogInstanceTotal }" />
-        <g:set var="limit" value="${params.offset.toInteger() + params.max.toInteger() }" />
-        <g:if test="${total }">
-            <span class="muted help-block" style="margin-top: -20px">
-                <small>Showing: <strong> ${params.int('offset') + 1 }-${limit > total ? total : limit }</strong>
-                    of <strong> ${total }</strong>
-                </small>
-            </span>
-        </g:if>
-
-        <ul class="pagination">
-            <g:paginate action="list" total="${total}" params="[tag: params.tag]" />
-        </ul>
+        </div>
+        <div class="col-sm-3" style="border-left: 1px solid #eeeeee">
+            <g:if test="${monthFilterList}">
+                <h4>Posted On</h4>
+                <div>
+                    <g:link action="list" style="display: inherit;margin-bottom:5px;"
+                        class=" month-filter-item ${params.monthFilter ?'':'selected' }">
+                        ALL
+                    </g:link>
+                    <g:each in="${monthFilterList}" var="month">
+                        <g:link action="list" params="[monthFilter: month, tag: params.tag]" style="display: inherit;margin-bottom:5px;"
+                            class="bt month-filter-item ${params.monthFilter == month ?'selected':'' }">
+                            ${month}
+                        </g:link>
+                    </g:each>
+                </div><br>
+            </g:if>
+            <g:if test="${tagList}">
+                <h4><i class="icon-tags"></i>Tags</h4>
+                <div class="blog-tags">
+                    <g:each in="${tagList}" var="tag" status="index">
+                        <g:link action="list" params="[tag: tag[1], monthFilter: params.monthFilter]" rel="${tag[0]}" 
+                            style="line-height: normal;">
+                            ${tag[1]}
+                            <span>&nbsp;</span>
+                        </g:link>${index < tagList.size() - 1 ? ' ' : '' }
+                    </g:each>
+                </div>
+            </g:if>
+        </div>
     </div>
+    <r:script>
+        var startSize = ${grailsApplication.config.cc.plugins.content.tags.startSize ?:'15'}
+        var endSize = ${grailsApplication.config.cc.plugins.content.tags.endSize ?:'25'}
+        var startColor = "${grailsApplication.config.cc.plugins.content.tags.startColor ?:'#428bca'}"
+        var endColor = "${grailsApplication.config.cc.plugins.content.tags.endColor ?:'#428bca'}"
+        $(function () {
+          $('div.blog-tags a').tagcloud({
+              size: {start: parseInt(startSize), end: parseInt(endSize), unit:'px'},
+              color: {start: "#"+startColor, end: "#"+endColor}
+          });
+        });
+    </r:script>
 </body>
 </html>
