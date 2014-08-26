@@ -43,13 +43,13 @@ class ContentService {
     String resolveAuthor(Content contentInstance, String authorProperty = "username") {
         if(!contentInstance?.id) {
             def currentUser = springSecurityService.currentUser
-            return currentUser ? currentUser.username.toString() : ANONYMOUS_USER
+            return currentUser ? currentUser.id.toString() : ANONYMOUS_USER
         }
         if(contentInstance.author.isNumber()) {
             def authorInstance = getAuthorClass().get(contentInstance.author)
             return authorInstance[authorProperty]
         }
-        return contentInstance.author
+        return ANONYMOUS_USER
     }
 
     /**

@@ -121,6 +121,7 @@ class BlogController {
         blogList.each {
             Blog blogInstance = Blog.get(it.id as long)
             it.comments = BlogComment.findAllByBlog(blogInstance)*.comment
+            it.author = contentService.resolveAuthor(blogInstance)
             blogInstanceList.add(it)
             monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
         }
