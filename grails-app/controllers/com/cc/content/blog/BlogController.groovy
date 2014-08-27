@@ -77,6 +77,9 @@ class BlogController {
 
     @Secured(["permitAll"])
     def list(Integer max, Integer offset, String tag, String monthFilter) {
+        if (tag == 'undefined') tag = ''
+        if (monthFilter == 'undefined') monthFilter = ''
+
         log.info "Parameters received to filter blogs : $params"
         long blogInstanceTotal
         boolean publish = false
@@ -108,7 +111,7 @@ class BlogController {
 
         if(contentService.contentManager) {
             blogInstanceTotal = tag ? Blog.countByTag(tag) : Blog.count()
-        } else if(tag ) {
+        } else if(tag) {
             query.append("AND b.publish = true")
             blogInstanceTotal = Blog.findAllByTagWithCriteria(tag) {
                 eq("publish", true)
@@ -137,6 +140,7 @@ class BlogController {
         blogList.each {
             Blog blogInstance = Blog.get(it.id as long)
             it.author = contentService.resolveAuthor(blogInstance)
+            it.numberOfComments = BlogComment.countByBlog(blogInstance)
             blogInstanceList.add(it)
             monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
         }
@@ -307,6 +311,7 @@ class BlogController {
                 blogCommentInstance.comment = commentInstance
                 blogCommentInstance.save()
             }
+            log.info "Comment Added successfully."
             if (request.xhr) {
                 render text: ([success: true] as JSON)
                 return
