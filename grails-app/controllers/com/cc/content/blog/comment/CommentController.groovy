@@ -8,8 +8,8 @@
 
 package com.cc.content.blog.comment
 
-import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
+import grails.plugins.springsecurity.Secured
 import com.cc.content.blog.Blog
 
 /**

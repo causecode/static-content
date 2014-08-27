@@ -8,10 +8,10 @@
 
 package com.cc.content.blog
 
-import grails.plugin.springsecurity.annotation.Secured
 import org.grails.databinding.SimpleMapDataBindingSource
 import grails.converters.JSON
 import java.text.DateFormatSymbols
+import grails.plugins.springsecurity.Secured
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import grails.transaction.Transactional

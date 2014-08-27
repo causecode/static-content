@@ -9,9 +9,9 @@
 package com.cc.content.page
 
 import grails.converters.JSON
-import grails.plugin.springsecurity.annotation.Secured
+import grails.plugins.springsecurity.Secured
 
-import grails.plugin.springsecurity.SpringSecurityUtils
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.access.annotation.Secured
 

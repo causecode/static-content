@@ -9,7 +9,7 @@
 package com.cc.content.navigation
 
 import grails.converters.JSON
-import grails.plugin.springsecurity.annotation.Secured
+import grails.plugins.springsecurity.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
 

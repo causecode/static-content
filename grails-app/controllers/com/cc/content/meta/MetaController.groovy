@@ -8,7 +8,7 @@
 
 package com.cc.content.meta
 
-import grails.plugin.springsecurity.annotation.Secured
+import grails.plugins.springsecurity.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
 

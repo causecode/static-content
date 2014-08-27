@@ -23,15 +23,13 @@ grails.project.dependency.resolution = {
         mavenRepo "http://repo.spring.io/milestone/"
         mavenRepo "http://maven.causecode.com"
         grailsCentral()
-        mavenLocal()
-        mavenCentral()
     }
 
     dependencies {
     }
 
     plugins {
-        compile (":spring-security-core:2.0-RC2", ":taggable:1.0.1") {
+        compile (":spring-security-core:1.2.7.3", ":taggable:1.0.1") {
             export = false
         }
         compile (":rest-client-builder:2.0.1") {

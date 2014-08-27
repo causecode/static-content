@@ -9,8 +9,8 @@ import org.junit.*
 import grails.test.*
 import grails.test.mixin.domain.DomainClassUnitTestMixin;
 import grails.test.mixin.services.ServiceUnitTestMixin;
-import grails.plugin.springsecurity.SpringSecurityUtils;
-import grails.plugin.springsecurity.SpringSecurityService;
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils;
+import grails.plugins.springsecurity.SpringSecurityService;
 
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions

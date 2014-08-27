@@ -8,7 +8,7 @@
 
 package com.cc.content.news
 
-import grails.plugin.springsecurity.annotation.Secured
+import grails.plugins.springsecurity.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
 
