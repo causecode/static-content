@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Neighbor Marketing Inc 2014.
+ * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or
