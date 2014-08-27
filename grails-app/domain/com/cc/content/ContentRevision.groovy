@@ -8,6 +8,11 @@
 
 package com.cc.content
 
+/**
+ * Used to support old content reference if required.
+ * @author Shashank Agrawal
+ *
+ */
 class ContentRevision {
 
     String title

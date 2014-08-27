@@ -12,9 +12,24 @@ import grails.plugin.springsecurity.annotation.Secured
 
 import com.cc.content.blog.Blog
 
+/**
+ * Provides end point for delete comment for Content Manager.
+ * @author Vishesh Duggar
+ * @author Shashank Agrawal
+ * @author Laxmi Salunkhe
+ *
+ */
 @Secured(["ROLE_CONTENT_MANAGER"])
 class CommentController {
 
+    /**
+     * This action delete comment instance if it has been added as reply to another comment otherwise
+     * delete join class reference added for blog for given comment instance.
+     * 
+     * After delete operation redirects to blog show page.
+     * @param id REQUIRED Identity of Comment domain instance to be deleted.
+     * @param blogId Identity of Blog domain instance to get blog and redirect to blog show page.
+     */
     def delete(Long id, Long blogId) {
         Comment.withTransaction { status ->
             Blog blogInstance = Blog.get(blogId)

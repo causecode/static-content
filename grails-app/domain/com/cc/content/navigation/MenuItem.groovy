@@ -8,6 +8,14 @@
 
 package com.cc.content.navigation
 
+/**
+ * Used to render menu items within menu , also support nested menu items.
+ * @author Vishesh Duggar
+ * @author Shashank Agrawal
+ * @author Laxmi Salunkhe
+ * @author Bharti Nagdev
+ *
+ */
 class MenuItem {
 
     String roles

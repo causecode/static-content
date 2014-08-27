@@ -17,6 +17,13 @@ import org.springframework.dao.DataIntegrityViolationException
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.ContentRevision
 
+/**
+ * Provides default CRUD end point for Content Manager.
+ * @author Vishesh Duggar
+ * @author Shashank Agrawal
+ * @author Laxmi Salunkhe
+ *
+ */
 @Secured(["ROLE_CONTENT_MANAGER"])
 @ControllerShorthand(value = "c")
 class PageController {

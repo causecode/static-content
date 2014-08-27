@@ -8,10 +8,20 @@
 
 package com.cc.content
 
+/**
+ * @author Shashank Agrawal
+ *
+ */
 class ContentFilters {
 
+    /**
+     * Dependency injection for the contentService
+     */
     def contentService
 
+    /**
+     * Filter to check if current user have authority to view the page or blog instance.
+     */
     def filters = {
         all(controller: 'page|blog', action: 'show') {
             before = {

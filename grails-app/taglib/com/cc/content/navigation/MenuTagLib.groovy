@@ -10,6 +10,13 @@ package com.cc.content.navigation
 
 import grails.plugin.springsecurity.SpringSecurityUtils
 
+/**
+ * This taglib provides tags for rendering comments on blog.
+ * @author Vishesh Duggar
+ * @author Shashank Agrawal
+ * @author Laxmi Salunkhe
+ * @author Bharti Nagdev
+ */
 class MenuTagLib {
 
     static namespace = "com"
@@ -19,6 +26,8 @@ class MenuTagLib {
     /**
      * Used to render menu bars.
      * @attr id REQUIRED The identifier of the Menu domain for which menu bar should be rendered.
+     * @arre menuTemplate Template path which is used to render menu. Default set to '/menu/templates/menu'
+     * @attr inPlugin Used to Specify Plugin, Default set to 'content'.
      */
     def menu = { attrs, body ->
         Menu menuInstance = Menu.get(attrs.id)

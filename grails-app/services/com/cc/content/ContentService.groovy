@@ -24,22 +24,42 @@ import com.cc.content.blog.comment.BlogComment
 import com.cc.content.meta.Meta
 import com.cc.content.page.Page
 
+/**
+ * This taglib provides tags for rendering comments on blog.
+ * @author Vishesh Duggar
+ * @author Shashank Agrawal
+ * @author Laxmi Salunkhe
+ */
 class ContentService {
 
     static transactional = false
 
     private static final String ANONYMOUS_USER = "anonymousUser"
 
+    /**
+     * Dependency Injection for the grailsLinkGenerator
+     */
     LinkGenerator grailsLinkGenerator
+    
+    /**
+     * Dependency injection for the services
+     */
     def friendlyUrlService
-    def grailsApplication
     def springSecurityService
+    
+    /**
+     * Dependency injection for the grailsApplication
+     */
+    def grailsApplication
 
-    ContentService() {
-        GroovyDynamicMethodsInterceptor i = new GroovyDynamicMethodsInterceptor(this)
-        i.addDynamicMethodInvocation(new BindDynamicMethod())
-    }
-
+    /**
+     * Used to get author of content instance with the help of author property passed.
+     * @param contentInstance Content instance whose author needs to be resolved.
+     * @param authorProperty String representing property of current user to be returned. Default set to 'username' 
+     * field.
+     * @return String specifying author for content instance. If content instance not specified and content instance
+     * author field is not a number the default string 'ANONYMOUS_USER' returned.
+     */
     String resolveAuthor(Content contentInstance, String authorProperty = "username") {
         if(!contentInstance?.id) {
             def currentUser = springSecurityService.currentUser
@@ -54,6 +74,7 @@ class ContentService {
 
     /**
      * A method to check if current user have authority to view the current content instance
+     * @param id Identity of Content domain instance .
      */
     boolean isVisible(def id) {
         if(contentManager) return true;
@@ -69,16 +90,31 @@ class ContentService {
         return false
     }
 
+    /**
+     * Check current user has role content manager or not and provide edit access to user.
+     * @return Boolean value specifying current user has content manager role or not.
+     */
     @Deprecated
     boolean canEdit() {
         isContentManager()
     }
 
+    /**
+     * Check current user has role content manager or not.
+     * @return Boolean value specifying current user has content manager role or not.
+     */
     boolean isContentManager() {
         String contentManagerRole = grailsApplication.config.cc.plugins.content.contentManagerRole
         return SpringSecurityUtils.ifAnyGranted(contentManagerRole)
     }
 
+    /**
+     * Used to create Content instance with given parameters. 
+     * @param args Map containing parameters required to create content instance.
+     * @param metaTypes List containing meta types for Content instance.
+     * @param metaValues List containing meta values for Content instance.
+     * @return Newly created Content Instance.
+     */
     @Transactional
     Content create(Map args, List metaTypes, List metaValues, Class clazz = Content.class) {
         Content contentInstance = clazz.newInstance()
@@ -87,6 +123,14 @@ class ContentService {
         return contentInstance
     }
 
+    /**
+     * Used to update Content instance with given new parameters.
+     * @param args Map containing parameters required to create content instance.
+     * @param contentInstance REQUIRED Content Instance to be updated.
+     * @param metaTypes List containing meta types for Content instance.
+     * @param metaValues List containing meta values for Content instance.
+     * @return Updated Content Instance.
+     */
     @Transactional
     Content update(Map args, Content contentInstance, List metaTypes, List metaValues) {
         bindData(contentInstance, args)
@@ -122,6 +166,12 @@ class ContentService {
         return contentInstance
     }
 
+    /**
+     * Used to delete Content and its join class references of ContentMeta , ContentRevision class.
+     * Also if contentInstance is type of blog then its comments will also be deleted.
+     * @param contentInstance
+     * @return Boolean value specifying delete content instance operation  status success or failure.
+     */
     @Transactional
     boolean delete(Content contentInstance) {
         ContentMeta.findAllByContent(contentInstance)*.delete()
@@ -133,6 +183,13 @@ class ContentService {
         contentInstance.delete()
     }
 
+    /**
+     * Used to create revision of any type of content instance.
+     * @param contentInstance REQUIRED Content Instance to be get revised.
+     * @param clazz REQUIRED Class used to create new content revision instance.
+     * @param params Map containing parameters for comments.
+     * @return Newly created ContentRevision for given conetentInstance.
+     */
     @Transactional
     ContentRevision createRevision(Content contentInstance, Class clazz, Map params) {
         ContentRevision contentRevisionInstance = clazz.newInstance()

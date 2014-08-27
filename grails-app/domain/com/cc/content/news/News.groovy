@@ -10,6 +10,11 @@ package com.cc.content.news
 
 import com.cc.content.Content
 
+/**
+ * These domain extends Content used to store News.
+ * @author Shashank Agrawal
+ *
+ */
 class News extends Content {
 
     static constraints = {

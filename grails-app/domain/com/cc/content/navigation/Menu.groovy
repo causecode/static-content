@@ -8,6 +8,14 @@
 
 package com.cc.content.navigation
 
+/**
+ * Used for rendering menu bar with menu items.
+ * @author Vishesh Duggar
+ * @author Shashank Agrawal
+ * @author Laxmi Salunkhe
+ * @author Bharti Nagdev
+ *
+ */
 class Menu {
 
     String name

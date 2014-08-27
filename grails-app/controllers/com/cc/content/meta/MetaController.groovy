@@ -14,6 +14,12 @@ import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.content.ContentMeta
 
+/**
+ * Provides end point to delete any meta information of content for Content Manager.
+ * @author Vishesh Duggar
+ * @author Shashank Agrawal
+ *
+ */
 @Secured(["ROLE_CONTENT_MANAGER"])
 class MetaController {
 
@@ -37,6 +43,14 @@ class MetaController {
         return true
     }
 
+    /**
+     * Delete Meta instance and all its references and render dummy text.
+     * If Meta ID not specified then dummy text will be rendered.
+     * This action also delete join class reference added for ContentMeta for given meta instance.
+     * 
+     * @param id Identity of Meta domain instance to be deleted.
+     * @throws DataIntegrityViolationException
+     */
     def deleteMeta(Long id) {
         if(!params.id) {
             render "dummy"

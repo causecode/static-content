@@ -13,6 +13,13 @@ import grails.plugin.springsecurity.annotation.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
 
+/**
+ * Provides end point to reorder menu items for Content Manager.
+ * @author Vishesh Duggar
+ * @author Laxmi Salunkhe
+ * @author Shashank Agrawal
+ *
+ */
 @Secured(["ROLE_CONTENT_MANAGER"])
 class MenuItemController {
 
@@ -62,6 +69,9 @@ class MenuItemController {
         render ([success: true] as JSON)
     }
 
+    /**
+     * Used to reorder menuItem instance.
+     */
     def reorder() {
         menuItemInstance = menuItemService.reorder(menuItemInstance, params)
         render ([success: true]) as JSON

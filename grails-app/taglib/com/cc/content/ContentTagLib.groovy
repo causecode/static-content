@@ -8,12 +8,32 @@
 
 package com.cc.content
 
+import java.util.Map;
+
+/**
+ * This taglib provides generic tags for rendering different types of content.
+ * @author Shashank Agrawal
+ * @author Laxmi Salunkhe
+ *
+ */
 class ContentTagLib {
 
     static namespace = "content"
 
+    /**
+     * Dependency injection for the contentService.
+     */
     def contentService
 
+    /**
+     * Used to render breadcrumb . This tag renders template content with the help of attributes supplied and 
+     * default baseURLMap.
+     * <strong>Note</strong> : Add following configuration for base URL mapping.
+     * <code>grailsApplication.config.cc.plugins.content.breadcrumbs.baseMap = ['Home':'base url for app']</code>
+     * 
+     * @attr map REQUIRED List of map containing map of URL's and titles for those URL's.
+     * @throws TagError If attribute map is missing or it is not instance {@link Map}.
+     */
     def breadcrumb = {attrs, body ->
         if(!attrs.map)
             throwTagError("Tag [content:breadcrumb] is missing required attribute [map]")
@@ -38,9 +58,10 @@ class ContentTagLib {
     }
 
     /**
-     * Renders meta tags of the content object.
+     * Renders meta tags of the content object if exist.
      *
      * @attr contentInstance REQUIRED the instance of Content or child domain class.
+     * @throws TagError If attribute contentInstance is missing.
      */
     def renderMetaTags = { attrs, body ->
         if(!attrs.contentInstance)
@@ -72,6 +93,7 @@ class ContentTagLib {
     }
 
     /**
+     * Renders String specifying author property of content instance.
      * @attr id REQUIRED
      */
     def resolveAuthor = { attrs, body ->
@@ -79,7 +101,9 @@ class ContentTagLib {
     }
 
     /**
+     * Renders Content instance fetched by given attribute ID.
      * @attr id REQUIRED
+     * @throws TagError If attribute id is missing.
      */
     def renderContent = { attrs, body ->
         if(!attrs.id) {

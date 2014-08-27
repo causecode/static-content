@@ -8,6 +8,13 @@
 
 package com.cc.content
 
+/**
+ * Generic domain stores page layout ,used for pages.
+ * @author Vishesh Duggar
+ * @author Shashank Agrawal
+ * @author Bharti Nagdev
+ *
+ */
 class PageLayout {
 
     String layoutName

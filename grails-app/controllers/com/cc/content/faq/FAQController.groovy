@@ -12,6 +12,13 @@ import grails.plugin.springsecurity.annotation.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
 
+/**
+ * Provides default CRUD end point for Content Manager.
+ * @author Vishesh Duggar
+ * @author Shashank Agrawal
+ * @author Laxmi Salunkhe
+ *
+ */
 @Secured(["ROLE_CONTENT_MANAGER"])
 class FAQController {
 

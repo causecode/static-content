@@ -11,6 +11,14 @@ package com.cc.content
 import com.cc.annotation.sanitizedTitle.SanitizedTitle
 import com.cc.content.meta.Meta
 
+/**
+ * A generic domain used to store generic fields for storing any content.
+ * @author Vishesh Duggar
+ * @author Shashank Agrawal
+ * @author Bharti Nagdev
+ * @author Sakshi Gangarde
+ * 
+ */
 class Content {
 
     transient contentService
