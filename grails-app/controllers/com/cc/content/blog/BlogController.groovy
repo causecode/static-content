@@ -9,11 +9,12 @@
 package com.cc.content.blog
 
 import grails.plugin.springsecurity.annotation.Secured
-
+import org.grails.databinding.SimpleMapDataBindingSource
+import grails.converters.JSON
 import java.text.DateFormatSymbols
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-
+import grails.transaction.Transactional
 import org.grails.taggable.TagLink
 import org.springframework.dao.DataIntegrityViolationException
 
@@ -29,6 +30,7 @@ import com.cc.content.blog.comment.Comment
  *
  */
 @Secured(["ROLE_CONTENT_MANAGER"])
+@Transactional(readOnly = true)
 @ControllerShorthand(value = "blog")
 class BlogController {
 
@@ -39,6 +41,8 @@ class BlogController {
     def contentService
     def springSecurityService
     def simpleCaptchaService
+    def commentService
+    def grailsWebDataBinder
 
     private Blog blogInstance
 
@@ -67,7 +71,13 @@ class BlogController {
      * @return Map containing blog list and total count.
      */
     @Secured(["permitAll"])
+    def index() {
+        redirect( action: 'list', params: params)
+    }
+
+    @Secured(["permitAll"])
     def list(Integer max, Integer offset, String tag, String monthFilter) {
+        log.info "Parameters received to filter blogs : $params"
         long blogInstanceTotal
         boolean publish = false
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
@@ -123,7 +133,11 @@ class BlogController {
             blogInstanceTotal = Blog.executeQuery(query.toString()).size()
         }
 
+        List<Blog> blogInstanceList = []
         blogList.each {
+            Blog blogInstance = Blog.get(it.id as long)
+            it.author = contentService.resolveAuthor(blogInstance)
+            blogInstanceList.add(it)
             monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
         }
 
@@ -140,8 +154,13 @@ class BlogController {
             tagList.add(tagListInstance)
         }
 
-        [blogInstanceList: blogList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
+        Map result = [blogInstanceList: blogInstanceList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
             tagList: tagList]
+        if(request.xhr) {
+            render text:(result as JSON)
+            return
+        }
+        result
     }
 
     def create() {
@@ -168,7 +187,7 @@ class BlogController {
 
     @Secured(["permitAll"])
     def show(Long id) {
-        List blogComments = BlogComment.findAllByBlog(blogInstance)*.comment
+        List blogComments = commentService.getComments(blogInstance)
         List tagNameList = []
         List tagFrequesncyList = []
 
@@ -182,7 +201,16 @@ class BlogController {
             }
             tagFrequesncyList.add( result.size() ?:1 )
         }
-        [blogInstance: blogInstance, comments: blogComments, tagNameList: tagNameList, tagFrequesncyList: tagFrequesncyList]
+
+        List<Blog> blogInstanceList = Blog.list(max: 5, sort: 'publishedDate', order: 'desc')
+        Map result = [blogInstance: blogInstance, comments: blogComments, tagNameList: tagNameList, 
+            tagFrequesncyList: tagFrequesncyList, blogInstanceList: blogInstanceList]
+
+        if(request.xhr) {
+            render text:(result as JSON)
+            return
+        }
+        result
     }
 
     def edit(Long id) {
@@ -239,22 +267,37 @@ class BlogController {
      * @param commentId Identity of Comment domain.If these parameter received then newly created comment will be added 
      * as reply to given comment instance otherwise comment will be added as reference to blog instance instance.
      */
+    @Transactional
     @Secured(["permitAll"])
     def comment(Long commentId) {
+        Map requestMap = request.JSON
+        params.putAll(requestMap)
+        log.info "Parameters received to comment on blog: $params"
         Comment.withTransaction { status ->
             boolean captchaValid = simpleCaptchaService.validateCaptcha(params.captcha)
             if(!captchaValid) {
+                if (request.xhr) {
+                    Map result = [message: "Invalid capthca entered."]
+                    render status: 403, text: result as JSON
+                    return
+                }
                 flash.message = message(code: 'default.captcha.invalid.message', args: [message(code: 'captcha.label')])
                 redirect uri: blogInstance.searchLink()
                 return
             }
             Comment commentInstance = new Comment()
-            bindData(commentInstance, params, [include: ['subject', 'name', 'email', 'commentText']])
-            if(!commentInstance.save(flush: true)) {
+            grailsWebDataBinder.bind(commentInstance, params as SimpleMapDataBindingSource, ['subject', 'name', 'email', 'commentText'])
+            if(!commentInstance.save()) {
                 status.setRollbackOnly()
+                if (request.xhr) {
+                    Map result = [message: "Something went wrong, Please try again later."]
+                    render status: 403, text: result as JSON
+                    return
+                }
                 redirect uri: blogInstance.searchLink()
                 return
             }
+            commentId = commentId ?: (params.commentId ?  params.commentId as long : 0l)
             if(commentId) {
                 commentInstance.replyTo = Comment.get(commentId)
                 commentInstance.save()
@@ -263,6 +306,10 @@ class BlogController {
                 blogCommentInstance.blog = blogInstance
                 blogCommentInstance.comment = commentInstance
                 blogCommentInstance.save()
+            }
+            if (request.xhr) {
+                render text: ([success: true] as JSON)
+                return
             }
             redirect uri: blogInstance.searchLink()
         }

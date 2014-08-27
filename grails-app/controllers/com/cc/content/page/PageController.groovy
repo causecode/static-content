@@ -13,6 +13,7 @@ import grails.plugin.springsecurity.annotation.Secured
 
 import grails.plugin.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.security.access.annotation.Secured
 
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.ContentRevision

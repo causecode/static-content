@@ -9,7 +9,7 @@
 package com.cc.content.blog.comment
 
 import grails.plugin.springsecurity.annotation.Secured
-
+import grails.transaction.Transactional
 import com.cc.content.blog.Blog
 
 /**
@@ -20,6 +20,7 @@ import com.cc.content.blog.Blog
  *
  */
 @Secured(["ROLE_CONTENT_MANAGER"])
+@Transactional(readOnly = true)
 class CommentController {
 
     /**
@@ -31,16 +32,20 @@ class CommentController {
      * @param blogId Identity of Blog domain instance to get blog and redirect to blog show page.
      */
     def delete(Long id, Long blogId) {
+        log.info "Parameters recived to delete comment: $params" + request.JSON
         Comment.withTransaction { status ->
             Blog blogInstance = Blog.get(blogId)
             Comment commentInstance = Comment.get(id)
-
             if(commentInstance.replyTo) {
                 commentInstance.delete()
             } else {
                 BlogComment.findByComment(commentInstance)?.delete()
             }
 
+            if (request.xhr) {
+                render "true"
+                return
+            }
             flash.message = "Comments deleted successfully."
             redirect uri: blogInstance.searchLink()
         }

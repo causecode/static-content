@@ -12,6 +12,8 @@ package com.cc.content.blog.comment
  * This taglib provides tags for rendering comments on blog.
  * @author Shashank Agrawal
  */
+import com.cc.content.blog.Blog
+
 class CommentService {
 
     static transactional = false
@@ -32,4 +34,25 @@ class CommentService {
         }
     }
 
+    List getComments(Blog blogInstance) {
+        List<Comment> commentList = BlogComment.findAllByBlog(blogInstance)*.comment
+        return getCommentsWithNestedComments(commentList)
+    }
+
+    Map getCommentData(Comment commentInstance) {
+        if (!commentInstance) return [:]
+        return [
+            subject: commentInstance.subject, id: commentInstance.id,
+            name: commentInstance.name, email: commentInstance.email, 
+            commentText: commentInstance.commentText, lastUpdated: commentInstance.lastUpdated,
+            comments: getCommentsWithNestedComments(Comment.findAllByReplyTo(commentInstance))]
+    }
+
+    List getCommentsWithNestedComments(List<Comment> commentList) {
+        List comments = []
+        commentList.each { commentInstance ->
+            comments.add(getCommentData(commentInstance))
+        }
+        return comments
+    }
 }
