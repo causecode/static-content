@@ -23,6 +23,8 @@ grails.project.dependency.resolution = {
         mavenRepo "http://repo.spring.io/milestone/"
         mavenRepo "http://maven.causecode.com"
         grailsCentral()
+        mavenLocal()
+        mavenCentral()
     }
 
     dependencies {
@@ -33,13 +35,12 @@ grails.project.dependency.resolution = {
             export = false
         }
         compile (":rest-client-builder:2.0.1") {
-            export = true
+            export = false
         }
         runtime (":resources:1.2.1") {
             export = false
         }
         build (":tomcat:7.0.50", ":release:3.0.1") {
-            export = true
         }
 
     }
