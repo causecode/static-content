@@ -9,6 +9,7 @@
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
+grails.servlet.version = "3.0"
 
 grails.project.dependency.resolver = "maven"
 grails.project.dependency.resolution = {
@@ -31,10 +32,10 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile (":spring-security-core:1.2.7.3", ":taggable:1.0.1") {
+        compile (":spring-security-core:1.2.7.3", ":taggable:1.0.1", ":ckeditor:3.6.3.0") {
             export = false
         }
-        runtime (":resources:1.2.1") {
+        runtime (":resources:1.2.1", ":hibernate:3.6.10.7") {
             export = false
         }
         build (":tomcat:7.0.50", ":release:3.0.1", ":rest-client-builder:2.0.1") {
