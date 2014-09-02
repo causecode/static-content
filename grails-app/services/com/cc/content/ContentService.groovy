@@ -12,16 +12,14 @@ import grails.util.Environment
 
 import java.lang.reflect.Field
 
-import org.codehaus.groovy.grails.commons.metaclass.GroovyDynamicMethodsInterceptor
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.web.mapping.LinkGenerator
-import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
+import org.grails.databinding.SimpleMapDataBindingSource
 import org.springframework.transaction.annotation.Transactional
 
 import com.cc.annotation.sanitizedTitle.SanitizedTitle
 import com.cc.content.blog.Blog
 import com.cc.content.blog.comment.BlogComment
-import com.cc.content.meta.Meta
 import com.cc.content.page.Page
 
 /**
@@ -34,6 +32,7 @@ class ContentService {
 
     static transactional = false
 
+    def grailsWebDataBinder
     private static final String ANONYMOUS_USER = "anonymousUser"
 
     /**
@@ -65,7 +64,7 @@ class ContentService {
             def currentUser = springSecurityService.currentUser
             return currentUser ? currentUser.id.toString() : ANONYMOUS_USER
         }
-        if(contentInstance.author.isNumber()) {
+        if(contentInstance.author?.isNumber()) {
             def authorInstance = getAuthorClass().get(contentInstance.author)
             return authorInstance[authorProperty]
         }
@@ -133,7 +132,7 @@ class ContentService {
      */
     @Transactional
     Content update(Map args, Content contentInstance, List metaTypes, List metaValues) {
-        bindData(contentInstance, args)
+        grailsWebDataBinder.bind(contentInstance, args as SimpleMapDataBindingSource)
         contentInstance.validate()
         if(contentInstance.hasErrors()) {
             log.warn "Error saving ${contentInstance.class.name}: " + contentInstance.errors
