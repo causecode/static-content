@@ -175,6 +175,7 @@ class BlogController {
     /**
      * Create Blog instance and also sets tags for blog.
      */
+    @Transactional
     def save() {
         Blog.withTransaction { status ->
             blogInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Blog.class)
@@ -190,6 +191,7 @@ class BlogController {
         }
     }
 
+    @Transactional
     @Secured(["permitAll"])
     def show(Long id) {
         List blogComments = commentService.getComments(blogInstance)
@@ -208,6 +210,7 @@ class BlogController {
         result
     }
 
+    @Transactional
     def edit(Long id) {
         [blogInstance: blogInstance]
     }
@@ -215,6 +218,7 @@ class BlogController {
     /**
      * Update blog instance also sets tags for blog instance.
      */
+    @Transactional
     def update(Long id, Long version) {
         if (version != null) {
             if (blogInstance.version > version) {
