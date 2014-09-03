@@ -24,13 +24,11 @@ class InputWidgetController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def beforeInterceptor = [action: this.&validate]
+    def beforeInterceptor = [action: this.&validate, except: ["index", "list", "create", "save"]]
 
     InputWidget inputWidgetInstance
 
     private validate() {
-        if(!params.id) return true;
-
         inputWidgetInstance = InputWidget.get(params.id)
         if(!inputWidgetInstance) {
             flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'inputWidget.label', default: 'InputWidget'), params.id])

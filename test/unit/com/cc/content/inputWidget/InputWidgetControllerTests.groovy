@@ -2,7 +2,10 @@ package com.cc.content.inputWidget
 
 
 
+import java.util.Date;
+
 import org.junit.*
+
 import grails.test.mixin.*
 
 @TestFor(InputWidgetController)
@@ -12,7 +15,9 @@ class InputWidgetControllerTests {
     def populateValidParams(params) {
         assert params != null
         // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
+        params["name"] = 'someValidName'
+        params["validation"] = 'sampleValidation'
+        params["type"] = InputWidgetType.CHECKBOX
     }
 
     void testIndex() {
@@ -132,7 +137,9 @@ class InputWidgetControllerTests {
     }
 
     void testDelete() {
-        controller.delete()
+        controller.validate()
+//        controller.inputWidgetInstance = controller.inputWidgetInstanceList.get(0)
+//        controller.delete()
         assert flash.message != null
         assert response.redirectedUrl == '/inputWidget/list'
 
@@ -145,7 +152,6 @@ class InputWidgetControllerTests {
         assert InputWidget.count() == 1
 
         params.id = inputWidget.id
-
         controller.delete()
 
         assert InputWidget.count() == 0
