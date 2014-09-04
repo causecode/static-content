@@ -270,8 +270,16 @@ class BlogController {
     @Secured(["permitAll"])
     def comment(Long commentId) {
         Map requestMap = request.JSON
+        String errorMessage
         params.putAll(requestMap)
         log.info "Parameters received to comment on blog: $params"
+        if (!params.id) {
+            errorMessage = "Not enough parameters recived to add comment."
+            log.info errorMessage
+            Map result = [message: errorMessage]
+            render status: 403, text: result as JSON
+            return
+        }
         Comment.withTransaction { status ->
             boolean captchaValid = simpleCaptchaService.validateCaptcha(params.captcha)
             if(!captchaValid) {
