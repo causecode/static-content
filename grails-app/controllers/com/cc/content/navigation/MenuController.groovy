@@ -24,7 +24,7 @@ class MenuController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def beforeInterceptor = [action: this.&validate]
+    def beforeInterceptor = [action: this.&validate, except: ["index", "list", "create", "save"]]
 
     private Menu menuInstance
     private MenuItem menuItemInstance
@@ -33,8 +33,6 @@ class MenuController {
     def menuItemService
 
     private validate() {
-        if(!params.id) return true;
-
         menuInstance = Menu.get(params.id)
         if(!menuInstance) {
             flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'menu.label'), params.id])
@@ -101,10 +99,10 @@ class MenuController {
     def delete(Long id) {
         try {
             menuInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'menu.label'), name])
+            flash.message = message(code: 'default.deleted.message', args: [message(code: 'menu.label'), menuInstance.name])
             redirect(action: "list")
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'menu.label'), name])
+            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'menu.label'), menuInstance.name])
             redirect(action: "show", id: id)
         }
     }

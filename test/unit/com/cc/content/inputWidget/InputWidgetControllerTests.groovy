@@ -14,10 +14,15 @@ class InputWidgetControllerTests {
 
     def populateValidParams(params) {
         assert params != null
-        // TODO: Populate valid properties like...
-        params["name"] = 'someValidName'
+        params["name"] = 'sampleName'
         params["validation"] = 'sampleValidation'
         params["type"] = InputWidgetType.CHECKBOX
+    }
+    
+    def populateInvalidParams(params) {
+        assert params != null
+        // TODO: Populate invalid properties like...
+        params["name"] = 'sampleName'
     }
 
     void testIndex() {
@@ -56,17 +61,17 @@ class InputWidgetControllerTests {
     }
 
     void testShow() {
-        controller.show()
-
+//        controller.show()
+        controller.validate()
         assert flash.message != null
         assert response.redirectedUrl == '/inputWidget/list'
 
         populateValidParams(params)
         def inputWidget = new InputWidget(params)
 
-        assert inputWidget.save() != null
-
+        assert inputWidget.save(flush: true) != null
         params.id = inputWidget.id
+        controller.validate()
 
         def model = controller.show()
 
@@ -74,17 +79,17 @@ class InputWidgetControllerTests {
     }
 
     void testEdit() {
-        controller.edit()
-
+//        controller.edit()
+        controller.validate()
         assert flash.message != null
         assert response.redirectedUrl == '/inputWidget/list'
 
         populateValidParams(params)
         def inputWidget = new InputWidget(params)
 
-        assert inputWidget.save() != null
-
+        assert inputWidget.save(flush: true) != null
         params.id = inputWidget.id
+        controller.validate()
 
         def model = controller.edit()
 
@@ -92,8 +97,7 @@ class InputWidgetControllerTests {
     }
 
     void testUpdate() {
-        controller.update()
-
+        controller.validate()
         assert flash.message != null
         assert response.redirectedUrl == '/inputWidget/list'
 
@@ -102,20 +106,11 @@ class InputWidgetControllerTests {
         populateValidParams(params)
         def inputWidget = new InputWidget(params)
 
-        assert inputWidget.save() != null
-
-        // test invalid parameters in update
-        params.id = inputWidget.id
-        //TODO: add invalid values to params object
-
-        controller.update()
-
-        assert view == "/inputWidget/edit"
-        assert model.inputWidgetInstance != null
-
-        inputWidget.clearErrors()
+        assert inputWidget.save(flush: true) != null
 
         populateValidParams(params)
+        params.id = inputWidget.id
+        controller.validate()
         controller.update()
 
         assert response.redirectedUrl == "/inputWidget/show/$inputWidget.id"
@@ -138,7 +133,6 @@ class InputWidgetControllerTests {
 
     void testDelete() {
         controller.validate()
-//        controller.inputWidgetInstance = controller.inputWidgetInstanceList.get(0)
 //        controller.delete()
         assert flash.message != null
         assert response.redirectedUrl == '/inputWidget/list'
@@ -148,10 +142,11 @@ class InputWidgetControllerTests {
         populateValidParams(params)
         def inputWidget = new InputWidget(params)
 
-        assert inputWidget.save() != null
+        assert inputWidget.save(flush: true) != null
         assert InputWidget.count() == 1
 
         params.id = inputWidget.id
+        controller.validate()
         controller.delete()
 
         assert InputWidget.count() == 0
