@@ -25,15 +25,13 @@ class MenuItemController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def beforeInterceptor = [action: this.&validate]
+    def beforeInterceptor = [action: this.&validate, except: ["index", "list", "create", "save"]]
 
     private MenuItem menuItemInstance
 
     def menuItemService
 
     private validate() {
-        if(!params.id) return true;
-
         menuItemInstance = MenuItem.get(params.id)
         if(!menuItemInstance) {
             response.sendError = 404

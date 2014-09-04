@@ -24,13 +24,11 @@ class FAQController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def beforeInterceptor = [action: this.&validate]
+    def beforeInterceptor = [action: this.&validate, except: ["index", "list", "create", "save"]]
 
     private FAQ FAQInstance
 
     private validate() {
-        if(!params.id) return true;
-
         FAQInstance = FAQ.get(params.id)
         if(!FAQInstance) {
             flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'FAQ.label', default: 'FAQ'), params.id])

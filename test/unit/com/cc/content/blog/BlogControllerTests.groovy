@@ -6,6 +6,7 @@ import grails.test.mixin.support.*
 import org.grails.taggable.Tag
 import org.grails.taggable.TagLink
 import org.junit.*
+import com.cc.content.blog.comment.CommentService
 
 import com.cc.content.blog.comment.BlogComment
 
@@ -13,7 +14,7 @@ import com.cc.content.blog.comment.BlogComment
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
  */
 @TestFor(BlogController)
-@Mock([Blog, BlogComment, Tag, TagLink])
+@Mock([Blog, BlogComment, Tag, TagLink, CommentService])
 class BlogControllerTests {
 
     Blog blogInstance

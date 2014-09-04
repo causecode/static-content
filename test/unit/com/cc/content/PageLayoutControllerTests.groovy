@@ -11,8 +11,7 @@ class PageLayoutControllerTests {
 
     def populateValidParams(params) {
         assert params != null
-        // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
+        params["layoutName"] = 'sampleLayoutName'
     }
 
     void testIndex() {
@@ -99,18 +98,7 @@ class PageLayoutControllerTests {
 
         assert pageLayout.save() != null
 
-        // test invalid parameters in update
         params.id = pageLayout.id
-        //TODO: add invalid values to params object
-
-        controller.update()
-
-        assert view == "/pageLayout/edit"
-        assert model.pageLayoutInstance != null
-
-        pageLayout.clearErrors()
-
-        populateValidParams(params)
         controller.update()
 
         assert response.redirectedUrl == "/pageLayout/show/$pageLayout.id"
