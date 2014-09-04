@@ -19,6 +19,7 @@ class BlogControllerTests {
 
     Blog blogInstance
     def mockedCriteria
+    def blogService
 
     void setUp() {
         blogInstance = new Blog("title":"Targeting Test Types and/or Phases", "subTitle":"To execute the JUnit integration tests you can run",
@@ -29,6 +30,10 @@ class BlogControllerTests {
     }
 
     void testShowWithValidValues() {
+
+        def blogService = mockFor(BlogService)
+        blogService.demand.getAllTags {-> return []}
+        controller.blogService = blogService.createMock()
 
         params.id = blogInstance.id
 
@@ -48,8 +53,8 @@ class BlogControllerTests {
         assert model != null
         assert model.blogInstance.id == blogInstance.id
         assert model.comments == []
-        assert model.tagNameList != null
-        assert model.tagFrequesncyList != null
+        assert model.tagList == []
+        assert model.blogInstanceList != null
     }
 
 }

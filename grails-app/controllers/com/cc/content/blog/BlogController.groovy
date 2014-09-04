@@ -86,7 +86,6 @@ class BlogController {
         long blogInstanceTotal
         boolean publish = false
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
-        List tagList = []
         List<String> monthFilterList = []
         String month, year
 
@@ -157,10 +156,8 @@ class BlogController {
             monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
         }
 
-        tagList = blogService.getAllTags()
-
         Map result = [blogInstanceList: blogInstanceList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
-            tagList: tagList]
+            tagList: blogService.getAllTags()]
         if(request.xhr) {
             render text:(result as JSON)
             return
