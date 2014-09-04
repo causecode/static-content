@@ -17,8 +17,6 @@ import com.cc.content.blog.Blog
 
 class BlogDomainMarshaller implements ObjectMarshaller<JSON> {
 
-    def contentService
-
     @Override
     boolean supports(Object object) {
         return object instanceof Blog
@@ -27,7 +25,6 @@ class BlogDomainMarshaller implements ObjectMarshaller<JSON> {
     @Override
     void marshalObject(Object object, JSON converter) throws ConverterException {
         Blog blogInstance = object as Blog
-        println contentService
         String author = blogInstance.resolveAuthor()
         JSONWriter writer = converter.getWriter()
 

@@ -31,17 +31,19 @@ class CommentController {
      * @param id REQUIRED Identity of Comment domain instance to be deleted.
      * @param blogId Identity of Blog domain instance to get blog and redirect to blog show page.
      */
+    @Transactional
     def delete(Long id, Long blogId) {
         log.info "Parameters recived to delete comment: $params" + request.JSON
         Comment.withTransaction { status ->
             Blog blogInstance = Blog.get(blogId)
             Comment commentInstance = Comment.get(id)
             if(commentInstance.replyTo) {
-                commentInstance.delete()
+                commentInstance.delete(flush: true)
             } else {
                 BlogComment.findByComment(commentInstance)?.delete()
             }
 
+            log.info "Comment deleted successfully."
             if (request.xhr) {
                 render "true"
                 return
