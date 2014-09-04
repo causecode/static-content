@@ -3,6 +3,7 @@ package com.cc.content.faq
 
 
 import org.junit.*
+
 import grails.test.mixin.*
 
 @TestFor(FAQController)
@@ -11,8 +12,9 @@ class FAQControllerTests {
 
     def populateValidParams(params) {
         assert params != null
-        // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
+        params["title"] = 'sampleTitle'
+        params["body"] = 'sampleBody'
+        params["publish"] = true
     }
 
     void testIndex() {
@@ -51,7 +53,7 @@ class FAQControllerTests {
     }
 
     void testShow() {
-        controller.show()
+        controller.validate()
 
         assert flash.message != null
         assert response.redirectedUrl == '/FAQ/list'
@@ -59,9 +61,10 @@ class FAQControllerTests {
         populateValidParams(params)
         def FAQ = new FAQ(params)
 
-        assert FAQ.save() != null
+        assert FAQ.save(flush: true) != null
 
         params.id = FAQ.id
+        controller.validate()
 
         def model = controller.show()
 
@@ -69,26 +72,24 @@ class FAQControllerTests {
     }
 
     void testEdit() {
-        controller.edit()
-
+        controller.validate()
         assert flash.message != null
         assert response.redirectedUrl == '/FAQ/list'
 
         populateValidParams(params)
         def FAQ = new FAQ(params)
 
-        assert FAQ.save() != null
+        assert FAQ.save(flush: true) != null
 
         params.id = FAQ.id
-
+        controller.validate()
         def model = controller.edit()
 
         assert model.FAQInstance == FAQ
     }
 
     void testUpdate() {
-        controller.update()
-
+        controller.validate()
         assert flash.message != null
         assert response.redirectedUrl == '/FAQ/list'
 
@@ -97,20 +98,11 @@ class FAQControllerTests {
         populateValidParams(params)
         def FAQ = new FAQ(params)
 
-        assert FAQ.save() != null
-
-        // test invalid parameters in update
-        params.id = FAQ.id
-        //TODO: add invalid values to params object
-
-        controller.update()
-
-        assert view == "/FAQ/edit"
-        assert model.FAQInstance != null
-
-        FAQ.clearErrors()
+        assert FAQ.save(flush: true) != null
 
         populateValidParams(params)
+        params.id = FAQ.id
+        controller.validate()
         controller.update()
 
         assert response.redirectedUrl == "/FAQ/show/$FAQ.id"
@@ -132,7 +124,7 @@ class FAQControllerTests {
     }
 
     void testDelete() {
-        controller.delete()
+        controller.validate()
         assert flash.message != null
         assert response.redirectedUrl == '/FAQ/list'
 
@@ -144,7 +136,11 @@ class FAQControllerTests {
         assert FAQ.save() != null
         assert FAQ.count() == 1
 
+
+        assert FAQ.save(flush: true) != null
+
         params.id = FAQ.id
+        controller.validate()
 
         controller.delete()
 

@@ -42,6 +42,7 @@ class BlogController {
     def springSecurityService
     def simpleCaptchaService
     def commentService
+    def blogService
     def grailsWebDataBinder
 
     private Blog blogInstance
@@ -76,9 +77,10 @@ class BlogController {
     }
 
     @Secured(["permitAll"])
-    def list(Integer max, Integer offset, String tag, String monthFilter) {
+    def list(Integer max, Integer offset, String tag, String monthFilter, String queryFilter) {
         if (tag == 'undefined') tag = ''
         if (monthFilter == 'undefined') monthFilter = ''
+        if (queryFilter == 'undefined') queryFilter = ''
 
         log.info "Parameters received to filter blogs : $params"
         long blogInstanceTotal
@@ -108,6 +110,11 @@ class BlogController {
             tag ? query.append(" AND ") : query.append(" WHERE ")
             query.append(" monthname(b.publishedDate) = '$month' AND year(b.publishedDate) = '$year'")
         }
+        if(queryFilter) {
+            tag ? query.append(" AND ") : ( monthFilter ? query.append(" AND ") : query.append(" WHERE "))
+            query.append(" b.title LIKE '%$queryFilter%' OR b.subTitle LIKE '%$queryFilter%' ")
+            query.append(" OR b.body LIKE '%$queryFilter%' OR b.author LIKE '%$queryFilter%'")
+        }
 
         if(contentService.contentManager) {
             blogInstanceTotal = tag ? Blog.countByTag(tag) : Blog.count()
@@ -116,8 +123,11 @@ class BlogController {
             blogInstanceTotal = Blog.findAllByTagWithCriteria(tag) {
                 eq("publish", true)
             }.size()
+        } else if(monthFilter) {
+            query.append("AND b.publish = true")
+            blogInstanceTotal = Blog.countByPublish(true)
         } else {
-            (monthFilter) ? query.append(" AND ") : query.append(" where ")
+            (queryFilter) ? query.append(" AND ") : query.append(" where ")
             query.append(" b.publish = true")
             blogInstanceTotal = Blog.countByPublish(true)
         }
@@ -142,21 +152,12 @@ class BlogController {
             it.author = contentService.resolveAuthor(blogInstance)
             it.numberOfComments = BlogComment.countByBlog(blogInstance)
             blogInstanceList.add(it)
+        }
+        Blog.list().each {
             monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
         }
 
-        Blog.allTags.each { tagName ->
-            def tagListInstance = TagLink.withCriteria(uniqueResult: true) {
-                createAlias('tag', 'tagInstance')
-                projections {
-                    countDistinct 'id'
-                    property("tagInstance.name")
-                }
-                eq('type','blog')
-                eq('tagInstance.name', tagName)
-            }
-            tagList.add(tagListInstance)
-        }
+        tagList = blogService.getAllTags()
 
         Map result = [blogInstanceList: blogInstanceList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
             tagList: tagList]
@@ -174,6 +175,7 @@ class BlogController {
     /**
      * Create Blog instance and also sets tags for blog.
      */
+    @Transactional
     def save() {
         Blog.withTransaction { status ->
             blogInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Blog.class)
@@ -189,26 +191,17 @@ class BlogController {
         }
     }
 
+    @Transactional
     @Secured(["permitAll"])
     def show(Long id) {
         List blogComments = commentService.getComments(blogInstance)
-        List tagNameList = []
-        List tagFrequesncyList = []
+        List tagList = []
 
-        blogInstance.tags.each { tagName ->
-            tagNameList.add(tagName)
-            def result = TagLink.withCriteria {
-                eq('type','blog')
-                tag {
-                    eq('name', tagName)
-                }
-            }
-            tagFrequesncyList.add( result.size() ?:1 )
-        }
+        tagList = blogService.getAllTags()
 
-        List<Blog> blogInstanceList = Blog.list(max: 5, sort: 'publishedDate', order: 'desc')
-        Map result = [blogInstance: blogInstance, comments: blogComments, tagNameList: tagNameList, 
-            tagFrequesncyList: tagFrequesncyList, blogInstanceList: blogInstanceList]
+        List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
+        Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList, 
+            blogInstanceList: blogInstanceList]
 
         if(request.xhr) {
             render text:(result as JSON)
@@ -217,6 +210,7 @@ class BlogController {
         result
     }
 
+    @Transactional
     def edit(Long id) {
         [blogInstance: blogInstance]
     }
@@ -224,6 +218,7 @@ class BlogController {
     /**
      * Update blog instance also sets tags for blog instance.
      */
+    @Transactional
     def update(Long id, Long version) {
         if (version != null) {
             if (blogInstance.version > version) {
@@ -275,8 +270,16 @@ class BlogController {
     @Secured(["permitAll"])
     def comment(Long commentId) {
         Map requestMap = request.JSON
+        String errorMessage
         params.putAll(requestMap)
         log.info "Parameters received to comment on blog: $params"
+        if (!params.id) {
+            errorMessage = "Not enough parameters recived to add comment."
+            log.info errorMessage
+            Map result = [message: errorMessage]
+            render status: 403, text: result as JSON
+            return
+        }
         Comment.withTransaction { status ->
             boolean captchaValid = simpleCaptchaService.validateCaptcha(params.captcha)
             if(!captchaValid) {
