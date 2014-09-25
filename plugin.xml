@@ -49,4 +49,19 @@ Also provides shortened and user friendly urls.
     <resource>com.cc.content.navigation.MenuTagLib</resource>
     <resource>com.cc.content.page.PageTagLib</resource>
   </resources>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+  <repositories>
+    <repository name='grailsCentral' url='http://grails.org/plugins' />
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+    <repository name='http://grails.org/plugins' url='http://grails.org/plugins' />
+  </repositories>
+  <dependencies />
+  <plugins />
+  <runtimePluginRequirements />
+  <behavior />
+>>>>>>> rest-api-temp
+>>>>>>> parent of 235e8fc... Revert "Upgrading to grails 2.3.5, Spring Security Core 2.0-RC2 related changes"
 </plugin>

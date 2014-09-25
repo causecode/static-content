@@ -8,7 +8,7 @@
 
 import java.lang.annotation.Annotation
 
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.SpringSecurityUtils
 
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.ContentService
