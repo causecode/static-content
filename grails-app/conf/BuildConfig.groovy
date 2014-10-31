@@ -32,7 +32,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile (":spring-security-core:1.2.7.3", ":taggable:1.0.1", ":ckeditor:3.6.3.0") {
+        compile (":spring-security-core:2.0-RC4", ":taggable:1.0.1", ":ckeditor:3.6.3.0") {
             export = false
         }
         runtime (":resources:1.2.1", ":hibernate:3.6.10.7") {

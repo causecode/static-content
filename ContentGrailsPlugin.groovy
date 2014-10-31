@@ -8,14 +8,14 @@
 
 import java.lang.annotation.Annotation
 
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.SpringSecurityUtils
 
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.ContentService
 
 class ContentGrailsPlugin {
 
-    def version = "2.2"
+    def version = "2.2.1"
     def groupId = "com.cc.plugins"
     def grailsVersion = "2.1 > *"
     def pluginExcludes = [

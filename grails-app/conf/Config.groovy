@@ -28,7 +28,7 @@ grails.resources.modules = {
     }
 }
 
-grails.plugins.springsecurity.securityConfigType = "Annotation"
+grails.plugin.springsecurity.securityConfigType = "Annotation"
 
 ckeditor {
     upload {

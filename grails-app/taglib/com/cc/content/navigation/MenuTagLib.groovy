@@ -8,7 +8,7 @@
 
 package com.cc.content.navigation
 
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.SpringSecurityUtils
 
 /**
  * This taglib provides tags for rendering comments on blog.

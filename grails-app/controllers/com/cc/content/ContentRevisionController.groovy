@@ -9,7 +9,7 @@
 package com.cc.content
 
 import grails.converters.JSON
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 /**
  * Provides end point to show, load and delete content revision for Content Manager.
