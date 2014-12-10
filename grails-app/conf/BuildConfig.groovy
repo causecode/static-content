@@ -30,13 +30,13 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile (":spring-security-core:2.0-RC2", ":taggable:1.0.1") {
+        compile (":spring-security-core:2.0-RC4", ":taggable:1.0.1") {
             export = false
         }
         runtime (":resources:1.2.1") {
             export = false
         }
-        build (":tomcat:7.0.50", ":release:2.0.3", ":rest-client-builder:1.0.2") {
+        build (":tomcat:7.0.50", ":release:3.0.1", ":rest-client-builder:2.0.1") {
             export = false
         }
     }

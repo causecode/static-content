@@ -1,4 +1,4 @@
-<plugin name='content' version='2.1' grailsVersion='2.1 &gt; *'>
+<plugin name='content' version='2.1.1-AH' grailsVersion='2.1 &gt; *'>
   <author>CauseCode</author>
   <title>Content Plugin</title>
   <description>A plugin used to manage contents like static pages, menus etc. at one place.
@@ -44,19 +44,4 @@ Also provides shortened and user friendly urls.
     <resource>com.cc.content.navigation.MenuTagLib</resource>
     <resource>com.cc.page.PageTagLib</resource>
   </resources>
-  <repositories>
-    <repository name='grailsCentral' url='http://grails.org/plugins' />
-    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
-    <repository name='http://grails.org/plugins' url='http://grails.org/plugins' />
-  </repositories>
-  <dependencies />
-  <plugins>
-    <compile>
-      <plugin group='org.grails.plugins' name='taggable' version='1.0.1' />
-    </compile>
-  </plugins>
-  <runtimePluginRequirements>
-    <plugin name='hibernate' version='2.1 &gt; *' />
-  </runtimePluginRequirements>
-  <behavior />
 </plugin>
