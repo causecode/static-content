@@ -1,0 +1,20 @@
+<div ng-controller="PageLayoutController">
+    <div class="container text-center">
+        <h2>Create Page Layout</h2>
+    </div>
+
+    <div class="row text-center">
+        <div
+            class="contact-form col-md-6 col-sm-12 col-xs-12 col-md-offset-3 col-sm-offset-0 col-xs-offset-0">
+            <form class="form" ng-submit="createPageLayout()">
+                <div class="form-group name">
+                    <label class="sr-only" for="name">Layout Name</label>
+                    <input id="name" type="text" class="form-control"
+                        placeholder="Enter Page Layout Name" ng-model="pageLayout.name">
+                </div>
+                
+                      <button type="submit" class="btn btn-block btn-cta-primary">Create</button>
+            </form>
+        </div>
+    </div>
+</div>

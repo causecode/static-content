@@ -1,0 +1,89 @@
+<div class="row">
+    <div ng-if="filter" class="col-sm-3">
+        <filter class="well">
+            <div class="page-header" style="margin-top: 0">
+                <h2 style="margin: 0">Filters</h2>
+            </div>
+
+            <section id="sort-filters">
+                <h3>Sort</h3>
+                <select name="sort" class="form-control input-sm">
+                    <option ng-repeat="sortProperty in sortProperties" value="{{sortProperty}}">
+                        {{sortProperty.capitalize()}}
+                    </option>
+                </select>
+            </section>
+
+            <section id="order-filters">
+                <h3>Order</h3>
+                <select name="order" class="form-control input-sm">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+            </section>
+
+            <div class="df-gutter-top text-right">
+                <button class="btn btn-sm btn-primary" ng-click="filterList()">Filter</button>
+            </div>
+        </filter>
+    </div>
+    <div class="{{filter ? 'col-sm-9' : 'col-sm-12'}}">
+        <div class="row df-gutter-bottom" ng-show="userActions">
+            <div class="col-sm-5">
+                <div class="checkbox" ng-show="showSelectAllPagesOption">
+                    <label>
+                        <input type="checkbox" ng-model="elementModels.selectAllPageInstances">
+                        <span class="text-danger">Click to select all records in the system</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-5 col-sm-push-2 text-right">
+                <form name="userAction" class="form-inline" ng-submit="performUserAction()">
+                    <select name="userAction" ng-model="elementModels.userAction" class="form-control input-sm"
+                        ng-disabled="selectedInstances.length == 0">
+                        <option value="">- User Action -</option>
+                        <option ng-repeat="(methodName, displayName) in userActions"
+                            value="{{methodName}}">{{displayName}}</option>
+                    </select>
+                    <button type="submit" class="btn btn-default btn-sm"
+                        ng-disabled="selectedInstances.length == 0 || action == ''">
+                        Go</button>
+                </form>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" ng-model="selectUnselectAll" ng-change="selectAllList()"/>
+                    </th>
+                    <th>#</th>
+                    <th ng-repeat="columnName in columnNames" class="capitalize">{{columnName}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="instance in instanceList">
+                    <td width="30px">
+                        <input type="checkbox" name="instanceId" ng-change="addOrRemoveSelectedInstance()"
+                            ng-model="instance.selected" />
+                    </td>
+                    <td>{{$index + offset + 1}}</td>
+                    <td ng-repeat="columnName in columnNames" ng-bind-html="instance.toHTML(columnName, this)"></td>
+                </tr>
+                <tr ng-if="!instanceList || instanceList.length == 0">
+                    <td colspan="{{columnNames.length + 2}}">Sorry, no entry found.</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="{{columnNames.length + 2}}">
+                        <ba-pager-info max="itemsPerPage" page="currentPage" total="totalCount" />
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        <pagination total-items="totalCount" page="currentPage" max-size="10" boundary-links="true"
+            on-select-page="changePage(page)" items-per-page="itemsPerPage"></pagination>
+    </div>
+</div>
