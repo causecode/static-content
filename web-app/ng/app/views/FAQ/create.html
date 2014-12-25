@@ -1,67 +1,22 @@
 <div class="container" ng-controller="FAQController">
-    <div class="container text-center">
+    <div class="page-header">
         <h2>Create FAQ</h2>
     </div>
 
-    <div class="row text-center">
-        <div
-            class="contact-form col-md-6 col-sm-12 col-xs-12 col-md-offset-3 col-sm-offset-0 col-xs-offset-0">
-            <form class="form-horizontal" ng-submit="createFAQ()">
+	<div class="row text-left">
+		<form class="form-horizontal" on-submit="contentInstance.$save()">
 
-
-				<div class="form-group">
-					<label class="col-sm-2 control-label" for="body">Body</label>
-					<div class="col-sm-10">
-					<textarea id="body" rows="5" cols="5" class="form-control"
-						placeholder="Enter Body" ng-model="faq.body"></textarea>
-					</div>
-				</div>
-
-			<div class="form-group">
-				<label class="col-sm-2 control-label" for="title">Title</label>
-				<div class="col-sm-10">
-					<input id="body" type="text" class="form-control"
-						placeholder="Enter Title" ng-model="faq.title">
-
-				</div>
-			</div>
-
-			<div class="form-group">
-				<label class="col-sm-2 control-label" for="subTitle">Sub Title</label>
-				<div class="col-sm-10">
-					<input id="subTitle" type="text" class="form-control"
-						placeholder="Enter Sub Title" ng-model="faq.subTitle">
-
-				</div>
-			</div>
-
-			<div class="form-group">
-				<label class="col-sm-2 control-label" for="author">Author
-					</label>
-				<div class="col-sm-10">
-					<input id="author" type="text" class="form-control"
-						placeholder="Enter Author" ng-model="faq.author">
-
-				</div>
-			</div>
-
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-2">
-					<div class="checkbox">
-						<label> <input type="checkbox" id="publish" ng-true-value="'true'" ng-false-value="'false'" ng-model="faq.publish"> Publish
-						</label>
-					</div>
-				</div>
-			</div>
+			<div ng-include="'views/content/_form.html'"></div>
 
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
+					<a ui-sref="urlMap({action: 'list'})" class="btn btn-default">
+						<i class="fa fa-th-list fa-fw"></i> Cancel
+					</a>
 					<button type="submit" class="btn btn-default">Create</button>
 				</div>
 			</div>
 
-<!-- 			<button type="submit" class="btn btn-block btn-cta-primary">Create</button> -->
-            </form>
-        </div>
-    </div>
+		</form>
+	</div>
 </div>

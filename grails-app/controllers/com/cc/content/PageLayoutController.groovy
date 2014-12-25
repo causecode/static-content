@@ -8,6 +8,7 @@
 
 package com.cc.content
 
+import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
@@ -19,10 +20,11 @@ import org.springframework.dao.DataIntegrityViolationException
  * @author Bharti Nagdev
  *
  */
-@Secured(["ROLE_CONTENT_MANAGER"])
+@Secured(["permitAll"])
 class PageLayoutController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+	static responseFormats = ["json"]
 
     def index() {
         redirect(action: "list", params: params)
@@ -30,7 +32,14 @@ class PageLayoutController {
 
     def list(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        [pageLayoutInstanceList: PageLayout.list(params), pageLayoutInstanceTotal: PageLayout.count()]
+        respond ([instanceList: PageLayout.list(params), totalCount: PageLayout.count()]) 
+    }
+    
+    def getPageLayoutList() {
+        println("in getpagelayout")
+        List pageLayoutList = PageLayout.list()
+        respond([pageLayoutList: pageLayoutList])
+        return
     }
 
     def create() {
@@ -38,12 +47,12 @@ class PageLayoutController {
     }
 
     def save() {
+        params.putAll(request.JSON)
         def pageLayoutInstance = new PageLayout(params)
         if (!pageLayoutInstance.save(flush: true)) {
-            render(view: "create", model: [pageLayoutInstance: pageLayoutInstance])
+            respond(pageLayoutInstance.errors)
             return
         }
-
         flash.message = message(code: 'default.created.message', args: [message(code: 'pageLayout.label'), pageLayoutInstance.id])
         redirect(action: "show", id: pageLayoutInstance.id)
     }
@@ -56,7 +65,7 @@ class PageLayoutController {
             return
         }
 
-        [pageLayoutInstance: pageLayoutInstance]
+        respond(pageLayoutInstance)
     }
 
     def edit(Long id) {
@@ -67,7 +76,8 @@ class PageLayoutController {
             return
         }
 
-        [pageLayoutInstance: pageLayoutInstance]
+        println("in edit")
+        respond([pageLayoutInstance: pageLayoutInstance])
     }
 
     def update(Long id, Long version) {

@@ -8,6 +8,7 @@
 
 package com.cc.content.faq
 
+import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
@@ -19,10 +20,12 @@ import org.springframework.dao.DataIntegrityViolationException
  * @author Laxmi Salunkhe
  *
  */
-@Secured(["ROLE_CONTENT_MANAGER"])
+@Secured(["permitAll"])
 class FAQController {
+	
+	static responseFormats = ["json"]
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     def beforeInterceptor = [action: this.&validate, except: ["index", "list", "create", "save"]]
 
@@ -45,7 +48,7 @@ class FAQController {
     def list(Integer max, Integer offset) {
         params.max = Math.min(max ?: 10, 100)
         params.offset = offset ? offset: 0
-        [FAQInstanceList: FAQ.list(params), FAQInstanceTotal: FAQ.count()]
+        respond ( [instanceList: FAQ.list(params), totalCount: FAQ.count()] ) 
     }
 
     def create() {
@@ -53,9 +56,10 @@ class FAQController {
     }
 
     def save() {
+        params.putAll(request.JSON)
         FAQInstance = new FAQ(params)
         if (!FAQInstance.save(flush: true)) {
-            render(view: "create", model: [FAQInstance: FAQInstance])
+            respond(FAQInstance.errors)
             return
         }
 
@@ -63,8 +67,8 @@ class FAQController {
         redirect(action: "show", id: FAQInstance.id)
     }
 
-    def show(Long id) {
-        [FAQInstance: FAQInstance]
+    def show() {
+        respond (FAQInstance)
     }
 
     def edit(Long id) {
@@ -72,12 +76,13 @@ class FAQController {
     }
 
     def update(Long id, Long version) {
+        params.putAll(request.JSON)
         if(version != null) {
             if (FAQInstance.version > version) {
                 FAQInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'FAQ.label', default: 'FAQ')] as Object[],
                         "Another user has updated this FAQ while you were editing")
-                render(view: "edit", model: [FAQInstance: FAQInstance])
+                respond(FAQInstance.errors)
                 return
             }
         }
@@ -85,7 +90,7 @@ class FAQController {
         FAQInstance.properties = params
 
         if (!FAQInstance.save(flush: true)) {
-            render(view: "edit", model: [FAQInstance: FAQInstance])
+            respond(FAQInstance.errors)
             return
         }
 
@@ -94,6 +99,7 @@ class FAQController {
     }
 
     def delete(Long id) {
+        println(">>>>>> In deelete")
         try {
             FAQInstance.delete(flush: true)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'FAQ.label', default: 'FAQ'), id])

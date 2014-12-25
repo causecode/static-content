@@ -12,6 +12,8 @@ import grails.plugin.springsecurity.annotation.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
 
+import grails.converters.JSON
+
 import com.cc.iframe.Scraper
 
 /**
@@ -20,12 +22,14 @@ import com.cc.iframe.Scraper
  * @author Shashank Agrawal
  *
  */
-@Secured(["ROLE_CONTENT_MANAGER"])
+@Secured(["permitAll"])
 class NewsController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "PUT"]
 
     def beforeInterceptor = [action: this.&validate]
+    
+    static responseFormats = ["json"]
 
     private News newsInstance
 
@@ -45,9 +49,10 @@ class NewsController {
         redirect(action: "list", params: params)
     }
 
-    def list(Integer max) {
+    def list(Integer max, Integer offset) {
         params.max = Math.min(max ?: 10, 100)
-        [newsInstanceList: News.list(params), newsInstanceTotal: News.count()]
+        params.offset = offset ? offset: 0
+        respond ( [instanceList: News.list(params), totalCount: News.count()] )
     }
 
     def create() {
@@ -55,18 +60,21 @@ class NewsController {
     }
 
     def save() {
+        params.putAll(request.JSON)
+        println(params)
         newsInstance = new News(params)
         if (!newsInstance.save(flush: true)) {
-            render(view: "create", model: [newsInstance: newsInstance])
+            respond(newsInstance.errors)
+            println("fail")
             return
         }
-
-        flash.message = message(code: 'default.created.message', args: [message(code: 'news.label', default: 'News'), newsInstance.id])
-        redirect(action: "show", id: newsInstance.id)
+        println("pass")
+        respond(newsInstance)
     }
 
     def show(Long id) {
-        [newsInstance: newsInstance]
+        println("in show")
+        respond(newsInstance)
     }
 
     def edit(Long id) {
@@ -74,25 +82,29 @@ class NewsController {
     }
 
     def update(Long id, Long version) {
+        println("in update")
+        params.putAll(request.JSON)
         if(version != null) {
             if (newsInstance.version > version) {
                 newsInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'news.label', default: 'News')] as Object[],
                         "Another user has updated this News while you were editing")
-                render(view: "edit", model: [newsInstance: newsInstance])
+                respond(newsInstance.errors)
                 return
             }
         }
 
+        println("jerer")
         newsInstance.properties = params
 
         if (!newsInstance.save(flush: true)) {
-            render(view: "edit", model: [newsInstance: newsInstance])
-            return
+            println("fail")
+            respond(newsInstance.errors)
+            return 
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'news.label', default: 'News'), newsInstance.id])
-        redirect(action: "show", id: newsInstance.id)
+        respond ([success: true])
+        return
     }
 
     def delete(Long id) {

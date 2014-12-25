@@ -6,19 +6,12 @@ controllers.controller('FAQController', ['$scope', '$state', 'FAQModel', 'appSer
     function($scope, $state, FAQModel, appService, $modal) {
     console.info('FAQController executing.', $scope);
 
-
-    $scope.createFAQ = function() {
-    		
-    		FAQModel.createFAQ(null,{
-    			title: $scope.faq.title,
-    			subTitle:$scope.faq.subTitle,
-    			body:$scope.faq.body,
-    			author:$scope.faq.author,
-    			publish:$scope.faq.publish
-    		}, function(data) {
-    			appService.showAlertMessage('FAQ created successfully.', 'info');
-    		}, function(data) {
-    			appService.showAlertMessage('Unable to create FAQ.', 'danger');
-    		});
-    };
+    
+    if ($scope.actionName === 'create') {
+        $scope.contentInstance = new FAQModel();
+        
+    } else if (['edit', 'show'].indexOf($scope.actionName) > -1) {
+        $scope.contentInstance = FAQModel.get({id: $scope.id});
+    }
+    
 }]);

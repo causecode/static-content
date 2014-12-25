@@ -11,6 +11,8 @@ package com.cc.content.page
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 
+import com.cc.content.meta.Meta
+
 import grails.plugin.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 
@@ -24,11 +26,13 @@ import com.cc.content.ContentRevision
  * @author Laxmi Salunkhe
  *
  */
-@Secured(["ROLE_CONTENT_MANAGER"])
+@Secured(["permitAll"])
 @ControllerShorthand(value = "c")
 class PageController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "POST"]
+    
+    static responseFormats = ["json"]
 
     def beforeInterceptor = [action: this.&validate]
     def contentService
@@ -50,6 +54,11 @@ class PageController {
     def index() {
         redirect(action: "list", params: params)
     }
+    
+    def getMetaTypeList(){
+        List metaTypeList = Meta.getTypeList()
+        respond ([metaTypeList:metaTypeList])
+    }
 
     def list(Integer max) {
         params.sort = "dateCreated"
@@ -61,7 +70,7 @@ class PageController {
             if(SpringSecurityUtils.ifNotGranted(contentManagerRole))
                 eq("publish", true)
         }
-        [pageInstanceList: pageInstanceList, pageInstanceTotal: pageInstanceList.totalCount]
+        respond ([instanceList: pageInstanceList, totalCount: pageInstanceList.totalCount])
     }
 
     def create() {
@@ -69,7 +78,8 @@ class PageController {
     }
 
     def save() {
-        pageInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Page.class)
+        params.putAll(request.JSON)
+        pageInstance = contentService.create(params, params.metaList.type, params.metaList.value, Page.class)
         if(!pageInstance.save(flush: true)) {
             render(view: "create", model: [pageInstance: pageInstance])
             return
@@ -79,13 +89,9 @@ class PageController {
         redirect uri: pageInstance.searchLink()
     }
 
-    @Secured(["permitAll"])
+//    @Secured(["permitAll"])
     def show(Long id) {
-        if(request.xhr) {
-            render text:([pageInstance: pageInstance] as JSON)
-            return
-        }
-        [pageInstance: pageInstance]
+        respond(pageInstance)
     }
 
     def edit(Long id) {
@@ -93,19 +99,21 @@ class PageController {
     }
 
     def update(Long id, Long version) {
+        params.putAll(request.JSON)
+
         if(version != null) {
             if (pageInstance.version > version) {
                 pageInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'page.label')] as Object[],
                         "Another user has updated this Page while you were editing")
-                render(view: "edit", model: [pageInstance: pageInstance])
+                respond(pageInstance.errors)
                 return
             }
         }
-        pageInstance = contentService.update(params, pageInstance, params.meta.list("type"), params.meta.list("value"))
+        pageInstance = contentService.update(params, pageInstance, params.metaList.type, params.metaList.value)
 
         if(pageInstance.hasErrors()) {
-            render(view: "edit", model: [pageInstance: pageInstance])
+            respond(pageInstance.errors)
             return
         }
         flash.message = "<em>$pageInstance</em> Page updated successfully."

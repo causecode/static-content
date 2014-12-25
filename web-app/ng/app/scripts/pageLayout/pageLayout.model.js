@@ -6,15 +6,7 @@ models.factory('PageLayoutModel', ['$resource', '$http', 'BaseModel','dateFilter
     var PageLayoutModel = augment(BaseModel, function (uber) {
         var clazz;
 
-        console.log('In Page layout model.. :-)');
         this.resourceName = 'pageLayout';
-
-        this.customActions = {
-            createPageLayout: {
-                method: 'POST',
-                url: '/api/v1/pageLayout/action/save'
-            }
-        };
 
         this.constructor = function(data) {
             clazz = uber.constructor.call(this, data);
@@ -22,19 +14,31 @@ models.factory('PageLayoutModel', ['$resource', '$http', 'BaseModel','dateFilter
             this.postConstruct();
             return clazz;
         };
+        
+        this.customActions = {
+        		getPageLayoutList: {
+        			method: "GET",
+        			url: "/api/v1/pageLayout/action/getPageLayoutList"
+        		}
+        }
 
         this.postConstruct = function() {
+        	
+        	clazz.prototype.toHTMLLayoutName = function() {
+        		var html = ' <a href="#/pageLayout/show/' + this.id + '">' + this.layoutName + '</a>';
+                return html;
+        	}
         	
         	clazz.getClazzName = function() {
         		return 'PageLayoutModel';
         	};
         	
         	clazz.getColumnNames = function() {
-        		return ['Name'];
+        		return ['layoutName'];
         	};
         	
         	clazz.getSortProperties = function() {
-        		return ['Name'];
+        		return ['layoutName'];
         	};
         };
     });

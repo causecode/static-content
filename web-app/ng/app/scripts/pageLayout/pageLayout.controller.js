@@ -6,15 +6,11 @@ controllers.controller('PageLayoutController', ['$scope', '$state', 'PageLayoutM
     function($scope, $state, PageLayoutModel, appService, $modal) {
     console.info('PageLayoutController executing.', $scope);
 
-
-    $scope.createPageLayout = function() {
-    		
-    		PageLayoutModel.createPageLayout({layoutName: $scope.pageLayout.name},{
-    			layoutName: $scope.pageLayout.name
-    		}, function(data) {
-    			appService.showAlertMessage('Page Layout created successfully.', 'info');
-    		}, function(data) {
-    			appService.showAlertMessage('Unable to create Page Layout.', 'danger');
-    		});
-    };
+    
+    if ($scope.actionName === 'create') {
+        $scope.pageLayoutInstance = new PageLayoutModel();
+    } else if (['edit', 'show'].indexOf($scope.actionName) > -1) {
+        $scope.pageLayoutInstance = PageLayoutModel.get({id: $scope.id});
+//        console.log("here",pageLayoutInstance.layoutName);
+    }
 }]);

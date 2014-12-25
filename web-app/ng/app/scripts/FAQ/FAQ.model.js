@@ -8,28 +8,25 @@ models.factory('FAQModel', ['$resource', '$http', 'BaseModel','dateFilter', func
 
         this.resourceName = 'FAQ';
 
-        this.customActions = {
-            createFAQ: {
-                method: 'POST',
-                url: '/api/v1/FAQ/action/save'
-            }
-        };
-
         this.constructor = function(data) {
             clazz = uber.constructor.call(this, data);
 
             this.postConstruct();
             return clazz;
         };
-
+        
         this.postConstruct = function() {
         	
+        	clazz.prototype.toHTMLTitle = function(scope) {
+        		return '<a ui-sref="urlMap.resource({ctrl: \'FAQ\', action: \'show\', resource: ' + this.id + '})">' + this.title + '</a>';
+        	};
+            
         	clazz.getClazzName = function() {
         		return 'FAQModel';
         	};
         	
         	clazz.getColumnNames = function() {
-        		return ['title','subTitle','body','author'];
+        		return ['title','subTitle','body','publish'];
         	};
         	
         	clazz.getSortProperties = function() {

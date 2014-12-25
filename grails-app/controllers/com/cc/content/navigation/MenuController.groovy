@@ -12,6 +12,7 @@ import grails.plugin.springsecurity.annotation.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
 
+
 /**
  * Provides default CRUD end point for Content Manager.
  * @author Vishesh Duggar
@@ -19,12 +20,14 @@ import org.springframework.dao.DataIntegrityViolationException
  * @author Shashank Agrawal
  *
  */
-@Secured(["ROLE_CONTENT_MANAGER"])
+@Secured(["permitAll"])
 class MenuController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    
+    static responseFormats = ["json"]
 
-    def beforeInterceptor = [action: this.&validate, except: ["index", "list", "create", "save"]]
+    def beforeInterceptor = [action: this.&validate, except: ["index", "list", "create", "save","getRoleList"]]
 
     private Menu menuInstance
     private MenuItem menuItemInstance
@@ -33,6 +36,7 @@ class MenuController {
     def menuItemService
 
     private validate() {
+        println(">>>>>>>>in validate")
         menuInstance = Menu.get(params.id)
         if(!menuInstance) {
             flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'menu.label'), params.id])
@@ -52,22 +56,28 @@ class MenuController {
     }
 
     def create() {
-        [menuInstance: new Menu(params), Role: contentService.getRoleClass()]
+//        [menuInstance: new Menu(params), Role: contentService.getRoleClass()]
+        def roleList = contentService.getRoleClass().list()
+        respond(roleList:roleList)
     }
 
     def save() {
+        params.putAll(request.JSON)
+        params.roles = getRoles(params.role.authority)
         menuInstance = new Menu(params)
         if (!menuInstance.save(flush: true)) {
-            render(view: "create", model: [menuInstance: menuInstance, Role: contentService.getRoleClass()])
+            respond(menuInstance.errors)
             return
         }
 
         flash.message = message(code: 'default.created.message', args: [message(code: 'menu.label'), menuInstance.name])
         redirect(action: "show", id: menuInstance.id)
     }
-
+    
     def show(Long id) {
-        [menuItemInstanceList: menuInstance.menuItems, menuInstance: menuInstance, Role: contentService.getRoleClass()]
+        List<MenuItem> menuItemInstanceList = menuInstance.menuItems.findAll { !it.parent }
+        respond ([menuItemInstanceList: menuItemInstanceList, menuInstance: menuInstance,
+            roleList: contentService.getRoleClass().list()])
     }
 
     def edit(Long id) {
@@ -106,5 +116,14 @@ class MenuController {
             redirect(action: "show", id: id)
         }
     }
+    
+    def getRoles(List roleList) {
+        String roles = ''
+        for(def role in roleList) {
+            roles = roles + role + ','
+        }
+        return roles.substring(0, (roles.length() - 1))
+    }
+
 
 }

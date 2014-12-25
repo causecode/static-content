@@ -8,6 +8,8 @@
 
 package com.cc.content.navigation
 
+import java.util.List;
+
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -20,10 +22,12 @@ import org.springframework.dao.DataIntegrityViolationException
  * @author Shashank Agrawal
  *
  */
-@Secured(["ROLE_CONTENT_MANAGER"])
+@Secured(["permitAll"])
 class MenuItemController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    
+    static responseFormats = ["json"]
 
     def beforeInterceptor = [action: this.&validate, except: ["index", "list", "create", "save"]]
 
@@ -32,6 +36,7 @@ class MenuItemController {
     def menuItemService
 
     private validate() {
+        params.putAll(request.JSON)
         menuItemInstance = MenuItem.get(params.id)
         if(!menuItemInstance) {
             response.sendError = 404
@@ -52,8 +57,13 @@ class MenuItemController {
     }
 
     def save() {
+        params.putAll(request.JSON)
+        if (params.roles.authority) {
+            params.roles = getRoles(params.roles.authority)
+        } 
         menuItemInstance = menuItemService.create(params)
-        render menuItemInstance.id
+//        render menuItemInstance.id
+        respond (menuItemInstance)
     }
 
     def edit(){
@@ -63,16 +73,28 @@ class MenuItemController {
     }
 
     def update(){
+        params.putAll(request.JSON)
+        params.roles = getRoles(params.roles.authority)
         menuItemInstance = menuItemService.update(menuItemInstance, params)
-        render ([success: true] as JSON)
+        respond([success: true])
     }
+    
 
     /**
      * Used to reorder menuItem instance.
      */
     def reorder() {
         menuItemInstance = menuItemService.reorder(menuItemInstance, params)
-        render ([success: true]) as JSON
+        println("done..")
+        respond([success: true])
+    }
+    
+    def getRoles(List roleList) {
+        String roles = ''
+        for(def role in roleList) {
+            roles = roles + role + ','
+        }
+        return roles.substring(0, (roles.length() - 1))
     }
 
 }
