@@ -31,12 +31,12 @@ class PageLayoutController {
     }
 
     def list(Integer max) {
+        params.putAll(request.JSON)
         params.max = Math.min(max ?: 10, 100)
         respond ([instanceList: PageLayout.list(params), totalCount: PageLayout.count()]) 
     }
     
     def getPageLayoutList() {
-        println("in getpagelayout")
         List pageLayoutList = PageLayout.list()
         respond([pageLayoutList: pageLayoutList])
         return
@@ -53,18 +53,13 @@ class PageLayoutController {
             respond(pageLayoutInstance.errors)
             return
         }
-        flash.message = message(code: 'default.created.message', args: [message(code: 'pageLayout.label'), pageLayoutInstance.id])
-        redirect(action: "show", id: pageLayoutInstance.id)
+        
+        respond ([success: true])
     }
 
     def show(Long id) {
+        params.putAll(request.JSON)
         def pageLayoutInstance = PageLayout.get(id)
-        if (!pageLayoutInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), id])
-            redirect(action: "list")
-            return
-        }
-
         respond(pageLayoutInstance)
     }
 
@@ -81,19 +76,17 @@ class PageLayoutController {
     }
 
     def update(Long id, Long version) {
+        params.putAll(request.JSON)
         def pageLayoutInstance = PageLayout.get(id)
+        
         if (!pageLayoutInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), id])
-            redirect(action: "list")
+            respond ([success: false])
             return
         }
 
         if (version != null) {
             if (pageLayoutInstance.version > version) {
-                pageLayoutInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'pageLayout.label')] as Object[],
-                        "Another user has updated this PageLayout while you were editing")
-                render(view: "edit", model: [pageLayoutInstance: pageLayoutInstance])
+                respond ([success: false, message: "Another user has updated this Email Template while you were editing"])
                 return
             }
         }
@@ -101,30 +94,22 @@ class PageLayoutController {
         pageLayoutInstance.properties = params
 
         if (!pageLayoutInstance.save(flush: true)) {
-            render(view: "edit", model: [pageLayoutInstance: pageLayoutInstance])
+            respond(pageLayoutInstance.errors)
             return
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'pageLayout.label'), pageLayoutInstance.id])
-        redirect(action: "show", id: pageLayoutInstance.id)
+        respond ([success: true])
     }
 
     def delete(Long id) {
         def pageLayoutInstance = PageLayout.get(id)
-        if (!pageLayoutInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), id])
-            redirect(action: "list")
-            return
-        }
-
+        
         try {
             pageLayoutInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'pageLayout.label'), id])
-            redirect(action: "list")
+            respond ([success: true])
         }
         catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'pageLayout.label'), id])
-            redirect(action: "show", id: id)
+            respond ([success: false])
         }
     }
 }

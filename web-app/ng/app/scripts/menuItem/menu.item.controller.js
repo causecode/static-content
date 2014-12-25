@@ -153,8 +153,6 @@ controllers.controller('MenuItemController', ['$scope', '$state', 'MenuItemModel
 	}
 
 	$scope.sortableOptions = {
-			//containment: '#sortable-container',
-			//restrict move across columns. move only within column.
 			accept: function (sourceItemHandleScope, destSortableScope) {
 				return true
 			},

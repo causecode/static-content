@@ -25,7 +25,7 @@ import com.cc.iframe.Scraper
 @Secured(["permitAll"])
 class NewsController {
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "PUT"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     def beforeInterceptor = [action: this.&validate]
     
@@ -61,19 +61,15 @@ class NewsController {
 
     def save() {
         params.putAll(request.JSON)
-        println(params)
         newsInstance = new News(params)
         if (!newsInstance.save(flush: true)) {
             respond(newsInstance.errors)
-            println("fail")
             return
         }
-        println("pass")
         respond(newsInstance)
     }
 
     def show(Long id) {
-        println("in show")
         respond(newsInstance)
     }
 
@@ -82,7 +78,6 @@ class NewsController {
     }
 
     def update(Long id, Long version) {
-        println("in update")
         params.putAll(request.JSON)
         if(version != null) {
             if (newsInstance.version > version) {
@@ -94,11 +89,9 @@ class NewsController {
             }
         }
 
-        println("jerer")
         newsInstance.properties = params
 
         if (!newsInstance.save(flush: true)) {
-            println("fail")
             respond(newsInstance.errors)
             return 
         }
@@ -110,11 +103,9 @@ class NewsController {
     def delete(Long id) {
         try {
             newsInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'news.label', default: 'News'), id])
-            redirect(action: "list")
+            respond ([success: true])
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'news.label', default: 'News'), id])
-            redirect(action: "show", id: id)
+            respond ([success: false])
         }
     }
 

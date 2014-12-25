@@ -24,12 +24,17 @@ models.factory('PageModel', ['$resource', '$http', 'BaseModel', function($resour
         
         this.postConstruct = function() {
         	
+        	clazz.prototype.toHTMLTitle = function(scope) {
+        		return '<a ui-sref="urlMap.resource({ctrl: \'page\', action: \'show\', resource: ' + this.id + '})">' + this.title + '</a>';
+        	};
+
+        	
         	clazz.getClazzName = function() {
         		return 'PageModel';
         	};
         	
         	clazz.getColumnNames = function() {
-        		return ['title','subTitle','body','publish'];
+        		return ['title', 'subTitle', 'publish'];
         	};
         	
         	clazz.getSortProperties = function() {

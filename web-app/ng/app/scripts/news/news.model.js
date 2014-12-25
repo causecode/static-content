@@ -26,7 +26,7 @@ models.factory('NewsModel', ['$resource', '$http', 'BaseModel', function($resour
         	};
         	
         	clazz.getColumnNames = function() {
-        		return ['title','subTitle','body','publish'];
+        		return ['title', 'subTitle', 'publish'];
         	};
         	
         	clazz.getSortProperties = function() {

@@ -18,7 +18,7 @@ models.factory('FAQModel', ['$resource', '$http', 'BaseModel','dateFilter', func
         this.postConstruct = function() {
         	
         	clazz.prototype.toHTMLTitle = function(scope) {
-        		return '<a ui-sref="urlMap.resource({ctrl: \'FAQ\', action: \'show\', resource: ' + this.id + '})">' + this.title + '</a>';
+        		return '<a ui-sref="urlMap.resource({ctrl: \'faq\', action: \'show\', resource: ' + this.id + '})">' + this.title + '</a>';
         	};
             
         	clazz.getClazzName = function() {

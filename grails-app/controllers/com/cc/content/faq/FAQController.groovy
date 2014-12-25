@@ -46,6 +46,7 @@ class FAQController {
     }
 
     def list(Integer max, Integer offset) {
+        params.putAll(request.JSON)
         params.max = Math.min(max ?: 10, 100)
         params.offset = offset ? offset: 0
         respond ( [instanceList: FAQ.list(params), totalCount: FAQ.count()] ) 
@@ -63,8 +64,7 @@ class FAQController {
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'FAQ.label', default: 'FAQ'), FAQInstance.id])
-        redirect(action: "show", id: FAQInstance.id)
+        respond ([success: true])
     }
 
     def show() {
@@ -93,20 +93,16 @@ class FAQController {
             respond(FAQInstance.errors)
             return
         }
-
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'FAQ.label', default: 'FAQ'), FAQInstance.id])
-        redirect(action: "show", id: FAQInstance.id)
+        
+        respond ([success: true])
     }
 
     def delete(Long id) {
-        println(">>>>>> In deelete")
         try {
             FAQInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'FAQ.label', default: 'FAQ'), id])
-            redirect(action: "list")
+            respond ([success: true])
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'FAQ.label', default: 'FAQ'), id])
-            redirect(action: "show", id: id)
+            respond ([success: false])
         }
     }
 }

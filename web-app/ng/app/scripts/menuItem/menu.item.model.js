@@ -33,7 +33,7 @@ models.factory('MenuItemModel', ['$resource', '$http', 'BaseModel','dateFilter',
         	};
         	
         	clazz.getColumnNames = function() {
-        		return ['title','subTitle','body','publish'];
+        		return ['title', 'subTitle', 'body', 'publish'];
         	};
         	
         	clazz.getSortProperties = function() {
