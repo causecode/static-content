@@ -25,12 +25,16 @@ models.factory('MenuModel', ['$resource', '$http', 'BaseModel', function($resour
         
         this.postConstruct = function() {
         	
+//        	clazz.prototype.toHTMLName = function(scope) {
+//        		return '<a ui-sref="urlMap.resource({ctrl: \'menu\', action: \'show\', resource: ' + this.id + '})">' + this.title + '</a>';
+//        	};
+        	
         	clazz.getClazzName = function() {
         		return 'MenuModel';
         	};
         	
         	clazz.getColumnNames = function() {
-        		return ['title','subTitle','body','publish'];
+        		return ['name','dateCreated','lastUpdated'];
         	};
         	
         	clazz.getSortProperties = function() {

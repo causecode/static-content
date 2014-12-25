@@ -36,7 +36,6 @@ class MenuController {
     def menuItemService
 
     private validate() {
-        println(">>>>>>>>in validate")
         menuInstance = Menu.get(params.id)
         if(!menuInstance) {
             flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'menu.label'), params.id])
@@ -51,12 +50,12 @@ class MenuController {
     }
 
     def list(Integer max) {
+        params.putAll(request.JSON)
         params.max = Math.min(max ?: 10, 100)
-        [menuInstanceList: Menu.list(params), menuInstanceTotal: Menu.count()]
+        respond ([instanceList: Menu.list(params), totalCount: Menu.count()])
     }
 
     def create() {
-//        [menuInstance: new Menu(params), Role: contentService.getRoleClass()]
         def roleList = contentService.getRoleClass().list()
         respond(roleList:roleList)
     }
