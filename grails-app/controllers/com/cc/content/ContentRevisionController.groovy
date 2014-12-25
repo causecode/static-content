@@ -16,7 +16,7 @@ import grails.plugin.springsecurity.annotation.Secured
  * @author Vishesh Duggar
  * @author Shashank Agrawal
  */
-@Secured("ROLE_CONTENT_MANAGER")
+@Secured("permitAll")
 class ContentRevisionController {
 
     static defaultAction = "show"

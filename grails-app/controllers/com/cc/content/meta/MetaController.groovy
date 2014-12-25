@@ -10,6 +10,8 @@ package com.cc.content.meta
 
 import grails.plugin.springsecurity.annotation.Secured
 
+import grails.converters.JSON
+
 import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.content.ContentMeta
@@ -20,10 +22,12 @@ import com.cc.content.ContentMeta
  * @author Shashank Agrawal
  *
  */
-@Secured(["ROLE_CONTENT_MANAGER"])
+@Secured(["permitAll"])
 class MetaController {
 
     def beforeInterceptor = [action: this.&validate]
+    
+    static responseFormats = ["json"]
 
     private Meta metaInstance
 
@@ -42,6 +46,7 @@ class MetaController {
         }
         return true
     }
+    
 
     /**
      * Delete Meta instance and all its references and render dummy text.

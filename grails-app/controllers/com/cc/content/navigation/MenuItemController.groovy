@@ -58,11 +58,8 @@ class MenuItemController {
 
     def save() {
         params.putAll(request.JSON)
-        if (params.roles.authority) {
-            params.roles = getRoles(params.roles.authority)
-        } 
+        println("******** and parameters are" + params)
         menuItemInstance = menuItemService.create(params)
-//        render menuItemInstance.id
         respond (menuItemInstance)
     }
 
@@ -74,7 +71,6 @@ class MenuItemController {
 
     def update(){
         params.putAll(request.JSON)
-        params.roles = getRoles(params.roles.authority)
         menuItemInstance = menuItemService.update(menuItemInstance, params)
         respond([success: true])
     }
@@ -88,13 +84,4 @@ class MenuItemController {
         println("done..")
         respond([success: true])
     }
-    
-    def getRoles(List roleList) {
-        String roles = ''
-        for(def role in roleList) {
-            roles = roles + role + ','
-        }
-        return roles.substring(0, (roles.length() - 1))
-    }
-
 }

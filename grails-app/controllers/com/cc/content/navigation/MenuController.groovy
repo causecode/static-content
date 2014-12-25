@@ -63,7 +63,6 @@ class MenuController {
 
     def save() {
         params.putAll(request.JSON)
-        params.roles = getRoles(params.role.authority)
         menuInstance = new Menu(params)
         if (!menuInstance.save(flush: true)) {
             respond(menuInstance.errors)
@@ -116,14 +115,4 @@ class MenuController {
             redirect(action: "show", id: id)
         }
     }
-    
-    def getRoles(List roleList) {
-        String roles = ''
-        for(def role in roleList) {
-            roles = roles + role + ','
-        }
-        return roles.substring(0, (roles.length() - 1))
-    }
-
-
 }

@@ -29,12 +29,14 @@ import com.cc.content.blog.comment.Comment
  * @author Laxmi Salunkhe
  *
  */
-@Secured(["ROLE_CONTENT_MANAGER"])
+@Secured(["permitAll"])
 @Transactional(readOnly = true)
 @ControllerShorthand(value = "blog")
 class BlogController {
 
     static allowedMethods = [save: "POST", update: "POST"]
+    
+    static responseFormats = ["json"]
 
     def beforeInterceptor = [action: this.&validate]
 
@@ -50,6 +52,7 @@ class BlogController {
     private static String HTML_P_TAG_PATTERN = "(?s)<p(.*?)>(.*?)<\\/p>"
 
     private boolean validate() {
+        println("<<<<<<<< in validate")
         if(!params.id) {
             return true
         }
@@ -152,6 +155,7 @@ class BlogController {
             it.numberOfComments = BlogComment.countByBlog(blogInstance)
             blogInstanceList.add(it)
         }
+		println("Now check my size.. "+Bolg.list().size())
         Blog.list().each {
             monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
         }
@@ -166,6 +170,7 @@ class BlogController {
     }
 
     def create() {
+		println("in create ..  :-)")
         [blogInstance: new Blog(params)]
     }
 
@@ -174,37 +179,40 @@ class BlogController {
      */
     @Transactional
     def save() {
+        params.putAll(request.JSON)
         Blog.withTransaction { status ->
-            blogInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Blog.class)
+            blogInstance = contentService.create(params, params.metaList.type, params.metaList.value, Blog.class)
             if (blogInstance.hasErrors()) {
                 status.setRollbackOnly()
-                render(view: "create", model: [blogInstance: blogInstance])
+                respond(blogInstance.errors)
                 return
             }
             blogInstance.setTags(params.tags.tokenize(",")*.trim())
             blogInstance.save(flush: true)
+            println("here now")
             flash.message = message(code: 'default.created.message', args: [message(code: 'blog.label'), blogInstance.title])
             redirect uri: blogInstance.searchLink()
         }
     }
-
+    
     @Transactional
     @Secured(["permitAll"])
     def show(Long id) {
+        println(">>>>>>>>>>>in blog show")
         List blogComments = commentService.getComments(blogInstance)
         List tagList = []
 
         tagList = blogService.getAllTags()
-
+        def blogInstanceTags = blogInstance.tags
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList, 
-            blogInstanceList: blogInstanceList]
+            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags]
 
-        if(request.xhr) {
-            render text:(result as JSON)
-            return
-        }
-        result
+//        if(request.xhr) {
+//            render text:(result as JSON)
+//            return
+//        }
+        respond(result)
     }
 
     @Transactional

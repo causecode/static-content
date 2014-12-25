@@ -18,11 +18,11 @@
 				<div as-sortable-item-handle>
 					{{menuItemInstance.title}} 
 					<span class="pull-right"> 
-						<a ng-click="saveMenuItem(menuItemInstance)"
+						<a ng-click="save(menuItemInstance)" ng-show="menuItemInstance.tempId"
 							class="save-menu-item"> <i class="fa fa-check icon-ok"> </i></a> 
-						<a ng-click="removeMenuItem(menuItemInstance)"
+						<a ng-click="remove(menuItemInstance)"
 							class="delete-menu-item"><i class="fa fa-trash-o icon-remove"></i></a>
-						<a ng-click = "editMenuItem(menuItemInstance)"
+						<a ng-click = "edit(menuItemInstance)" ng-show="menuItemInstance.id"
 							class="delete-menu-item"><i class="fa fa-pencil"></i></a>
 					</span> 
 				</div>
@@ -31,11 +31,11 @@
 					<li ng-repeat="subMenu in menuItemInstance.childItems" as-sortable-item ng-model="subMenu">
 						<div as-sortable-item-handle>
 							{{subMenu.title}} <span class="pull-right"> <a
-								ng-click="saveMenuItem(subMenu, menuItemInstance)"
+								ng-click="save(subMenu, menuItemInstance)" ng-show="menuItemInstance.tempId"
 								class="save-menu-item"> <i class="fa fa-check icon-ok"> </i></a> <a
-								ng-click="removeMenuItem(subMenu, menuItemInstance)"
+								ng-click="remove(subMenu, menuItemInstance)" 
 								class="delete-menu-item"><i class="fa fa-trash-o icon-remove"></i></a>
-								<a ng-click="editMenuItem(subMenu)"
+								<a ng-click="edit(subMenu)" ng-show="menuItemInstance.id"
 								class="delete-menu-item"><i class="fa fa-pencil"></i></a>
 							</span>
 						</div>

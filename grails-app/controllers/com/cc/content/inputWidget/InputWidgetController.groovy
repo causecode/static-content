@@ -19,7 +19,7 @@ import org.springframework.dao.DataIntegrityViolationException
  * @author Laxmi Salunkhe
  *
  */
-@Secured(["ROLE_CONTENT_MANAGER"])
+@Secured(["permitAll"])
 class InputWidgetController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
