@@ -1,0 +1,28 @@
+<div class="form-group">
+	<label class="col-sm-2 control-label" for="Name">Name</label>
+	<div class="col-sm-5">
+		<input type="text" class="form-control"
+			ng-model="menuInstance.name">
+
+	</div>
+</div>
+
+<div class="form-group">
+	<label class="col-sm-2 control-label" for="role">Role</label>
+	<div class="col-sm-5">
+		<select ng-model="menuInstance.role" class="form-control" multiple
+			ng-options="role.authority for role in roleList">
+		</select>
+	</div>
+</div>
+
+
+<div class="form-group">
+	<div class="col-sm-offset-2 col-sm-5">
+		<div class="checkbox">
+			<label> <input type="checkbox" 
+				ng-model="menuInstance.showOnlyWhenLoggedIn"> Show Only when Logged In
+			</label>
+		</div>
+	</div>
+</div>

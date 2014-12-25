@@ -1,0 +1,48 @@
+<section ng-controller="MenuItemController">
+	<div class="container">
+		<div class="page-header clearfix">
+			<h2 class="pull-left">
+				Menu Items <small>{{menuInstance.name}}</small>
+			</h2>
+			<span class="btn-group pull-right"> <a ng-click="open()"
+				class="btn btn-primary btn-sm" ng-disabled="buttonDisabled"
+				data-toggle="modal"> <i class="icon-plus"></i> &nbsp;Menu Item
+			</a>
+			</span>
+		</div>
+
+		<ul as-sortable="sortableOptions" ng-model="menuItemInstanceList" style="min-height: 40px"
+			class="list-unstyled">
+			<li ng-repeat="menuItemInstance in menuItemInstanceList" as-sortable-item class="thumbnail"
+				ng-model="menuItemInstance">
+				<div as-sortable-item-handle>
+					{{menuItemInstance.title}} 
+					<span class="pull-right"> 
+						<a ng-click="saveMenuItem(menuItemInstance)"
+							class="save-menu-item"> <i class="fa fa-check icon-ok"> </i></a> 
+						<a ng-click="removeMenuItem(menuItemInstance)"
+							class="delete-menu-item"><i class="fa fa-trash-o icon-remove"></i></a>
+						<a ng-click = "editMenuItem(menuItemInstance)"
+							class="delete-menu-item"><i class="fa fa-pencil"></i></a>
+					</span> 
+				</div>
+				<ul as-sortable="sortableOptions" style="min-height: 40px"
+					ng-model="menuItemInstance.childItems" class="list-unstyled">
+					<li ng-repeat="subMenu in menuItemInstance.childItems" as-sortable-item ng-model="subMenu">
+						<div as-sortable-item-handle>
+							{{subMenu.title}} <span class="pull-right"> <a
+								ng-click="saveMenuItem(subMenu, menuItemInstance)"
+								class="save-menu-item"> <i class="fa fa-check icon-ok"> </i></a> <a
+								ng-click="removeMenuItem(subMenu, menuItemInstance)"
+								class="delete-menu-item"><i class="fa fa-trash-o icon-remove"></i></a>
+								<a ng-click="editMenuItem(subMenu)"
+								class="delete-menu-item"><i class="fa fa-pencil"></i></a>
+							</span>
+						</div>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</section>
+
