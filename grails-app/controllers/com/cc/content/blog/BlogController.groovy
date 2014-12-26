@@ -185,7 +185,6 @@ class BlogController {
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList, 
             blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags]
-
         if(request.xhr) {
             render text:(result as JSON)
             return
@@ -298,12 +297,42 @@ class BlogController {
                 blogCommentInstance.save()
             }
             log.info "Comment Added successfully."
+            sendMail(blogInstance, commentInstance)
             if (request.xhr) {
                 render text: ([success: true] as JSON)
                 return
             }
             redirect uri: blogInstance.searchLink()
         }
+    }
+
+    def sendMail(Blog blogInstance, Comment commentInstance) {
+        String[] emailList = getEmailsForBlogComments(blogInstance, commentInstance)
+        println(emailList)
+        sendMail {
+            to emailList
+            subject "comment on blog " + blogInstance.title + " : " +commentInstance.subject
+            body ( view:"/blog/templates/blogCommentMail",
+            model:[blogInstance: blogInstance, commentInstance: commentInstance] )
+        }
+    }
+    
+    def getEmailsForBlogComments(Blog blogInstance, Comment commentInstance) {
+        def emails = [] as Set
+        
+        addAuthorEmail(emails)
+        
+        if (commentInstance.replyTo) {
+            emails.add(commentInstance.replyTo.email)
+        } 
+        
+        String [] emailArray = emails.toArray(new String[emails.size()])
+        return emailArray
+    }
+    
+    def addAuthorEmail(Set emails) {
+        def blogAuthor = contentService.getAuthorClass().get(blogInstance.author)
+        emails.add(blogAuthor.email)
     }
 
 }
