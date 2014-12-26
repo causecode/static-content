@@ -308,10 +308,9 @@ class BlogController {
 
     def sendMail(Blog blogInstance, Comment commentInstance) {
         String[] emailList = getEmailsForBlogComments(blogInstance, commentInstance)
-        println(emailList)
         sendMail {
             to emailList
-            subject "comment on blog " + blogInstance.title + " : " +commentInstance.subject
+            subject commentInstance.subject
             body ( view:"/blog/templates/blogCommentMail",
             model:[blogInstance: blogInstance, commentInstance: commentInstance] )
         }
@@ -326,8 +325,7 @@ class BlogController {
             emails.add(commentInstance.replyTo.email)
         } 
         
-        String [] emailArray = emails.toArray(new String[emails.size()])
-        return emailArray
+        return emails.toArray(new String[emails.size()])
     }
     
     def addAuthorEmail(Set emails) {
