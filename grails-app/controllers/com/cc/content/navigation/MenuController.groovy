@@ -68,8 +68,7 @@ class MenuController {
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'menu.label'), menuInstance.name])
-        redirect(action: "show", id: menuInstance.id)
+        respond ([success: true])
     }
     
     def show(Long id) {
@@ -88,7 +87,7 @@ class MenuController {
                 menuInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'menu.label')] as Object[],
                         "Another user has updated this Menu while you were editing")
-                render(view: "edit", model: [menuInstance: menuInstance, Role: contentService.getRoleClass()])
+                respond(menuInstance.errors)
                 return
             }
         }
@@ -96,22 +95,20 @@ class MenuController {
         menuInstance.properties = params
 
         if (!menuInstance.save(flush: true)) {
-            render(view: "edit", model: [menuInstance: menuInstance, Role: contentService.getRoleClass()])
-            return
+            respond(menuInstance.errors)
+            return 
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'menu.label'), menuInstance.name])
-        redirect(action: "show", id: menuInstance.id)
+        respond ([success: true])
+        return
     }
 
     def delete(Long id) {
         try {
             menuInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'menu.label'), menuInstance.name])
-            redirect(action: "list")
+            respond ([success: true])
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'menu.label'), menuInstance.name])
-            redirect(action: "show", id: id)
+            respond ([success: false])
         }
     }
 }

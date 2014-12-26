@@ -50,15 +50,14 @@ class MenuItemController {
     def delete(Long id) {
         try {
             menuItemInstance = menuItemService.delete(menuItemInstance)
-            render true
+            respond ([success: true])
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'menuItem.label'), menuItemInstance.title])
+            respond ([success: false])
         }
     }
 
     def save() {
         params.putAll(request.JSON)
-        println("******** and parameters are" + params)
         menuItemInstance = menuItemService.create(params)
         respond (menuItemInstance)
     }
@@ -81,7 +80,6 @@ class MenuItemController {
      */
     def reorder() {
         menuItemInstance = menuItemService.reorder(menuItemInstance, params)
-        println("done..")
         respond([success: true])
     }
 }

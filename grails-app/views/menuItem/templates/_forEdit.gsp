@@ -3,10 +3,10 @@
         <i class="icon-move fa fa-arrows"></i>
         <strong class="title">${instance.title}</strong>
         <span class="pull-right">
-            <a class="edit-menu-item" href="#"><i class="icon-pencil"></i></a>
-            <a class="delete-menu-item" href="#"><i class="icon-trash"></i></a>
+            <a class="edit-menu-item" href="#"><i class="fa fa-pencil"></i></a>
+            <a class="delete-menu-item" href="#"><i class="fa fa-trash-o"></i></a>
         </span>
-        <ul class="menu-item-container" data-parent-id="${instance.id }">
+        <ul class="menu-item-container" data-parent-id="${instance.id }" style="background: red">
             <g:each in="${instance.childItems}" var="childItemInstance">
                 <g:render template="/menuItem/templates/forEdit" model="[instance: childItemInstance, topLevel: false]" />
             </g:each>
