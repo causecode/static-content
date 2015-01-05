@@ -133,6 +133,8 @@ class BlogController {
         List<Blog> blogInstanceList = []
         blogList.each {
             Blog blogInstance = Blog.get(it.id as long)
+            String regex = "\\<[^>]*>"
+            it.body = it.body.replaceAll(regex,"").replaceAll("&nbsp;"," ")
             it.author = contentService.resolveAuthor(blogInstance)
             it.numberOfComments = BlogComment.countByBlog(blogInstance)
             blogInstanceList.add(it)
