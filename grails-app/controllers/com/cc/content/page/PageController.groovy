@@ -89,7 +89,7 @@ class PageController {
         redirect uri: pageInstance.searchLink()
     }
 
-//    @Secured(["permitAll"])
+    @Secured(["permitAll"])
     def show(Long id) {
         respond(pageInstance)
     }
