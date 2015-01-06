@@ -29,7 +29,7 @@ import com.cc.content.blog.comment.Comment
  * @author Laxmi Salunkhe
  *
  */
-@Secured(["permitAll"])
+@Secured(["ROLE_CONTENT_MANAGER"])
 @Transactional(readOnly = true)
 @ControllerShorthand(value = "blog")
 class BlogController {
@@ -52,7 +52,6 @@ class BlogController {
     private static String HTML_P_TAG_PATTERN = "(?s)<p(.*?)>(.*?)<\\/p>"
 
     private boolean validate() {
-        println("<<<<<<<< in validate")
         if(!params.id) {
             return true
         }
@@ -198,7 +197,6 @@ class BlogController {
     @Transactional
     @Secured(["permitAll"])
     def show(Long id) {
-        println(">>>>>>>>>>>in blog show")
         List blogComments = commentService.getComments(blogInstance)
         List tagList = []
 

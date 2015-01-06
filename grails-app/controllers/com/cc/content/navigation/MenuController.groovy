@@ -20,7 +20,7 @@ import org.springframework.dao.DataIntegrityViolationException
  * @author Shashank Agrawal
  *
  */
-@Secured(["permitAll"])
+@Secured(["ROLE_CONTENT_MANAGER"])
 class MenuController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
@@ -100,7 +100,6 @@ class MenuController {
         }
 
         respond ([success: true])
-        return
     }
 
     def delete(Long id) {

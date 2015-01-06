@@ -20,7 +20,7 @@ import org.springframework.dao.DataIntegrityViolationException
  * @author Laxmi Salunkhe
  *
  */
-@Secured(["permitAll"])
+@Secured(["ROLE_CONTENT_MANAGER"])
 class FAQController {
 	
 	static responseFormats = ["json"]

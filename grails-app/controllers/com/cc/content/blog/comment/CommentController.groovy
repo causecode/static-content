@@ -19,7 +19,7 @@ import com.cc.content.blog.Blog
  * @author Laxmi Salunkhe
  *
  */
-@Secured(["permitAll"])
+@Secured(["ROLE_CONTENT_MANAGER"])
 @Transactional(readOnly = true)
 class CommentController {
 

@@ -26,7 +26,7 @@ import com.cc.content.ContentRevision
  * @author Laxmi Salunkhe
  *
  */
-@Secured(["permitAll"])
+@Secured(["ROLE_CONTENT_MANAGER"])
 @ControllerShorthand(value = "c")
 class PageController {
 

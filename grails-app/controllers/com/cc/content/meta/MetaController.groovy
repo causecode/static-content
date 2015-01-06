@@ -22,7 +22,7 @@ import com.cc.content.ContentMeta
  * @author Shashank Agrawal
  *
  */
-@Secured(["permitAll"])
+@Secured(["ROLE_CONTENT_MANAGER"])
 class MetaController {
 
     def beforeInterceptor = [action: this.&validate]

@@ -22,7 +22,7 @@ import org.springframework.dao.DataIntegrityViolationException
  * @author Shashank Agrawal
  *
  */
-@Secured(["permitAll"])
+@Secured(["ROLE_CONTENT_MANAGER"])
 class MenuItemController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]

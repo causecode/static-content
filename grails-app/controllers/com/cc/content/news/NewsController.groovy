@@ -22,7 +22,7 @@ import com.cc.iframe.Scraper
  * @author Shashank Agrawal
  *
  */
-@Secured(["permitAll"])
+@Secured(["ROLE_CONTENT_MANAGER"])
 class NewsController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
@@ -52,7 +52,7 @@ class NewsController {
     def list(Integer max, Integer offset) {
         params.max = Math.min(max ?: 10, 100)
         params.offset = offset ? offset: 0
-        respond ( [instanceList: News.list(params), totalCount: News.count()] )
+        respond ([instanceList: News.list(params), totalCount: News.count()])
     }
 
     def create() {
@@ -97,7 +97,6 @@ class NewsController {
         }
 
         respond ([success: true])
-        return
     }
 
     def delete(Long id) {

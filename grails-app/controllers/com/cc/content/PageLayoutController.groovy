@@ -20,7 +20,7 @@ import org.springframework.dao.DataIntegrityViolationException
  * @author Bharti Nagdev
  *
  */
-@Secured(["permitAll"])
+@Secured(["ROLE_CONTENT_MANAGER"])
 class PageLayoutController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
