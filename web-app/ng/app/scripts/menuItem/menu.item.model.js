@@ -10,35 +10,33 @@ models.factory('MenuItemModel', ['$resource', '$http', 'BaseModel','dateFilter',
 
         this.constructor = function(data) {
             clazz = uber.constructor.call(this, data);
-
             this.postConstruct();
             return clazz;
         };
         
         this.customActions = {
-        		saveMenuItem: {
-        			method: 'POST',
-        			url: '/api/v1/menuItem/action/save'
-        		},
-        		reorder: {
-        			method: 'POST',
-        			url: '/api/v1/menuItem/action/reorder'
-        		}
+            saveMenuItem: {
+                method: 'POST',
+                url: '/api/v1/menuItem/action/save'
+            },
+            reorder: {
+                method: 'POST',
+                url: '/api/v1/menuItem/action/reorder'
+            }
         };
 
         this.postConstruct = function() {
-        	
-        	clazz.getClazzName = function() {
-        		return 'MenuItemModel';
-        	};
-        	
-        	clazz.getColumnNames = function() {
-        		return ['title', 'subTitle', 'body', 'publish'];
-        	};
-        	
-        	clazz.getSortProperties = function() {
-        		return [];
-        	};
+            clazz.getClazzName = function() {
+                return 'MenuItemModel';
+            };
+            
+            clazz.getColumnNames = function() {
+                return ['title', 'subTitle', 'body', 'publish'];
+            };
+            
+            clazz.getSortProperties = function() {
+                return [];
+            };
         };
     });
 
