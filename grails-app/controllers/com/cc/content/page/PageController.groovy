@@ -128,11 +128,9 @@ class PageController {
     def delete(Long id) {
         try {
             contentService.delete(pageInstance)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'page.label'), id])
-            redirect(action: "list")
+            respond ([success: true])
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'page.label'), id])
-            redirect uri: pageInstance.searchLink()
+            respond ([success: false])        
         }
     }
 }

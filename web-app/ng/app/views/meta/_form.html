@@ -1,23 +1,24 @@
 <div class="page-header">
-	<h2 class="inline">
-		Meta Tags <small><a ng-click="addForm()"> <i class="fa fa-plus"> </i> </a></small>
-	</h2>
+    <h2 class="inline">
+        Meta Tags <small><a ng-click="addForm()"> <i class="fa fa-plus"> </i>
+        </a></small>
+    </h2>
 </div>
 
 <div ng-repeat="meta in contentInstance.metaList">
-	<div class="form-group">
-		<label class="col-sm-2 control-label" for="body"></label>
-		<div class="col-sm-5">
-			<select ng-model="meta.type" class="form-control" ng-options="meta for meta in metaList">
-				<option value=""></option>
-			</select>
-		</div>
-	</div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="body"></label>
+        <div class="col-sm-5">
+            <select ng-model="meta.type" class="form-control" ng-options="meta for meta in metaList">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
 
-	<div class="form-group">
-		<label class="col-sm-2 control-label" for="body"></label>
-		<div class="col-sm-5">
-			<textarea rows="3" class="form-control" ng-model="meta.value"></textarea>
-		</div>
-	</div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="body"></label>
+        <div class="col-sm-5">
+            <textarea rows="3" class="form-control" ng-model="meta.value"></textarea>
+        </div>
+    </div>
 </div>

@@ -1,25 +1,18 @@
-<div>
-	<h2 class="title">Create Blog</h2>
-	<input id="title" type="text"
-		class="form-control subject ng-pristine ng-valid" placeholder="Title"
-		ng-model="blog.title" validation-errors=""> 
-	
-	<input
-		id="subTitle" type="text"
-		class="form-control subject ng-pristine ng-valid"
-		placeholder="Sub Title" ng-model="blog.subTitle" validation-errors="">
-		
-	<input
-		id="body" type="text"
-		class="form-control subject ng-pristine ng-valid"
-		placeholder="Body" ng-model="blog.body" validation-errors="">
-		
-	<input
-		id="tags" type="text"
-		class="form-control subject ng-pristine ng-valid"
-		placeholder="Tags" ng-model="blog.tags" validation-errors="">
-		
-	<input type="checkbox" ng-model="publish">			
-
-	<h2 class="title">Meta Tags</h2>
+<div class="container" ng-controller="BlogController">
+    <div class="page-header">
+        <h2>Create Blog</h2>
+    </div>
+    <div class="row text-left">
+        <form class="form-horizontal" on-submit="contentInstance.$save()">
+            <div ng-include="'views/pageLayout/_form.html'"></div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <a ui-sref="urlMap({action: 'list'})" class="btn btn-default"> <i class="fa fa-th-list fa-fw"></i>
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-default">Create</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>

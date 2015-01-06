@@ -1,19 +1,19 @@
 <div class="container" ng-controller="PageController">
-	<div class="page-header">
-		<h2>Create Page</h2>
-	</div>
-	<div class="row text-left">
-		<form class="form-horizontal" on-submit="contentInstance.$save()">
-			<div ng-include="'views/page/_form.html'"></div>
-			<div ng-include="'views/meta/_form.html'"></div>
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
-					<a ui-sref="urlMap({action: 'list'})" class="btn btn-default">
-						<i class="fa fa-th-list fa-fw"></i> Cancel
-					</a>
-					<button type="submit" class="btn btn-default">Create</button>
-				</div>
-			</div>
-		</form>
-	</div>
+    <div class="page-header">
+        <h2>Create Page</h2>
+    </div>
+    <div class="row text-left">
+        <form class="form-horizontal" on-submit="contentInstance.$save()">
+            <div ng-include="'views/page/_form.html'"></div>
+            <div ng-include="'views/meta/_form.html'"></div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <a ui-sref="urlMap({action: 'list'})" class="btn btn-default"> <i class="fa fa-th-list fa-fw"></i>
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-default">Create</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
