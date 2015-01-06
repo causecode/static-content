@@ -10,36 +10,30 @@ models.factory('MenuModel', ['$resource', '$http', 'BaseModel', function($resour
 
         this.constructor = function(data) {
             clazz = uber.constructor.call(this, data);
-
             this.postConstruct();
             return clazz;
         };
         
         this.customActions = {
-        		getRoleList: {
-        			method: 'POST',
-        			url: '/api/v1/menu/action/create'
-        		}
+            getRoleList: {
+            method: 'POST',
+            url: '/api/v1/menu/action/create'
+            }
         };
-
         
         this.postConstruct = function() {
-        	
-//        	clazz.prototype.toHTMLName = function(scope) {
-//        		return '<a ui-sref="urlMap.resource({ctrl: \'menu\', action: \'show\', resource: ' + this.id + '})">' + this.title + '</a>';
-//        	};
-        	
-        	clazz.getClazzName = function() {
-        		return 'MenuModel';
-        	};
-        	
-        	clazz.getColumnNames = function() {
-        		return ['name','dateCreated','lastUpdated'];
-        	};
-        	
-        	clazz.getSortProperties = function() {
-        		return [];
-        	};
+        
+            clazz.getClazzName = function() {
+                return 'MenuModel';
+            };
+        
+            clazz.getColumnNames = function() {
+                return ['name','dateCreated','lastUpdated'];
+            };
+        
+            clazz.getSortProperties = function() {
+                return [];
+            };
         };
     });
 

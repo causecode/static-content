@@ -10,36 +10,35 @@ models.factory('PageLayoutModel', ['$resource', '$http', 'BaseModel','dateFilter
 
         this.constructor = function(data) {
             clazz = uber.constructor.call(this, data);
-
             this.postConstruct();
             return clazz;
         };
         
         this.customActions = {
-        		getPageLayoutList: {
-        			method: "GET",
-        			url: "/api/v1/pageLayout/action/getPageLayoutList"
-        		}
+            getPageLayoutList: {
+                method: "GET",
+                url: "/api/v1/pageLayout/action/getPageLayoutList"
+            }
         }
 
         this.postConstruct = function() {
-        	
-        	clazz.prototype.toHTMLLayoutName = function() {
-        		var html = ' <a href="#/pageLayout/show/' + this.id + '">' + this.layoutName + '</a>';
+        
+            clazz.prototype.toHTMLLayoutName = function() {
+                var html = ' <a href="#/pageLayout/show/' + this.id + '">' + this.layoutName + '</a>';
                 return html;
-        	}
-        	
-        	clazz.getClazzName = function() {
-        		return 'PageLayoutModel';
-        	};
-        	
-        	clazz.getColumnNames = function() {
-        		return ['layoutName'];
-        	};
-        	
-        	clazz.getSortProperties = function() {
-        		return ['layoutName'];
-        	};
+            }
+        
+            clazz.getClazzName = function() {
+                return 'PageLayoutModel';
+            };
+        
+            clazz.getColumnNames = function() {
+                return ['layoutName'];
+            };
+        
+            clazz.getSortProperties = function() {
+                return ['layoutName'];
+            };
         };
     });
 

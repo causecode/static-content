@@ -1,35 +1,33 @@
 <div class="form-group">
-	<label class="col-sm-2 control-label" for="title">Title</label>
-	<div class="col-sm-5">
-		<input type="text" class="form-control"
-			ng-model="menuItemInstance.title">
-	</div>
+    <label class="col-sm-2 control-label" for="title">Title</label>
+    <div class="col-sm-5">
+        <input type="text" class="form-control" ng-model="menuItemInstance.title">
+    </div>
 </div>
 
 <div class="form-group">
-	<label class="col-sm-2 control-label" for="url">URL</label>
-	<div class="col-sm-5">
-		<input type="text" class="form-control"
-			ng-model="menuItemInstance.url">
-	</div>
+    <label class="col-sm-2 control-label" for="url">URL</label>
+    <div class="col-sm-5">
+        <input type="text" class="form-control" ng-model="menuItemInstance.url">
+    </div>
 </div>
 
 <div class="form-group">
-	<label class="col-sm-2 control-label" for="role">Role</label>
-	<div class="col-sm-5">
-		<select ng-model="menuItemInstance.roles" class="form-control" multiple>
-			<option value="{{role.authority}}" ng-repeat="role in roleList"
-				ng-selected="menuItemInstance.roles.indexOf(role.authority) > -1">{{role.authority}}</option>
-		</select>
-	</div>
+    <label class="col-sm-2 control-label" for="role">Role</label>
+    <div class="col-sm-5">
+        <select ng-model="menuItemInstance.roles" class="form-control" multiple>
+            <option value="{{role.authority}}" ng-repeat="role in roleList"
+                ng-selected="menuItemInstance.roles.indexOf(role.authority) > -1">{{role.authority}}</option>
+        </select>
+    </div>
 </div>
 
 <div class="form-group">
-	<div class="col-sm-offset-2 col-sm-7">
-		<div class="checkbox">
-			<label> <input type="checkbox" 
-				ng-model="menuItemInstance.showOnlyWhenLoggedIn"> Show Only when Logged In
-			</label>
-		</div>
-	</div>
+    <div class="col-sm-offset-2 col-sm-7">
+        <div class="checkbox">
+            <label> <input type="checkbox" ng-model="menuItemInstance.showOnlyWhenLoggedIn"> Show Only
+                when Logged In
+            </label>
+        </div>
+    </div>
 </div>

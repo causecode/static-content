@@ -35,12 +35,12 @@ controllers.controller('PageController', ['$scope', '$http', '$state', 'appServi
         $scope.contentInstance.metaList = [];
     } else if (['edit'].indexOf($scope.actionName) > -1) {
         PageModel.get({id: $scope.id}, function(pageData) {
-        	$scope.contentInstance = pageData;
-        	$scope.contentInstance.metaList = [];
-        	PageLayoutModel.get({id: pageData.pageLayout.id}, function(pageLayoutInstance) {
-        		$scope.contentInstance.pageLayout = pageLayoutInstance.layoutName;
+            $scope.contentInstance = pageData;
+            $scope.contentInstance.metaList = [];
+            PageLayoutModel.get({id: pageData.pageLayout.id}, function(pageLayoutInstance) {
+                $scope.contentInstance.pageLayout = pageLayoutInstance.layoutName;
                 console.info("page is", pageData.publish);
-        	});
+            });
         });
     }
     

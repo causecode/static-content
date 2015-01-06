@@ -1,34 +1,32 @@
 <section ng-controller="FAQController">
-	<div class="container text-left">
-		<h2>FAQ</h2>
-	</div>
+    <div class="container text-left">
+        <h2>FAQ</h2>
+    </div>
 
-    <ba-content>
-        <breadcrumb></breadcrumb>
-	<div class="col-sm-8">
+    <ba-content> <breadcrumb></breadcrumb>
+
+    <div class="col-sm-8">
         <dl class="dl-horizontal">
             <dt>Title</dt>
             <dd>{{contentInstance.title}}</dd>
-            
+
             <dt>Sub Title</dt>
             <dd>{{contentInstance.subTitle}}</dd>
-			
-			<dt>Body</dt>
+
+            <dt>Body</dt>
             <dd>{{contentInstance.body}}</dd>
-			
-			            
+
+
             <dt>Publish</dt>
             <dd>{{contentInstance.publish}}
         </dl>
-	</div>
+    </div>
 
-        <div class="col-sm-offset-2 col-sm-10">
-            <a ui-sref="urlMap.resource({action: 'edit', resource: contentInstance.id})" class="btn btn-primary">Edit</a>
-            <button type="button" ng-click="contentInstance.$delete()" class="btn btn-danger">Delete</button>
-            <a ui-sref="urlMap({action: 'list'})" class="btn btn-default">
-                <i class="fa fa-th-list"></i>
-                Cancel
-            </a>
-        </div>
+    <div class="col-sm-offset-2 col-sm-10">
+        <a ui-sref="urlMap.resource({action: 'edit', resource: contentInstance.id})" class="btn btn-primary">Edit</a>
+        <button type="button" ng-click="contentInstance.$delete()" class="btn btn-danger">Delete</button>
+        <a ui-sref="urlMap({action: 'list'})" class="btn btn-default"> <i class="fa fa-th-list"></i> Cancel
+        </a>
+    </div>
     </ba-content>
 </section>
