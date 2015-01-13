@@ -23,8 +23,11 @@ describe('Testing BlogController: ', function() {
         appService.showAlertMessage = function(message) {
             scope.alertMessage = message;
         }
+        appService.blockPage = function() {
+            return;
+        }
     }));
-    
+   
     describe('Testing delete blog comment and remove comment methods', function() {
         var blogId = 1, commentId = '1';
         var comment = {id:1, comments:[]}
@@ -50,7 +53,6 @@ describe('Testing BlogController: ', function() {
     });
     
     describe('Testing comment method', function() {
-        
         beforeEach( inject( function($injector) {
             scope.comments = [];
             scope.blogInstance = {id: 1};
@@ -73,6 +75,58 @@ describe('Testing BlogController: ', function() {
             scope.comment();
             $httpBackend.flush();
             expect(scope.comments.length).to.equal(1);
+        }); 
+    });
+    
+    describe('Testing change page', function() {
+        beforeEach( inject( function($rootScope, $controller) {
+            scope.list = function() {
+            }
+        }));
+        it('Should change offset', function() {
+            scope.itemsPerPage = 10;
+            var toPage = 2;
+            scope.changePage(toPage);
+            expect(scope.offset).to.equal(20);
+        }); 
+    });
+    
+    describe('Testing fetchBlog method', function() {
+        var blogId = 1;
+        var blogData = {blogInstance: {id: 1}};
+        
+        beforeEach(inject( function($injector) {
+            $httpBackend = $injector.get('$httpBackend');
+        }));
+        
+        it('should send HTTP GET request to fetch blog', function() {
+            $httpBackend.expectGET('/api/v1/blog/1').respond(200, blogData);
+            scope.fetchBlog(blogId); 
+            $httpBackend.flush();
+            $httpBackend.verifyNoOutstandingRequest();
+        });    
+        
+        it('should fetch blog into blogInstance', function() {
+            $httpBackend.when('GET', '/api/v1/blog/1').respond(200, blogData);
+            scope.fetchBlog(blogId); 
+            $httpBackend.flush();
+            expect(scope.blogInstance.id).to.equal(blogId);
+        });    
+    });
+    
+    describe('Testing show action', function() {
+        beforeEach(inject( function($injector, $controller) {
+            scope.controllerName = "blog";
+            scope.actionName = "show";
+            ctrl = $controller('BlogController', {$scope: scope});
+            $httpBackend = $injector.get('$httpBackend');
+        }));
+        
+        it('should call fetchBlog method', function() {
+            var blogData = {blogInstance: {id: 1}};
+            $httpBackend.expectGET('/api/v1/blog').respond(200, blogData);
+            $httpBackend.flush();
+            $httpBackend.verifyNoOutstandingRequest();
         }); 
     });
 });

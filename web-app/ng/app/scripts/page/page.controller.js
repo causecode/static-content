@@ -4,22 +4,6 @@
 
 controllers.controller('PageController', ['$scope', '$http', '$state', 'appService','PageModel','PageLayoutModel', function($scope, $http, $state, appService, PageModel, PageLayoutModel) {
 
-    /*$scope.fetchPage = function(pageId) {
-        appService.blockPage(true);
-        $http({
-            method : 'GET',
-            url : '/api/v1/page/action/show?id=' + pageId
-        }).success(function(data) {
-            if (data.pageInstance) {
-                $scope.pageInstance = data.pageInstance;
-            } else {
-                $state.go('home');
-                console.error('Unable to fetch page.');
-            }
-            appService.blockPage(false);
-        });
-    };*/
-    
     $scope.fetchPage = function(pageId) {
         appService.blockPage(true);
         PageModel.get({id: pageId}, function(data) {
