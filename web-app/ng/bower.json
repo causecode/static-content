@@ -10,7 +10,8 @@
     "angular-resource": "^1.3.0",
     "angular-route": "^1.3.0",
     "angular-sanitize": "^1.3.0",
-    "angular-touch": "^1.3.0"
+    "angular-touch": "^1.3.0",
+    "ngcore": "https://nileshdeshpande@bitbucket.org/causecode/ngcore.git"
   },
   "devDependencies": {
     "angular-mocks": "~1.3.0",

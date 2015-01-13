@@ -16,7 +16,7 @@ models.factory('PageModel', ['$resource', '$http', 'BaseModel', function($resour
         };
 
         this.customActions = {
-            getMetaList :{
+            getMetaList: {
                 method: 'GET',
                 url: '/api/v1/page/action/getMetaTypeList'
             }

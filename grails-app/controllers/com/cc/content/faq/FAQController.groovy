@@ -32,6 +32,7 @@ class FAQController {
     private FAQ FAQInstance
 
     private validate() {
+        println(">>>>>>>>>>>>>>validate")
         FAQInstance = FAQ.get(params.id)
         if(!FAQInstance) {
             flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'FAQ.label', default: 'FAQ'), params.id])
@@ -57,6 +58,7 @@ class FAQController {
     }
 
     def save() {
+        println(">>>>>>>>> in save")
         params.putAll(request.JSON)
         FAQInstance = new FAQ(params)
         if (!FAQInstance.save(flush: true)) {

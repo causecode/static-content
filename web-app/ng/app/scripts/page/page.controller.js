@@ -4,9 +4,8 @@
 
 controllers.controller('PageController', ['$scope', '$http', '$state', 'appService','PageModel','PageLayoutModel', function($scope, $http, $state, appService, PageModel, PageLayoutModel) {
 
-    $scope.fetchPage = function(pageId) {
+    /*$scope.fetchPage = function(pageId) {
         appService.blockPage(true);
-
         $http({
             method : 'GET',
             url : '/api/v1/page/action/show?id=' + pageId
@@ -19,7 +18,20 @@ controllers.controller('PageController', ['$scope', '$http', '$state', 'appServi
             }
             appService.blockPage(false);
         });
-    };
+    };*/
+    
+    $scope.fetchPage = function(pageId) {
+        appService.blockPage(true);
+        PageModel.get({id: pageId}, function(data) {
+        	if (data.pageInstance) {
+                $scope.pageInstance = data.pageInstance;
+            } else {
+                $state.go('home');
+                console.error('Unable to fetch page.');
+            }
+            appService.blockPage(false);
+        });
+    }
 
     if (($scope.controllerName === 'page') && ($scope.actionName === 'show')) {
         $scope.fetchPage($scope.id);
@@ -39,13 +51,12 @@ controllers.controller('PageController', ['$scope', '$http', '$state', 'appServi
             $scope.contentInstance.metaList = [];
             PageLayoutModel.get({id: pageData.pageLayout.id}, function(pageLayoutInstance) {
                 $scope.contentInstance.pageLayout = pageLayoutInstance.layoutName;
-                console.info("page is", pageData.publish);
             });
         });
     }
     
-	PageModel.getMetaList(null,function(data){
-    	$scope.metaList = data.metaTypeList;
+    PageModel.getMetaList(null,function(data){
+        $scope.metaList = data.metaTypeList;
     },function(){});
     
     PageLayoutModel.getPageLayoutList(null,function(data){

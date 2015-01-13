@@ -2,9 +2,8 @@
 
 'use strict';
 
-controllers.controller('FAQController', ['$scope', '$state', 'FAQModel', 'appService', '$modal',
-    function($scope, $state, FAQModel, appService, $modal) {
-    
+controllers.controller('FAQController', ['$scope', 'FAQModel', 'appService', '$modal',
+    function($scope, FAQModel, appService, $modal) {
     if ($scope.actionName === 'create') {
         $scope.contentInstance = new FAQModel();
     } else if (['edit', 'show'].indexOf($scope.actionName) > -1) {

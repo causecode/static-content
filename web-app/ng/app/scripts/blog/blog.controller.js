@@ -4,7 +4,6 @@
 
 controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal',
     function($scope, $state, BlogModel, appService, $modal) {
-    console.info('BlogController executing.', $scope);
 
     $scope.commentData = {};
     $scope.currentPage = 1;
