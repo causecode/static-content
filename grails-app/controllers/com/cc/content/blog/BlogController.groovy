@@ -27,7 +27,6 @@ import com.cc.content.blog.comment.Comment
  * @author Vishesh Duggar
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
- *
  */
 @Secured(["ROLE_CONTENT_MANAGER"])
 @Transactional(readOnly = true)

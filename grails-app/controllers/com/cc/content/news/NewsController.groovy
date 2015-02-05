@@ -20,7 +20,6 @@ import com.cc.iframe.Scraper
  * Provides end point to link news information of type content for Content Manager.
  * @author Vishesh Duggar
  * @author Shashank Agrawal
- *
  */
 @Secured(["ROLE_CONTENT_MANAGER"])
 class NewsController {

@@ -34,11 +34,22 @@ class CommentService {
         }
     }
 
+    /**
+     * Returns list of all comments (including nested comments) on given blogInstance.
+     * @param blogInstance
+     * @return List of comments
+     */
     List getComments(Blog blogInstance) {
         List<Comment> commentList = BlogComment.findAllByBlog(blogInstance)*.comment
         return getCommentsWithNestedComments(commentList)
     }
 
+    /**
+     * Accepts Comment instance returns a Map of comment data which includes nested comments if
+     * it has any.
+     * @param commentInstance
+     * @return
+     */
     Map getCommentData(Comment commentInstance) {
         if (!commentInstance) return [:]
         return [
@@ -48,6 +59,12 @@ class CommentService {
             comments: getCommentsWithNestedComments(Comment.findAllByReplyTo(commentInstance))]
     }
 
+    /**
+     * Accepts list of Comment instance and returns list of comment
+     * as Map including nested comment.
+     * @param commentList
+     * @return List of Map containing comment data
+     */
     List getCommentsWithNestedComments(List<Comment> commentList) {
         List comments = []
         commentList.each { commentInstance ->

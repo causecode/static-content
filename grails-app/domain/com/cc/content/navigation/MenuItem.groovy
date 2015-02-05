@@ -14,7 +14,6 @@ package com.cc.content.navigation
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
  * @author Bharti Nagdev
- *
  */
 class MenuItem {
 

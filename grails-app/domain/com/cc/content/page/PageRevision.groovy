@@ -13,7 +13,6 @@ import com.cc.content.ContentRevision
 /**
  * These domain extends ContentRevision.
  * @author Shashank Agrawal
- *
  */
 class PageRevision extends ContentRevision {
 

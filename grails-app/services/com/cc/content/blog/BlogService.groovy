@@ -12,6 +12,10 @@ import org.grails.taggable.TagLink
 
 class BlogService {
 
+    /**
+     * Returns list of tags for Blog.
+     * @return
+     */
     List getAllTags() {
         List tagList = []
         Blog.allTags.each { tagName ->

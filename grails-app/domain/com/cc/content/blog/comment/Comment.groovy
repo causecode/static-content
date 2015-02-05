@@ -12,7 +12,6 @@ package com.cc.content.blog.comment
  * Used for storing comment contains reference for nested comment.
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
- *
  */
 class Comment {
 
@@ -39,6 +38,9 @@ class Comment {
         commentText type: "text"
     }
 
+    /**
+     * Deleting nested comments of the comment that is to be deleted.
+     */
     def beforeDelete() {
         Comment.withNewSession {
             commentService.deleteNestedComment(this, false)

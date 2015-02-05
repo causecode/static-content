@@ -12,7 +12,6 @@ package com.cc.content.inputWidget
  * A generic domain used to store all information of selected type of input widgets with validations required.
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
- *
  */
 class InputWidget {
 

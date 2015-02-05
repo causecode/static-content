@@ -17,7 +17,6 @@ import com.cc.content.meta.Meta
  * @author Shashank Agrawal
  * @author Bharti Nagdev
  * @author Sakshi Gangarde
- * 
  */
 class Content {
 
@@ -56,14 +55,24 @@ class Content {
         title
     }
 
+    /**
+     * Returns author of Content instance.
+     */
     String resolveAuthor(String authorProperty = "username") {
         return contentService.resolveAuthor(this, authorProperty)
     }
 
+    /**
+     * Returns title removing spaces, html entities, accents, dots and extranges characters
+     * from it. 
+     */
     String getSanitizedTitle() {
         friendlyUrlService.sanitizeWithDashes(title)
     }
 
+    /**
+     * Returns list of meta tags for current Content instance.
+     */
     List<Meta> getMetaTags() {
         if(!this.id) return [];
 

@@ -14,7 +14,6 @@ import com.cc.content.blog.Blog
  * Join class provides comments for Blog.
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
- *
  */
 class BlogComment {
 

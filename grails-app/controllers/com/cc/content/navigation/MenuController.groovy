@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus
  * @author Vishesh Duggar
  * @author Laxmi Salunkhe
  * @author Shashank Agrawal
- *
  */
 @Secured(["ROLE_CONTENT_MANAGER"])
 class MenuController {

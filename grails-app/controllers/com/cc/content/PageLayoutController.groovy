@@ -21,7 +21,6 @@ import org.springframework.http.HttpStatus
  * @author Vishesh Duggar
  * @author Shashank Agrawal
  * @author Bharti Nagdev
- *
  */
 @Secured(["ROLE_CONTENT_MANAGER"])
 class PageLayoutController {

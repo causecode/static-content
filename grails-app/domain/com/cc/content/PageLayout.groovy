@@ -13,7 +13,6 @@ package com.cc.content
  * @author Vishesh Duggar
  * @author Shashank Agrawal
  * @author Bharti Nagdev
- *
  */
 class PageLayout {
 

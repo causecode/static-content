@@ -21,7 +21,6 @@ import com.cc.content.ContentRevision
  * @author Vishesh Duggar
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
- *
  */
 @Secured(["ROLE_CONTENT_MANAGER"])
 @ControllerShorthand(value = "c")
@@ -52,7 +51,10 @@ class PageController {
         redirect(action: "list", params: params)
     }
 
-    def getMetaTypeList() {
+    /**
+     * Returns meta type list
+     */
+    def getMetaTypeList(){
         List metaTypeList = Meta.getTypeList()
         respond ([metaTypeList:metaTypeList])
     }

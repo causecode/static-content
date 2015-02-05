@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus
  * @author Vishesh Duggar
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
- *
  */
 @Secured(["ROLE_CONTENT_MANAGER"])
 class FAQController {

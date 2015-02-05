@@ -14,7 +14,6 @@ import com.cc.content.PageLayout
 /**
  * These domain extend Content used to store Page contents and also stores page layout.
  * @author Shashank Agrawal
- *
  */
 class Page extends Content {
 

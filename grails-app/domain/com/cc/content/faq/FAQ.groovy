@@ -13,7 +13,6 @@ import com.cc.content.Content
 /**
  * These domain extends Content used to store FAQs.
  * @author Shashank Agrawal
- *
  */
 class FAQ extends Content {
 
