@@ -1,5 +1,3 @@
-/* global controllers*/
-
 'use strict';
 
 controllers.controller('PageLayoutController', ['$scope', 'PageLayoutModel', function($scope, $state, PageLayoutModel) {

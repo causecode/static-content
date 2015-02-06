@@ -2,6 +2,11 @@
 
 'use strict';
 
+/**
+ * @ngdocs overview
+ * @name PageModel
+ * @requires BaseModel
+ */
 models.factory('PageModel', ['BaseModel', function(BaseModel) {
     var PageModel = augment(BaseModel, function (uber) {
         var clazz;

@@ -1,7 +1,10 @@
-/* global models, augment */
-
 'use strict';
 
+/**
+ * @ngdocs overview
+ * @name MenuItemModel
+ * @requires BaseModel
+ */
 models.factory('MenuItemModel', ['BaseModel', function(BaseModel) {
     var MenuItemModel = augment(BaseModel, function (uber) {
         var clazz;

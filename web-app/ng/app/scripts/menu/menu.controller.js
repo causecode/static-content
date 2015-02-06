@@ -1,9 +1,13 @@
-/* global controllers*/
-
 'use strict';
 
-controllers.controller('MenuController', ['$scope', 'MenuModel', function($scope, MenuModel) {
+/**
+ * @ngdoc controller
+ * @name MenuController
+ * @requires $scope
+ * @requires MenuModel
+ */
 
+controllers.controller('MenuController', ['$scope', 'MenuModel', function($scope, MenuModel) {
     if ($scope.actionName === 'create') {
         $scope.menuInstance = new MenuModel();
     } else if (['edit', 'show'].indexOf($scope.actionName) > -1) {

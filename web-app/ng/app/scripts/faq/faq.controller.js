@@ -1,9 +1,12 @@
-/* global controllers*/
-
 'use strict';
 
+/**
+ * @ngdoc controller
+ * @name FAQController
+ * @requires $scope
+ * @requires FAQModel
+ */
 controllers.controller('FAQController', ['$scope', 'FAQModel', function($scope, FAQModel) {
-
     if ($scope.actionName === 'create') {
         $scope.contentInstance = new FAQModel();
     } else if (['edit', 'show'].indexOf($scope.actionName) > -1) {

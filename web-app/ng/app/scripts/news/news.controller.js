@@ -1,7 +1,11 @@
-/* global controllers*/
-
 'use strict';
 
+/**
+ * @ngdoc controller
+ * @name NewsController
+ * @requires $scope
+ * @requires NewsModel
+ */
 controllers.controller('NewsController', ['$scope', 'NewsModel', function($scope, NewsModel) {
 
     if ($scope.actionName === 'create') {

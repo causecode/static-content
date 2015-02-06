@@ -1,8 +1,12 @@
-/* global models, augment */
-
 'use strict';
 
-models.factory('MenuModel', ['$resource', '$http', 'BaseModel', function($resource, $http, BaseModel) {
+/**
+ * @ngdocs overview
+ * @name MenuModel
+ * @requires $http
+ * @requires BaseModel
+ */
+models.factory('MenuModel', ['BaseModel', function(BaseModel) {
     var MenuModel = augment(BaseModel, function (uber) {
         var clazz;
 
@@ -13,24 +17,28 @@ models.factory('MenuModel', ['$resource', '$http', 'BaseModel', function($resour
             this.postConstruct();
             return clazz;
         };
-        
+
         this.customActions = {
             getRoleList: {
-            method: 'POST',
-            url: '/api/v1/menu/action/create'
+                method: 'POST',
+                url: '/api/v1/menu/action/create'
             }
         };
-        
+
         this.postConstruct = function() {
-        
+
+            clazz.prototype.toHTMLName = function(scope) {
+                return '<a ui-sref="urlMap.resource({ctrl: \'menu\', action: \'show\', resource: ' + this.id + '})">' + this.name + '</a>';
+            };
+
             clazz.getClazzName = function() {
                 return 'MenuModel';
             };
-        
+
             clazz.getColumnNames = function() {
-                return ['name','dateCreated','lastUpdated'];
+                return ['name', 'dateCreated', 'lastUpdated'];
             };
-        
+
             clazz.getSortProperties = function() {
                 return [];
             };

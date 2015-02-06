@@ -1,7 +1,10 @@
-/* global models, augment */
-
 'use strict';
 
+/**
+ * @ngdoc overview
+ * @name BlogModel
+ * @requires BaseModel
+ */
 models.factory('BlogModel', ['BaseModel', function(BaseModel) {
     var BlogModel = augment(BaseModel, function (uber) {
         var clazz;

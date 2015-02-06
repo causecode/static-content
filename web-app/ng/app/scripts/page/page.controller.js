@@ -1,10 +1,60 @@
-/* global controllers*/
-
 'use strict';
 
+/**
+ * @ngdoc controller
+ * @name PageController
+ * @requires $scope
+ * @requires PageModel
+ * @requires PageLayoutModel
+ */
 controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel', 
-        function($scope, PageModel, PageLayoutModel) {
+    function($scope, PageModel, PageLayoutModel) {
 
+    /**
+     * @ngdoc method
+     * @methodOf PageController
+     * @name fetchPage
+     * 
+     * @param {Number} pageId id of Page instance 
+     * 
+     *  @description 
+     *  Fetch page with given pageId
+     */
+    $scope.fetchPage = function(pageId) {
+        appService.blockPage(true);
+
+        $http({
+            method : 'GET',
+            url : '/api/v1/page/action/show?id=' + pageId
+        }).success(function(data) {
+            if (data.pageInstance) {
+                $scope.pageInstance = data.pageInstance;
+            } else {
+                $state.go('home');
+                console.error('Unable to fetch page.');
+            }
+            appService.blockPage(false);
+        });
+    };
+
+    // Get meta list
+    PageModel.getMetaList(null,function(data){
+        $scope.metaList = data.metaTypeList;
+    },function(){});
+
+    // Get page layout list
+    PageLayoutModel.getPageLayoutList(null,function(data){
+        $scope.pageLayoutList = data.pageLayoutList;
+    },function(){});
+
+    // Creates an Object and push it into metaList,
+    // so a new select box and text box will appear where user can 
+    // submit meta information.
+    $scope.addForm = function() {
+        $scope.contentInstance.metaList.push({});
+    };
+
+    // If action is show, then fetch page with given id and show.
     if (($scope.controllerName === 'page') && ($scope.actionName === 'show')) {
         $scope.pageInstance = PageModel.get({id: $scope.id});
         $scope.$watch('id', function(newId, oldId) {
@@ -28,16 +78,4 @@ controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel
             }
         });
     }
-
-    PageModel.getMetaList(null, function(data){
-        $scope.metaList = data.metaTypeList;
-    },function() {});
-
-    PageLayoutModel.getPageLayoutList(null, function(data){
-        $scope.pageLayoutList = data.pageLayoutList;
-    },function() {});
-
-    $scope.addForm = function() {
-        $scope.contentInstance.metaList.push({});
-    };
 }]);

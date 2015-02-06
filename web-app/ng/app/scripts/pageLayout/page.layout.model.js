@@ -1,5 +1,3 @@
-/* global models, augment */
-
 'use strict';
 
 models.factory('PageLayoutModel', ['BaseModel', function(BaseModel) {
