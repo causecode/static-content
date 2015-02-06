@@ -39,10 +39,6 @@ class ContentRevisionController {
         return
     }
     
-    /**
-     * Used to delete ContentRevision instance
-     * @param id ContentRevision instance id
-     */
     def delete(Long id) {
         ContentRevision.get(id).delete()
         render true
