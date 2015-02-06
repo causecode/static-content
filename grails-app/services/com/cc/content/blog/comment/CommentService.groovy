@@ -45,7 +45,7 @@ class CommentService {
     }
 
     /**
-     * Accepts Comment instance returns a Map of comment data which includes nested comments if
+     * Accepts Comment instance and returns a Map of comment data which includes nested comments if
      * it has any.
      * @param commentInstance
      * @return

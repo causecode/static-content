@@ -40,7 +40,7 @@ class ContentRevisionController {
     }
     
     /**
-     * used to delete ContentRevision instance
+     * Used to delete ContentRevision instance
      * @param id ContentRevision instance id
      */
     def delete(Long id) {
