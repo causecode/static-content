@@ -3,6 +3,8 @@
 /**
  * @ngdoc controller
  * @name MenuItemController
+ * @description
+ * Allows creation and reordering of the menu items.
  * @requires $scope
  * @requires MenuItemModel
  * @requires appService

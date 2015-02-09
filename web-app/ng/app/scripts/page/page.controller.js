@@ -3,6 +3,8 @@
 /**
  * @ngdoc controller
  * @name PageController
+ * @description
+ * Provides CRUD operations for Page.
  * @requires $scope
  * @requires PageModel
  * @requires PageLayoutModel

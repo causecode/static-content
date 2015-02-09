@@ -3,6 +3,8 @@
 /**
  * @ngdoc controller
  * @name BlogController
+ * @description
+ * Provides CRUD operations for Blog.
  * @requires $scope
  * @requires $state
  * @requires BlogModel

@@ -3,6 +3,8 @@
 /**
  * @ngdoc controller
  * @name MenuController
+ * @description
+ * Provides CRUD operations for Menu.
  * @requires $scope
  * @requires MenuModel
  */
