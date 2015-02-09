@@ -1,7 +1,12 @@
 'use strict';
 
+/**
+ * @ngdoc controller
+ * @name PageLayoutController
+ * @requires $scope
+ * @requires PageLayoutModel
+ */
 controllers.controller('PageLayoutController', ['$scope', 'PageLayoutModel', function($scope, $state, PageLayoutModel) {
-
     if ($scope.actionName === 'create') {
         $scope.pageLayoutInstance = new PageLayoutModel();
     } else if (['edit', 'show'].indexOf($scope.actionName) > -1) {

@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @ngdocs overview
+ * @ngdoc overview
  * @name MenuModel
  * @requires $http
  * @requires BaseModel

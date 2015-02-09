@@ -273,3 +273,8 @@ Options:
 ```
 
 NOTE : Secure domains
+
+### Generating JavaScript documentation
+
+Run command:
+grunt ngdocs

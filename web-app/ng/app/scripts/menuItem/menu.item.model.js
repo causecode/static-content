@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @ngdocs overview
+ * @ngdoc overview
  * @name MenuItemModel
  * @requires BaseModel
  */

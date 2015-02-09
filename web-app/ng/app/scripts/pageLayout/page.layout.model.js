@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * @ngdoc overview
+ * @name PageLayoutModel
+ * @requires BaseModel
+ */
 models.factory('PageLayoutModel', ['BaseModel', function(BaseModel) {
     var PageLayoutModel = augment(BaseModel, function (uber) {
         var clazz;
@@ -11,7 +16,7 @@ models.factory('PageLayoutModel', ['BaseModel', function(BaseModel) {
             this.postConstruct();
             return clazz;
         };
-        
+
         this.customActions = {
             getPageLayoutList: {
                 method: 'GET',

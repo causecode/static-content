@@ -3,7 +3,7 @@
 'use strict';
 
 /**
- * @ngdocs overview
+ * @ngdoc overview
  * @name PageModel
  * @requires BaseModel
  */

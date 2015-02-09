@@ -22,7 +22,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * @methodOf BlogController
      * @name fetchBlog
      * 
-     *  @param {Number} blogId id of Blog instance 
+     *  @param {Number} blogId id of Blog instance. 
      *  
      *  @description
      *  Fetches blog data for given id of Blog instance. 
@@ -47,10 +47,10 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * @methodOf BlogController
      * @name changePage
      * 
-     * @param {Object} toPage Page number
+     * @param {Object} toPage Page number.
      * 
      * @description
-     * Move to given page of blog list page.
+     * Move to the given page in blog list page.
      */
     $scope.changePage = function(toPage) {
         $scope.offset = $scope.itemsPerPage * toPage;
@@ -59,13 +59,13 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     /**
      * @ngdoc method
-     * @mthodOf BlogController
+     * @methodOf BlogController
      * @name list
      * 
      * @param {Object} [toPage] page number. Default value is 1.
      * 
      * @description
-     * Fetches list of blog for given page number.
+     * Fetches list of blogs for given page number.
      */
     $scope.list = function(toPage) {
         toPage = toPage ? toPage : 1;
@@ -90,12 +90,12 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * @methodOf BlogController
      * @name filtersBlogs
      * 
-     * @param {Object} monthFilter
-     * @param {Object} tag 
-     * @param {Object} queryFilter
+     * @param {Object} monthFilter month to filter blogs. 
+     * @param {Object} tag tags to filter blogs.
+     * @param {Object} queryFilter query to filter blogs.
      * 
      * @description
-     * Filters list of blog based on monthFilter, tag and queryFilter
+     * Filters list of blogs based on monthFilter, tag and queryFilter.
      */
     $scope.filterBlogs = function(monthFilter, tag, queryFilter) {
         $state.go('urlMap', {ctrl: 'blog', action: 'list'});
