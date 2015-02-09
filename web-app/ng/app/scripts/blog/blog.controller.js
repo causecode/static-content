@@ -27,7 +27,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      *  @param {Number} blogId id of Blog instance. 
      *  
      *  @description
-     *  Fetches blog data for given id of Blog instance. 
+     *  Fetches blog data for the given id of the Blog instance. 
      */
     $scope.fetchBlog = function(blogId) {
         appService.blockPage(true);
@@ -67,7 +67,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * @param {Object} [toPage] page number. Default value is 1.
      * 
      * @description
-     * Fetches list of blogs for given page number.
+     * Fetches list of blogs for the given page number.
      */
     $scope.list = function(toPage) {
         toPage = toPage ? toPage : 1;
@@ -136,7 +136,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * @param {String} comment id of Comment instance that is to be deleted.
      * 
      * @description
-     * Removes a comment with given id, from all available comments. 
+     * Removes a comment with the given id, from all available comments. 
      */
     function removeComment(comments, commentId) {
         if (comments.length === 0) { return []; }
@@ -219,7 +219,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * @name comment
      * 
      * @description
-     * Adds a comment on either blog or another comment.
+     * Adds a comment on either a blog or another comment.
      */
     $scope.comment = function() {
         $scope.commentData.id = $scope.blogInstance.id;
@@ -231,7 +231,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         });
     };
 
-    // If action is show blog with given id.
+    // If action is show, fetch a blog with the given id.
     if (($scope.controllerName === 'blog') && ($scope.actionName === 'show')) {
         $scope.fetchBlog($scope.id);
         $scope.$watch('id', function(newId, oldId) {
