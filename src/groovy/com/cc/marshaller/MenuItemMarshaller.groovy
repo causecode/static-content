@@ -17,6 +17,10 @@ import org.codehaus.groovy.grails.web.json.JSONWriter
 
 import com.cc.content.navigation.MenuItem
 
+/**
+ * Marshaller for MenuItem, to return MenuItem including all the child menu items
+ * in JSON format. 
+ */
 class MenuItemMarshaller implements ObjectMarshaller<JSON>, NameAwareMarshaller{
 
     @Override
@@ -51,6 +55,7 @@ class MenuItemMarshaller implements ObjectMarshaller<JSON>, NameAwareMarshaller{
         converter.convertAnother(menuItemInstance.roles?.tokenize(",") ?: [])
         writer.key("childItems")
         writer.array()
+            // Include recursively all the child menu items of the menu item.
             menuItemInstance.childItems.each { childMenuItem ->
                 converter.convertAnother(childMenuItem)
             }

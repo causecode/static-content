@@ -59,6 +59,10 @@ class PageController {
         respond ([metaTypeList:metaTypeList])
     }
 
+    /**
+     * Returns a list of all Pages for user with role 'ROLE_CONTENT_MANAGER'.
+     * For other users returns a list of Pages those are marked as 'publish'.
+     */
     def list(Integer max) {
         params.sort = "dateCreated"
         params.order = "desc"

@@ -15,7 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 
 /**
- * Provides end point to reorder menu items for Content Manager.
+ * Provides end point for CRUD and to reorder menu items for Content Manager.
  * @author Vishesh Duggar
  * @author Laxmi Salunkhe
  * @author Shashank Agrawal

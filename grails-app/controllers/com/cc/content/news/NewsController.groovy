@@ -112,6 +112,9 @@ class NewsController {
         respond ([status: HttpStatus.OK])
     }
 
+    /**
+     * Sets a response header.  
+     */
     def link(String page) {
         response.setHeader("X-Frame-Options", "GOFORIT")
         [page: page, externalContent: externalContent(page)]

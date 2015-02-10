@@ -80,14 +80,17 @@ class BlogController {
         StringBuilder query = new StringBuilder("""SELECT new Map(b.id as id, b.body as body, b.title as title,
                             b.subTitle as subTitle, b.author as author, b.publishedDate as publishedDate) FROM Blog b """)
 
+        // Search by tag. 
         if(tag) {
             query.append(", ${TagLink.class.name} tagLink WHERE b.id = tagLink.tagRef ")
             query.append("AND tagLink.type = 'blog' AND tagLink.tag.name = '$tag' ")
         }
+        // Search by month and year of publishing date.
         if(monthFilter) {
             tag ? query.append(" AND ") : query.append(" WHERE ")
             query.append(" monthname(b.publishedDate) = '$month' AND year(b.publishedDate) = '$year'")
         }
+        // Search by query for title, subtitle, body and author. 
         if(queryFilter) {
             tag ? query.append(" AND ") : ( monthFilter ? query.append(" AND ") : query.append(" WHERE "))
             query.append(" b.title LIKE '%$queryFilter%' OR b.subTitle LIKE '%$queryFilter%' ")
@@ -168,6 +171,10 @@ class BlogController {
         }
     }
 
+    /**
+     * Returns a Map containing blogInstance, comments on the blog, tags for
+     * the blog, list of tags for all the blogs and list of blogs those are marked as 'publish'.
+     */
     @Transactional
     @Secured(["permitAll"])
     def show(Blog blogInstance) {
@@ -193,7 +200,7 @@ class BlogController {
     }
 
     /**
-     * Update blog instance also sets tags for blog instance.
+     * Update blog instance and also sets tags for blog instance.
      */
     @Transactional
     def update(Blog blogInstance, Long version) {

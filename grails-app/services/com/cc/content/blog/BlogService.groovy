@@ -13,7 +13,7 @@ import org.grails.taggable.TagLink
 class BlogService {
 
     /**
-     * Returns list of tags for Blog.
+     * Returns list of tags for all blogs.
      * @return
      */
     List getAllTags() {

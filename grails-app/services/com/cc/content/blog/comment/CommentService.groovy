@@ -60,8 +60,8 @@ class CommentService {
     }
 
     /**
-     * Accepts list of Comment instance and returns list of comment
-     * as Map including nested comment.
+     * Populates data from Comment instance in commentList into a Map and creates List
+     * of Map. 
      * @param commentList
      * @return List of Map containing comment data
      */

@@ -15,6 +15,9 @@ import org.codehaus.groovy.grails.web.converters.marshaller.ObjectMarshaller
 import org.codehaus.groovy.grails.web.json.JSONWriter
 import com.cc.content.blog.Blog
 
+/**
+ * Marshaller for Blog domain.
+ */
 class BlogDomainMarshaller implements ObjectMarshaller<JSON> {
 
     @Override

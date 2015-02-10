@@ -91,6 +91,9 @@ class Content {
         }
     }
 
+    /**
+     * Returns SEO friendly search URL for Content.
+     */
     String searchLink(boolean absolute = false) {
         contentService.createLink([domain: this.class.name, absolute: absolute,
             controller: this.class.simpleName.toLowerCase(), id: this.id])
