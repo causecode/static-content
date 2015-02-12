@@ -8,13 +8,13 @@
         <p>
             You have one comment on blog <b> ${blogInstance.title}
             </b> by
-            ${commentInstance.name}
+            ${commentInstance.name}.
         </p>
         <p>
             <i> ${commentInstance.commentText}</i>
         </p>
         <p>Thank you,</p>
-        <p>CauseCode Team</p>
+        <p><g:meta name="app.name"/> Team</p>
     </div>
 </body>
 </html>

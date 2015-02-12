@@ -134,7 +134,7 @@ class BlogController {
         blogList.each {
             Blog blogInstance = Blog.get(it.id as long)
             String regex = "\\<[^>]*>"
-            it.body = it.body.replaceAll(regex,"").replaceAll("&nbsp;"," ")
+            it.body = it.body.replaceAll(regex, "").replaceAll("&nbsp;", " ")
             it.author = contentService.resolveAuthor(blogInstance)
             it.numberOfComments = BlogComment.countByBlog(blogInstance)
             blogInstanceList.add(it)
@@ -308,7 +308,7 @@ class BlogController {
         }
     }
 
-    def sendMail(Blog blogInstance, Comment commentInstance) {
+    void sendMail(Blog blogInstance, Comment commentInstance) {
         String[] emailList = getEmailsForBlogComments(blogInstance, commentInstance)
         sendMail {
             to emailList
