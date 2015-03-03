@@ -31,7 +31,7 @@ import com.cc.content.ContentRevision
 class PageController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "POST"]
-    
+
     static responseFormats = ["json"]
 
     def beforeInterceptor = [action: this.&validate]
@@ -54,7 +54,7 @@ class PageController {
     def index() {
         redirect(action: "list", params: params)
     }
-    
+
     def getMetaTypeList() {
         List metaTypeList = Meta.getTypeList()
         respond ([metaTypeList:metaTypeList])
@@ -78,8 +78,8 @@ class PageController {
     }
 
     def save() {
-        params.putAll(request.JSON)
-        pageInstance = contentService.create(params, params.metaList.type, params.metaList.value, Page.class)
+        Map requestData = request.JSON
+        pageInstance = contentService.create(requestData, requestData.metaList.type, requestData.metaList.value, Page.class)
         if(!pageInstance.save(flush: true)) {
             render(view: "create", model: [pageInstance: pageInstance])
             return
@@ -90,27 +90,27 @@ class PageController {
     }
 
     @Secured(["permitAll"])
-    def show(Long id) {
+    def show(Page pageInstance) {
         respond(pageInstance)
     }
 
-    def edit(Long id) {
+    def edit(Page pageInstance) {
         [pageInstance: pageInstance, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)]
     }
 
-    def update(Long id, Long version) {
-        params.putAll(request.JSON)
+    def update(Page pageInstance, Long version) {
+        Map requestData = request.JSON
 
         if(version != null) {
             if (pageInstance.version > version) {
                 pageInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'page.label')] as Object[],
-                        "Another user has updated this Page while you were editing")
+                                [message(code: 'page.label')] as Object[],
+                                "Another user has updated this Page while you were editing")
                 respond(pageInstance.errors)
                 return
             }
         }
-        pageInstance = contentService.update(params, pageInstance, params.metaList.type, params.metaList.value)
+        pageInstance = contentService.update(requestData, pageInstance, requestData.metaList.type, requestData.metaList.value)
 
         if(pageInstance.hasErrors()) {
             respond(pageInstance.errors)
@@ -125,12 +125,12 @@ class PageController {
         redirect uri: pageInstance.searchLink()
     }
 
-    def delete(Long id) {
+    def delete(Page pageInstance) {
         try {
             contentService.delete(pageInstance)
             respond ([success: true])
         } catch (DataIntegrityViolationException e) {
-            respond ([success: false])        
+            respond ([success: false])
         }
     }
 }

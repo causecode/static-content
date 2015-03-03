@@ -1,28 +1,28 @@
 
 <div class="form-group">
-    <label class="col-sm-2 control-label" for="title">Title</label>
-    <div class="col-sm-5">
+    <label class="col-sm-3 control-label" for="title">Title</label>
+    <div class="col-sm-4">
         <input id="title" type="text" class="form-control" required ng-model="contentInstance.title">
     </div>
 </div>
 
 <div class="form-group">
-    <label class="col-sm-2 control-label" for="subTitle">Sub Title</label>
-    <div class="col-sm-5">
+    <label class="col-sm-3 control-label" for="subTitle">Sub Title</label>
+    <div class="col-sm-4">
         <input id="subTitle" type="text" class="form-control" ng-model="contentInstance.subTitle">
     </div>
 </div>
 
 <div class="form-group">
-    <label class="col-sm-2 control-label" for="body">Body</label>
-    <div class="col-sm-5">
-        <textarea ui-tinymce="tinymceOptions" ng-model="contentInstance.body"></textarea>
+    <label class="col-sm-3 control-label" for="body">Body</label>
+    <div class="col-sm-4">
+        <textarea ui-tinymce="tinymceOptions" ng-model="contentInstance.body" class="form-control"></textarea>
     </div>
 </div>
 
 <div class="form-group">
-    <label class="col-sm-2 control-label" for="body">Page Layout</label>
-    <div class="col-sm-5">
+    <label class="col-sm-3 control-label" for="body">Page Layout</label>
+    <div class="col-sm-4">
         <select ng-model="contentInstance.pageLayout" class="form-control" id="pageLayout"
             ng-options="pageLayout.layoutName for pageLayout in pageLayoutList">
             <option value=""></option>
@@ -31,11 +31,9 @@
 </div>
 
 <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-2">
-        <div class="checkbox">
-            <label> <input type="checkbox" id="publish" ng-model="contentInstance.publish"> Publish
-            </label>
-        </div>
+    <label class="col-sm-3 control-label" for="body">Publish</label>
+    <div class="col-sm-4">
+        <input type="checkbox" id="publish" ng-model="contentInstance.publish">
     </div>
 </div>
 

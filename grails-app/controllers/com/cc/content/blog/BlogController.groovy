@@ -38,8 +38,6 @@ class BlogController {
     
     static responseFormats = ["json"]
 
-    def beforeInterceptor = [action: this.&validate]
-
     def contentService
     def springSecurityService
     def simpleCaptchaService
@@ -47,22 +45,7 @@ class BlogController {
     def blogService
     def grailsWebDataBinder
 
-    private Blog blogInstance
-
     private static String HTML_P_TAG_PATTERN = "(?s)<p(.*?)>(.*?)<\\/p>"
-
-    private boolean validate() {
-        if(!params.id) {
-            return true
-        }
-        blogInstance = Blog.get(params.id)
-        if (!blogInstance) {
-            flash.message = "Sorry, no blog found with Id $params.id"
-            redirect(uri: "/blog")
-            return false
-        }
-        return true
-    }
 
     /**
      * Action list filters blog list with tags and returns Blog list and total matched result count.
@@ -190,10 +173,10 @@ class BlogController {
             redirect uri: blogInstance.searchLink()
         }
     }
-    
+
     @Transactional
     @Secured(["permitAll"])
-    def show(Long id) {
+    def show(Blog blogInstance) {
         List blogComments = commentService.getComments(blogInstance)
         List tagList = []
 
@@ -211,7 +194,7 @@ class BlogController {
     }
 
     @Transactional
-    def edit(Long id) {
+    def edit(Blog blogInstance) {
         [blogInstance: blogInstance]
     }
 
@@ -219,7 +202,7 @@ class BlogController {
      * Update blog instance also sets tags for blog instance.
      */
     @Transactional
-    def update(Long id, Long version) {
+    def update(Blog blogInstance, Long version) {
         if (version != null) {
             if (blogInstance.version > version) {
                 blogInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
@@ -248,7 +231,7 @@ class BlogController {
         }
     }
 
-    def delete(Long id) {
+    def delete(Blog blogInstance) {
         try {
             contentService.delete(blogInstance)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'blog.label'), id])
@@ -268,7 +251,7 @@ class BlogController {
      */
     @Transactional
     @Secured(["permitAll"])
-    def comment(Long commentId) {
+    def comment(Blog blogInstance, Long commentId) {
         Map requestMap = request.JSON
         String errorMessage
         params.putAll(requestMap)
