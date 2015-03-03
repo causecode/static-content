@@ -2,7 +2,7 @@
 
 'use strict';
 
-models.factory('BlogModel', ['$resource', '$http', 'BaseModel', function($resource, $http, BaseModel) {
+models.factory('BlogModel', ['BaseModel', function(BaseModel) {
     var BlogModel = augment(BaseModel, function (uber) {
         var clazz;
 

@@ -8,8 +8,6 @@
 
 package com.cc.content.navigation
 
-import java.util.List;
-
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -29,25 +27,7 @@ class MenuItemController {
     
     static responseFormats = ["json"]
 
-    def beforeInterceptor = [action: this.&validate, except: ["index", "list", "create", "save"]]
-
-    private MenuItem menuItemInstance
-
-    def menuItemService
-
-    private validate() {
-        params.putAll(request.JSON)
-        menuItemInstance = MenuItem.get(params.id)
-        if(!menuItemInstance) {
-            response.sendError = 404
-            flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'menuItem.label'), params.id])
-            redirect(action: "list")
-            return false
-        }
-        return true
-    }
-
-    def delete(Long id) {
+    def delete(MenuItem menuItemInstance) {
         try {
             menuItemInstance = menuItemService.delete(menuItemInstance)
             respond ([success: true])
@@ -58,17 +38,17 @@ class MenuItemController {
 
     def save() {
         params.putAll(request.JSON)
-        menuItemInstance = menuItemService.create(params)
+        MenuItem menuItemInstance = menuItemService.create(params)
         respond (menuItemInstance)
     }
 
-    def edit(){
+    def edit(MenuItem menuItemInstance){
         Map responseResult = [title: menuItemInstance.title, url: menuItemInstance.url, roles: menuItemInstance.roles,
             showOnlyWhenLoggedIn: menuItemInstance.showOnlyWhenLoggedIn]
         render responseResult as JSON
     }
 
-    def update(){
+    def update(MenuItem menuItemInstance){
         params.putAll(request.JSON)
         menuItemInstance = menuItemService.update(menuItemInstance, params)
         respond([success: true])
@@ -78,7 +58,7 @@ class MenuItemController {
     /**
      * Used to reorder menuItem instance.
      */
-    def reorder() {
+    def reorder(MenuItem menuItemInstance) {
         menuItemInstance = menuItemService.reorder(menuItemInstance, params)
         respond([success: true])
     }

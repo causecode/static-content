@@ -10,7 +10,7 @@ package com.cc.content
 
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
-
+import org.springframework.http.HttpStatus
 import org.springframework.dao.DataIntegrityViolationException
 
 /**
@@ -24,22 +24,20 @@ import org.springframework.dao.DataIntegrityViolationException
 class PageLayoutController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
-	static responseFormats = ["json"]
+    static responseFormats = ["json"]
 
     def index() {
         redirect(action: "list", params: params)
     }
 
     def list(Integer max) {
-        params.putAll(request.JSON)
+        log.info "pagelayout list"
         params.max = Math.min(max ?: 10, 100)
-        respond ([instanceList: PageLayout.list(params), totalCount: PageLayout.count()]) 
+        respond ([instanceList: PageLayout.list(params), totalCount: PageLayout.count()])
     }
-    
+
     def getPageLayoutList() {
-        List pageLayoutList = PageLayout.list()
-        respond([pageLayoutList: pageLayoutList])
-        return
+        respond([pageLayoutList: PageLayout.list()])
     }
 
     def create() {
@@ -47,46 +45,41 @@ class PageLayoutController {
     }
 
     def save() {
-        params.putAll(request.JSON)
-        def pageLayoutInstance = new PageLayout(params)
+        PageLayout pageLayoutInstance = new PageLayout(params)
         if (!pageLayoutInstance.save(flush: true)) {
-            respond(pageLayoutInstance.errors)
+            log.warn "Error saving pageLayout Instance: $pageLayoutInstance.errors."
+            render text: ([errors: pageLayoutInstance.errors] as JSON), status: HttpStatus.NOT_MODIFIED
             return
         }
-        
+
         respond ([success: true])
     }
 
-    def show(Long id) {
-        params.putAll(request.JSON)
-        def pageLayoutInstance = PageLayout.get(id)
+    def show(PageLayout pageLayoutInstance) {
         respond(pageLayoutInstance)
     }
 
-    def edit(Long id) {
-        def pageLayoutInstance = PageLayout.get(id)
+    def edit(PageLayout pageLayoutInstance) {
         if (!pageLayoutInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), id])
+            log.warn message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), params.id])
             redirect(action: "list")
             return
         }
 
-        println("in edit")
         respond([pageLayoutInstance: pageLayoutInstance])
     }
 
-    def update(Long id, Long version) {
-        params.putAll(request.JSON)
-        def pageLayoutInstance = PageLayout.get(id)
-        
+    def update(PageLayout pageLayoutInstance, Long version) {
         if (!pageLayoutInstance) {
-            respond ([success: false])
+            log.warn message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), params.id])
+            redirect(action: "list")
             return
         }
 
         if (version != null) {
             if (pageLayoutInstance.version > version) {
-                respond ([success: false, message: "Another user has updated this Email Template while you were editing"])
+                respond ([message: "Another user has updated this Email Template while you were editing"], 
+                    status: HttpStatus.NOT_MODIFIED)
                 return
             }
         }
@@ -94,22 +87,21 @@ class PageLayoutController {
         pageLayoutInstance.properties = params
 
         if (!pageLayoutInstance.save(flush: true)) {
-            respond(pageLayoutInstance.errors)
+            log.warn "Error saving pageLayout Instance: $pageLayoutInstance.errors."
+            render text: ([errors: pageLayoutInstance.errors] as JSON), status: HttpStatus.NOT_MODIFIED
             return
         }
 
         respond ([success: true])
     }
 
-    def delete(Long id) {
-        def pageLayoutInstance = PageLayout.get(id)
-        
+    def delete(PageLayout pageLayoutInstance) {
         try {
             pageLayoutInstance.delete(flush: true)
-            respond ([success: true])
+            respond HttpStatus.OK
         }
         catch (DataIntegrityViolationException e) {
-            respond ([success: false])
+            respond HttpStatus.NOT_MODIFIED
         }
     }
 }

@@ -2,7 +2,7 @@
 
 'use strict';
 
-models.factory('FAQModel', ['$resource', '$http', 'BaseModel','dateFilter', function($resource, $http, BaseModel,dateFilter) {
+models.factory('FAQModel', ['BaseModel', function(BaseModel) {
     var FAQModel = augment(BaseModel, function (uber) {
         var clazz;
 
@@ -13,21 +13,22 @@ models.factory('FAQModel', ['$resource', '$http', 'BaseModel','dateFilter', func
             this.postConstruct();
             return clazz;
         };
-        
+
         this.postConstruct = function() {
-        
+
             clazz.prototype.toHTMLTitle = function(scope) {
-                return '<a ui-sref="urlMap.resource({ctrl: \'faq\', action: \'show\', resource: ' + this.id + '})">' + this.title + '</a>';
+                return '<a ui-sref="urlMap.resource({ctrl: \'faq\', action: \'show\', resource: ' + this.id + '})">' + 
+                    this.title + '</a>';
             };
-            
+
             clazz.getClazzName = function() {
                 return 'FAQModel';
             };
-        
+
             clazz.getColumnNames = function() {
-                return ['title','subTitle','body','publish'];
+                return ['title', 'subTitle', 'body', 'publish'];
             };
-        
+
             clazz.getSortProperties = function() {
                 return [];
             };

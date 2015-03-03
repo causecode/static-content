@@ -19,24 +19,10 @@ import org.springframework.dao.DataIntegrityViolationException
  * @author Laxmi Salunkhe
  *
  */
-@Secured(["permitAll"])
+@Secured(["ROLE_CONTENT_MANAGER"])
 class InputWidgetController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
-
-    def beforeInterceptor = [action: this.&validate, except: ["index", "list", "create", "save"]]
-
-    InputWidget inputWidgetInstance
-
-    private validate() {
-        inputWidgetInstance = InputWidget.get(params.id)
-        if(!inputWidgetInstance) {
-            flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'inputWidget.label', default: 'InputWidget'), params.id])
-            redirect(action: "list")
-            return false
-        }
-        return true
-    }
 
     def index() {
         redirect(action: "list", params: params)
@@ -52,25 +38,26 @@ class InputWidgetController {
     }
 
     def save() {
-        inputWidgetInstance = new InputWidget(params)
+        InputWidget inputWidgetInstance = new InputWidget(params)
         if (!inputWidgetInstance.save(flush: true)) {
             render(view: "create", model: [inputWidgetInstance: inputWidgetInstance])
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'inputWidget.label', default: 'InputWidget'), inputWidgetInstance.id])
+        flash.message = message(code: 'default.created.message', 
+            args: [message(code: 'inputWidget.label', default: 'InputWidget'), inputWidgetInstance.id])
         redirect(action: "show", id: inputWidgetInstance.id)
     }
 
-    def show(Long id) {
+    def show(InputWidget inputWidgetInstance) {
         [inputWidgetInstance: inputWidgetInstance]
     }
 
-    def edit(Long id) {
+    def edit(InputWidget inputWidgetInstance) {
         [inputWidgetInstance: inputWidgetInstance]
     }
 
-    def update(Long id, Long version) {
+    def update(InputWidget inputWidgetInstance, Long version) {
         if(version != null) {
             if (inputWidgetInstance.version > version) {
                 inputWidgetInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
@@ -92,7 +79,7 @@ class InputWidgetController {
         redirect(action: "show", id: inputWidgetInstance.id)
     }
 
-    def delete(Long id) {
+    def delete(InputWidget inputWidgetInstance) {
         try {
             inputWidgetInstance.delete(flush: true)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'inputWidget.label', default: 'InputWidget'), id])

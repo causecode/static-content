@@ -43,19 +43,16 @@ controllers.controller('PageController', ['$scope', '$http', '$state', 'appServi
             });
         });
     }
-    
-	PageModel.getMetaList(null,function(data){
-    	$scope.metaList = data.metaTypeList;
-    },function(){});
-    
-    PageLayoutModel.getPageLayoutList(null,function(data){
-    	$scope.pageLayoutList = data.pageLayoutList;
-    },function(){});
-    
-    $scope.init = function() {
-    }
-    
+
+    PageModel.getMetaList(null, function(data){
+        $scope.metaList = data.metaTypeList;
+    },function() {});
+
+    PageLayoutModel.getPageLayoutList(null, function(data){
+        $scope.pageLayoutList = data.pageLayoutList;
+    },function() {});
+
     $scope.addForm = function() {
-    	$scope.contentInstance.metaList.push({});
+        $scope.contentInstance.metaList.push({});
     }
 }]);

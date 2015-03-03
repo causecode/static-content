@@ -27,20 +27,6 @@ class FAQController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    def beforeInterceptor = [action: this.&validate, except: ["index", "list", "create", "save"]]
-
-    private FAQ FAQInstance
-
-    private validate() {
-        FAQInstance = FAQ.get(params.id)
-        if(!FAQInstance) {
-            flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'FAQ.label', default: 'FAQ'), params.id])
-            redirect(action: "list")
-            return false
-        }
-        return true
-    }
-
     def index() {
         redirect(action: "list", params: params)
     }
@@ -49,7 +35,7 @@ class FAQController {
         params.putAll(request.JSON)
         params.max = Math.min(max ?: 10, 100)
         params.offset = offset ? offset: 0
-        respond ( [instanceList: FAQ.list(params), totalCount: FAQ.count()] ) 
+        respond ([instanceList: FAQ.list(params), totalCount: FAQ.count()]) 
     }
 
     def create() {
@@ -58,7 +44,7 @@ class FAQController {
 
     def save() {
         params.putAll(request.JSON)
-        FAQInstance = new FAQ(params)
+        FAQ FAQInstance = new FAQ(params)
         if (!FAQInstance.save(flush: true)) {
             respond(FAQInstance.errors)
             return
@@ -67,15 +53,15 @@ class FAQController {
         respond ([success: true])
     }
 
-    def show() {
+    def show(FAQ FAQInstance) {
         respond (FAQInstance)
     }
 
-    def edit(Long id) {
+    def edit(FAQ FAQInstance) {
         [FAQInstance: FAQInstance]
     }
 
-    def update(Long id, Long version) {
+    def update(FAQ FAQInstance, Long version) {
         params.putAll(request.JSON)
         if(version != null) {
             if (FAQInstance.version > version) {
@@ -93,11 +79,11 @@ class FAQController {
             respond(FAQInstance.errors)
             return
         }
-        
+
         respond ([success: true])
     }
 
-    def delete(Long id) {
+    def delete(FAQ FAQInstance) {
         try {
             FAQInstance.delete(flush: true)
             respond ([success: true])

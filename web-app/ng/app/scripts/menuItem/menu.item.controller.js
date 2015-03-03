@@ -41,10 +41,6 @@ controllers.controller('MenuItemController', ['$scope', '$state', 'MenuItemModel
         });
     };
 
-    $scope.buttonDisabled = false;
-    $scope.menuItemInstanceList = [];
-    $scope.tempId = 0;
-    
     $scope.createMenuItem = function() {
         $scope.menuItemInstance.childItems = [];
         $scope.menuItemInstance.tempId = ($scope.tempId + 1);
@@ -82,8 +78,8 @@ controllers.controller('MenuItemController', ['$scope', '$state', 'MenuItemModel
     }
 
     $scope.getIndexOfMenuItem = function(tempId) {
-        for(var i=0; i < $scope.menuItemInstanceList.length; i ++) {
-            if($scope.menuItemInstanceList[i].tempId == tempId) {
+        for (var i=0; i < $scope.menuItemInstanceList.length; i ++) {
+            if ($scope.menuItemInstanceList[i].tempId === tempId) {
                 return i;
             }
         }
@@ -162,4 +158,7 @@ controllers.controller('MenuItemController', ['$scope', '$state', 'MenuItemModel
         }
     };
 
+    $scope.buttonDisabled = false;
+    $scope.menuItemInstanceList = [];
+    $scope.tempId = 0;
 }]);

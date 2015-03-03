@@ -55,7 +55,7 @@ class PageController {
         redirect(action: "list", params: params)
     }
     
-    def getMetaTypeList(){
+    def getMetaTypeList() {
         List metaTypeList = Meta.getTypeList()
         respond ([metaTypeList:metaTypeList])
     }

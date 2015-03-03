@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are not permitted.
+ */
+
 package com.cc.marshaller
 
 import grails.converters.JSON
@@ -24,29 +32,30 @@ class MenuItemMarshaller implements ObjectMarshaller<JSON>, NameAwareMarshaller{
     @Override
     void marshalObject(Object object, JSON converter) throws ConverterException {
         MenuItem menuItemInstance = object as MenuItem
-        JSONWriter jsonWriter = converter.getWriter()
+        JSONWriter writer = converter.getWriter()
 
-        jsonWriter.object()
-        jsonWriter.key("id")
+        writer.object()
+
+        writer.key("id")
                 .value(menuItemInstance.id)
-        jsonWriter.key("version")
+        writer.key("version")
                 .value(menuItemInstance.version)
-        jsonWriter.key("roles")
-        converter.convertAnother(menuItemInstance.roles?.tokenize(",") ?: [])
-        jsonWriter.key("title")
+        writer.key("title")
                 .value(menuItemInstance.title)
-        jsonWriter.key("url")
+        writer.key("url")
                 .value(menuItemInstance.url)
-
-        jsonWriter.key("childItems")
-        jsonWriter.array()
-        menuItemInstance.childItems.each { childMenuItem ->
-            converter.convertAnother(childMenuItem)
-        }
-        jsonWriter.endArray()
-
-        jsonWriter.key("parent")
+        writer.key("parent")
                 .value(menuItemInstance.parent)
-        jsonWriter.endObject()
+
+        writer.key("roles")
+        converter.convertAnother(menuItemInstance.roles?.tokenize(",") ?: [])
+        writer.key("childItems")
+        writer.array()
+            menuItemInstance.childItems.each { childMenuItem ->
+                converter.convertAnother(childMenuItem)
+            }
+        writer.endArray()
+
+        writer.endObject()
     }
 }

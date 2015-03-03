@@ -24,26 +24,11 @@ import org.springframework.dao.DataIntegrityViolationException
 class MenuController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
-    
+
     static responseFormats = ["json"]
-
-    def beforeInterceptor = [action: this.&validate, except: ["index", "list", "create", "save","getRoleList"]]
-
-    private Menu menuInstance
-    private MenuItem menuItemInstance
 
     def contentService
     def menuItemService
-
-    private validate() {
-        menuInstance = Menu.get(params.id)
-        if(!menuInstance) {
-            flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'menu.label'), params.id])
-            redirect(action: "list")
-            return false
-        }
-        return true
-    }
 
     def index() {
         redirect(action: "list", params: params)
@@ -62,7 +47,7 @@ class MenuController {
 
     def save() {
         params.putAll(request.JSON)
-        menuInstance = new Menu(params)
+        Menu menuInstance = new Menu(params)
         if (!menuInstance.save(flush: true)) {
             respond(menuInstance.errors)
             return
@@ -71,17 +56,17 @@ class MenuController {
         respond ([success: true])
     }
     
-    def show(Long id) {
+    def show(Menu menuInstance) {
         List<MenuItem> menuItemInstanceList = menuInstance.menuItems.findAll { !it.parent }
         respond ([menuItemInstanceList: menuItemInstanceList, menuInstance: menuInstance,
             roleList: contentService.getRoleClass().list()])
     }
 
-    def edit(Long id) {
+    def edit(Menu menuInstance) {
         [menuInstance: menuInstance]
     }
 
-    def update(Long id, Long version) {
+    def update(Menu menuInstance, Long version) {
         if(version != null) {
             if (menuInstance.version > version) {
                 menuInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
@@ -102,7 +87,7 @@ class MenuController {
         respond ([success: true])
     }
 
-    def delete(Long id) {
+    def delete(Menu menuInstance) {
         try {
             menuInstance.delete(flush: true)
             respond ([success: true])

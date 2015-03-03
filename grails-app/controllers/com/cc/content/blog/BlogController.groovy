@@ -154,7 +154,6 @@ class BlogController {
             it.numberOfComments = BlogComment.countByBlog(blogInstance)
             blogInstanceList.add(it)
         }
-		println("Now check my size.. "+Bolg.list().size())
         Blog.list().each {
             monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
         }
@@ -169,7 +168,6 @@ class BlogController {
     }
 
     def create() {
-		println("in create ..  :-)")
         [blogInstance: new Blog(params)]
     }
 
@@ -188,8 +186,7 @@ class BlogController {
             }
             blogInstance.setTags(params.tags.tokenize(",")*.trim())
             blogInstance.save(flush: true)
-            println("here now")
-            flash.message = message(code: 'default.created.message', args: [message(code: 'blog.label'), blogInstance.title])
+            //flash.message = message(code: 'default.created.message', args: [message(code: 'blog.label'), blogInstance.title])
             redirect uri: blogInstance.searchLink()
         }
     }
@@ -206,11 +203,11 @@ class BlogController {
         Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList, 
             blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags]
 
-//        if(request.xhr) {
-//            render text:(result as JSON)
-//            return
-//        }
-        respond(result)
+        if(request.xhr) {
+            render text:(result as JSON)
+            return
+        }
+        result
     }
 
     @Transactional
