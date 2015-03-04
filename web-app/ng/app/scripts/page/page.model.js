@@ -2,7 +2,7 @@
 
 'use strict';
 
-models.factory('PageModel', ['BaseModel', function(BaseModel) {
+models.factory('PageModel', ['$resource', '$http', 'BaseModel', function($resource, $http, BaseModel) {
     var PageModel = augment(BaseModel, function (uber) {
         var clazz;
 
@@ -21,11 +21,14 @@ models.factory('PageModel', ['BaseModel', function(BaseModel) {
                 url: '/api/v1/page/action/getMetaTypeList'
             }
         }
-
+        
         this.postConstruct = function() {
         
             clazz.prototype.toHTMLTitle = function(scope) {
-                return '<a ui-sref="urlMap.resource({ctrl: \'page\', action: \'show\', resource: ' + this.id + '})">' + this.title + '</a>';
+                return '<a ui-sref="urlMap.resource({ctrl: \'page\', action: \'show\', resource: ' + this.id + '})">' + 
+                    this.title + '</a>  ' + 
+                    '<a href="" ui-sref="urlMap.resource({ctrl: \'page\', action: \'edit\', resource: ' + 
+                    this.id + '})"><i class="fa fa-edit"></i></a>';
             };
 
             clazz.getClazzName = function() {

@@ -21,9 +21,11 @@ controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel
         PageModel.get({id: $scope.id}, function(pageData) {
             $scope.contentInstance = pageData;
             $scope.contentInstance.metaList = [];
-            PageLayoutModel.get({id: pageData.pageLayout.id}, function(pageLayoutInstance) {
-                $scope.contentInstance.pageLayout = pageLayoutInstance.layoutName;
-            });
+            if (pageData.pageLayout) {
+                PageLayoutModel.get({id: pageData.pageLayout.id}, function(pageLayoutInstance) {
+                    $scope.contentInstance.pageLayout = pageLayoutInstance.id;
+                });
+            }
         });
     }
 

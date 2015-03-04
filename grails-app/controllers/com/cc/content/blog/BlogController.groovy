@@ -252,9 +252,9 @@ class BlogController {
     @Transactional
     @Secured(["permitAll"])
     def comment(Blog blogInstance, Long commentId) {
-        Map requestMap = request.JSON
+        Map requestData = request.JSON
         String errorMessage
-        params.putAll(requestMap)
+        params.putAll(requestData)
         log.info "Parameters received to comment on blog: $params"
         if (!params.id) {
             errorMessage = "Not enough parameters recived to add comment."

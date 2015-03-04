@@ -30,7 +30,7 @@ import com.cc.content.ContentRevision
 @ControllerShorthand(value = "c")
 class PageController {
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "POST"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     static responseFormats = ["json"]
 
@@ -110,7 +110,9 @@ class PageController {
                 return
             }
         }
-        pageInstance = contentService.update(requestData, pageInstance, requestData.metaList.type, requestData.metaList.value)
+        log.info "Parameters received to update page instance: $params, $requestData"
+        pageInstance = contentService.update(requestData, pageInstance, requestData.metaList?.type, 
+            requestData.metaList?.value)
 
         if(pageInstance.hasErrors()) {
             respond(pageInstance.errors)

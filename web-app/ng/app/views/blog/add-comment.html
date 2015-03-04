@@ -1,0 +1,51 @@
+<div class="modal-comment">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="$close()">&times;</button>
+        <h4 id="addCommentLabel" class="modal-title text-center">Comment</h4>
+        <div class="text-center">
+            <div class="row">
+                <div class="col-sm-10 col-sm-push-1">
+                    <div class="alert alert-dismissable slide hid">
+                        <button type="button" class="close" ng-click="hideAlertMessage()">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="login-form-container">
+            <form class="login-form" name="lead-gen-form" ng-submit="comment()">
+                <div class="form-group subject">
+                    <label class="sr-only" for="subject">Subject</label>
+                    <input id="subject" type="text" class="form-control subject" 
+                        placeholder="Subject" ng-model="commentData.subject">
+                </div>
+                <div class="form-group">
+                    <label class="sr-only" for="name">Name</label>
+                    <input id="name" type="text" class="form-control login-name" ng-model="commentData.name"
+                        placeholder="Name">
+                </div>
+                <div class="form-group email">
+                    <label class="sr-only" for="email">Email</label>
+                    <input id="email" type="email" class="form-control login-email" placeholder="Email"
+                         ng-model="commentData.email">
+                </div>
+                <div class="form-group signup-message">
+                    <label class="sr-only" for="comment">Comment</label>
+                    <textarea id="comment" rows="2" cols="" class="form-control comment" 
+                        placeholder="Comment"  ng-model="commentData.commentText"></textarea>
+                </div>
+                <div class="form-group captcha text-center">
+                    <img class="thumbnail img-responsive" src="/simpleCaptcha/captcha"/>
+                    <input id="captcha" type="text" class="form-control captcha" ng-model="commentData.captcha"
+                         placeholder="Enter the words in above image (Case Insensitive)">
+                </div>
+                <button type="submit" class="btn btn-block btn-cta-primary">Comment</button>
+                <button ng-click="$close()" class="btn btn-block btn-cta-default">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>

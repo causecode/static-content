@@ -4,16 +4,20 @@
     </div>
     <div class="row text-left">
         <form class="form-horizontal" on-submit="contentInstance.$update()" name="listForm">
-            <div ng-include="'views/page/_form.html'"></div>
-            <div ng-include="'views/meta/_form.html'"></div>
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fa fa-fw fa-check-square-o"></i> Update
-                </button>
-                <a ui-sref="urlMap({action: 'list'})" class="btn btn-default"> <i class="fa fa-th-list fa-fw"></i>
-                    Cancel
-                </a>
-            </div>
+            <fieldset>
+                <div ng-include="'views/page/_form.html'"></div>
+                <div ng-include="'views/meta/_form.html'"></div>
+                <div class="form-actions col-sm-offset-3 df-gutter-bottom">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-fw fa-check-square-o"></i> Update
+                    </button>
+                    <button type="button" ng-click="contentInstance.$delete()" class="btn btn-danger">Delete</button>
+                    <a ui-sref="urlMap({action: 'list'})" class="btn btn-default"> <i class="fa fa-th-list fa-fw"></i>
+                        Cancel
+                    </a>
+                </div>
+            </fieldset>
         </form>
     </div>
 </div>
+
