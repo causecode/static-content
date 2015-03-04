@@ -23,7 +23,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
             }
             $scope.menuItemInstanceList.push(menuItemModelInsance);
         });
-    }
+    };
 
     //Applicable for two levels only. Use recursion if its to be implemented for
     //multiple (i.e. more than two) layers of Menu Item.
@@ -31,7 +31,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
         angular.forEach(menuItemModelInsance.childItems, function(childMenuItem, index) {
             menuItemModelInsance.childItems[index] = new MenuItemModel(childMenuItem);  
         });
-    }
+    };
 
     $scope.open = function () {
         $scope.menuItemInstance = new MenuItemModel();
@@ -48,7 +48,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
         $scope.tempId = $scope.tempId + 1;
         $scope.modalInstance.close();
         $scope.disableMenuItemButton();
-    }
+    };
 
     $scope.edit = function(menuItemInstance) {
         $scope.menuItemInstance = menuItemInstance;
@@ -56,7 +56,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
             templateUrl: 'views/menuItem/edit.html',
             scope: $scope
         });
-    }
+    };
 
     $scope.remove = function(menuItemInstance, parentMenuItem) {
         if (menuItemInstance.id) {
@@ -67,7 +67,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
             removeFromDOM(menuItemInstance.tempId, parentMenuItem, 'tempId');
             $scope.enableMenuItemButton();
         }
-    }
+    };
 
     function removeFromDOM(value, parentMenuItem, property) {
         if (parentMenuItem) {
@@ -83,7 +83,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
                 return i;
             }
         }
-    }
+    };
 
     $scope.save = function(menuItemInstance,parent) {
         if (parent) {
@@ -100,7 +100,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
         }, function(resp) {
             appService.showAlertMessage(resp.data.message, 'danger');
         }); 
-    }
+    };
 
     $scope.update = function() {
         $scope.menuItemInstance.$update (null, function() {
@@ -109,45 +109,45 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
             appService.showAlertMessage(resp.data.message, 'danger');
         });
         $scope.modalInstance.close();
-    }
+    };
 
     $scope.reorder = function(menuItemInstance) {
         MenuItemModel.reorder(menuItemInstance, function() {}, function() {});
-    }
+    };
 
     $scope.onMenuItemOrderChanged = function(event) {
         var index = event.dest.index;
         var menuItemInstance = event.dest.sortableScope.modelValue[index];
         menuItemInstance.index = index; 
-        if (menuItemInstance.id != null) {
-            $scope.reorder(menuItemInstance);   
+        if (menuItemInstance.id !== null) {
+            $scope.reorder(menuItemInstance);
         }
-    }
+    };
 
     $scope.onMenuItemMoved = function(event) {
         var index = event.dest.index;
         var menuItemInstance = event.dest.sortableScope.modelValue[index];
         menuItemInstance.index = index; 
         var parentMenuItem = event.dest.sortableScope.$parent.menuItemInstance;
-        if (parentMenuItem != null) {
+        if (parentMenuItem !== null) {
             menuItemInstance.parentId = parentMenuItem.id;
         }
-        if (menuItemInstance.id != null) {
-            $scope.reorder(menuItemInstance);   
+        if (menuItemInstance.id !== null) {
+            $scope.reorder(menuItemInstance);
         }
-    }
+    };
 
     $scope.enableMenuItemButton = function() {
         $scope.buttonDisabled = false;
-    }
+    };
 
     $scope.disableMenuItemButton = function() {
         $scope.buttonDisabled = true;
-    }
+    };
 
     $scope.sortableOptions = {
-        accept: function (sourceItemHandleScope, destSortableScope) {
-        return true
+        accept: function (sourceItemHandleScope, destSortableScope) { //jshint ignore:line
+            return true;
         },
         itemMoved: function (event) {
             $scope.onMenuItemMoved(event);

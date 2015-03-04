@@ -97,8 +97,8 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     function addComment(comments) {
         if ($scope.commentData.commentId) {
-            if (comments && comments.length === 0) { return []; };
-            angular.forEach(comments, function(comment, index) {
+            if (comments && comments.length === 0) { return []; }
+            angular.forEach(comments, function(comment, index) {  //jshint ignore:line
                 if (comment.id.toString() === $scope.commentData.commentId) {
                     comment.comments.push($scope.commentData);
                     return;

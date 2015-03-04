@@ -2,7 +2,7 @@
 
 'use strict';
 
-models.factory('PageLayoutModel', ['$resource', '$http', 'BaseModel','dateFilter', function($resource, $http, BaseModel,dateFilter) {
+models.factory('PageLayoutModel', ['BaseModel', function(BaseModel) {
     var PageLayoutModel = augment(BaseModel, function (uber) {
         var clazz;
 
@@ -16,26 +16,26 @@ models.factory('PageLayoutModel', ['$resource', '$http', 'BaseModel','dateFilter
         
         this.customActions = {
             getPageLayoutList: {
-                method: "GET",
-                url: "/api/v1/pageLayout/action/getPageLayoutList"
+                method: 'GET',
+                url: '/api/v1/pageLayout/action/getPageLayoutList'
             }
-        }
+        };
 
         this.postConstruct = function() {
-        
+
             clazz.prototype.toHTMLLayoutName = function() {
                 var html = ' <a href="#/pageLayout/show/' + this.id + '">' + this.layoutName + '</a>';
                 return html;
-            }
-        
+            };
+
             clazz.getClazzName = function() {
                 return 'PageLayoutModel';
             };
-        
+
             clazz.getColumnNames = function() {
                 return ['layoutName'];
             };
-        
+
             clazz.getSortProperties = function() {
                 return ['layoutName'];
             };

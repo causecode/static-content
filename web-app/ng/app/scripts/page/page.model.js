@@ -20,11 +20,11 @@ models.factory('PageModel', ['$resource', '$http', 'BaseModel', function($resour
                 method: 'GET',
                 url: '/api/v1/page/action/getMetaTypeList'
             }
-        }
-        
+        };
+
         this.postConstruct = function() {
-        
-            clazz.prototype.toHTMLTitle = function(scope) {
+
+            clazz.prototype.toHTMLTitle = function() {
                 return '<a ui-sref="urlMap.resource({ctrl: \'page\', action: \'show\', resource: ' + this.id + '})">' + 
                     this.title + '</a>  ' + 
                     '<a href="" ui-sref="urlMap.resource({ctrl: \'page\', action: \'edit\', resource: ' + 

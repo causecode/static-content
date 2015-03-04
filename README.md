@@ -22,6 +22,39 @@ cc.plugins.content.breadcrumbs.baseMap = ['/': 'Home']
 2. **prettyprint** for blog show page.
 
 
+## Development
+
+## Adding Angular Files
+
+To install angular based project, either use command: `grails install-angular-templates` or add following config to
+your **GruntFile.js**:
+
+```javascript
+symlinks: {
+    options: {
+        overwrite: true
+    },
+    createLinks: {
+        files: [{
+            expand : true,
+            flatten : true,
+            src : ['../../../content/web-app/ng/app/scripts/*'],
+            dest : 'app/scripts'
+        }, {
+            expand : true,
+            flatten : true,
+            src : ['../../../content/web-app/ng/app/views/*'],
+            dest : 'app/views'
+        }],
+        options: {
+            type: "dir"
+        }
+    }
+}
+```
+
+Then run command: `grunt symlinks` to install templates.
+
 ## Architecture Overview
 
 ### Domains

@@ -2,7 +2,7 @@
 
 'use strict';
 
-models.factory('MenuItemModel', ['$resource', '$http', 'BaseModel','dateFilter', function($resource, $http, BaseModel,dateFilter) {
+models.factory('MenuItemModel', ['BaseModel', function(BaseModel) {
     var MenuItemModel = augment(BaseModel, function (uber) {
         var clazz;
 

@@ -39,5 +39,5 @@ controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel
 
     $scope.addForm = function() {
         $scope.contentInstance.metaList.push({});
-    }
+    };
 }]);

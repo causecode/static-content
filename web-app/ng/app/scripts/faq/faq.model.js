@@ -16,7 +16,7 @@ models.factory('FAQModel', ['BaseModel', function(BaseModel) {
 
         this.postConstruct = function() {
 
-            clazz.prototype.toHTMLTitle = function(scope) {
+            clazz.prototype.toHTMLTitle = function() {
                 return '<a ui-sref="urlMap.resource({ctrl: \'faq\', action: \'show\', resource: ' + this.id + '})">' + 
                     this.title + '</a>';
             };
