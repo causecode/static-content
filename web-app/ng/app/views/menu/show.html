@@ -1,47 +1,48 @@
 <section ng-controller="MenuItemController">
     <div class="container">
-        <div class="page-header clearfix">
-            <h2 class="pull-left">
-                Menu Items <small>{{menuInstance.name}}</small>
-            </h2>
-            <span class="btn-group pull-right"> <a
-                ng-click="open()" class="btn btn-primary btn-sm"
-                ng-disabled="buttonDisabled" data-toggle="modal"> <i
-                    class="icon-plus"></i> &nbsp;Menu Item
-            </a>
-            </span>
+        <div class="page-header">
+            <h1>
+                Menu Items
+                <small>
+                    {{menuInstance.name}}
+                    <a ng-click="open()" ng-hide="buttonDisabled" title="Create New Menu Item">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </small>
+            </h1>
         </div>
 
-        <ul as-sortable="sortableOptions" ng-model="menuItemInstanceList" style="min-height: 40px"
-            class="list-unstyled">
+        <ul as-sortable="sortableOptions" ng-model="menuItemInstanceList" class="list-unstyled">
             <li ng-repeat="menuItemInstance in menuItemInstanceList" as-sortable-item class="thumbnail"
                 ng-model="menuItemInstance">
-                <div as-sortable-item-handle> {{menuItemInstance.title}} 
+                <div as-sortable-item-handle>
+                    {{menuItemInstance.title}} 
                     <span class="pull-right">
                         <a ng-click="save(menuItemInstance)" ng-show="menuItemInstance.tempId" class="save-menu-item"> 
-                            <i class="fa fa-check icon-ok"> </i>
+                            <i class="fa fa-fw fa-check-square-o"> </i>
                         </a> 
                         <a ng-click="remove(menuItemInstance)" class="delete-menu-item">
-                            <i class="fa fa-trash-o icon-remove"></i>
+                            <i class="fa fa-trash-o"></i>
                         </a> 
-                        <a ng-click="edit(menuItemInstance)" ng-show="menuItemInstance.id" class="delete-menu-item">
+                        <a ng-click="edit(menuItemInstance)" ng-show="menuItemInstance.id" class="edit-menu-item">
                             <i class="fa fa-pencil"></i>
                         </a>
                     </span>
                 </div>
-                <ul as-sortable="sortableOptions" style="min-height: 40px" ng-model="menuItemInstance.childItems"
-                    class="list-unstyled">
-                    <li ng-repeat="subMenu in menuItemInstance.childItems" as-sortable-item ng-model="subMenu">
-                        <div as-sortable-item-handle> {{subMenu.title}} 
-                            <span class="pull-right">
+                <ul as-sortable="sortableOptions" ng-model="menuItemInstance.childItems" class="list-unstyled">
+                    <li ng-repeat="subMenu in menuItemInstance.childItems" class="thumbnail" 
+                        as-sortable-item ng-model="subMenu" style="margin: 15px 15px;">
+                        <div as-sortable-item-handle> 
+                            {{subMenu.title}} 
+                            <span class="pull-right" ng-show="subMenu">
                                 <a ng-click="save(subMenu, menuItemInstance)" ng-show="menuItemInstance.tempId"
                                     class="save-menu-item"> 
-                                    <i class="fa fa-check icon-ok"> </i>
+                                    <i class="fa fa-fw fa-check-square-o"> </i>
                                 </a> 
                                 <a ng-click="remove(subMenu, menuItemInstance)" class="delete-menu-item">
                                     <i class="fa fa-trash-o icon-remove"></i>
                                 </a>
-                                <a ng-click="edit(subMenu)" ng-show="menuItemInstance.id" class="delete-menu-item">
+                                <a ng-click="edit(subMenu)" ng-show="menuItemInstance.id" class="edit-menu-item">
                                     <i class="fa fa-pencil"></i>
                                 </a>
                             </span>

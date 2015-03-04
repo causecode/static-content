@@ -23,9 +23,11 @@ import org.springframework.dao.DataIntegrityViolationException
 @Secured(["ROLE_CONTENT_MANAGER"])
 class MenuItemController {
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [save: "POST", reorder: "POST", update: "PUT", delete: "DELETE"]
     
     static responseFormats = ["json"]
+
+    MenuItemService menuItemService
 
     def delete(MenuItem menuItemInstance) {
         try {
@@ -37,8 +39,8 @@ class MenuItemController {
     }
 
     def save() {
-        params.putAll(request.JSON)
-        MenuItem menuItemInstance = menuItemService.create(params)
+        Map requestData = request.JSON
+        MenuItem menuItemInstance = menuItemService.create(requestData)
         respond (menuItemInstance)
     }
 
@@ -49,11 +51,10 @@ class MenuItemController {
     }
 
     def update(MenuItem menuItemInstance){
-        params.putAll(request.JSON)
-        menuItemInstance = menuItemService.update(menuItemInstance, params)
+        Map requestData = request.JSON
+        menuItemInstance = menuItemService.update(menuItemInstance, requestData)
         respond([success: true])
     }
-    
 
     /**
      * Used to reorder menuItem instance.

@@ -2,8 +2,8 @@
 
 'use strict';
 
-controllers.controller('MenuItemController', ['$scope', '$state', 'MenuItemModel', 'appService', '$modal', 'MenuModel',
-                                              function($scope, $state, MenuItemModel, appService, $modal, MenuModel) {
+controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appService', '$modal', 'MenuModel',
+        function($scope, MenuItemModel, appService, $modal, MenuModel) {
 
     if ($scope.actionName === 'create') {
         $scope.menuItemInstance = new MenuItemModel();
@@ -29,14 +29,14 @@ controllers.controller('MenuItemController', ['$scope', '$state', 'MenuItemModel
     //multiple (i.e. more than two) layers of Menu Item.
     $scope.createMenuItemModelInstance = function(menuItemModelInsance) {
         angular.forEach(menuItemModelInsance.childItems, function(childMenuItem, index) {
-            menuItemModelInsance.childItems[index] = new MenuItemModel(childMenuItem);	
+            menuItemModelInsance.childItems[index] = new MenuItemModel(childMenuItem);  
         });
     }
 
     $scope.open = function () {
         $scope.menuItemInstance = new MenuItemModel();
         $scope.modalInstance = $modal.open({
-            templateUrl: 'views/menuItem/createMenuItemOverlay.html',
+            templateUrl: 'views/menuItem/create.html',
             scope: $scope
         });
     };
@@ -53,7 +53,7 @@ controllers.controller('MenuItemController', ['$scope', '$state', 'MenuItemModel
     $scope.edit = function(menuItemInstance) {
         $scope.menuItemInstance = menuItemInstance;
         $scope.modalInstance = $modal.open({
-            templateUrl: 'views/menuItem/editMenuItemOverlay.html',
+            templateUrl: 'views/menuItem/edit.html',
             scope: $scope
         });
     }
@@ -112,8 +112,7 @@ controllers.controller('MenuItemController', ['$scope', '$state', 'MenuItemModel
     }
 
     $scope.reorder = function(menuItemInstance) {
-        MenuItemModel.reorder(null, menuItemInstance, function() {
-        });
+        MenuItemModel.reorder(menuItemInstance, function() {}, function() {});
     }
 
     $scope.onMenuItemOrderChanged = function(event) {
@@ -121,7 +120,7 @@ controllers.controller('MenuItemController', ['$scope', '$state', 'MenuItemModel
         var menuItemInstance = event.dest.sortableScope.modelValue[index];
         menuItemInstance.index = index; 
         if (menuItemInstance.id != null) {
-            $scope.reorder(menuItemInstance);	
+            $scope.reorder(menuItemInstance);   
         }
     }
 
@@ -134,7 +133,7 @@ controllers.controller('MenuItemController', ['$scope', '$state', 'MenuItemModel
             menuItemInstance.parentId = parentMenuItem.id;
         }
         if (menuItemInstance.id != null) {
-            $scope.reorder(menuItemInstance);	
+            $scope.reorder(menuItemInstance);   
         }
     }
 
