@@ -103,11 +103,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
     };
 
     $scope.update = function() {
-        $scope.menuItemInstance.$update (null, function() {
-            appService.showAlertMessage('MenuItem Updated.', 'info'); 
-        }, function(resp) {
-            appService.showAlertMessage(resp.data.message, 'danger');
-        });
+        $scope.menuItemInstance.$update();
         $scope.modalInstance.close();
     };
 

@@ -11,7 +11,7 @@ package com.cc.content.navigation
 import grails.plugin.springsecurity.annotation.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
-
+import org.springframework.http.HttpStatus
 
 /**
  * Provides default CRUD end point for Content Manager.
@@ -53,7 +53,7 @@ class MenuController {
             return
         }
 
-        respond ([success: true])
+        respond ([status: HttpStatus.OK])
     }
     
     def show(Menu menuInstance) {
@@ -84,7 +84,7 @@ class MenuController {
             return 
         }
 
-        respond ([success: true])
+        respond ([status: HttpStatus.OK])
     }
 
     def delete(Menu menuInstance) {
@@ -92,7 +92,9 @@ class MenuController {
             menuInstance.delete(flush: true)
             respond ([success: true])
         } catch (DataIntegrityViolationException e) {
-            respond ([success: false])
+            respond ([status: HttpStatus.NOT_MODIFIED])
+            return
         }
+        respond ([status: HttpStatus.OK])
     }
 }

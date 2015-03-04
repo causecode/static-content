@@ -12,6 +12,7 @@ import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 
 /**
  * Provides end point to reorder menu items for Content Manager.
@@ -32,10 +33,11 @@ class MenuItemController {
     def delete(MenuItem menuItemInstance) {
         try {
             menuItemInstance = menuItemService.delete(menuItemInstance)
-            respond ([success: true])
         } catch (DataIntegrityViolationException e) {
-            respond ([success: false])
+            respond ([status: HttpStatus.NOT_MODIFIED])
+            return
         }
+        respond ([status: HttpStatus.OK])
     }
 
     def save() {
@@ -53,7 +55,15 @@ class MenuItemController {
     def update(MenuItem menuItemInstance){
         Map requestData = request.JSON
         menuItemInstance = menuItemService.update(menuItemInstance, requestData)
-        respond([success: true])
+        if (menuItemInstance.hasErrors()) {
+            log.warn "Error updating menuItem Instance: $menuItemInstance.errors."
+            respond ([errors: menuItemInstance.errors], status: HttpStatus.NOT_MODIFIED)
+            return
+        } else {
+            log.info "MenuItem instance updated successfully."
+            menuItemInstance.save(flush: true)
+        }
+        respond ([status: HttpStatus.OK])
     }
 
     /**

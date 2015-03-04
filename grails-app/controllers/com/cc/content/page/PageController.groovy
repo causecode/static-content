@@ -10,12 +10,9 @@ package com.cc.content.page
 
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
-
 import com.cc.content.meta.Meta
-
 import grails.plugin.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
-
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.ContentRevision
 

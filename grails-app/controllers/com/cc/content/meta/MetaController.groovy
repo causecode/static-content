@@ -10,8 +10,6 @@ package com.cc.content.meta
 
 import grails.plugin.springsecurity.annotation.Secured
 
-import grails.converters.JSON
-
 import org.springframework.dao.DataIntegrityViolationException
 
 import com.cc.content.ContentMeta

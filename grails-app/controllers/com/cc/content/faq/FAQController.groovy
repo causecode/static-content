@@ -8,10 +8,10 @@
 
 package com.cc.content.faq
 
-import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 
 /**
  * Provides default CRUD end point for Content Manager.
@@ -22,8 +22,8 @@ import org.springframework.dao.DataIntegrityViolationException
  */
 @Secured(["ROLE_CONTENT_MANAGER"])
 class FAQController {
-	
-	static responseFormats = ["json"]
+
+    static responseFormats = ["json"]
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -80,15 +80,16 @@ class FAQController {
             return
         }
 
-        respond ([success: true])
+        respond ([status: HttpStatus.OK])
     }
 
     def delete(FAQ FAQInstance) {
         try {
             FAQInstance.delete(flush: true)
-            respond ([success: true])
         } catch (DataIntegrityViolationException e) {
-            respond ([success: false])
+            respond ([status: HttpStatus.NOT_MODIFIED])
+            return
         }
+        respond ([status: HttpStatus.OK])
     }
 }
