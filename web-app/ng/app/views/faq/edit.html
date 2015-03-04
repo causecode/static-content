@@ -1,23 +1,21 @@
-<div class"container" ng-controller="FAQController">
+<div class="container" ng-controller="FAQController">
     <div class="page-header">
-        <h2>Edit FAQ</h2>
+        <h1>Edit FAQ</h1>
     </div>
 
-    <div class="row text-left">
+    <div>
         <form class="form-horizontal" on-submit="contentInstance.$update()" name="listForm">
-            <div ng-include="'views/content/_form.html'"></div>
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-fw fa-check-square-o"></i> Update
-                    </button>
+            <fieldset>
+                <div ng-include="'views/content/_form.html'"></div>
+                <div class="form-actions col-sm-offset-3 df-gutter-bottom">
                     <a ui-sref="urlMap({action: 'list'})" class="btn btn-default"> <i class="fa fa-th-list fa-fw"></i>
                         Cancel
                     </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-fw fa-check-square-o"></i> Update
+                    </button>
                 </div>
-            </div>
+            </fieldset>
         </form>
     </div>
 </div>
-
-
