@@ -64,7 +64,7 @@ class PageLayoutController {
             pageLayoutInstance.save(flush: true)
         }
 
-        respond ([success: true])
+        respond ([status: HttpStatus.OK])
     }
 
     @Transactional(readOnly = true)
@@ -91,7 +91,7 @@ class PageLayoutController {
 
         if (version != null) {
             if (pageLayoutInstance.version > version) {
-                respond ([message: "Another user has updated this Email Template while you were editing"], 
+                respond ([message: "Another user has updated this page layout instance while you were editing"], 
                     status: HttpStatus.NOT_MODIFIED)
                 return
             }
@@ -110,16 +110,17 @@ class PageLayoutController {
             pageLayoutInstance.save(flush: true)
         }
 
-        respond ([success: true])
+        respond ([status: HttpStatus.OK])
     }
 
     def delete(PageLayout pageLayoutInstance) {
         try {
             pageLayoutInstance.delete(flush: true)
-            respond HttpStatus.OK
         }
         catch (DataIntegrityViolationException e) {
-            respond HttpStatus.NOT_MODIFIED
+            respond ([status: HttpStatus.NOT_MODIFIED])
+            return
         }
+        respond ([status: HttpStatus.OK])
     }
 }

@@ -1,9 +1,6 @@
-<div class="row main-content" ng-controller="NewsController">
-    <div class="col-md-2"></div>
-    <div class="col-md-8">
-        <div class="page-header custom">
-            <h1>News List</h1>
-        </div>
-        <paged-list model-name="'News'" items-per-page="15"></paged-list>
+<div class="container" ng-controller="NewsController">
+    <div class="page-header custom">
+        <h1>News List</h1>
     </div>
+    <paged-list model-name="'News'" items-per-page="15" filter="false"></paged-list>
 </div>

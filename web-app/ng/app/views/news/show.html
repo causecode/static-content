@@ -1,10 +1,9 @@
-<section ng-controller="NewsController">
-    <div class="container text-left">
-        <h2>News</h2>
+<div class="container"  ng-controller="NewsController">
+    <div class="container">
+        <h1>News</h1>
     </div>
 
-    <ba-content> 
-    <div class="col-sm-8">
+    <div>
         <dl class="dl-horizontal">
             <dt>Title</dt>
             <dd>{{contentInstance.title}}</dd>
@@ -15,17 +14,18 @@
             <dt>Body</dt>
             <dd>{{contentInstance.body}}</dd>
 
-
             <dt>Publish</dt>
             <dd>{{contentInstance.publish}}
+
+            <dt>Author</dt>
+            <dd>{{contentInstance.author}}
         </dl>
     </div>
 
-    <div class="col-sm-offset-2 col-sm-10">
+    <div class="col-sm-offset-3">
         <a ui-sref="urlMap.resource({action: 'edit', resource: contentInstance.id})" class="btn btn-primary">Edit</a>
         <button type="button" ng-click="contentInstance.$delete()" class="btn btn-danger">Delete</button>
         <a ui-sref="urlMap({action: 'list'})" class="btn btn-default"> <i class="fa fa-th-list"></i> Cancel
         </a>
     </div>
-    </ba-content>
-</section>
+</div>
