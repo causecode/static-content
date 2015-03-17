@@ -133,6 +133,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
         }
     };
 
+    // Used to Enable and Disable button in intermediate state i.e. After create and before save operation.
     $scope.enableMenuItemButton = function() {
         $scope.buttonDisabled = false;
     };
