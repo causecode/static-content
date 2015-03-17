@@ -43,6 +43,14 @@ ckeditor {
     }
 }
 
+environments {
+    test {
+        app {
+            defaultURL = "/ng/app/index.html#"
+        }
+    }
+}
+
 grails.app.context = "/"
 grails.views.default.codec = "none" // none, html, base64
 grails.views.gsp.encoding = "UTF-8"

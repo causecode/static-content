@@ -48,13 +48,8 @@ class BlogControllerTests {
         assert tagLinkInstance.save()
 
         controller.validate()
-        def model = controller.show()
-
-        assert model != null
-        assert model.blogInstance.id == blogInstance.id
-        assert model.comments == []
-        assert model.tagList == []
-        assert model.blogInstanceList != null
+        controller.show()
+		assert response.redirectedUrl.contains('/blog/show/' + blogInstance.id)
     }
 
 }
