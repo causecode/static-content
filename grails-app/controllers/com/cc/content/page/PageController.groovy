@@ -88,7 +88,17 @@ class PageController {
 
     @Secured(["permitAll"])
     def show(Page pageInstance) {
-        respond(pageInstance)
+        // URL that contains '_escaped_fragment_' parameter, represents a request from a crawler.
+        if (params._escaped_fragment_) {
+            render groovyPageRenderer.render(view: "/page/show", model: [pageInstance: pageInstance])
+            return      
+        }
+        if (request.xhr) {
+            render text:([pageInstance: pageInstance] as JSON)
+            return
+        }
+        String pageShowUrl = grailsApplication.config.app.defaultURL + "/page/show/${id}"
+        redirect(url: pageShowUrl, permanent: true)
     }
 
     def edit(Page pageInstance) {

@@ -17,6 +17,7 @@ import java.util.regex.Pattern
 import grails.transaction.Transactional
 import org.grails.taggable.TagLink
 import org.springframework.dao.DataIntegrityViolationException
+import grails.gsp.PageRenderer
 
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.blog.comment.BlogComment
@@ -44,6 +45,8 @@ class BlogController {
     def commentService
     def blogService
     def grailsWebDataBinder
+    def grailsApplication
+    PageRenderer groovyPageRenderer
 
     private static String HTML_P_TAG_PATTERN = "(?s)<p(.*?)>(.*?)<\\/p>"
 
@@ -74,7 +77,7 @@ class BlogController {
         List<String> monthFilterList = []
         String month, year
 
-        if(monthFilter) {
+        if (monthFilter) {
             List blogFilter =  monthFilter.split("-")
             month = blogFilter[0]
             year = blogFilter[1]
@@ -86,28 +89,28 @@ class BlogController {
         StringBuilder query = new StringBuilder("""SELECT new Map(b.id as id, b.body as body, b.title as title,
                             b.subTitle as subTitle, b.author as author, b.publishedDate as publishedDate) FROM Blog b """)
 
-        if(tag) {
+        if (tag) {
             query.append(", ${TagLink.class.name} tagLink WHERE b.id = tagLink.tagRef ")
             query.append("AND tagLink.type = 'blog' AND tagLink.tag.name = '$tag' ")
         }
-        if(monthFilter) {
+        if (monthFilter) {
             tag ? query.append(" AND ") : query.append(" WHERE ")
             query.append(" monthname(b.publishedDate) = '$month' AND year(b.publishedDate) = '$year'")
         }
-        if(queryFilter) {
+        if (queryFilter) {
             tag ? query.append(" AND ") : ( monthFilter ? query.append(" AND ") : query.append(" WHERE "))
             query.append(" b.title LIKE '%$queryFilter%' OR b.subTitle LIKE '%$queryFilter%' ")
             query.append(" OR b.body LIKE '%$queryFilter%' OR b.author LIKE '%$queryFilter%'")
         }
 
-        if(contentService.contentManager) {
+        if (contentService.contentManager) {
             blogInstanceTotal = tag ? Blog.countByTag(tag) : Blog.count()
-        } else if(tag) {
+        } else if (tag) {
             query.append("AND b.publish = true")
             blogInstanceTotal = Blog.findAllByTagWithCriteria(tag) {
                 eq("publish", true)
             }.size()
-        } else if(monthFilter) {
+        } else if (monthFilter) {
             query.append("AND b.publish = true")
             blogInstanceTotal = Blog.countByPublish(true)
         } else {
@@ -126,7 +129,7 @@ class BlogController {
             it.body = matcherTag.find() ? matcherTag.group(2) : ""
         }
 
-        if(monthFilter) {
+        if (monthFilter) {
             blogInstanceTotal = Blog.executeQuery(query.toString()).size()
         }
 
@@ -143,11 +146,18 @@ class BlogController {
 
         Map result = [blogInstanceList: blogInstanceList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
             tagList: blogService.getAllTags()]
-        if(request.xhr) {
+
+        // URL that contains '_escaped_fragment_' parameter, represents a request from a crawler.
+        if (params._escaped_fragment_) {
+            render groovyPageRenderer.render(view: "/blog/list", model: result)
+            return
+        }
+        if (request.xhr) {
             render text:(result as JSON)
             return
         }
-        result
+        String blogListUrl = grailsApplication.config.app.defaultURL + "/blog/list"
+        redirect(url: blogListUrl, permanent: true)
     }
 
     def create() {
@@ -186,11 +196,17 @@ class BlogController {
         Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList, 
             blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags]
 
-        if(request.xhr) {
+        // URL that contains '_escaped_fragment_' parameter, represents a request from a crawler.
+        if (params._escaped_fragment_) {
+            render groovyPageRenderer.render(view: "/blog/show", model: result)
+            return      
+        }
+        if (request.xhr) {
             render text:(result as JSON)
             return
         }
-        result
+        String blogShowUrl = grailsApplication.config.app.defaultURL + "/blog/show/${id}"
+        redirect(url: blogShowUrl, permanent: true)
     }
 
     @Transactional
