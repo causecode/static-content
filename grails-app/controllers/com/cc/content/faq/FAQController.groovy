@@ -11,6 +11,7 @@ package com.cc.content.faq
 import grails.plugin.springsecurity.annotation.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 
 /**
  * Provides default CRUD end point for Content Manager.
@@ -22,30 +23,19 @@ import org.springframework.dao.DataIntegrityViolationException
 @Secured(["ROLE_CONTENT_MANAGER"])
 class FAQController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static responseFormats = ["json"]
 
-    def beforeInterceptor = [action: this.&validate, except: ["index", "list", "create", "save"]]
-
-    private FAQ FAQInstance
-
-    private validate() {
-        FAQInstance = FAQ.get(params.id)
-        if(!FAQInstance) {
-            flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'FAQ.label', default: 'FAQ'), params.id])
-            redirect(action: "list")
-            return false
-        }
-        return true
-    }
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     def index() {
         redirect(action: "list", params: params)
     }
 
     def list(Integer max, Integer offset) {
+        params.putAll(request.JSON)
         params.max = Math.min(max ?: 10, 100)
         params.offset = offset ? offset: 0
-        [FAQInstanceList: FAQ.list(params), FAQInstanceTotal: FAQ.count()]
+        respond ([instanceList: FAQ.list(params), totalCount: FAQ.count()]) 
     }
 
     def create() {
@@ -53,31 +43,32 @@ class FAQController {
     }
 
     def save() {
-        FAQInstance = new FAQ(params)
+        params.putAll(request.JSON)
+        FAQ FAQInstance = new FAQ(params)
         if (!FAQInstance.save(flush: true)) {
-            render(view: "create", model: [FAQInstance: FAQInstance])
+            respond(FAQInstance.errors)
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'FAQ.label', default: 'FAQ'), FAQInstance.id])
-        redirect(action: "show", id: FAQInstance.id)
+        respond ([success: true])
     }
 
-    def show(Long id) {
+    def show(FAQ FAQInstance) {
+        respond (FAQInstance)
+    }
+
+    def edit(FAQ FAQInstance) {
         [FAQInstance: FAQInstance]
     }
 
-    def edit(Long id) {
-        [FAQInstance: FAQInstance]
-    }
-
-    def update(Long id, Long version) {
+    def update(FAQ FAQInstance, Long version) {
+        params.putAll(request.JSON)
         if(version != null) {
             if (FAQInstance.version > version) {
                 FAQInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'FAQ.label', default: 'FAQ')] as Object[],
                         "Another user has updated this FAQ while you were editing")
-                render(view: "edit", model: [FAQInstance: FAQInstance])
+                respond(FAQInstance.errors)
                 return
             }
         }
@@ -85,22 +76,20 @@ class FAQController {
         FAQInstance.properties = params
 
         if (!FAQInstance.save(flush: true)) {
-            render(view: "edit", model: [FAQInstance: FAQInstance])
+            respond(FAQInstance.errors)
             return
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'FAQ.label', default: 'FAQ'), FAQInstance.id])
-        redirect(action: "show", id: FAQInstance.id)
+        respond ([status: HttpStatus.OK])
     }
 
-    def delete(Long id) {
+    def delete(FAQ FAQInstance) {
         try {
             FAQInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'FAQ.label', default: 'FAQ'), id])
-            redirect(action: "list")
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'FAQ.label', default: 'FAQ'), id])
-            redirect(action: "show", id: id)
+            respond ([status: HttpStatus.NOT_MODIFIED])
+            return
         }
+        respond ([status: HttpStatus.OK])
     }
 }

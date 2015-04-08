@@ -35,8 +35,8 @@ import com.cc.content.blog.comment.Comment
 class BlogController {
 
     static allowedMethods = [save: "POST", update: "POST"]
-
-    def beforeInterceptor = [action: this.&validate]
+    
+    static responseFormats = ["json"]
 
     def contentService
     def springSecurityService
@@ -45,22 +45,7 @@ class BlogController {
     def blogService
     def grailsWebDataBinder
 
-    private Blog blogInstance
-
     private static String HTML_P_TAG_PATTERN = "(?s)<p(.*?)>(.*?)<\\/p>"
-
-    private boolean validate() {
-        if(!params.id) {
-            return true
-        }
-        blogInstance = Blog.get(params.id)
-        if (!blogInstance) {
-            flash.message = "Sorry, no blog found with Id $params.id"
-            redirect(uri: "/blog")
-            return false
-        }
-        return true
-    }
 
     /**
      * Action list filters blog list with tags and returns Blog list and total matched result count.
@@ -174,31 +159,32 @@ class BlogController {
      */
     @Transactional
     def save() {
+        params.putAll(request.JSON)
         Blog.withTransaction { status ->
-            blogInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Blog.class)
+            blogInstance = contentService.create(params, params.metaList.type, params.metaList.value, Blog.class)
             if (blogInstance.hasErrors()) {
                 status.setRollbackOnly()
-                render(view: "create", model: [blogInstance: blogInstance])
+                respond(blogInstance.errors)
                 return
             }
             blogInstance.setTags(params.tags.tokenize(",")*.trim())
             blogInstance.save(flush: true)
-            flash.message = message(code: 'default.created.message', args: [message(code: 'blog.label'), blogInstance.title])
+            //flash.message = message(code: 'default.created.message', args: [message(code: 'blog.label'), blogInstance.title])
             redirect uri: blogInstance.searchLink()
         }
     }
 
     @Transactional
     @Secured(["permitAll"])
-    def show(Long id) {
+    def show(Blog blogInstance) {
         List blogComments = commentService.getComments(blogInstance)
         List tagList = []
 
         tagList = blogService.getAllTags()
-
+        def blogInstanceTags = blogInstance.tags
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList, 
-            blogInstanceList: blogInstanceList]
+            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags]
 
         if(request.xhr) {
             render text:(result as JSON)
@@ -208,7 +194,7 @@ class BlogController {
     }
 
     @Transactional
-    def edit(Long id) {
+    def edit(Blog blogInstance) {
         [blogInstance: blogInstance]
     }
 
@@ -216,7 +202,7 @@ class BlogController {
      * Update blog instance also sets tags for blog instance.
      */
     @Transactional
-    def update(Long id, Long version) {
+    def update(Blog blogInstance, Long version) {
         if (version != null) {
             if (blogInstance.version > version) {
                 blogInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
@@ -245,7 +231,7 @@ class BlogController {
         }
     }
 
-    def delete(Long id) {
+    def delete(Blog blogInstance) {
         try {
             contentService.delete(blogInstance)
             flash.message = message(code: 'default.deleted.message', args: [message(code: 'blog.label'), id])
@@ -265,10 +251,10 @@ class BlogController {
      */
     @Transactional
     @Secured(["permitAll"])
-    def comment(Long commentId) {
-        Map requestMap = request.JSON
+    def comment(Blog blogInstance, Long commentId) {
+        Map requestData = request.JSON
         String errorMessage
-        params.putAll(requestMap)
+        params.putAll(requestData)
         log.info "Parameters received to comment on blog: $params"
         if (!params.id) {
             errorMessage = "Not enough parameters recived to add comment."

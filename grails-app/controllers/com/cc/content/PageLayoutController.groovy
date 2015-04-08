@@ -8,9 +8,13 @@
 
 package com.cc.content
 
+import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
+import grails.transaction.Transactional
 
+import org.grails.databinding.SimpleMapDataBindingSource
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 
 /**
  * Provides default CRUD end point for Content Manager.
@@ -22,7 +26,10 @@ import org.springframework.dao.DataIntegrityViolationException
 @Secured(["ROLE_CONTENT_MANAGER"])
 class PageLayoutController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static responseFormats = ["json"]
+
+    def grailsWebDataBinder
 
     def index() {
         redirect(action: "list", params: params)
@@ -30,7 +37,11 @@ class PageLayoutController {
 
     def list(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        [pageLayoutInstanceList: PageLayout.list(params), pageLayoutInstanceTotal: PageLayout.count()]
+        respond ([instanceList: PageLayout.list(params), totalCount: PageLayout.count()])
+    }
+
+    def getPageLayoutList() {
+        respond([pageLayoutList: PageLayout.list()])
     }
 
     def create() {
@@ -38,83 +49,78 @@ class PageLayoutController {
     }
 
     def save() {
-        def pageLayoutInstance = new PageLayout(params)
-        if (!pageLayoutInstance.save(flush: true)) {
-            render(view: "create", model: [pageLayoutInstance: pageLayoutInstance])
+        Map requestData = request.JSON
+        log.info "Parameters received save pageLayout instance: ${requestData}"
+        PageLayout pageLayoutInstance = new PageLayout()
+        grailsWebDataBinder.bind(pageLayoutInstance, requestData as SimpleMapDataBindingSource)
+        pageLayoutInstance.validate()
+
+        if (pageLayoutInstance.hasErrors()) {
+            log.warn "Error saving pageLayout Instance: $pageLayoutInstance.errors."
+            respond ([errors: pageLayoutInstance.errors], status: HttpStatus.NOT_MODIFIED)
             return
+        } else {
+            log.info "Pagelayout instance saved successfully."
+            pageLayoutInstance.save(flush: true)
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'pageLayout.label'), pageLayoutInstance.id])
-        redirect(action: "show", id: pageLayoutInstance.id)
+        respond ([status: HttpStatus.OK])
     }
 
-    def show(Long id) {
-        def pageLayoutInstance = PageLayout.get(id)
+    @Transactional(readOnly = true)
+    def show(PageLayout pageLayoutInstance) {
+        respond(pageLayoutInstance)
+    }
+
+    def edit(PageLayout pageLayoutInstance) {
         if (!pageLayoutInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), id])
+            log.warn message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), params.id])
             redirect(action: "list")
             return
         }
 
-        [pageLayoutInstance: pageLayoutInstance]
+        respond([pageLayoutInstance: pageLayoutInstance])
     }
 
-    def edit(Long id) {
-        def pageLayoutInstance = PageLayout.get(id)
+    def update(PageLayout pageLayoutInstance, Long version) {
         if (!pageLayoutInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), id])
-            redirect(action: "list")
-            return
-        }
-
-        [pageLayoutInstance: pageLayoutInstance]
-    }
-
-    def update(Long id, Long version) {
-        def pageLayoutInstance = PageLayout.get(id)
-        if (!pageLayoutInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), id])
+            log.warn message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), params.id])
             redirect(action: "list")
             return
         }
 
         if (version != null) {
             if (pageLayoutInstance.version > version) {
-                pageLayoutInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'pageLayout.label')] as Object[],
-                        "Another user has updated this PageLayout while you were editing")
-                render(view: "edit", model: [pageLayoutInstance: pageLayoutInstance])
+                respond ([message: "Another user has updated this page layout instance while you were editing"], 
+                    status: HttpStatus.NOT_MODIFIED)
                 return
             }
         }
 
-        pageLayoutInstance.properties = params
+        Map requestData = request.JSON
+        grailsWebDataBinder.bind(pageLayoutInstance, requestData as SimpleMapDataBindingSource)
+        pageLayoutInstance.validate()
 
-        if (!pageLayoutInstance.save(flush: true)) {
-            render(view: "edit", model: [pageLayoutInstance: pageLayoutInstance])
+        if (pageLayoutInstance.hasErrors()) {
+            log.warn "Error updating pageLayout Instance: $pageLayoutInstance.errors."
+            respond ([errors: pageLayoutInstance.errors], status: HttpStatus.NOT_MODIFIED)
             return
+        } else {
+            log.info "Pagelayout instance updated successfully."
+            pageLayoutInstance.save(flush: true)
         }
 
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'pageLayout.label'), pageLayoutInstance.id])
-        redirect(action: "show", id: pageLayoutInstance.id)
+        respond ([status: HttpStatus.OK])
     }
 
-    def delete(Long id) {
-        def pageLayoutInstance = PageLayout.get(id)
-        if (!pageLayoutInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), id])
-            redirect(action: "list")
-            return
-        }
-
+    def delete(PageLayout pageLayoutInstance) {
         try {
             pageLayoutInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'pageLayout.label'), id])
-            redirect(action: "list")
         }
         catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'pageLayout.label'), id])
-            redirect(action: "show", id: id)
+            respond ([status: HttpStatus.NOT_MODIFIED])
+            return
         }
+        respond ([status: HttpStatus.OK])
     }
 }

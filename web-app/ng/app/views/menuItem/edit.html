@@ -1,0 +1,18 @@
+<div class="modal-header" ng-controller="MenuItemController">
+    <button type="button" class="close" data-dismiss="modalInstance" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="create-menu-item-title">Edit Menu Item</h4>
+</div>
+<form class="form-horizontal" on-submit="menuItemInstance.$update()">
+    <div class="modal-body">
+        <div class="alert hide fade in" id="alert-lead">
+            <button type="button" class="close" onclick="$(this).parent().fadeOut()">&times;</button>
+            <p></p>
+        </div>
+        <div ng-include="'views/menuItem/templates/_form.html'"></div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a ng-click="$close()" class="btn btn-default" data-toggle="modal"> <i class="icon-plus"></i> &nbsp;Cancel
+        </a>
+    </div>
+</form>

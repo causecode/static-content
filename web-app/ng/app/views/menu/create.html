@@ -1,0 +1,18 @@
+<div class="container" ng-controller="MenuController">
+    <div class="page-header">
+        <h1>Create Menu</h1>
+    </div>
+    <div>
+        <form class="form-horizontal" on-submit="menuInstance.$save()">
+            <fieldset>
+                <div ng-include="'views/menu/_form.html'"></div>
+                <div class="form-actions col-sm-offset-3 df-gutter-bottom">
+                    <a ui-sref="urlMap({action: 'list'})" class="btn btn-default"> <i class="fa fa-th-list fa-fw"></i>
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>

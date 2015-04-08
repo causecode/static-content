@@ -1,0 +1,33 @@
+<div show-on-promise="blogListPromise">
+    <article class="post" ng-repeat="blog in blogInstanceList | filter: queryText">
+        <div class="content">
+            <h3 class="post-title">
+                <a ui-sref="urlMap.resource({ctrl: 'blog', action: 'show', resource: blog.id})">
+                    {{blog.title}} {{queryText}}
+                </a>
+            </h3>
+            <div class="meta">
+                <ul class="meta-list list-inline">
+                    <li class="post-time post_date date updated">{{blog.publishedDate | date: mm/dd/yyyy}}</li>
+                    <li class="post-author"> by {{blog.author}}</li>
+                    <li class="post-comments-link">
+                        <a ui-sref="urlMap.resource({ctrl: 'blog', action: 'show', resource: blog.id})">
+                            <i class="fa fa-comments"></i>{{blog.numberOfComments}} Comments
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="post-entry">
+                <p>{{blog.body | limitTo: 120 }}</p>
+                <a class="read-more" ui-sref="urlMap.resource({ctrl: 'blog', action: 'show', resource: blog.id})">
+                    Read more <i class="fa fa-long-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </article>
+    <div ng-if="!blogInstanceList">
+        <span>Blogs not found.</span>
+    </div>
+    <pagination total-items="blogInstanceTotal" ng-model="currentPage" ng-change="changePage(currentPage)" 
+        items-per-page="itemsPerPage" ></pagination>
+</div>

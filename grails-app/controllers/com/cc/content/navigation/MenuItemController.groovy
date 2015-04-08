@@ -12,6 +12,7 @@ import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 
 /**
  * Provides end point to reorder menu items for Content Manager.
@@ -23,56 +24,53 @@ import org.springframework.dao.DataIntegrityViolationException
 @Secured(["ROLE_CONTENT_MANAGER"])
 class MenuItemController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [save: "POST", reorder: "POST", update: "PUT", delete: "DELETE"]
+    
+    static responseFormats = ["json"]
 
-    def beforeInterceptor = [action: this.&validate, except: ["index", "list", "create", "save"]]
+    MenuItemService menuItemService
 
-    private MenuItem menuItemInstance
-
-    def menuItemService
-
-    private validate() {
-        menuItemInstance = MenuItem.get(params.id)
-        if(!menuItemInstance) {
-            response.sendError = 404
-            flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'menuItem.label'), params.id])
-            redirect(action: "list")
-            return false
-        }
-        return true
-    }
-
-    def delete(Long id) {
+    def delete(MenuItem menuItemInstance) {
         try {
             menuItemInstance = menuItemService.delete(menuItemInstance)
-            render true
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'menuItem.label'), menuItemInstance.title])
+            respond ([status: HttpStatus.NOT_MODIFIED])
+            return
         }
+        respond ([status: HttpStatus.OK])
     }
 
     def save() {
-        menuItemInstance = menuItemService.create(params)
-        render menuItemInstance.id
+        Map requestData = request.JSON
+        MenuItem menuItemInstance = menuItemService.create(requestData)
+        respond (menuItemInstance)
     }
 
-    def edit(){
+    def edit(MenuItem menuItemInstance){
         Map responseResult = [title: menuItemInstance.title, url: menuItemInstance.url, roles: menuItemInstance.roles,
             showOnlyWhenLoggedIn: menuItemInstance.showOnlyWhenLoggedIn]
         render responseResult as JSON
     }
 
-    def update(){
-        menuItemInstance = menuItemService.update(menuItemInstance, params)
-        render ([success: true] as JSON)
+    def update(MenuItem menuItemInstance){
+        Map requestData = request.JSON
+        menuItemInstance = menuItemService.update(menuItemInstance, requestData)
+        if (menuItemInstance.hasErrors()) {
+            log.warn "Error updating menuItem Instance: $menuItemInstance.errors."
+            respond ([errors: menuItemInstance.errors], status: HttpStatus.NOT_MODIFIED)
+            return
+        } else {
+            log.info "MenuItem instance updated successfully."
+            menuItemInstance.save(flush: true)
+        }
+        respond ([status: HttpStatus.OK])
     }
 
     /**
      * Used to reorder menuItem instance.
      */
-    def reorder() {
+    def reorder(MenuItem menuItemInstance) {
         menuItemInstance = menuItemService.reorder(menuItemInstance, params)
-        render ([success: true]) as JSON
+        respond([success: true])
     }
-
 }

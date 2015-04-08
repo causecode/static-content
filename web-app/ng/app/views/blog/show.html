@@ -1,0 +1,38 @@
+<div class="blog wrapper container" ng-controller="BlogController">
+    <div class="row blog">
+        <div id="blog-entry" class="blog-entry section col-md-8 col-sm-8 col-xs-12">
+            <article class="post">
+                <h2 class="title">{{blogInstance.title}}</h2>
+                <div class="meta">
+                    <ul class="meta-list list-inline">
+                        <li class="post-time post_date date updated">{{blogInstance.lastUpdated | date: MM/dd/yyyy}}</li>
+                        <li class="post-author"> by <a href="#">{{blogInstance.author}}</a></li>
+                        <li class="post-comments-link">
+                            <i class="fa fa-comments"></i>{{comments.length}} {{comments.length > 1 ? 'Comments': 'Comment'}}
+                        </li>
+                    </ul>
+                </div>
+                <div class="content">
+                    <p ng-bind-html="blogInstance.body"></p>
+                </div>
+            </article>
+            <article class="comments">
+                <div class="page-header">
+                    <h2 class="title">Comments</h2>
+                    <a ng-click="showCommentOverlay('{{blogInstance.id}}', '')" title="Add">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+                <div class="media comment" ng-repeat="commentInstance in comments">
+                    <div class="media-body">
+                        <div ng-include src="'views/blog/_comment-body.html'"></div>
+                    </div>
+                </div>
+                <div ng-hide="comments">
+                    <p>Sorry, no comments to display.</p>
+                </div>
+            </article>
+        </div>
+        <div ng-include src="'views/blog/_filter.html'"></div>
+    </div>
+</div>

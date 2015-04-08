@@ -24,6 +24,8 @@ import com.cc.content.ContentMeta
 class MetaController {
 
     def beforeInterceptor = [action: this.&validate]
+    
+    static responseFormats = ["json"]
 
     private Meta metaInstance
 
@@ -42,6 +44,7 @@ class MetaController {
         }
         return true
     }
+    
 
     /**
      * Delete Meta instance and all its references and render dummy text.

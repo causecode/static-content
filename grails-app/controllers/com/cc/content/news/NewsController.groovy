@@ -10,7 +10,9 @@ package com.cc.content.news
 
 import grails.plugin.springsecurity.annotation.Secured
 
+import org.grails.databinding.SimpleMapDataBindingSource
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 
 import com.cc.iframe.Scraper
 
@@ -23,31 +25,20 @@ import com.cc.iframe.Scraper
 @Secured(["ROLE_CONTENT_MANAGER"])
 class NewsController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    def beforeInterceptor = [action: this.&validate]
+    static responseFormats = ["json"]
 
-    private News newsInstance
-
-    private validate() {
-        if(!params.id) return true;
-
-        newsInstance = News.get(params.id)
-        if(!newsInstance) {
-            flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'news.label', default: 'News'), params.id])
-            redirect(action: "list")
-            return false
-        }
-        return true
-    }
+    def grailsWebDataBinder
 
     def index() {
         redirect(action: "list", params: params)
     }
 
-    def list(Integer max) {
+    def list(Integer max, Integer offset) {
         params.max = Math.min(max ?: 10, 100)
-        [newsInstanceList: News.list(params), newsInstanceTotal: News.count()]
+        params.offset = offset ? offset: 0
+        respond ([instanceList: News.list(params), totalCount: News.count()])
     }
 
     def create() {
@@ -55,55 +46,71 @@ class NewsController {
     }
 
     def save() {
-        newsInstance = new News(params)
-        if (!newsInstance.save(flush: true)) {
-            render(view: "create", model: [newsInstance: newsInstance])
+        Map requestData = request.JSON
+        log.info "Parameters received save news instance: ${requestData}"
+        News newsInstance = new News()
+        grailsWebDataBinder.bind(newsInstance, requestData as SimpleMapDataBindingSource, ["title", "subTitle",
+            "author", "body", "publish"], null)
+        newsInstance.validate()
+
+        if (newsInstance.hasErrors()) {
+            log.warn "Error saving news Instance: $newsInstance.errors."
+            respond ([errors: newsInstance.errors], status: HttpStatus.NOT_MODIFIED)
+            return
+        } else {
+            log.info "News instance saved successfully."
+            newsInstance.save(flush: true)
+        }
+        respond ([status: HttpStatus.OK])
+    }
+
+    def show(News newsInstance) {
+        respond(newsInstance)
+    }
+
+    def edit(News newsInstance) {
+        [newsInstance: newsInstance]
+    }
+
+    def update(News newsInstance, Long version) {
+        if (!newsInstance) {
+            log.warn message(code: 'default.not.found.message', args: [message(code: 'news.label'), params.id])
+            redirect(action: "list")
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'news.label', default: 'News'), newsInstance.id])
-        redirect(action: "show", id: newsInstance.id)
-    }
-
-    def show(Long id) {
-        [newsInstance: newsInstance]
-    }
-
-    def edit(Long id) {
-        [newsInstance: newsInstance]
-    }
-
-    def update(Long id, Long version) {
-        if(version != null) {
+        if (version != null) {
             if (newsInstance.version > version) {
-                newsInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'news.label', default: 'News')] as Object[],
-                        "Another user has updated this News while you were editing")
-                render(view: "edit", model: [newsInstance: newsInstance])
+                respond ([message: "Another user has updated this news inatnce while you were editing"],
+                    status: HttpStatus.NOT_MODIFIED)
                 return
             }
         }
 
-        newsInstance.properties = params
+        Map requestData = request.JSON
+        grailsWebDataBinder.bind(newsInstance, requestData as SimpleMapDataBindingSource, ["title", "subTitle",
+            "author", "body", "publish"], null)
+        newsInstance.validate()
 
-        if (!newsInstance.save(flush: true)) {
-            render(view: "edit", model: [newsInstance: newsInstance])
+        if (newsInstance.hasErrors()) {
+            log.warn "Error updating news Instance: $newsInstance.errors."
+            respond ([errors: newsInstance.errors], status: HttpStatus.NOT_MODIFIED)
             return
+        } else {
+            log.info "News instance updated successfully."
+            newsInstance.save(flush: true)
         }
-
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'news.label', default: 'News'), newsInstance.id])
-        redirect(action: "show", id: newsInstance.id)
+        respond ([status: HttpStatus.OK])
     }
 
-    def delete(Long id) {
+    def delete(News newsInstance) {
         try {
             newsInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'news.label', default: 'News'), id])
-            redirect(action: "list")
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'news.label', default: 'News'), id])
-            redirect(action: "show", id: id)
+            respond ([status: HttpStatus.NOT_MODIFIED])
+            return
         }
+        respond ([status: HttpStatus.OK])
     }
 
     def link(String page) {
