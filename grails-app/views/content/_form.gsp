@@ -29,13 +29,27 @@
     </div>
 </div>
 
+<r:script>
+    var noEditorIdList = ${com.cc.content.format.TextFormat.findAllByEditor(false)*.id};
+</r:script>
+
 <div class="form-group ${hasErrors(bean: contentInstance, field: 'body', 'has-error')}">
     <label class="control-label col-sm-2" for="body"> <g:message code="page.body.label" default="Body" />
     </label>
-    <div class="col-sm-8">
-        <ckeditor:editor name="body" height="300px" width="120%">
-            <%= contentInstance?.body %>
-        </ckeditor:editor>
+    <div class="col-sm-8" id="editor">
+        <g:if test="${!formatsAvailable*.editor.contains(true) }">
+            <textarea name="body" rows="25" cols="60" style="width: 80%"><%= pageInstance?.body %></textarea>
+            <g:hiddenField name="editor" value="false"/>
+        </g:if>
+        <g:else>
+            <r:require module="editorswitch"/>
+            <g:if test="${pageInstance.id }">
+                <g:render template="bodyEditor" model="[pageInstance: pageInstance, textFormatInstance: pageInstance?.textFormat ]" />
+            </g:if>
+            <g:else>
+                <g:render template="bodyEditor" model="['useEditor':true]"/>
+            </g:else>
+        </g:else>
     </div>
 </div>
 

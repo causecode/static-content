@@ -9,6 +9,7 @@
 package com.cc.content
 
 import com.cc.annotation.sanitizedTitle.SanitizedTitle
+import com.cc.content.format.TextFormat;
 import com.cc.content.meta.Meta
 
 /**
@@ -36,6 +37,9 @@ class Content {
 
     boolean publish
 
+    TextFormat textFormat
+    boolean editor
+    
     static mapping = {
         body type: 'text'
         table "cc_content_content"
@@ -49,6 +53,7 @@ class Content {
         dateCreated bindable: false
         lastUpdated bindable: false
         publishedDate nullable: true, bindable: false
+        textFormat nullable:true 
     }
 
     @Override

@@ -20,4 +20,8 @@ modules = {
     tagcloud {
         resource id: 'js', url: [dir: "js/jquery-tagcloud", file: "jquery.tagcloud.js"]
     }
+    
+    editorswitch {
+        resource url: '/js/editor.js'
+    }
 }
