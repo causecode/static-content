@@ -81,7 +81,7 @@
         Sorry, no comments to display.
     </g:if>
 
-    <g:render template="/blog/templates/commentOverlay" plugin="comment" />
+    <g:render template="/blog/templates/commentOverlay" />
 
     <r:script>
         var startSize = ${grailsApplication.config.cc.plugins.content.tags.startSize }

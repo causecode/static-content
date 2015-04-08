@@ -12,12 +12,6 @@ class BlogControllerSpec extends Specification {
 
     def setup() {
         controller = new BlogController()
-
-        blogInstance = new Blog("title":"Targeting Test Types and/or Phases", "author":"Test User",
-            "subTitle":"To execute the JUnit integration tests you can run",
-            "body":"Grails organises tests by phase and by type. The state of the Grails application .")
-        assert blogInstance.save()
-        assert blogInstance.id == 1
     }
 
     def cleanup() {
@@ -25,6 +19,12 @@ class BlogControllerSpec extends Specification {
 
     void "test show: with default valid parameters passed."() {
         given:
+        Blog blogInstance = new Blog("title":"Targeting Test Types and/or Phases", "author":"Test User",
+            "subTitle":"To execute the JUnit integration tests you can run",
+            "body":"Grails organises tests by phase and by type. The state of the Grails application .")
+        assert blogInstance.save()
+        assert blogInstance.id == 1
+
         controller.params.id = blogInstance.id
 
         when:
@@ -35,9 +35,23 @@ class BlogControllerSpec extends Specification {
         controller.response.redirectedUrl.contains('/blog/show/' + blogInstance.id)
     }
 
-    /*void "test show: with Internet bot crawler request."() {
+    void "test show: with Internet bot crawler request."() {
         given:
+        Blog blogInstance = new Blog("title":"Targeting Test Types and/or Phases", "author":"Test User",
+            "subTitle":"To execute the JUnit integration tests you can run",
+            "body":"Grails organises tests by phase and by type. The state of the Grails application .")
+        assert blogInstance.save()
+        assert blogInstance.id == 2
+
+        controller.params.id = blogInstance.id
+        controller.params._escaped_fragment_ = true
+
         when:
-        then:
-    }*/
+        controller.validate()
+        controller.show()
+
+        then: "Redirected to blog show angular based URL."
+        controller.response.json == null
+        controller.response.redirectedUrl.contains('/blog/show/' + blogInstance.id)
+    }
 }
