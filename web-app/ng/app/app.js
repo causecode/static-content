@@ -7,7 +7,8 @@ angular.module('ngApp', [
         'ngRoute',
         'ngSanitize',
         'ngTouch',
-        'ui.sortable'
+        'ui.sortable',
+        'ui.tinymce'
     ])
     .config(function ($routeProvider) {
         $routeProvider

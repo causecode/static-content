@@ -379,6 +379,37 @@ module.exports = function (grunt) {
                 configFile: 'test/karma.conf.js',
                 singleRun: true
             }
+        },
+
+        // Custom code
+        symlinks: {
+            options: {
+                overwrite: true
+            },
+            createLinks: {
+                files: [{
+                    expand : true,
+                    flatten : true,
+                    // Comment this for development
+                    src : ['../../plugins/content-*/web-app/ng/app/scripts/*'],
+                    // Uncomment this for development considering content plugin is
+                    // relative to app
+                    // src : ['../../../content/web-app/ng/app/scripts/*'],
+                    dest : 'app/scripts'
+                }, {
+                    expand : true,
+                    flatten : true,
+                    // Comment this for development
+                    src : ['../../plugins/content-*/web-app/ng/app/views/*'],
+                    // Uncomment this for development considering content plugin is
+                    // relative to app
+                    // src : ['../../../content/web-app/ng/app/views/*'],
+                    dest : 'app/views'
+                }],
+                options: {
+                    type: 'dir'
+                }
+            }
         }
     });
 

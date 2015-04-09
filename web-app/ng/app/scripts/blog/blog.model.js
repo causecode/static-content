@@ -9,6 +9,10 @@ models.factory('BlogModel', ['BaseModel', function(BaseModel) {
         this.resourceName = 'blog';
 
         this.customActions = {
+            comment: {
+                method: 'POST',
+                url: '/api/v1/blog/action/comment'
+            },
             deleteComment: {
                 method: 'DELETE',
                 url: '/api/v1/comment/:id'
