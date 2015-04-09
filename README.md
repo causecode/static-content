@@ -26,34 +26,14 @@ cc.plugins.content.breadcrumbs.baseMap = ['/': 'Home']
 
 ## Adding Angular Files
 
-To install angular based project, either use command: `grails install-angular-templates` or add following config to
-your **GruntFile.js**:
+To install angular based project copy following configurations from plugin **GruntFile.js** to app **GruntFile.js**.
 
-```javascript
-symlinks: {
-    options: {
-        overwrite: true
-    },
-    createLinks: {
-        files: [{
-            expand : true,
-            flatten : true,
-            src : ['../../../content/web-app/ng/app/scripts/*'],
-            dest : 'app/scripts'
-        }, {
-            expand : true,
-            flatten : true,
-            src : ['../../../content/web-app/ng/app/views/*'],
-            dest : 'app/views'
-        }],
-        options: {
-            type: "dir"
-        }
-    }
-}
-```
+> Copy symlinks anf contentInstall task to app **GruntFile.js**.
+> Check grunt plugin dependencies Ex. angular-ui-tinymce plugin. Add them if missing.
+> Check Application module dependency injection from **app.js** file.
+> Then run command: `grunt contentInstall` to install templates.
+> Include all Angular Models and Controllers in application **index.html** file.
 
-Then run command: `grunt symlinks` to install templates.
 
 ## Architecture Overview
 
