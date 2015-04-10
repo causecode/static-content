@@ -70,6 +70,12 @@ class MenuItemController {
      * Used to reorder menuItem instance.
      */
     def reorder(MenuItem menuItemInstance) {
+        log.info "Parameters recieved to reorder menu items: ${params}"
+        if (!params.index) {
+            log.warn "Unable to reorder menu items. Index Parameters not received."
+           respond ([status: HttpStatus.NOT_ACCEPTABLE])
+           return
+        }
         menuItemInstance = menuItemService.reorder(menuItemInstance, params)
         respond([success: true])
     }

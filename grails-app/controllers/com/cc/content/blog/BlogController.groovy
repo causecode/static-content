@@ -35,7 +35,7 @@ import com.cc.content.blog.comment.Comment
 class BlogController {
 
     static allowedMethods = [save: "POST", update: "POST"]
-    
+
     static responseFormats = ["json"]
 
     def contentService
@@ -140,7 +140,9 @@ class BlogController {
             blogInstanceList.add(it)
         }
         Blog.list().each {
-            monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
+            if (it.publishedDate) {
+                monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
+            }
         }
 
         Map result = [blogInstanceList: blogInstanceList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
@@ -161,18 +163,20 @@ class BlogController {
      */
     @Transactional
     def save() {
-        params.putAll(request.JSON)
+        Map requestData = request.JSON
+        log.info "Parameters received to save blog: ${requestData}"
+        List metaTypeList = requestData.metaList ? requestData.metaList?.list("type") : []
+        List metaValueList = requestData.metaList ? requestData.metaList?.list("value") : []
         Blog.withTransaction { status ->
-            blogInstance = contentService.create(params, params.metaList.type, params.metaList.value, Blog.class)
+            Blog blogInstance = contentService.create(requestData, metaTypeList, metaValueList, Blog.class)
             if (blogInstance.hasErrors()) {
                 status.setRollbackOnly()
                 respond(blogInstance.errors)
-                return
+                return false
             }
-            blogInstance.setTags(params.tags.tokenize(",")*.trim())
+            blogInstance.setTags(requestData.tags?.tokenize(",")*.trim())
             blogInstance.save(flush: true)
-            //flash.message = message(code: 'default.created.message', args: [message(code: 'blog.label'), blogInstance.title])
-            redirect uri: blogInstance.searchLink()
+            respond([success: true])
         }
     }
 
@@ -214,38 +218,37 @@ class BlogController {
                 blogInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'blog.label')] as Object[],
                         "Another user has updated this Blog while you were editing")
-                render(view: "edit", model: [blogInstance: blogInstance])
-                return
+                respond(blogInstance.errors)
+                return false
             }
         }
 
         Blog.withTransaction { status ->
             String tags = params.remove("tags")
-            contentService.update(params, blogInstance, params.meta.list("type"), params.meta.list("value"))
+            List metaTypeList = requestData.metaList ? requestData.metaList?.list("type") : []
+            List metaValueList = requestData.metaList ? requestData.metaList?.list("value") : []
+            contentService.update(params, blogInstance, metaTypeList, metaValueList)
 
             if (blogInstance.hasErrors()) {
                 status.setRollbackOnly()
-                render(view: "edit", model: [blogInstance: blogInstance])
-                return
+                respond(blogInstance.errors)
+                return false
             }
 
             blogInstance.setTags(tags.tokenize(",")*.trim())
             blogInstance.save(flush: true)
 
-            flash.message = message(code: 'default.updated.message', args: [message(code: 'blog.label'), blogInstance.id])
-            redirect uri: blogInstance.searchLink()
+            respond([success: true])
         }
     }
 
     def delete(Blog blogInstance) {
         try {
             contentService.delete(blogInstance)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'blog.label'), id])
-            redirect(uri: "/blog")
+            respond([success: true])
         } catch (DataIntegrityViolationException e) {
             log.warn "Error deleting blog.", e
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'blog.label'), id])
-            redirect uri: blogInstance.searchLink()
+            respond([success: false])
         }
     }
 
