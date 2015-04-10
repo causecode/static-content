@@ -82,7 +82,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         $scope.commentData.id = blogId;
         var commentModalInstance = $modal.open({
             scope: $scope,
-            templateUrl: 'views/modals/add-comment.html',
+            templateUrl: 'views/blog/add-comment.html',
             size: 'sm',
             keyboard: false,
             backdrop: 'static'
@@ -98,7 +98,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     function addComment(comments) {
         if ($scope.commentData.commentId) {
             if (comments && comments.length === 0) { return []; }
-            angular.forEach(comments, function(comment, index) {  //jshint ignore:line
+            angular.forEach(comments, function(comment, index) {  // jshint ignore:line
                 if (comment.id.toString() === $scope.commentData.commentId) {
                     comment.comments.push($scope.commentData);
                     return;

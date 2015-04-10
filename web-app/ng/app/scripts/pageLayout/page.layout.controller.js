@@ -2,7 +2,7 @@
 
 'use strict';
 
-controllers.controller('PageLayoutController', ['$scope', 'PageLayoutModel', function($scope, $state, PageLayoutModel) {
+controllers.controller('PageLayoutController', ['$scope', 'PageLayoutModel', function($scope, PageLayoutModel) {
 
     if ($scope.actionName === 'create') {
         $scope.pageLayoutInstance = new PageLayoutModel();
