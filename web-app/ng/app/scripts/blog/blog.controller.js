@@ -15,7 +15,8 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
         BlogModel.get({id: blogId}, function(blogData) {
             if (blogData.blogInstance) {
-                $scope.blogInstance = blogData.blogInstance;
+                $scope.blogInstance = new BlogModel(blogData.blogInstance);
+                $scope.contentInstance = $scope.blogInstance;
                 $scope.commentData.id = blogData.blogInstance.id;
             }
             $scope.comments = blogData.comments;
@@ -121,7 +122,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         });
     };
 
-    if (($scope.controllerName === 'blog') && ($scope.actionName === 'show')) {
+    if (($scope.controllerName === 'blog') && (['edit', 'show'].indexOf($scope.actionName) > -1)) {
         $scope.fetchBlog($scope.id);
         $scope.$watch('id', function(newId, oldId) {
             if (newId && oldId && newId !== oldId) {
@@ -130,5 +131,10 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         });
     } else if ($scope.actionName === 'list') {
         $scope.list();
+    } else if ($scope.actionName === 'create') {
+        $scope.contentInstance = new BlogModel();
+        $scope.contentInstance.metaList = [];
+    } else if ($scope.actionName === 'edit') {
+        $scope.contentInstance = BlogModel.get({id: $scope.id});
     }
 }]);

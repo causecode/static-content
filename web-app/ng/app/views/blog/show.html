@@ -2,7 +2,14 @@
     <div class="row blog">
         <div id="blog-entry" class="blog-entry section col-md-8 col-sm-8 col-xs-12">
             <article class="post">
-                <h2 class="title">{{blogInstance.title}}</h2>
+                <h2 class="title">
+                    {{blogInstance.title}}
+                    <small if-any-granted="ROLE_CONTENT_MANAGER,ROLE_ADMIN" ng-class="ng-hide">
+                        <a href="#/blog/edit/{{blogInstance.id}}" > 
+                            <i class="fa fa-edit"> </i>
+                        </a>
+                    </small>
+                </h2>
                 <div class="meta">
                     <ul class="meta-list list-inline">
                         <li class="post-time post_date date updated">{{blogInstance.lastUpdated | date: MM/dd/yyyy}}</li>
