@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @ngdoc overview
+ * @ngdoc service
  * @name FAQModel
  * @requires BaseModel
  */

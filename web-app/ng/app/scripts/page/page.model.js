@@ -1,9 +1,7 @@
-/* global models, augment */
-
 'use strict';
 
 /**
- * @ngdoc overview
+ * @ngdoc service
  * @name PageModel
  * @requires BaseModel
  */

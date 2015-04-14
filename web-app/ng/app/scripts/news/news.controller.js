@@ -3,8 +3,10 @@
 /**
  * @ngdoc controller
  * @name NewsController
+ * 
  * @description
  * Provides CRUD operations for News.
+ * 
  * @requires $scope
  * @requires NewsModel
  */

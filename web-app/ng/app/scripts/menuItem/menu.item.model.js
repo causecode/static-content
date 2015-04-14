@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @ngdoc overview
+ * @ngdoc service
  * @name MenuItemModel
  * @requires BaseModel
  */
@@ -16,7 +16,7 @@ models.factory('MenuItemModel', ['BaseModel', function(BaseModel) {
             this.postConstruct();
             return clazz;
         };
-        
+
         this.customActions = {
             saveMenuItem: {
                 method: 'POST',
@@ -32,11 +32,11 @@ models.factory('MenuItemModel', ['BaseModel', function(BaseModel) {
             clazz.getClazzName = function() {
                 return 'MenuItemModel';
             };
-            
+
             clazz.getColumnNames = function() {
                 return ['title', 'subTitle', 'body', 'publish'];
             };
-            
+
             clazz.getSortProperties = function() {
                 return [];
             };

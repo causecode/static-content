@@ -26,10 +26,12 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * @methodOf BlogController
      * @name fetchBlog
      * 
-     *  @param {Number} blogId id of Blog instance. 
-     *  
-     *  @description
-     *  Fetches blog data for the given id of the Blog instance. 
+     * @param {Number} blogId id of Blog instance. 
+     * 
+     * @description
+     * Fetches blog data for the given id of the Blog instance.
+     * 
+     * @returns {*} Blog data which includes Blog instance, comments and tags on that blog.
      */
     $scope.fetchBlog = function(blogId) {
         appService.blockPage(true);
@@ -51,10 +53,10 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * @methodOf BlogController
      * @name changePage
      * 
-     * @param {Object} toPage Page number.
+     * @param {Number} toPage Page number.
      * 
      * @description
-     * Move to the given page in blog list page.
+     * Used to perform pagination in Blog list page. Update offset value and fetch specified page records.
      */
     $scope.changePage = function(toPage) {
         $scope.offset = $scope.itemsPerPage * toPage;
@@ -66,10 +68,13 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * @methodOf BlogController
      * @name list
      * 
-     * @param {Object} [toPage] page number. Default value is 1.
+     * @param {Number} [toPage] page number. Default value is 1.
      * 
      * @description
-     * Fetches list of blogs for the given page number.
+     * Fetches list of blog's for the given page number with filter parameters.
+     * Filter parameters passed are query, month and tag filter and pagination parameters.
+     * 
+     * @returns {*} Blog list page data which includes Blog list, total blog's count, all month and tag filter list.
      */
     $scope.list = function(toPage) {
         toPage = toPage ? toPage : 1;
@@ -94,12 +99,12 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * @methodOf BlogController
      * @name filtersBlogs
      * 
-     * @param {Object} monthFilter month to filter blogs. 
-     * @param {Object} tag tags to filter blogs.
-     * @param {Object} queryFilter query to filter blogs.
+     * @param {Object} monthFilter month to filter blog's list.
+     * @param {Object} tag tags to filter blog's list.
+     * @param {Object} queryFilter query to filter blog's list.
      * 
      * @description
-     * Filters list of blogs based on monthFilter, tag and queryFilter.
+     * Filters list of blog's based on month, tag and query filter.
      */
     $scope.filterBlogs = function(monthFilter, tag, queryFilter) {
         $state.go('urlMap', {ctrl: 'blog', action: 'list'});
@@ -114,11 +119,11 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * @methodOf BlogController
      * @name deleteBlogComment
      * 
-     * @param {String} blogId id of BlogInstance.
+     * @param {String} blogId id of Blog instance.
      * @param {String} commentId id of Comment instance.
      * 
      *  @description
-     *  Deletes a comment on blog.
+     *  Deletes a comment on Blog.
      */
     $scope.deleteBlogComment = function(blogId, commentId) {
         BlogModel.deleteComment({id: commentId, blogId: blogId}, function() {
@@ -132,10 +137,10 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     /**
      * @ngdoc method
      * @methodOf BlogController 
-     * @name remocveComment
+     * @name removeComment
      * 
      * @param {Object} comments Array of all the comments on blog.
-     * @param {String} comment id of Comment instance that is to be deleted.
+     * @param {String} commentId ID of Comment instance that is to be deleted.
      * 
      * @description
      * Removes a comment with the given id, from all available comments. 
@@ -157,10 +162,10 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * @methodOf BlogController
      * @name showCommentOverlay
      * 
-     * @param {Object} blogId id of Blog instance.
+     * @param {Object} blogId Id of Blog instance.
      * 
      * @description
-     * Opens a pop up window, that allows user to enter comment. 
+     * Opens a modal(pop up window), that allows user to enter comment. 
      */
     $scope.showCommentOverlay = function(blogId, commentId) {
         $scope.commentData.commentId = commentId;
@@ -189,10 +194,8 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * 
      * @description
      * Adds newly added comment to the comments list.
-     * If a comment is added to another comment, then it will be 
-     * added to 'comments' of the parent comment. However when a 
-     * comment is added to a blog then comment is simply added to
-     * 'comments'.
+     * 1. If a comment is added to another comment as reply, then it will be added inside parent comment.
+     * 2. However when a comment is added to a blog then comment is simply added to Blog as parent comment.
      */
     function addComment(comments) {
         // If comment on another comment
@@ -221,7 +224,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * @name comment
      * 
      * @description
-     * Adds a comment on either a blog or another comment.
+     * Adds a comment on either a blog or as a comment reply.
      */
     $scope.comment = function() {
         $scope.commentData.id = $scope.blogInstance.id;

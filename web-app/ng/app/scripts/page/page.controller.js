@@ -3,8 +3,10 @@
 /**
  * @ngdoc controller
  * @name PageController
+ * 
  * @description
  * Provides CRUD operations for Page.
+ * 
  * @requires $scope
  * @requires PageModel
  * @requires PageLayoutModel
@@ -18,10 +20,10 @@ controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel
      * @methodOf PageController
      * @name fetchPage
      * 
-     * @param {Number} pageId id of Page instance 
+     * @param {Number} pageId ID of Page instance 
      * 
-     *  @description 
-     *  Fetch page with given pageId
+     * @description 
+     * Fetch page instance with given pageId.
      */
     $scope.fetchPage = function(pageId) {
         appService.blockPage(true);
@@ -50,9 +52,15 @@ controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel
         $scope.pageLayoutList = data.pageLayoutList;
     },function(){});
 
-    // Creates an Object and push it into metaList,
-    // so a new select box and text box will appear where user can 
-    // submit meta information.
+    /**
+     * @ngdoc method
+     * @methodOf PageController
+     * @name addForm
+     * 
+     * @description 
+     * Creates an Object and push it into metaList, so a new select box and text box will appear where user can 
+     * submit meta information.
+     */
     $scope.addForm = function() {
         $scope.contentInstance.metaList.push({});
     };

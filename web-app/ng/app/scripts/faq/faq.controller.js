@@ -3,8 +3,10 @@
 /**
  * @ngdoc controller
  * @name FAQController
+ * 
  * @description
  * Provides CRUD operations for FAQ.
+ * 
  * @requires $scope
  * @requires FAQModel
  */

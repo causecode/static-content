@@ -3,8 +3,10 @@
 /**
  * @ngdoc controller
  * @name MenuItemController
+ * 
  * @description
  * Allows creation and reordering of the menu items.
+ * 
  * @requires $scope
  * @requires MenuItemModel
  * @requires appService
@@ -29,10 +31,10 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
      * @methodOf MenuItemController
      * @name createMenuItemInstanceList
      * 
-     * @param {Object} data Object containing menuItemInstanceList - List of menu item instances
+     * @param {Object} data Object containing list of menu item instances
      * 
      * @description 
-     * This method creates a MenuItemModel instance for each object in the menuItemInstanceList. 
+     * This method creates a MenuItemModel instance for each object in the menuItemInstanceList.
      * If any menuItem contains child menuItem object then that child menu item 
      * will be converted into MenuItemModel instance as well. 
      */
@@ -70,7 +72,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
      * @name open
      * 
      * @description
-     * Opens a pop window, that allows user to create new MenuItem instance.
+     * Opens a modal(pop up window), that allows user to create new MenuItem instance.
      */
     $scope.open = function () {
         $scope.menuItemInstance = new MenuItemModel();
@@ -90,8 +92,11 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
      * @name createMenuItem
      * 
      * @description
-     * Adds an unique temporary id to newly created to menuItemInstance 
-     * and push newly created menuItemInstacnce into menuItemInstanceList
+     * Adds an unique temporary id to newly created menuItemInstance 
+     * and push newly created menuItemInstacnce into menuItemInstanceList.
+     * Also disable create menu item button. Until and unless user save menuItem
+     * it will not get saved in database, so avoid create multiple menuItem
+     * without save create button is disabled.
      */
     $scope.createMenuItem = function() {
         $scope.menuItemInstance.childItems = [];
@@ -110,7 +115,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
      * @param {Object} menuItemInstance Instance of MenuItemModel
      * 
      * @description
-     * Opens a pop window, that allows user to update menu item.
+     * Opens a modal(pop up window), that allows user to update menu item.
      */
     $scope.edit = function(menuItemInstance) {
         $scope.menuItemInstance = menuItemInstance;
@@ -131,10 +136,9 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
      * in first layer of hierarchy) has no parent menu item.
      * 
      *  @description
-     *  Deletes the given menu item instance. If the menu item is already been
-     *  saved in database, then it is deleted from database as well as DOM.
-     *  However if its not, then it is removed from DOM only (i.e. no request
-     *  to server will be sent to delete).
+     *  Deletes the given menu item instance. 
+     *  1. If the menu item is already been saved in database, then it is deleted from database as well as DOM.
+     *  2. However if its not, then it is removed from DOM only (i.e. no request to server will be sent to delete).
      */
     $scope.remove = function(menuItemInstance, parentMenuItem) {
         if (menuItemInstance.id) {
@@ -152,9 +156,9 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
      * @methodOf MenuItemController
      * @name removeFromDOM
      * 
-     * @param {Object} value value that is to be removed. 
-     * @param {Object} [parentMenuItem] parent menu item of menu item. 
-     * @param {Object} property name of the property on which menu item 
+     * @param {Object} value Value that is to be removed. 
+     * @param {Object} [parentMenuItem] Parent menu item of menu item. 
+     * @param {Object} property Name of the property on which menu item 
      * should be deleted (i.e. 'tempId' for unsaved menu item and 'id' for menu
      * item that is already been saved in database).
      * 
@@ -174,11 +178,10 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
      * @methodOf MenuItemController
      * @name getIndexOfMenuItem
      * 
-     * @param {Object} tempId tempId of menu item
+     * @param {Object} tempId Temporary ID of menu item
      * 
      * @description
-     * Returns index of the menu item in menuItemInstanceList with 
-     * given tempId
+     * Returns index of the menu item in menuItemInstanceList with given tempId
      */
     $scope.getIndexOfMenuItem = function(tempId) {
         for (var i=0; i < $scope.menuItemInstanceList.length; i ++) {
@@ -193,8 +196,8 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
      * @methodOf MenuItemController
      * @name save
      * 
-     * @param {Object} menuItemInstance menu item that is to be saved.
-     * @param {Object} [parent] parent menu item.
+     * @param {Object} menuItemInstance Menu item that is to be saved.
+     * @param {Object} [parent] Parent menu item.
      * 
      * @description
      * Saves a menu item in database. If a parent menu item is provided
@@ -235,7 +238,8 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
      * @methodOf MenuItemController
      * @name reorder
      * 
-     * @param {Object} menuItemInstance Instance of menu item. 
+     * @param {Object} menuItemInstance Instance of menu item.
+     * 
      * @description
      * Reorders a menu item according to its changed position. 
      */
@@ -249,8 +253,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
      * @name onMenuItemOrderChanged
      * 
      * @description
-     * Changes index of a menu item according to changed position when 
-     * order of menu item is changed.
+     * Changes index of a menu item according to changed position when order of menu item is changed.
      */
     $scope.onMenuItemOrderChanged = function(event) {
         var index = event.dest.index;
@@ -267,8 +270,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
      * @name onMenuItemMoved
      * 
      * @description
-     * Changes index of the menu item according to changed position when 
-     * parent of menu item is changed.
+     * Changes index of the menu item according to changed position when parent of menu item is changed.
      */
     $scope.onMenuItemMoved = function(event) {
         var index = event.dest.index;
@@ -301,8 +303,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
      * @name disableMenuItemButton
      * 
      * @description
-     * Disables new MenuItem button, that allows user to create 
-     * new menu item.
+     * Disables new MenuItem button, that allows user to create new menu item.
      * Whenever new menu item is created, creation of another Menu Item
      * is discouraged unless already created menu item is saved.
      */
@@ -310,6 +311,15 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
         $scope.buttonDisabled = true;
     };
 
+    /**
+     * @ngdoc object
+     * @propertyOf MenuItemController
+     * @name sortableOptions
+     * 
+     * @description
+     * Configuring sortable options used by **ng-sortable** plugin which provide custom event handling on
+     * menu items moved or its oistion changed.
+     */
     // Specifying events for sortable.
     $scope.sortableOptions = {
         accept: function (sourceItemHandleScope, destSortableScope) { //jshint ignore:line
