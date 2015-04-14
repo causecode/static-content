@@ -3,8 +3,10 @@
 /**
  * @ngdoc controller
  * @name BlogController
+ * 
  * @description
  * Provides CRUD operations for Blog.
+ * 
  * @requires $scope
  * @requires $state
  * @requires BlogModel
@@ -195,10 +197,10 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     function addComment(comments) {
         // If comment on another comment
         if ($scope.commentData.commentId) {
-            if (comments && comments.length === 0) { return []; };
+            if (comments && comments.length === 0) { return []; }
             // Checking for each comment and its child comments in comments list
             // to find parent comment of newly added comment.
-            angular.forEach(comments, function(comment, index) {
+            angular.forEach(comments, function(comment, index) {  //jshint ignore:line
                 if (comment.id.toString() === $scope.commentData.commentId) {
                     comment.comments.push($scope.commentData);
                     return;

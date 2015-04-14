@@ -27,7 +27,7 @@ models.factory('MenuModel', ['BaseModel', function(BaseModel) {
 
         this.postConstruct = function() {
 
-            clazz.prototype.toHTMLName = function(scope) {
+            clazz.prototype.toHTMLName = function() {
                 return '<a ui-sref="urlMap.resource({ctrl: \'menu\', action: \'show\', resource: ' + this.id + '})">' + this.name + '</a>';
             };
 

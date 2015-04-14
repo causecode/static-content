@@ -8,9 +8,10 @@
  * @requires $scope
  * @requires PageModel
  * @requires PageLayoutModel
+ * @requires appService
  */
-controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel', 
-    function($scope, PageModel, PageLayoutModel) {
+controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel', 'appService', '$http', '$state',
+    function($scope, PageModel, PageLayoutModel, appService, $http, $state) {
 
     /**
      * @ngdoc method

@@ -6,3 +6,7 @@ stacktrace.log
 target/*
 target-eclipse/*
 *.zip*
+web-app/ng/bower_components/
+web-app/ng/.tmp/
+web-app/ng/dist/
+web-app/ng/node_modules/
