@@ -73,6 +73,8 @@ Then run command: `grunt symlinks` to install templates.
 Install all node module dependencies and use `grunt serve` to start a server and 
 open http://localhost:8000/docs in your Browser.
 
+To generate Javascript documentation use `grunt ngdocs` command.
+
 
 ## Architecture Overview
 
@@ -292,8 +294,3 @@ Options:
 ```
 
 NOTE : Secure domains
-
-### Generating JavaScript documentation
-
-Run command:
-grunt ngdocs
