@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc controller
- * @name PageLayoutController
+ * @name controllers.PageLayoutController
  * 
  * @description 
  * Provides CRUD operations for Page Layout.
  * 
  * @requires $scope
- * @requires PageLayoutModel
+ * @requires models.PageLayoutModel
  */
 controllers.controller('PageLayoutController', ['$scope', 'PageLayoutModel', function($scope, $state, PageLayoutModel) {
     if ($scope.actionName === 'create') {

@@ -24,7 +24,19 @@ cc.plugins.content.breadcrumbs.baseMap = ['/': 'Home']
 
 ## Development
 
-## Adding Angular Files
+### Angular App Development
+
+Note: Before starting development install all node module dependencies as follow:
+
+- Go to directory containing package.json, Install all node modules listed in it via [npm](https://www.npmjs.com/)
+
+    ```npm install```
+
+- Same goes for [Bower](http://bower.io/). Go to directory containing bower.json, Install all modules listed in it
+
+    ```bower update```
+
+#### Adding Angular Files
 
 To install angular based project, either use command: `grails install-angular-templates` or add following config to
 your **GruntFile.js**:
@@ -54,6 +66,13 @@ symlinks: {
 ```
 
 Then run command: `grunt symlinks` to install templates.
+
+
+#### Angular Documentation
+
+Install all node module dependencies and use `grunt serve` to start a server and 
+open http://localhost:8000/docs in your Browser.
+
 
 ## Architecture Overview
 

@@ -2,8 +2,8 @@
 
 /**
  * @ngdoc service
- * @name BlogModel
- * @requires BaseModel
+ * @name models.BlogModel
+ * @requires models.BaseModel
  */
  models.factory('BlogModel', ['BaseModel', function(BaseModel) {
     var BlogModel = augment(BaseModel, function (uber) {

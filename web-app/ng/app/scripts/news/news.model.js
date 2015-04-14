@@ -2,7 +2,7 @@
 
 /**
  * @ngdoc service
- * @name NewsModel
+ * @name models.NewsModel
  * @requires BaseModel
  */
 models.factory('NewsModel', ['BaseModel', function(BaseModel) {

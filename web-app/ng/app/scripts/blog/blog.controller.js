@@ -2,16 +2,16 @@
 
 /**
  * @ngdoc controller
- * @name BlogController
+ * @name controllers.BlogController
  * 
  * @description
  * Provides CRUD operations for Blog.
  * 
  * @requires $scope
  * @requires $state
+ * @requires $modal
  * @requires BlogModel
  * @requires appService
- * @requires $modal
  */
 controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal',
       function($scope, $state, BlogModel, appService, $modal) {
@@ -22,9 +22,9 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     $scope.offset = 0;
 
     /**
-     * @ngdoc method
-     * @methodOf BlogController
-     * @name fetchBlog
+     * @ngdoc $scope
+     * @methodOf controllers.BlogController
+     * @name controllers.BlogController#$scope.fetchBlog
      * 
      * @param {Number} blogId id of Blog instance. 
      * 
@@ -50,7 +50,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     /**
      * @ngdoc method
-     * @methodOf BlogController
+     * @methodOf controllers.BlogController
      * @name changePage
      * 
      * @param {Number} toPage Page number.
@@ -65,7 +65,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     /**
      * @ngdoc method
-     * @methodOf BlogController
+     * @methodOf controllers.BlogController
      * @name list
      * 
      * @param {Number} [toPage] page number. Default value is 1.
@@ -74,7 +74,8 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * Fetches list of blog's for the given page number with filter parameters.
      * Filter parameters passed are query, month and tag filter and pagination parameters.
      * 
-     * @returns {*} Blog list page data which includes Blog list, total blog's count, all month and tag filter list.
+     * @returns {*} Update scope with Blog list page data which includes Blog list, total blog's count, all month 
+     * and tag filter list.
      */
     $scope.list = function(toPage) {
         toPage = toPage ? toPage : 1;
@@ -96,7 +97,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     /**
      * @ngdoc method
-     * @methodOf BlogController
+     * @methodOf controllers.BlogController
      * @name filtersBlogs
      * 
      * @param {Object} monthFilter month to filter blog's list.
@@ -116,7 +117,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     /**
      * @ngdoc method
-     * @methodOf BlogController
+     * @methodOf controllers.BlogController
      * @name deleteBlogComment
      * 
      * @param {String} blogId id of Blog instance.
@@ -136,7 +137,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     /**
      * @ngdoc method
-     * @methodOf BlogController 
+     * @methodOf controllers.BlogController 
      * @name removeComment
      * 
      * @param {Object} comments Array of all the comments on blog.
@@ -159,13 +160,13 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     /**
      * @ngdoc method
-     * @methodOf BlogController
+     * @methodOf controllers.BlogController
      * @name showCommentOverlay
      * 
      * @param {Object} blogId Id of Blog instance.
      * 
      * @description
-     * Opens a modal(pop up window), that allows user to enter comment. 
+     * Opens a modal (pop up window), that allows user to enter comment. 
      */
     $scope.showCommentOverlay = function(blogId, commentId) {
         $scope.commentData.commentId = commentId;
@@ -187,7 +188,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     /**
      * @ngdoc method
-     * @methodOf BlogController
+     * @methodOf controllers.BlogController
      * @name addComment
      * 
      * @param {Object} comments Array of all comments
@@ -220,7 +221,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     /**
      * @ngdoc method
-     * @methodOf BlogController
+     * @methodOf controllers.BlogController
      * @name comment
      * 
      * @description

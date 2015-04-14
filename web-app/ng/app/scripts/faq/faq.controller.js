@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc controller
- * @name FAQController
+ * @name controllers.FAQController
  * 
  * @description
  * Provides CRUD operations for FAQ.
  * 
  * @requires $scope
- * @requires FAQModel
+ * @requires models.FAQModel
  */
 controllers.controller('FAQController', ['$scope', 'FAQModel', function($scope, FAQModel) {
     if ($scope.actionName === 'create') {

@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc controller
- * @name NewsController
+ * @name controllers.NewsController
  * 
  * @description
  * Provides CRUD operations for News.
  * 
  * @requires $scope
- * @requires NewsModel
+ * @requires models.NewsModel
  */
 controllers.controller('NewsController', ['$scope', 'NewsModel', function($scope, NewsModel) {
 

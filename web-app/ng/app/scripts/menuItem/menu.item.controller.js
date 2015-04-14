@@ -2,16 +2,16 @@
 
 /**
  * @ngdoc controller
- * @name MenuItemController
+ * @name controllers.MenuItemController
  * 
  * @description
  * Allows creation and reordering of the menu items.
  * 
  * @requires $scope
- * @requires MenuItemModel
- * @requires appService
  * @requires $modal
- * @requires MenuModal
+ * @requires appService
+ * @requires models.MenuModal
+ * @requires models.MenuItemModel
  */
 controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appService', '$modal', 'MenuModel',
       function($scope, MenuItemModel, appService, $modal, MenuModel) {
@@ -28,7 +28,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc method
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name createMenuItemInstanceList
      * 
      * @param {Object} data Object containing list of menu item instances
@@ -50,7 +50,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc method 
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name createMenuItemModelInstance
      * 
      * @param {Object} menuItemModelInsance Instance of MenuItemModel
@@ -68,11 +68,11 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc method
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name open
      * 
      * @description
-     * Opens a modal(pop up window), that allows user to create new MenuItem instance.
+     * Opens a modal (pop up window), that allows user to create new MenuItem instance.
      */
     $scope.open = function () {
         $scope.menuItemInstance = new MenuItemModel();
@@ -88,7 +88,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
     
     /**
      * @ngdoc method
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name createMenuItem
      * 
      * @description
@@ -109,13 +109,13 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc method 
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name edit
      * 
      * @param {Object} menuItemInstance Instance of MenuItemModel
      * 
      * @description
-     * Opens a modal(pop up window), that allows user to update menu item.
+     * Opens a modal (pop up window), that allows user to update menu item.
      */
     $scope.edit = function(menuItemInstance) {
         $scope.menuItemInstance = menuItemInstance;
@@ -127,7 +127,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc method 
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name remove
      * 
      * @param {Object} menuItemInstance Menu item that is to be removed.
@@ -153,7 +153,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc method
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name removeFromDOM
      * 
      * @param {Object} value Value that is to be removed. 
@@ -175,7 +175,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc method
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name getIndexOfMenuItem
      * 
      * @param {Object} tempId Temporary ID of menu item
@@ -193,7 +193,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc method
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name save
      * 
      * @param {Object} menuItemInstance Menu item that is to be saved.
@@ -222,7 +222,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc method
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name update
      * 
      * @description
@@ -235,7 +235,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc method
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name reorder
      * 
      * @param {Object} menuItemInstance Instance of menu item.
@@ -249,7 +249,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc method
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name onMenuItemOrderChanged
      * 
      * @description
@@ -266,7 +266,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc method
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name onMenuItemMoved
      * 
      * @description
@@ -287,7 +287,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc method
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name enableMenuItemButton
      * 
      * @description
@@ -299,7 +299,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc method
-     * @methodOf MenuItemController
+     * @methodOf controllers.MenuItemController
      * @name disableMenuItemButton
      * 
      * @description
@@ -313,7 +313,7 @@ controllers.controller('MenuItemController', ['$scope', 'MenuItemModel', 'appSer
 
     /**
      * @ngdoc object
-     * @propertyOf MenuItemController
+     * @propertyOf controllers.MenuItemController
      * @name sortableOptions
      * 
      * @description

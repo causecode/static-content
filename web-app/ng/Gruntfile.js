@@ -21,6 +21,9 @@ module.exports = function (grunt) {
         dist: 'dist'
     };
 
+    grunt.loadNpmTasks('grunt-ngdocs');
+    grunt.loadNpmTasks('grunt-connect-proxy');
+
     // Define the configuration for all the tasks
     grunt.initConfig({
 
@@ -71,18 +74,41 @@ module.exports = function (grunt) {
                 hostname: 'localhost',
                 livereload: 35729
             },
+            server: {
+                proxies: [
+                      {
+                          context: '/',
+                          host: 'localhost',
+                          port: 8080,
+                          https: false,
+                          xforward: false,
+                          headers: {
+                              'x-custom-added-header': 'test'
+                          }
+                      }
+                ],
+            },
             livereload: {
                 options: {
                     open: true,
-                    middleware: function (connect) {
-                        return [
-                            connect.static('.tmp'),
-                            connect().use(
-                                '/bower_components',
-                                connect.static('./bower_components')
-                            ),
-                            connect.static(appConfig.app)
-                        ];
+                    middleware: function (connect, options) {
+                        if (!Array.isArray(options.base)) {
+                            options.base = [options.base];
+                        }
+
+                        // Setup the proxy
+                        var middlewares = [require('grunt-connect-proxy/lib/utils').proxyRequest];
+
+                        // Serve static files.
+                        options.base.forEach(function(base) {
+                            middlewares.push(connect.static(base));
+                        });
+
+                        // Make directory browse-able.
+                        var directory = options.directory || options.base[options.base.length - 1];
+                        middlewares.push(connect.directory(directory));
+
+                        return middlewares;
                     }
                 }
             },
@@ -91,14 +117,14 @@ module.exports = function (grunt) {
                     port: 9001,
                     middleware: function (connect) {
                         return [
-                            connect.static('.tmp'),
-                            connect.static('test'),
-                            connect().use(
-                                '/bower_components',
-                                connect.static('./bower_components')
-                            ),
-                            connect.static(appConfig.app)
-                        ];
+                                connect.static('.tmp'),
+                                connect.static('test'),
+                                connect().use(
+                                        '/bower_components',
+                                        connect.static('./bower_components')
+                                ),
+                                connect.static(appConfig.app)
+                                ];
                     }
                 }
             },
@@ -379,6 +405,19 @@ module.exports = function (grunt) {
                 configFile: 'test/karma.conf.js',
                 singleRun: true
             }
+        },
+
+        ngdocs : {
+            options: {
+                dest: 'docs',
+                html5Mode: false,
+                startPage: '/api',
+                titleLink: '/api',
+                title: 'Content Angular Documentation',
+                bestMatch: true,
+                scripts: ['bower_components/angular/angular.js', '<%= yeoman.app %>/scripts/app.js']
+            },
+            all : ['<%= yeoman.app %>/scripts/{,*/}*.js']
         }
     });
 
@@ -424,6 +463,7 @@ module.exports = function (grunt) {
         grunt.task.run([
             'clean:server',
             'wiredep',
+            'ngdocs',
             'concurrent:server',
             'autoprefixer',
             'connect:livereload',

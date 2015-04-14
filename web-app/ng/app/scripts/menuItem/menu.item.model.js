@@ -2,7 +2,7 @@
 
 /**
  * @ngdoc service
- * @name MenuItemModel
+ * @name models.MenuItemModel
  * @requires BaseModel
  */
 models.factory('MenuItemModel', ['BaseModel', function(BaseModel) {

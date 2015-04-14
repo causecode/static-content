@@ -2,7 +2,7 @@
 
 /**
  * @ngdoc service
- * @name PageLayoutModel
+ * @name models.PageLayoutModel
  * @requires BaseModel
  */
 models.factory('PageLayoutModel', ['BaseModel', function(BaseModel) {

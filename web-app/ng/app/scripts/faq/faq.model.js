@@ -2,7 +2,7 @@
 
 /**
  * @ngdoc service
- * @name FAQModel
+ * @name models.FAQModel
  * @requires BaseModel
  */
 models.factory('FAQModel', ['BaseModel', function(BaseModel) {

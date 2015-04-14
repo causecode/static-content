@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc controller
- * @name MenuController
+ * @name controllers.MenuController
  * 
  * @description
  * Provides CRUD operations for Menu.
  * 
  * @requires $scope
- * @requires MenuModel
+ * @requires models.MenuModel
  */
 
 controllers.controller('MenuController', ['$scope', 'MenuModel', function($scope, MenuModel) {

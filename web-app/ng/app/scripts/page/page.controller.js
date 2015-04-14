@@ -2,14 +2,14 @@
 
 /**
  * @ngdoc controller
- * @name PageController
+ * @name controllers.PageController
  * 
  * @description
  * Provides CRUD operations for Page.
  * 
  * @requires $scope
- * @requires PageModel
- * @requires PageLayoutModel
+ * @requires models.PageModel
+ * @requires models.PageLayoutModel
  * @requires appService
  */
 controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel', 'appService', '$http', '$state',
@@ -17,7 +17,7 @@ controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel
 
     /**
      * @ngdoc method
-     * @methodOf PageController
+     * @methodOf controllers.PageController
      * @name fetchPage
      * 
      * @param {Number} pageId ID of Page instance 
@@ -54,7 +54,7 @@ controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel
 
     /**
      * @ngdoc method
-     * @methodOf PageController
+     * @methodOf controllers.PageController
      * @name addForm
      * 
      * @description 

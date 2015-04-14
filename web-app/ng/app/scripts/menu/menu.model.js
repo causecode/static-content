@@ -2,7 +2,7 @@
 
 /**
  * @ngdoc service
- * @name MenuModel
+ * @name models.MenuModel
  * @requires $http
  * @requires BaseModel
  */
