@@ -37,7 +37,7 @@ class Content {
 
     boolean publish
 
-    TextFormat textFormat
+    TextFormat textFormat       //Content hasA TextFormat
     boolean editor
     
     static mapping = {
@@ -91,6 +91,4 @@ class Content {
         contentService.createLink([domain: this.class.name, absolute: absolute,
             controller: this.class.simpleName.toLowerCase(), id: this.id])
     }
-
-
 }

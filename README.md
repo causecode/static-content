@@ -66,19 +66,19 @@ Used for storing meta tags for contents.
 - **ContentMeta** : 
 Join class provides meta tags for content.
 - **Blog** : 
-These domain is type of Content implements taggable(`Taggable` Plugin Required).
+This domain is type of Content, implements taggable(`Taggable` Plugin Required).
 - **Comment** : 
-Used for storing comment contains reference for nested comment.
+Used for storing comment, contains reference for nested comment.
 - **BlogComment** : 
 Join class provides comments for Blog.
 - **FAQ** : 
-These domain is type of Content used to store FAQs.
+This domain is type of Content used to store FAQs.
 - **News** : 
-These domain is type of Content used to store News.
+This domain is type of Content used to store News.
 - **PageLayout** : 
 Generic domain stores page layout ,used for pages.
 - **Page** : 
-These domain is type of Content used to store Page contents and also stores page layout.
+This domain is type of Content used to store Page contents and also stores page layout.
 - **InputWidget** : 
 A generic domain used to store all information of selected type of input widgets with validations required.
 - **MenuItem** : 
@@ -88,7 +88,7 @@ Used for rendering menu bar with menu items.
 - **ContentRevision** : 
 Used to support old content reference if required.
 - **PageRevision** : 
-These domain in type of ContentRevision.
+This domain in type of ContentRevision.
 
 ### Controllers
 

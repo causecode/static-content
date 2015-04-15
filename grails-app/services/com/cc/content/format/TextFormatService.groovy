@@ -9,7 +9,7 @@
 package com.cc.content.format
 
 import org.codehaus.groovy.grails.commons.metaclass.GroovyDynamicMethodsInterceptor
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils;
+import grails.plugin.springsecurity.SpringSecurityUtils;
 import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
 
 class TextFormatService {
@@ -19,8 +19,7 @@ class TextFormatService {
         i.addDynamicMethodInvocation(new BindDynamicMethod())
     }
 
-    
-    /**
+     /**
      * To generate available Formats list
      *
      */

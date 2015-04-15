@@ -35,7 +35,7 @@ class PageController {
     def beforeInterceptor = [action: this.&validate]
     def contentService
     def springSecurityService
-    def textFormatService
+    def textFormatService       //instance of Service : TextFormats
 
     private Page pageInstance
 
@@ -111,9 +111,10 @@ class PageController {
         respond(pageInstance)
     }
 
-    def edit(Page pageInstance) {
+   /* def edit(Page pageInstance) {
         [pageInstance: pageInstance, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)]
-    }
+    }*/
+    
     def edit(Long id) {
         [pageInstance: pageInstance, formatsAvailable: textFormatService.applicableFormats,
             editor:pageInstance?.textFormat?.editor, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)]
@@ -137,7 +138,7 @@ class PageController {
 
         def textFormatInstance = TextFormat.findById(params.textFormat.id)
         if(SpringSecurityUtils.ifNotGranted(textFormatInstance?.roles)) {
-            flash.message = "Sorry! You do not possess previleges to use " + textFormatInstance.name + " format"
+            flash.message = "Sorry! You do not possess priveleges to use " + textFormatInstance.name + " format"
             render(view: "create", model: [pageInstance: pageInstance])
             return
         }

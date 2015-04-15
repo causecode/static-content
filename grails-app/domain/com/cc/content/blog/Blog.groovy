@@ -13,7 +13,7 @@ import org.grails.taggable.Taggable
 import com.cc.content.Content
 
 /**
- * Used to store blogs. These domain extends Content implements taggable(Taggable Plugin Required).
+ * Used to store blogs. This domain extends Content implements taggable(Taggable Plugin Required).
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
  *

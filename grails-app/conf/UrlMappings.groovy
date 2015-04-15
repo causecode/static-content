@@ -6,7 +6,7 @@
  * without modification, are not permitted.
  */
 
-class ContentUrlMappings {
+class UrlMappings {
 
     static mappings = {
         "/blog/$id/$sanitizedTitle" {
@@ -28,17 +28,23 @@ class ContentUrlMappings {
             }
         }
         "/blog" (controller: "blog", action: "list")
+        
         "/blogs" (controller: "blog", action: "list")
-
-        /*"/blog/byTag/$tag" {      // Not working
-            controller = "blog"
-            action = "list"
-            constraints {
-                tag validator: {  //Used to distinguish other Url like '/blog/edit/1'
-                    !it.isNumber()
-                }
+        
+        "/$controllerName/$actionName?/$identity?/$sanitizedTitle?" {
+            controller = {
+                return resolveURL(params, applicationContext, "controller")
             }
-        }*/
+            action = {
+                return resolveURL(params, applicationContext, "action")
+            }
+            id = {
+                return resolveURL(params, applicationContext, "id")
+            }
+            shortened = {
+                return resolveURL(params, applicationContext, "shortened")
+            }
+        }
     }
 
 }
