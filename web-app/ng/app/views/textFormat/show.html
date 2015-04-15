@@ -1,0 +1,26 @@
+ <div ng-controller="TextFormatcontroller">
+ <!--  A description list -->
+    <dl class="dl-horizontal">
+        <dt>Date Created</dt>       <!--  Description term -->
+        <dd>{{textFormatInstance.dateCreated}}</dd>     <!--  Its description -->
+
+        <dt>Last Updated</dt>
+        <dd>{{textFormatInstance.lastUpdated}}</dd>
+
+        <dt>Name</dt>
+        <dd>{{textFormatInstance.name}}</dd>
+
+        <dt>Roles</dt>
+        <dd>{{textFormatInstance.roles}}
+
+        <dt>Allowed tags</dt>
+        <dd>{{textFormatInstance.allowedTags}}
+    </dl>
+
+<div class="df-gutter-bottom">
+    <a ui-sref="urlMap.resource({action: 'edit', resource: textFormatInstance.id})" class="btn btn-primary">Edit</a>
+    <button type="button" ng-click="textFormatInstance.$delete()" class="btn btn-danger">Delete</button>
+    <a ui-sref="urlMap({action: 'list'})" class="btn btn-default"> <i class="fa fa-th-list"></i> Cancel
+    </a>
+</div>
+</div>

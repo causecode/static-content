@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional
 import com.cc.annotation.sanitizedTitle.SanitizedTitle
 import com.cc.content.blog.Blog
 import com.cc.content.blog.comment.BlogComment
+import com.cc.content.format.TextFormat
+import com.cc.content.meta.Meta
 import com.cc.content.page.Page
 
 /**
@@ -260,4 +262,24 @@ class ContentService {
         return grailsLinkGenerator.link(attrs)
     }
 
+    /**
+     * To set the body according to the Text Format selected
+     * @param args 
+     * @return Modified Body
+     */
+    def formatBody(String body, TextFormat textFormatInstance) {
+        def tags = textFormatInstance.allowedTags
+        if(!textFormatInstance.editor) {
+            body = body.encodeAsHTML()
+        } else if(tags) {
+            def tagsList = tags.tokenize(',')   //returns a List instance eg. " java, groovy " -> tagList = ['java', 'groovy'];
+            String regexPart = ""
+            tagsList.each { tag ->
+                regexPart += "(?!" + tag.trim() + "[^a-zA-Z])"
+            }
+            String regex = "(?i)<" + regexPart + "[^>]*" + regexPart + ">"
+            body = body.replaceAll(regex, "")
+        }
+        return body
+    }
 }
