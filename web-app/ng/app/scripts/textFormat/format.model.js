@@ -1,3 +1,5 @@
+/* global models, augment */
+
 'use strict'
 
 models.factory('TextFormatModel', ['BaseModel', function(BaseModel) {
