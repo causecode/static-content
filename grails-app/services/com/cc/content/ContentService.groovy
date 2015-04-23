@@ -272,7 +272,7 @@ class ContentService {
         if(!textFormatInstance.editor) {
             body = body.encodeAsHTML()
         } else if(tags) {
-            def tagsList = tags.tokenize(',')   //returns a List instance eg. " java, groovy " -> tagList = ['java', 'groovy'];
+            def tagsList = tags.tokenize(',')   //returns a List instance eg. " java, groovy " gives tagList = ['java', 'groovy'];
             String regexPart = ""
             tagsList.each { tag ->
                 regexPart += "(?!" + tag.trim() + "[^a-zA-Z])"

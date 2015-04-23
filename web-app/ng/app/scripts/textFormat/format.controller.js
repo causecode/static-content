@@ -1,19 +1,20 @@
 /* global controllers*/
 
 'use strict';
-// same name as the TextFormat container inside grails
+
 controllers.controller('TextFormatController', ['$scope', '$state', 'TextFormatModel', 'appService', 
     function($scope, $state, TextFormatModel, appService) {
-    console.info('TextFormatController executing.', $scope);
-    $scope.data= "hello world"
-    $scope.save = function()
-    {
-    	
-    }
+    console.log('TextFormatController executing.', $scope);
     
-    $scope.delete = function ()
-    {
-    	
-    }
+    if ($scope.actionName === 'create') {
+        $scope.textFormatInstance = new TextFormatModel();
 
+    } else if (['edit', 'show'].indexOf($scope.actionName) > -1) {
+    	 $scope.textFormatInstance = TextFormatModel.get({id: $scope.id});
+         $scope.$watch('id', function(newId, oldId) {
+             if (newId && oldId && newId !== oldId) {
+                 $scope.textFormatInstance = TextFormatModel.get({id: $scope.id});
+             }
+         });
+    }
 }]);

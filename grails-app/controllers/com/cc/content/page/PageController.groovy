@@ -15,6 +15,7 @@ import grails.plugin.springsecurity.SpringSecurityUtils
 import org.springframework.dao.DataIntegrityViolationException
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.ContentRevision
+import org.springframework.http.HttpStatus
 import com.cc.content.format.TextFormat
 
 /**
@@ -35,7 +36,7 @@ class PageController {
     def beforeInterceptor = [action: this.&validate]
     def contentService
     def springSecurityService
-    def textFormatService       //instance of Service : TextFormats
+    def textFormatService    
 
     private Page pageInstance
 
@@ -70,59 +71,43 @@ class PageController {
             if(SpringSecurityUtils.ifNotGranted(contentManagerRole))
                 eq("publish", true)
         }
-        respond ([instanceList: pageInstanceList, totalCount: pageInstanceList.totalCount])
-    }
-
-    def create() {
-        if(!params.editor) {
-            params.editor = true
-        }
-        if(!pageInstance) {
-            pageInstance = new Page(params)
-        }
-        [pageInstance: pageInstance, formatsAvailable: textFormatService.applicableFormats,
-            editor:params.boolean('editor')]
+        Map result = [instanceList: pageInstanceList, totalCount: pageInstanceList.totalCount]
+        render result as JSON
     }
 
     def save() {
         Map requestData = request.JSON
+        println("Data recieved for save"+requestData)
+        def textFormatInstance = TextFormat.findById(requestData.textFormat.id)
+        // If no legitimate roles exist
+        if(SpringSecurityUtils.ifNotGranted(textFormatInstance.roles)) {
+            respond ([message: "Sorry! You do not possess privileges to use " + textFormatInstance.name + " format"])
+            return
+        }
+        
+        // Format the body we have obtained from the request
+        requestData.body = contentService.formatBody(requestData.body,textFormatInstance)
         pageInstance = contentService.create(requestData, requestData.metaList.type, requestData.metaList.value, Page.class)
-        if(!pageInstance.save(flush: true)) {
-        def textFormatInstance = TextFormat.findById(params.textFormat.id)
-        if(SpringSecurityUtils.ifNotGranted(textFormatInstance?.roles)) {
-            flash.message = "Sorry! You do not possess previleges to use " + textFormatInstance.name + " format"
-            render(view: "create", model: [pageInstance: pageInstance])
-            return
-        }
-        }
-        params.body = contentService.formatBody(params.body,textFormatInstance)
-
-        pageInstance = contentService.create(params, params.meta.list("type"), params.meta.list("value"), Page.class)
+       
         if(pageInstance.hasErrors()) {
-            flash.message = "Error saving Instance in controller action: " + pageInstance.errors
-            render(view: "create", model: [pageInstance: pageInstance])
+            respond ([errors: pageInstance.errors, message: "Error saving Instance in controller action: " + pageInstance.errors], status: HttpStatus.NOT_MODIFIED)
             return
         }
-        flash.message = message(code: 'default.created.message', args: [message(code: 'page.label'), pageInstance.id])
         redirect uri: pageInstance.searchLink()
+        respond ([status: HttpStatus.OK])
     } 
         
     def show(Page pageInstance) {
         respond(pageInstance)
     }
 
-   /* def edit(Page pageInstance) {
-        [pageInstance: pageInstance, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)]
-    }*/
-    
     def edit(Long id) {
         [pageInstance: pageInstance, formatsAvailable: textFormatService.applicableFormats,
             editor:pageInstance?.textFormat?.editor, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)]
     }
 
-    def update(Page pageInstance, Long version) {
+    def update(Long version) {
         Map requestData = request.JSON
-
         if(version != null) {
             if (pageInstance.version > version) {
                 pageInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
@@ -132,31 +117,29 @@ class PageController {
                 return
             }
         }
-        log.info "Parameters received to update page instance: $params, $requestData"
+        
         pageInstance = contentService.update(requestData, pageInstance, requestData.metaList?.type, 
             requestData.metaList?.value)
 
-        def textFormatInstance = TextFormat.findById(params.textFormat.id)
-        if(SpringSecurityUtils.ifNotGranted(textFormatInstance?.roles)) {
-            flash.message = "Sorry! You do not possess priveleges to use " + textFormatInstance.name + " format"
-            render(view: "create", model: [pageInstance: pageInstance])
+        def textFormatInstance = TextFormat.findById(requestData.textFormat.id)
+        if(SpringSecurityUtils.ifNotGranted(textFormatInstance.roles)) {
+            respond ([message : "Sorry! You do not possess priveleges to use " + textFormatInstance.name + " format"])
             return
         }
 
-        params.body = contentService.formatBody(params.body,textFormatInstance)
+        requestData.body = contentService.formatBody(requestData.body,textFormatInstance)
 
-        pageInstance = contentService.update(params, pageInstance, params.meta.list("type"), params.meta.list("value"))
+        pageInstance = contentService.update(requestData, pageInstance, requestData.metaList.type, requestData.metaList.value)
 
         if(pageInstance.hasErrors()) {
-            respond(pageInstance.errors)
+            respond (pageInstance.errors)
             return
         }
-        flash.message = "<em>$pageInstance</em> Page updated successfully."
-        if(params.createRevision) {
-            contentService.createRevision(pageInstance, PageRevision.class, params)
-            flash.message += " Revision created successfully."
+       
+        if(requestData.createRevision) {
+            contentService.createRevision(pageInstance, PageRevision.class, requestData)
+            respond ([message : "Revision created successfully."])
         }
-
         redirect uri: pageInstance.searchLink()
     }
 
@@ -167,13 +150,5 @@ class PageController {
         } catch (DataIntegrityViolationException e) {
             respond ([success: false])
         }
-    }
-
-    /**
-     * To switch between Text Area and Ckeditor
-     */
-    def editorSwitch() {
-        render(template: "bodyEditor", plugin:"content",
-        model: [textFormatInstance: TextFormat.get(params.textInstanceId), useEditor:params.boolean('useEditor')])
     }
 }

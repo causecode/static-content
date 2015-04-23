@@ -16,17 +16,37 @@
 <div class="form-group">
     <label class="col-sm-3 control-label" for="body">Body</label>
     <div class="col-sm-4">
-        <textarea ui-tinymce="tinymceOptions" ng-model="contentInstance.body" class="form-control"></textarea>
+        <div ng-show="hasTinyMce">
+            <textarea ui-tinymce="tinymceOptions" ng-model="contentInstance.body" class="form-control"></textarea>
+        </div>
+        <div ng-hide="hasTinyMce">
+            <textarea ng-model="contentInstance.body" class="form-control"></textarea>
+        </div>
+        <br>
+        <div class="btn-group">
+            <label class="btn btn-primary" ng-model="hasTinyMce" ng-show="switchEditor.tinyMce" btn-radio="true">TinyMce editor</label>
+            <label class="btn btn-primary" ng-model="hasTinyMce" ng-show="switchEditor.tinyMce" btn-radio="false">Text-area</label>
+        </div>
     </div>
 </div>
 
 <div class="form-group">
-    <label class="col-sm-3 control-label" for="body">Page Layout</label>
+    <label class="col-sm-3 control-label" for="pageLayout">Page Layout</label>
     <div class="col-sm-4">
         <select ng-model="contentInstance.pageLayout" class="form-control" id="pageLayout"
             ng-options="pageLayout.layoutName for pageLayout in pageLayoutList">
-            <option value=""></option>
         </select>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="textFormats">Text Format</label>
+    <div class="col-sm-4">
+    <select id="textFormats" class="form-control" ng-model="contentInstance.textFormat.id">
+    <option ng-repeat = "formats in formatsAvailable" value="{{formats.id}}">
+    {{formats.name}}
+    </option>
+    </select>
     </div>
 </div>
 

@@ -9,20 +9,23 @@
 package com.cc.content
 
 import grails.plugin.springsecurity.annotation.Secured
-
+import org.grails.databinding.SimpleMapDataBindingSource
 import org.springframework.dao.DataIntegrityViolationException
-
 import com.cc.content.format.TextFormat
+import org.springframework.http.HttpStatus
+import grails.converters.JSON
 
-@Secured(["ROLE_USER"])
+@Secured(["ROLE_CONTENT_MANAGER"])
 class TextFormatController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     def beforeInterceptor = [action: this.&validate]
-    static responseFormats= ["json"]   //Server should respond only in json format 
-    
+    static responseFormats= ["json"]
+
     TextFormat textFormatInstance
+    def grailsWebDataBinder
+    def textFormatService
 
     private validate() {
         if(!params.id) return true;
@@ -35,73 +38,82 @@ class TextFormatController {
         return true
     }
 
+    @Secured(["ROLE_USER"])
+    def getEditorType() {
+        List<TextFormat> formatsAvailable = textFormatService.getApplicableFormats()
+        respond ([formatsAvailable: formatsAvailable, editor: formatsAvailable.any { it.editor } ])
+    }
+    
     def index() {
-        log.info("params recieved",params)
-        redirect(action: "list", params: params.max)        //go to the below 'list' action
+        redirect(action: "list", params: params)
     }
 
     def list(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        //Send back to the client the following response in json format
-        respond ([textFormatInstanceList: TextFormat.list(params), textFormatInstanceTotal: TextFormat.count()])
+        respond ([instanceList: TextFormat.list(params), totalCount: TextFormat.count()])
     }
 
     def create() {
-      respond ({textFormatInstance: new TextFormat(params)})
-    }
-
-    def save() {
-        textFormatInstance = new TextFormat(params)
-        if (!textFormatInstance.save(flush: true)) {
-            render([view: "create", textFormatInstance: textFormatInstance])
-            return
-        }
-
-        flash.message = message(code: 'default.created.message', args: [message(code: 'textFormat.label', default: 'TextFormat'), textFormatInstance.id])
-        redirect(action: "show", id: textFormatInstance.id)
+        respond ([textFormatInstance: new TextFormat(params)])
     }
 
     def show(Long id) {
-       respond ({textFormatInstance: textFormatInstance})       //Calls C.S Angular controller & renders the respective view for Show
+        respond (textFormatInstance)
     }
 
     def edit(Long id) {
-      respond ({textFormatInstance: textFormatInstance})
-    }
-
-    def update(Long id, Long version) {
-        if(version != null) {
-            if (textFormatInstance.version > version) {
-                textFormatInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                [message(code: 'textFormat.label', default: 'TextFormat')] as Object[],
-                "Another user has updated this TextFormat while you were editing")
-                
-                //Redirect to CS Angular 'Edit view' 
-                //render(view: "edit", model: [textFormatInstance: textFormatInstance])
-                respond ([uri:'textFormat/edit', textFormatInstance: textFormatInstance])
-                return
-            }
-        }
-
-        textFormatInstance.properties = params
-
-        if (!textFormatInstance.save(flush: true)) {
-            render(view: "edit", model: [textFormatInstance: textFormatInstance])
-            return
-        }
-
-        flash.message = message(code: 'default.updated.message', args: [message(code: 'textFormat.label', default: 'TextFormat'), textFormatInstance.id])
-        redirect(action: "show", id: textFormatInstance.id)
+        respond ([textFormatInstance: textFormatInstance])
     }
 
     def delete(Long id) {
         try {
             textFormatInstance.delete(flush: true)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'textFormat.label', default: 'TextFormat'), id])
-            redirect(action: "list", max : params.max)
         } catch (DataIntegrityViolationException e) {
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'textFormat.label', default: 'TextFormat'), id])
-            redirect(action: "show", id: id)
+            respond ([status: HttpStatus.NOT_MODIFIED])
+            return
         }
+        respond([status: HttpStatus.OK ])
+    }
+
+    def update(Long id, Long version) {
+        Map requestData = request.JSON
+
+        if(version != null) {
+            if (textFormatInstance.version > version) {
+                respond ([message: "Another user has updated this textFormat instance while you were editing"],
+                status: HttpStatus.NOT_MODIFIED)
+                return
+            }
+        }
+
+        grailsWebDataBinder.bind(textFormatInstance, requestData as SimpleMapDataBindingSource, ["name", "allowedTags",
+            "roles", "editor"], null)
+        
+        if (textFormatInstance.hasErrors()) {
+            log.warn "Error updating textFormat Instance: $textFormatInstance.errors."
+            respond ([errors: textFormatInstance.errors], status: HttpStatus.NOT_MODIFIED)
+            return
+        } else {
+            log.info "Text format instance updated successfully."
+            textFormatInstance.save(flush: true)
+        }
+        respond ([status: HttpStatus.OK])
+    }
+
+    def save() {
+        Map requestData = request.JSON
+        log.info "Parameters received save text format instance: ${requestData}"
+        TextFormat textFormatInstance = new TextFormat()
+        grailsWebDataBinder.bind(textFormatInstance, requestData as SimpleMapDataBindingSource, ["name", "allowedTags",
+            "roles", "editor"], null)
+        
+        if (textFormatInstance.hasErrors()) {
+            log.warn "Error saving TextFormat Instance: $textFormatInstance.errors."
+            respond ([errors: textFormatInstance.errors, status: HttpStatus.NOT_MODIFIED])
+            return
+        } else {
+            textFormatInstance.save(flush: true)
+        }
+        respond ([status: HttpStatus.OK])
     }
 }

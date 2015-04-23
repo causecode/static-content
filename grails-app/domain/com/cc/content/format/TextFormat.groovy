@@ -25,5 +25,4 @@ class TextFormat {
         name nullable: false
         roles nullable: false
     }
-
 }

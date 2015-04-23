@@ -8,30 +8,24 @@
 
 package com.cc.content.format
 
-import org.codehaus.groovy.grails.commons.metaclass.GroovyDynamicMethodsInterceptor
-import grails.plugin.springsecurity.SpringSecurityUtils;
-import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
+import grails.plugin.springsecurity.SpringSecurityUtils
 
 class TextFormatService {
-
-    TextFormatService() {
-        GroovyDynamicMethodsInterceptor i = new GroovyDynamicMethodsInterceptor(this)
-        i.addDynamicMethodInvocation(new BindDynamicMethod())
-    }
 
      /**
      * To generate available Formats list
      *
      */
     
-    def getApplicableFormats() {
-        def ApplicableFormats = []
-        def textFormatInstanceList = TextFormat.getAll()
-        textFormatInstanceList.each {
-            if (SpringSecurityUtils.ifAnyGranted(it.roles)) {
-                ApplicableFormats.add(it)
+    List getApplicableFormats() {
+        List formats = []
+
+        TextFormat.list().each { textFormatInstance ->
+            if (SpringSecurityUtils.ifAnyGranted(textFormatInstance.roles)) {
+                formats.add(textFormatInstance)
             }
         }
-        return ApplicableFormats
+        return formats
     }
+
 }
