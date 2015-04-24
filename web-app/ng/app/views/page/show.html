@@ -5,7 +5,10 @@
                 <h2 class="tab-heading inline">{{pageInstance.title}}</h2>
                 <span class="text-muted">{{pageInstance.subTitle}}</span>
             </div>
-            <div ng-bind-html="pageInstance.body"></div>
+           <!--  <div ng-bind-html="pageInstance.body"></div> -->
+            <div>
+                <nc-markup model="pageInstance.body"></nc-markup>
+            </div>
         </div>
     </section>
     <div class="has-bg-color">

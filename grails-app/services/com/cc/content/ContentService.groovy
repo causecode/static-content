@@ -274,10 +274,11 @@ class ContentService {
         } else if(tags) {
             def tagsList = tags.tokenize(',')   //returns a List instance eg. " java, groovy " gives tagList = ['java', 'groovy'];
             String regexPart = ""
+            //Check for opening and closing tags for the allowed elements
             tagsList.each { tag ->
-                regexPart += "(?!" + tag.trim() + "[^a-zA-Z])"
+                regexPart += "(?!" + "[\\/]?" + tag.trim() + "[^a-zA-Z])"
             }
-            String regex = "(?i)<" + regexPart + "[^>]*" + regexPart + ">"
+            String regex = "(?i)<"  + regexPart +  "[^>]*" + ">"
             body = body.replaceAll(regex, "")
         }
         return body
