@@ -278,7 +278,7 @@ class ContentService {
             tagsList.each { tag ->
                 regexPart += "(?!" + "[\\/]?" + tag.trim() + "[^a-zA-Z])"
             }
-            String regex = "(?i)<"  + regexPart +  "[^>]*" + ">"
+            String regex = "(?i)<" + regexPart + "[^>]*" + ">"
             body = body.replaceAll(regex, "")
         }
         return body
