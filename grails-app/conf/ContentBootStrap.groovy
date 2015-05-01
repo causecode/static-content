@@ -7,6 +7,7 @@
  */
 
 import com.cc.marshaller.BlogDomainMarshaller
+import com.cc.marshaller.MenuItemMarshaller
 import grails.converters.JSON
 
 class ContentBootStrap {
@@ -17,6 +18,7 @@ class ContentBootStrap {
         log.debug "Content Bootstrap started executing .."
 
         JSON.registerObjectMarshaller(new BlogDomainMarshaller())
+        JSON.registerObjectMarshaller(new MenuItemMarshaller())
 
         log.debug "Content Bootstrap finished executing."
     }

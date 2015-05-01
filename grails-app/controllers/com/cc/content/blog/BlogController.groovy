@@ -139,10 +139,9 @@ class BlogController {
             it.numberOfComments = BlogComment.countByBlog(blogInstance)
             blogInstanceList.add(it)
         }
-        Blog.list().each {
-            if (it.publishedDate) {
-                monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
-            }
+        Blog.findAllByPublishedDateIsNotNull().each {
+            monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + 
+                it.publishedDate[Calendar.YEAR] )
         }
 
         Map result = [blogInstanceList: blogInstanceList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
