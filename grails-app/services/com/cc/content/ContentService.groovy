@@ -24,6 +24,8 @@ import com.cc.content.format.TextFormat
 import com.cc.content.meta.Meta
 import com.cc.content.page.Page
 
+import java.lang.IllegalArgumentException
+
 /**
  * This taglib provides tags for rendering comments on blog.
  * @author Vishesh Duggar
@@ -268,13 +270,17 @@ class ContentService {
      * @return Modified Body
      */
     def formatBody(String body, TextFormat textFormatInstance) {
+        if (textFormatInstance == null || body == "") {
+            throw new IllegalArgumentException("Text format was not found")
+        }
+
         def tags = textFormatInstance.allowedTags
         if(!textFormatInstance.editor) {
             body = body.encodeAsHTML()
         } else if(tags) {
             def tagsList = tags.tokenize(',')   //returns a List instance eg. " java, groovy " gives tagList = ['java', 'groovy'];
             String regexPart = ""
-            //Check for opening and closing tags for the allowed elements
+            // Check for opening and closing tags for the allowed elements
             tagsList.each { tag ->
                 regexPart += "(?!" + "[\\/]?" + tag.trim() + "[^a-zA-Z])"
             }

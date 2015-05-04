@@ -84,13 +84,20 @@ class PageController {
             respond ([message: "Sorry! You do not possess privileges to use " + textFormatInstance.name + " format"])
             return
         }
-        
+
         // Format the body we have obtained from the request
-        requestData.body = contentService.formatBody(requestData.body,textFormatInstance)
+        try {
+            requestData.body = contentService.formatBody(requestData.body,textFormatInstance)
+        } catch(IllegalArgumentException e) {
+            respond ([message: e.message, status: HttpStatus.NOT_ACCEPTABLE])
+            return
+        }
+        
         pageInstance = contentService.create(requestData, requestData.metaList.type, requestData.metaList.value, Page.class)
        
         if(pageInstance.hasErrors()) {
-            respond ([errors: pageInstance.errors, message: "Error saving Instance in controller action: " + pageInstance.errors], status: HttpStatus.NOT_MODIFIED)
+            respond ([errors: pageInstance.errors, message: "Error saving Instance in controller action: " 
+                      + pageInstance.errors], status: HttpStatus.NOT_MODIFIED)
             return
         }
         redirect uri: pageInstance.searchLink()
@@ -129,7 +136,8 @@ class PageController {
 
         requestData.body = contentService.formatBody(requestData.body,textFormatInstance)
 
-        pageInstance = contentService.update(requestData, pageInstance, requestData.metaList.type, requestData.metaList.value)
+        pageInstance = contentService.update(requestData, pageInstance, requestData.metaList.type, 
+                                             requestData.metaList.value)
 
         if(pageInstance.hasErrors()) {
             respond (pageInstance.errors)
