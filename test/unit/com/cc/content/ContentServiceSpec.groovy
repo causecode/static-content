@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
+ * Copyright (c) 2011 - Present, CauseCode Technologies Pvt Ltd, India.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or
@@ -8,19 +8,22 @@
 
 package com.cc.content
 
-import static org.junit.Assert.*
-import grails.test.mixin.*
-import grails.test.mixin.support.*
-import org.codehaus.groovy.grails.plugins.codecs.HTMLCodec  // For supporting "encodeAsHTML" method
-import org.junit.*
-import spock.lang.*
+import grails.test.mixin.Mock
+import grails.test.mixin.TestFor
+import grails.test.mixin.TestMixin
+import grails.test.mixin.support.GrailsUnitTestMixin
+
+import org.codehaus.groovy.grails.plugins.codecs.HTMLCodec
+
+import spock.lang.Specification
+
 import com.cc.content.format.TextFormat
 
 @Mock([TextFormat])
 @TestFor(ContentService)
 @TestMixin(GrailsUnitTestMixin)
 class ContentServiceSpec extends Specification {
-
+    
     TextFormat textFormatInstance1
     TextFormat textFormatInstance2
     
@@ -33,7 +36,6 @@ class ContentServiceSpec extends Specification {
     }
     
     void "test formatBody when TextFormat editor is absent"() {
-
         given: "Mocked Grails HTML codec for encodeAsHTML() method"
         mockCodec(HTMLCodec)
         
@@ -51,7 +53,6 @@ class ContentServiceSpec extends Specification {
     }
     
     void "test formatted body if non-allowed tags are passed"() {
-
         given: "Body with allowed and non-allowed tags"
         String body = "<hr> hello </hr> <strong> world </strong>"
         
@@ -63,9 +64,8 @@ class ContentServiceSpec extends Specification {
         assert formattedBody.contains("<hr>") == false
         assert formattedBody.contains("<strong> world </strong>")
     }
-    
-    void "test formatted body if attributes are passed in allowed tags"() {
 
+    void "test formatted body if attributes are passed in allowed tags"() {
         given: "Allowed tags with attributes defined"
         String body = "<u> hello  world<u> <strong class = sm> tree </strong>"
         TextFormat textFormatInstance = new TextFormat([name:"PARTIAL HTML", roles:"ROLE_CONTENT_MANAGER", allowedTags
@@ -80,7 +80,6 @@ class ContentServiceSpec extends Specification {
     }
     
     void "test if empty string is passed in Body"() {
-
         when: "An empty body is passed for formatting"
         service.formatBody("", textFormatInstance1)
         
