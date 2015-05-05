@@ -275,11 +275,11 @@ class ContentService {
         }
         
         if (textFormatInstance) {
-            def tags = textFormatInstance.allowedTags
+            String tags = textFormatInstance.allowedTags
             if(!textFormatInstance.editor) {
                 body = body.encodeAsHTML()
             } else if(tags) {
-                def tagsList = tags.tokenize(',')   //returns a List instance eg. " java, groovy " gives tagList = ['java', 'groovy'];
+                List tagsList = tags.tokenize(',')   // Returns a List instance eg. " java, groovy " gives tagList = ['java', 'groovy'];
                 String regexPart = ""
                 // Check for opening and closing tags for the allowed elements
                 tagsList.each { tag ->

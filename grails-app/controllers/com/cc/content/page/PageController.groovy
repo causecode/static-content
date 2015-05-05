@@ -77,7 +77,7 @@ class PageController {
 
     def save() {
         Map requestData = request.JSON
-        println("Data recieved for save"+requestData)
+        log.info "Parameters received to create a Page: $requestData"
         def textFormatInstance = TextFormat.findById(requestData.textFormat.id)
         // If no legitimate roles exist
         if(SpringSecurityUtils.ifNotGranted(textFormatInstance.roles)) {
@@ -115,6 +115,7 @@ class PageController {
 
     def update(Long version) {
         Map requestData = request.JSON
+        log.info "Parameters received to update a Page: $requestData"
         if(version != null) {
             if (pageInstance.version > version) {
                 pageInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
