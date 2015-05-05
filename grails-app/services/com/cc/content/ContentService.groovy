@@ -269,23 +269,25 @@ class ContentService {
      * @param args 
      * @return Modified Body
      */
-    def formatBody(String body, TextFormat textFormatInstance) {
-        if (textFormatInstance == null || body == "") {
-            throw new IllegalArgumentException("Text format was not found")
+    def formatBody(String body, TextFormat textFormatInstance) throws IllegalArgumentException {
+        if (!body) {
+            throw new IllegalArgumentException("Sorry, You have passed an empty body")
         }
-
-        def tags = textFormatInstance.allowedTags
-        if(!textFormatInstance.editor) {
-            body = body.encodeAsHTML()
-        } else if(tags) {
-            def tagsList = tags.tokenize(',')   //returns a List instance eg. " java, groovy " gives tagList = ['java', 'groovy'];
-            String regexPart = ""
-            // Check for opening and closing tags for the allowed elements
-            tagsList.each { tag ->
-                regexPart += "(?!" + "[\\/]?" + tag.trim() + "[^a-zA-Z])"
+        
+        if (textFormatInstance) {
+            def tags = textFormatInstance.allowedTags
+            if(!textFormatInstance.editor) {
+                body = body.encodeAsHTML()
+            } else if(tags) {
+                def tagsList = tags.tokenize(',')   //returns a List instance eg. " java, groovy " gives tagList = ['java', 'groovy'];
+                String regexPart = ""
+                // Check for opening and closing tags for the allowed elements
+                tagsList.each { tag ->
+                    regexPart += "(?!" + "[\\/]?" + tag.trim() + "[^a-zA-Z])"
+                }
+                String regex = "(?i)<" + regexPart + "[^>]*" + ">"
+                body = body.replaceAll(regex, "")
             }
-            String regex = "(?i)<" + regexPart + "[^>]*" + ">"
-            body = body.replaceAll(regex, "")
         }
         return body
     }
