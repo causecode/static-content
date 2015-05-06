@@ -9,7 +9,6 @@
 package com.cc.content.page
 
 import grails.converters.JSON
-import grails.gsp.PageRenderer
 import grails.plugin.springsecurity.annotation.Secured
 import com.cc.content.meta.Meta
 import grails.plugin.springsecurity.SpringSecurityUtils
@@ -35,7 +34,6 @@ class PageController {
 
     def beforeInterceptor = [action: this.&validate]
     def contentService
-    PageRenderer groovyPageRenderer
 
     private Page pageInstance
 

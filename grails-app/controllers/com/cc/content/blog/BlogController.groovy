@@ -17,7 +17,6 @@ import java.util.regex.Pattern
 import grails.transaction.Transactional
 import org.grails.taggable.TagLink
 import org.springframework.dao.DataIntegrityViolationException
-import grails.gsp.PageRenderer
 
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.blog.comment.BlogComment
@@ -60,11 +59,11 @@ class BlogController {
      */
     @Secured(["permitAll"])
     def index() {
-        redirect( action: 'list', params: params)
+        redirect( action: '_list', params: params)
     }
 
     @Secured(["permitAll"])
-    def list(Integer max, Integer offset, String tag, String monthFilter, String queryFilter) {
+    def _list(Integer max, Integer offset, String tag, String monthFilter, String queryFilter) {
         if (tag == 'undefined') tag = ''
         if (monthFilter == 'undefined') monthFilter = ''
         if (queryFilter == 'undefined') queryFilter = ''
@@ -146,9 +145,12 @@ class BlogController {
         Map result = [blogInstanceList: blogInstanceList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
             tagList: blogService.getAllTags()]
 
-        // URL that contains '_escaped_fragment_' parameter, represents a request from a crawler.
+        /*
+         * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
+         * any change in data model must be updated in the GSP.
+         */
         if (params._escaped_fragment_) {
-            render g.render(view: "/blog/list", model: result)
+            render g.render(template: "/blog/list", model: result)
             return
         }
         if (request.xhr) {
@@ -233,7 +235,7 @@ class BlogController {
 
         Blog.withTransaction { status ->
             String tags = params.remove("tags")
-            contentService.update(params, blogInstance, params.meta.list("type"), params.meta.list("value"))
+            contentService.update(params, blogInstance, params.meta._list("type"), params.meta._list("value"))
 
             if (blogInstance.hasErrors()) {
                 status.setRollbackOnly()
