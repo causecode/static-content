@@ -8,20 +8,20 @@
 
 package com.cc.content
 
+import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.util.Environment
 
 import java.lang.reflect.Field
 
-import grails.plugin.springsecurity.SpringSecurityUtils
 import org.codehaus.groovy.grails.web.mapping.LinkGenerator
 import org.grails.databinding.SimpleMapDataBindingSource
+import org.springframework.context.MessageSource
 import org.springframework.transaction.annotation.Transactional
 
 import com.cc.annotation.sanitizedTitle.SanitizedTitle
 import com.cc.content.blog.Blog
 import com.cc.content.blog.comment.BlogComment
 import com.cc.content.format.TextFormat
-import com.cc.content.meta.Meta
 import com.cc.content.page.Page
 
 /**
@@ -35,6 +35,7 @@ class ContentService {
     static transactional = false
 
     def grailsWebDataBinder
+    MessageSource messageSource
     private static final String ANONYMOUS_USER = "anonymousUser"
 
     /**
@@ -210,8 +211,8 @@ class ContentService {
      * sanitized title will be appended in uri. Domain class must have SanitizedTitle
      * annotation.
      * @param attrs.controller REQUIRED the name of the controller for which 
-     * SEO friendly url needs to be generated. The controller must have annotaion
-     * ControllerShortHand ehich specific value.
+     * SEO friendly url needs to be generated. The controller must have annotation
+     * ControllerShortHand which specific value.
      * @return String SEO friendly url.
      */
     String createLink(Map attrs) {
@@ -263,21 +264,32 @@ class ContentService {
     }
 
     /**
-     * To set the body according to the Text Format selected
-     * @param args 
+     * To alter the body if formatting is applied
+     * @param body: Content
+     * @param textformatInstance: If formatting (HTML, Partial HTML, Markdown) is selected for any Content
      * @return Modified Body
      */
-    def formatBody(String body, TextFormat textFormatInstance) {
-        def tags = textFormatInstance.allowedTags
-        if(!textFormatInstance.editor) {
+    String formatBody(String body, TextFormat textFormatInstance) throws IllegalArgumentException {
+        if (!body) {
+            String exceptionMessage = messageSource.getMessage("content.body.error", null, null)
+            throw new IllegalArgumentException(exceptionMessage)
+        }
+
+        if (!textFormatInstance) {
+            return body
+        }
+
+        String tags = textFormatInstance.allowedTags
+        if (!textFormatInstance.editor) {
             body = body.encodeAsHTML()
-        } else if(tags) {
-            def tagsList = tags.tokenize(',')   //returns a List instance eg. " java, groovy " gives tagList = ['java', 'groovy'];
+        } else if (tags) {
+            List tagsList = tags.tokenize(',')   // Returns a List instance eg. " java, groovy " gives tagList = ['java', 'groovy'];
             String regexPart = ""
+            // Check for opening and closing tags for the allowed elements
             tagsList.each { tag ->
-                regexPart += "(?!" + tag.trim() + "[^a-zA-Z])"
+                regexPart += "(?!" + "[\\/]?" + tag.trim() + "[^a-zA-Z])"
             }
-            String regex = "(?i)<" + regexPart + "[^>]*" + regexPart + ">"
+            String regex = "(?i)<" + regexPart + "[^>]*" + ">"
             body = body.replaceAll(regex, "")
         }
         return body

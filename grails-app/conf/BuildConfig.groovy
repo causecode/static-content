@@ -31,6 +31,7 @@ grails.project.dependency.resolution = {
 
     dependencies {
         test "org.grails:grails-datastore-test-support:1.0.2-grails-2.4"
+        runtime 'mysql:mysql-connector-java:5.1.29'
     }
 
     plugins {

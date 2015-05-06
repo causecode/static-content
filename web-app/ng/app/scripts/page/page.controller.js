@@ -48,7 +48,7 @@ controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel
     if ($scope.actionName === 'create') {
         $scope.contentInstance = new PageModel();
         $scope.contentInstance.metaList = [];
-        $scope.contentInstance.textFormat = {id:1};     //default textFormat id
+        $scope.contentInstance.textFormat = {};
         // Check if Editor is true or false for the Current User
         TextFormatModel.getEditorType(null, function(data) {
             $scope.hasTinyMce = data.editor;

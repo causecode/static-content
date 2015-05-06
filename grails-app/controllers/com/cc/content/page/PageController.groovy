@@ -77,20 +77,27 @@ class PageController {
 
     def save() {
         Map requestData = request.JSON
-        println("Data recieved for save"+requestData)
+        log.info "Parameters received to create a Page: $requestData"
         def textFormatInstance = TextFormat.findById(requestData.textFormat.id)
         // If no legitimate roles exist
         if(SpringSecurityUtils.ifNotGranted(textFormatInstance.roles)) {
             respond ([message: "Sorry! You do not possess privileges to use " + textFormatInstance.name + " format"])
             return
         }
-        
+
         // Format the body we have obtained from the request
-        requestData.body = contentService.formatBody(requestData.body,textFormatInstance)
+        try {
+            requestData.body = contentService.formatBody(requestData.body,textFormatInstance)
+        } catch(IllegalArgumentException e) {
+            respond ([message: e.message, status: HttpStatus.NOT_ACCEPTABLE])
+            return
+        }
+        
         pageInstance = contentService.create(requestData, requestData.metaList.type, requestData.metaList.value, Page.class)
        
         if(pageInstance.hasErrors()) {
-            respond ([errors: pageInstance.errors, message: "Error saving Instance in controller action: " + pageInstance.errors], status: HttpStatus.NOT_MODIFIED)
+            respond ([errors: pageInstance.errors, message: "Error saving Instance in controller action: " 
+                      + pageInstance.errors], status: HttpStatus.NOT_MODIFIED)
             return
         }
         redirect uri: pageInstance.searchLink()
@@ -108,6 +115,7 @@ class PageController {
 
     def update(Long version) {
         Map requestData = request.JSON
+        log.info "Parameters received to update a Page: $requestData"
         if(version != null) {
             if (pageInstance.version > version) {
                 pageInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
@@ -122,14 +130,21 @@ class PageController {
             requestData.metaList?.value)
 
         def textFormatInstance = TextFormat.findById(requestData.textFormat.id)
+        
         if(SpringSecurityUtils.ifNotGranted(textFormatInstance.roles)) {
             respond ([message : "Sorry! You do not possess priveleges to use " + textFormatInstance.name + " format"])
             return
         }
 
-        requestData.body = contentService.formatBody(requestData.body,textFormatInstance)
+        try {
+            requestData.body = contentService.formatBody(requestData.body,textFormatInstance)
+        } catch(IllegalArgumentException e) {
+            respond ([message: e.message, status: HttpStatus.NOT_ACCEPTABLE])
+            return
+        }
 
-        pageInstance = contentService.update(requestData, pageInstance, requestData.metaList.type, requestData.metaList.value)
+        pageInstance = contentService.update(requestData, pageInstance, requestData.metaList.type, 
+                                             requestData.metaList.value)
 
         if(pageInstance.hasErrors()) {
             respond (pageInstance.errors)
