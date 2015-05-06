@@ -406,8 +406,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask('contentInstall', 'Used to create symlinks for content plugin screens.', function(forDevelopment) {
         var options = {force: true};
-        var scriptPathList = ['/blog', '/faq', '/menu', '/menuItem', '/news', '/page', '/pageLayout']
-        var viewsPathList = scriptPathList.concat(['/content', '/meta'])
+        var scriptPathList = ['/blog', '/faq', '/menu', '/menuItem', '/news', '/page', '/pageLayout'];
+        var viewsPathList = scriptPathList.concat(['/content', '/meta']);
 
         grunt.log.writeln('Deleting existing symlinks of Content plugin scripts.');
         var basePath = './app/scripts';
