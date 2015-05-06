@@ -69,7 +69,6 @@ class BlogController {
 
         log.info "Parameters received to filter blogs : $params"
         long blogInstanceTotal
-        boolean publish = false
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
         List<String> monthFilterList = []
         String month, year

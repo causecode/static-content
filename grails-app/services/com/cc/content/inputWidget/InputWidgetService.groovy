@@ -8,8 +8,6 @@
 
 package com.cc.content.inputWidget
 
-import org.codehaus.groovy.grails.commons.metaclass.GroovyDynamicMethodsInterceptor
-import org.codehaus.groovy.grails.web.metaclass.BindDynamicMethod
 
 /**
  * This taglib provides tags for rendering comments on blog.
