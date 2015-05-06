@@ -46,7 +46,6 @@ class BlogController {
     def blogService
     def grailsWebDataBinder
     def grailsApplication
-    PageRenderer groovyPageRenderer
 
     private static String HTML_P_TAG_PATTERN = "(?s)<p(.*?)>(.*?)<\\/p>"
 
@@ -149,7 +148,7 @@ class BlogController {
 
         // URL that contains '_escaped_fragment_' parameter, represents a request from a crawler.
         if (params._escaped_fragment_) {
-            render groovyPageRenderer.render(view: "/blog/list", model: result)
+            render g.render(view: "/blog/list", model: result)
             return
         }
         if (request.xhr) {
@@ -196,9 +195,10 @@ class BlogController {
         Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList, 
             blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags]
 
-        // URL that contains '_escaped_fragment_' parameter, represents a request from a crawler.
+        // URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
+        // any change in data model must be updated in the GSP.
         if (params._escaped_fragment_) {
-            render groovyPageRenderer.render(view: "/blog/show", model: result)
+            render g.render(view: "/blog/show", model: result)
             return      
         }
         if (request.xhr) {
