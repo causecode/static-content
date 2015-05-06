@@ -28,11 +28,11 @@ cc.plugins.content.breadcrumbs.baseMap = ['/': 'Home']
 
 To install angular based project copy following configurations from plugin **GruntFile.js** to app **GruntFile.js**.
 
-> Copy symlinks anf contentInstall task to app **GruntFile.js**.
+> Copy symlinks and contentInstall task to app **GruntFile.js**.
 > Check grunt plugin dependencies Ex. angular-ui-tinymce plugin. Add them if missing.
-> Check Application module dependency injection from **app.js** file.
+> Check Application module dependency injection from **app.js** file. Add them if missing.
 > Then run command: `grunt contentInstall` to install templates.
-> Include all Angular Models and Controllers in application **index.html** file.
+> Include all Angular Models and Controllers in application **index.html** file. Check this plugin **index.html** file for reference.
 
 
 ## Architecture Overview
