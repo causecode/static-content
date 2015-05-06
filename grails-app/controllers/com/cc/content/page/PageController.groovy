@@ -130,12 +130,18 @@ class PageController {
             requestData.metaList?.value)
 
         def textFormatInstance = TextFormat.findById(requestData.textFormat.id)
+        
         if(SpringSecurityUtils.ifNotGranted(textFormatInstance.roles)) {
             respond ([message : "Sorry! You do not possess priveleges to use " + textFormatInstance.name + " format"])
             return
         }
 
-        requestData.body = contentService.formatBody(requestData.body,textFormatInstance)
+        try {
+            requestData.body = contentService.formatBody(requestData.body,textFormatInstance)
+        } catch(IllegalArgumentException e) {
+            respond ([message: e.message, status: HttpStatus.NOT_ACCEPTABLE])
+            return
+        }
 
         pageInstance = contentService.update(requestData, pageInstance, requestData.metaList.type, 
                                              requestData.metaList.value)
