@@ -91,17 +91,20 @@ class PageController {
 
     @Secured(["permitAll"])
     def show(Page pageInstance) {
-        // URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
-        // any change in data model must be updated in the GSP.
+        /*
+         * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
+         * any change in data model must be updated in the GSP.
+         */
         if (params._escaped_fragment_) {
-            render g.render(view: "/page/show", model: [pageInstance: pageInstance])
+            render g.render(template: "/page/show", model: [pageInstance: pageInstance])
             return
         }
+
         if (request.xhr) {
             render text:([pageInstance: pageInstance] as JSON)
             return
         }
-        String pageShowUrl = grailsApplication.config.app.defaultURL + "/page/show/${id}"
+        String pageShowUrl = grailsApplication.config.app.defaultURL + "/page/show/${pageInstance.id}"
         redirect(url: pageShowUrl, permanent: true)
     }
 

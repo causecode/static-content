@@ -195,17 +195,19 @@ class BlogController {
         Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList, 
             blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags]
 
-        // URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
-        // any change in data model must be updated in the GSP.
+        /*
+         * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
+         * any change in data model must be updated in the GSP.
+         */
         if (params._escaped_fragment_) {
-            render g.render(view: "/blog/show", model: result)
-            return      
+            render g.render(template: "/blog/show", model: result)
+            return
         }
         if (request.xhr) {
             render text:(result as JSON)
             return
         }
-        String blogShowUrl = grailsApplication.config.app.defaultURL + "/blog/show/${id}"
+        String blogShowUrl = grailsApplication.config.app.defaultURL + "/blog/show/${blogInstance.id}"
         redirect(url: blogShowUrl, permanent: true)
     }
 
