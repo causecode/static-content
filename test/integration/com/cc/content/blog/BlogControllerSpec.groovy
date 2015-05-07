@@ -8,7 +8,6 @@
 
 package com.cc.content.blog
 
-
 import spock.lang.*
 
 import com.cc.crm.BaseIntegrationTestCase
@@ -51,19 +50,21 @@ class BlogControllerSpec extends BaseIntegrationTestCase {
 
         and: "Populating show GSP content"
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
-        Map result = [blogInstance: blogInstance, comments: [], tagList: [], blogInstanceList: blogInstanceList, 
-            blogInstanceTags: []]
-        String blogContent = controller.g.render(template: "/blog/show", model: result)
 
         when:"Blog ID and _escaped_fragment_ parameter passed."
         controller.request.method = "GET"
         controller.show()
 
         then: "Redirected to blog show angular based URL."
-        controller.response.text == blogContent
+        controller.modelAndView.model.blogInstance == blogInstance
+        controller.modelAndView.model.comments == []
+        controller.modelAndView.model.tagList == []
+        controller.modelAndView.model.blogInstanceList == blogInstanceList
+        controller.modelAndView.model.blogInstanceTags == []
+        controller.modelAndView.viewName == '/blog/show'
     }
 
-    void "test show action for ajax request "() {
+    void "test show action for ajax request"() {
         given: "Populating parameters"
         controller.params.id = blogInstance.id
 

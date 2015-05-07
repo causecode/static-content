@@ -29,25 +29,9 @@ import com.cc.content.ContentRevision
 class PageController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
-
     static responseFormats = ["json"]
 
-    def beforeInterceptor = [action: this.&validate]
     def contentService
-
-    private Page pageInstance
-
-    private validate() {
-        if(!params.id) return true;
-
-        pageInstance = Page.get(params.id)
-        if(!pageInstance) {
-            flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'page.label'), params.id])
-            redirect(action: "list")
-            return false
-        }
-        return true
-    }
 
     def index() {
         redirect(action: "list", params: params)
@@ -77,7 +61,7 @@ class PageController {
 
     def save() {
         Map requestData = request.JSON
-        pageInstance = contentService.create(requestData, requestData.metaList.type, requestData.metaList.value, Page.class)
+        Page pageInstance = contentService.create(requestData, requestData.metaList.type, requestData.metaList.value, Page.class)
         if(!pageInstance.save(flush: true)) {
             render(view: "create", model: [pageInstance: pageInstance])
             return
@@ -92,9 +76,10 @@ class PageController {
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
          * any change in data model must be updated in the GSP.
+         * Render GSP content in JSON format.
          */
         if (params._escaped_fragment_) {
-            render g.render(template: "/page/show", model: [pageInstance: pageInstance])
+            render (view: "show", model: [pageInstance: pageInstance], contentType: "application/json")
             return
         }
 

@@ -9,12 +9,18 @@
 package com.cc.content.blog
 
 import grails.plugin.springsecurity.annotation.Secured
+
+import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.grails.databinding.SimpleMapDataBindingSource
+
 import grails.converters.JSON
+
 import java.text.DateFormatSymbols
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+
 import grails.transaction.Transactional
+
 import org.grails.taggable.TagLink
 import org.springframework.dao.DataIntegrityViolationException
 
@@ -44,7 +50,7 @@ class BlogController {
     def commentService
     def blogService
     def grailsWebDataBinder
-    def grailsApplication
+    GrailsApplication grailsApplication
 
     private static String HTML_P_TAG_PATTERN = "(?s)<p(.*?)>(.*?)<\\/p>"
 
@@ -59,11 +65,11 @@ class BlogController {
      */
     @Secured(["permitAll"])
     def index() {
-        redirect( action: '_list', params: params)
+        redirect( action: 'list', params: params)
     }
 
     @Secured(["permitAll"])
-    def _list(Integer max, Integer offset, String tag, String monthFilter, String queryFilter) {
+    def list(Integer max, Integer offset, String tag, String monthFilter, String queryFilter) {
         if (tag == 'undefined') tag = ''
         if (monthFilter == 'undefined') monthFilter = ''
         if (queryFilter == 'undefined') queryFilter = ''
@@ -148,9 +154,10 @@ class BlogController {
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
          * any change in data model must be updated in the GSP.
+         * Render GSP content in JSON format.
          */
         if (params._escaped_fragment_) {
-            render g.render(template: "/blog/list", model: result)
+            render (view: "list", model: result, contentType: "application/json")
             return
         }
         if (request.xhr) {
@@ -200,9 +207,10 @@ class BlogController {
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
          * any change in data model must be updated in the GSP.
+         * Render GSP content in JSON format.
          */
         if (params._escaped_fragment_) {
-            render g.render(template: "/blog/show", model: result)
+            render (view: "show", model: result, contentType: "application/json")
             return
         }
         if (request.xhr) {
@@ -235,7 +243,7 @@ class BlogController {
 
         Blog.withTransaction { status ->
             String tags = params.remove("tags")
-            contentService.update(params, blogInstance, params.meta._list("type"), params.meta._list("value"))
+            contentService.update(params, blogInstance, params.meta.list("type"), params.meta.list("value"))
 
             if (blogInstance.hasErrors()) {
                 status.setRollbackOnly()

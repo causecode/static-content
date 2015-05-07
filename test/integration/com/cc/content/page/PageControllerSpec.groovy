@@ -8,14 +8,10 @@
 
 package com.cc.content.page
 
-
 import spock.lang.*
 
 import com.cc.crm.BaseIntegrationTestCase
 
-/**
- *
- */
 class PageControllerSpec extends BaseIntegrationTestCase {
 
     PageController controller
@@ -38,7 +34,6 @@ class PageControllerSpec extends BaseIntegrationTestCase {
 
         when: "Page id parameter passed"
         controller.request.method = "GET"
-        controller.validate()
         controller.show()
 
         then: "Redirected to page show angular based URL."
@@ -50,26 +45,22 @@ class PageControllerSpec extends BaseIntegrationTestCase {
         controller.params.id = pageInstance.id
         controller.params._escaped_fragment_ = true
 
-        and: "Populating show GSP content"
-        String pageContent = controller.g.render(template: "/page/show", model: [pageInstance: pageInstance])
-
         when: "Page ID and _escaped_fragment_ parameter passed."
         controller.request.method = "GET"
-        controller.validate()
         controller.show()
 
-        then: "Should respond show GSP content."
-        controller.response.text == pageContent
+        then: "Should render show GSP content in JSON format."
+        controller.modelAndView.model.pageInstance == pageInstance
+        controller.modelAndView.viewName == "/page/show"
     }
 
-    void "test show action for ajax request "() {
+    void "test show action for ajax request"() {
         given: "Populating parameters"
         controller.params.id = pageInstance.id
 
         when: "Ajax request comes in for show action"
         controller.request.method = "GET"
         controller.request.makeAjaxRequest()
-        controller.validate()
         controller.show()
 
         then: "Should respond json data containing page instance"

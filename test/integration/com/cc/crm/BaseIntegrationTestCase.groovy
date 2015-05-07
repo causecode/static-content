@@ -34,11 +34,9 @@ class BaseIntegrationTestCase extends IntegrationSpec {
         log.debug "Setup called."
 
         JList domains = [Page, Blog, PageLayout, Comment, BlogComment]
-
         domains.each {
-            it.list()*.delete()
+            it.list()*.delete(flush: true)
         }
-
     }
 
     Map getContentParams(Integer i) {

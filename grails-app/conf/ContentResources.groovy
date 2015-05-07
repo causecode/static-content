@@ -17,10 +17,6 @@ modules = {
         resource url: [dir: "js", file: "word-and-character-counter.js"]
     }
 
-    prettyprint {
-        resource url: 'js/core.js', linkOverride: "https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"
-    }
-
     tagcloud {
         resource id: 'js', url: [dir: "js/jquery-tagcloud", file: "jquery.tagcloud.js"]
     }
