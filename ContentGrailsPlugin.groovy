@@ -21,7 +21,12 @@ class ContentGrailsPlugin {
     def pluginExcludes = [
         "grails-app/views/error.gsp",
         ".gitmodules",
-        "src/templates/*"
+        "src/templates/*",
+        "web-app/ng/app/app.js",
+        "web-app/ng/app/index.html",
+        "web-app/ng/Gruntfile.js",
+        "web-app/ng/bower.json",
+        "web-app/ng/package.json"
     ]
 
     def title = "Content Plugin"

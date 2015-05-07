@@ -8,15 +8,18 @@
 
 package com.cc.content.blog
 
-import grails.plugin.springsecurity.annotation.Secured
-import org.grails.databinding.SimpleMapDataBindingSource
 import grails.converters.JSON
+import grails.plugin.springsecurity.annotation.Secured
+import grails.transaction.Transactional
+
 import java.text.DateFormatSymbols
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import grails.transaction.Transactional
+
+import org.grails.databinding.SimpleMapDataBindingSource
 import org.grails.taggable.TagLink
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.blog.comment.BlogComment
@@ -34,7 +37,7 @@ import com.cc.content.blog.comment.Comment
 @ControllerShorthand(value = "blog")
 class BlogController {
 
-    static allowedMethods = [save: "POST", update: "POST"]
+    static allowedMethods = [save: "POST", update: "PUT"]
 
     static responseFormats = ["json"]
 
@@ -138,9 +141,16 @@ class BlogController {
             it.numberOfComments = BlogComment.countByBlog(blogInstance)
             blogInstanceList.add(it)
         }
-        Blog.findAllByPublishedDateIsNotNull().each {
-            monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + 
-                it.publishedDate[Calendar.YEAR] )
+
+        List<Blog> publishedblogList = Blog.createCriteria().list {
+            projections {
+                property("publishedDate")
+            }
+            eq("publish", true)
+        }
+        publishedblogList.each { publishedDate ->
+            monthFilterList.add(new DateFormatSymbols().months[publishedDate[Calendar.MONTH]] + "-" + 
+                publishedDate[Calendar.YEAR] )
         }
 
         Map result = [blogInstanceList: blogInstanceList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
@@ -163,8 +173,9 @@ class BlogController {
     def save() {
         Map requestData = request.JSON
         log.info "Parameters received to save blog: ${requestData}"
-        List metaTypeList = requestData.metaList ? requestData.metaList?.list("type") : []
-        List metaValueList = requestData.metaList ? requestData.metaList?.list("value") : []
+        List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
+        List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
+        
         Blog.withTransaction { status ->
             Blog blogInstance = contentService.create(requestData, metaTypeList, metaValueList, Blog.class)
             if (blogInstance.hasErrors()) {
@@ -211,6 +222,7 @@ class BlogController {
      */
     @Transactional
     def update(Blog blogInstance, Long version) {
+        Map requestData = request.JSON
         if (version != null) {
             if (blogInstance.version > version) {
                 blogInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
@@ -222,10 +234,10 @@ class BlogController {
         }
 
         Blog.withTransaction { status ->
-            String tags = params.remove("tags")
-            List metaTypeList = requestData.metaList ? requestData.metaList?.list("type") : []
-            List metaValueList = requestData.metaList ? requestData.metaList?.list("value") : []
-            contentService.update(params, blogInstance, metaTypeList, metaValueList)
+            String tags = requestData.remove("tags")
+            List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
+            List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
+            contentService.update(requestData, blogInstance, metaTypeList, metaValueList)
 
             if (blogInstance.hasErrors()) {
                 status.setRollbackOnly()
@@ -233,7 +245,8 @@ class BlogController {
                 return false
             }
 
-            blogInstance.setTags(tags.tokenize(",")*.trim())
+            if (tags)
+                blogInstance.setTags(tags.tokenize(",")*.trim())
             blogInstance.save(flush: true)
 
             respond([success: true])
@@ -243,10 +256,10 @@ class BlogController {
     def delete(Blog blogInstance) {
         try {
             contentService.delete(blogInstance)
-            respond([success: true])
+            render status: HttpStatus.OK
         } catch (DataIntegrityViolationException e) {
             log.warn "Error deleting blog.", e
-            respond([success: false])
+            render status: HttpStatus.NOT_MODIFIED
         }
     }
 

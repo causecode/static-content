@@ -2,8 +2,8 @@
 
 'use strict';
 
-controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal',
-    function($scope, $state, BlogModel, appService, $modal) {
+controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal', 'PageModel',
+    function($scope, $state, BlogModel, appService, $modal, PageModel) {
     console.info('BlogController executing.', $scope);
 
     $scope.commentData = {};
@@ -17,6 +17,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             if (blogData.blogInstance) {
                 $scope.blogInstance = new BlogModel(blogData.blogInstance);
                 $scope.contentInstance = $scope.blogInstance;
+                $scope.contentInstance.metaList = [];
                 $scope.commentData.id = blogData.blogInstance.id;
             }
             $scope.comments = blogData.comments;
@@ -25,6 +26,14 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             appService.blockPage(false);
         });
     };
+
+    $scope.addForm = function() {
+        $scope.contentInstance.metaList.push({});
+    };
+
+    PageModel.getMetaList(null, function(data){
+        $scope.metaList = data.metaTypeList;
+    },function() {});
 
     $scope.changePage = function(toPage) {
         $scope.offset = $scope.itemsPerPage * toPage;
@@ -134,7 +143,5 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     } else if ($scope.actionName === 'create') {
         $scope.contentInstance = new BlogModel();
         $scope.contentInstance.metaList = [];
-    } else if ($scope.actionName === 'edit') {
-        $scope.contentInstance = BlogModel.get({id: $scope.id});
     }
 }]);
