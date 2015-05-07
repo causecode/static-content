@@ -142,13 +142,13 @@ class BlogController {
             blogInstanceList.add(it)
         }
 
-        List<Blog> publishedblogList = Blog.createCriteria().list {
+        List<Blog> publishDateList = Blog.createCriteria().list {
             projections {
                 property("publishedDate")
             }
             eq("publish", true)
         }
-        publishedblogList.each { publishedDate ->
+        publishDateList.each { publishedDate ->
             monthFilterList.add(new DateFormatSymbols().months[publishedDate[Calendar.MONTH]] + "-" + 
                 publishedDate[Calendar.YEAR] )
         }
@@ -244,9 +244,7 @@ class BlogController {
                 respond(blogInstance.errors)
                 return false
             }
-
-            if (tags)
-                blogInstance.setTags(tags.tokenize(",")*.trim())
+            blogInstance.setTags(tags?.tokenize(",")*.trim())
             blogInstance.save(flush: true)
 
             respond([success: true])

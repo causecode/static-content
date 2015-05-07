@@ -40,7 +40,7 @@ class MenuController {
         respond ([instanceList: Menu.list(params), totalCount: Menu.count()])
     }
 
-    def create() {
+    def getRoleList() {
         def roleList = contentService.getRoleClass().list()
         respond(roleList:roleList)
     }

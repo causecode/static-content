@@ -17,7 +17,7 @@ models.factory('MenuModel', ['$resource', '$http', 'BaseModel', function($resour
         this.customActions = {
             getRoleList: {
                 method: 'POST',
-                url: '/api/v1/menu/action/create'
+                url: '/api/v1/menu/action/getRoleList'
             }
         };
 
