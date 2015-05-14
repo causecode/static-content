@@ -147,10 +147,11 @@ class BlogController {
                 property("publishedDate")
             }
             eq("publish", true)
+            isNotNull("publishedDate")
         }
         publishDateList.each { publishedDate ->
             monthFilterList.add(new DateFormatSymbols().months[publishedDate[Calendar.MONTH]] + "-" + 
-                publishedDate[Calendar.YEAR] )
+                publishedDate[Calendar.YEAR])
         }
 
         Map result = [blogInstanceList: blogInstanceList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),

@@ -16,6 +16,11 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         BlogModel.get({id: blogId}, function(blogData) {
             if (blogData.blogInstance) {
                 $scope.blogInstance = new BlogModel(blogData.blogInstance);
+                /*
+                 * TODO: Remove this duplicate scope variable dependency.
+                 * Copying same blogInstance into another scope variable to reuse
+                 * existing partials added for creating contentInstnace.
+                 */
                 $scope.contentInstance = $scope.blogInstance;
                 $scope.contentInstance.metaList = [];
                 $scope.commentData.id = blogData.blogInstance.id;
@@ -33,7 +38,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     PageModel.getMetaList(null, function(data){
         $scope.metaList = data.metaTypeList;
-    },function() {});
+    }, function() {});
 
     $scope.changePage = function(toPage) {
         $scope.offset = $scope.itemsPerPage * toPage;

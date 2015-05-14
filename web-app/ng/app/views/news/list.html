@@ -1,6 +1,11 @@
 <div class="container" ng-controller="NewsController">
     <div class="page-header custom">
-        <h1>News List <small><a ui-sref="urlMap({action: 'create'})" > <i class="fa fa-plus"> </i></a></small></h1>
+        <h1>
+            News List 
+            <small>
+                <a ui-sref="urlMap({action: 'create'})" > <i class="fa fa-plus"> </i></a>
+            </small>
+        </h1>
     </div>
     <paged-list model-name="'News'" items-per-page="15" filter="false"></paged-list>
 </div>

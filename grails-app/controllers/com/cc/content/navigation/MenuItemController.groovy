@@ -73,7 +73,7 @@ class MenuItemController {
         log.info "Parameters recieved to reorder menu items: ${params}"
         if (!params.index) {
             log.warn "Unable to reorder menu items. Index Parameters not received."
-            respond ([status: HttpStatus.NOT_ACCEPTABLE])
+            respond ([message: message(code: 'menuItem.reorder.fail'), status: HttpStatus.NOT_ACCEPTABLE])
             return
         }
         menuItemInstance = menuItemService.reorder(menuItemInstance, params)
