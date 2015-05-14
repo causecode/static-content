@@ -6,7 +6,9 @@ controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel
         function($scope, PageModel, PageLayoutModel) {
 
     if (($scope.controllerName === 'page') && ($scope.actionName === 'show')) {
-        $scope.pageInstance = PageModel.get({id: $scope.id});
+        PageModel.get({id: $scope.id}, function(pageInstance) {
+            $scope.pageInstance = pageInstance;
+        });
         $scope.$watch('id', function(newId, oldId) {
             if (newId && oldId && newId !== oldId) {
                 $scope.pageInstance = PageModel.get({id: $scope.id});

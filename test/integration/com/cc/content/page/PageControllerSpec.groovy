@@ -28,12 +28,33 @@ class PageControllerSpec extends BaseIntegrationTestCase {
     def cleanup() {
     }
 
+    void "test before interceptor with page ID"() {
+        given: "Populating parameters"
+        controller.params.id = pageInstance.id
+
+        when: "Page id parameter passed"
+        controller.validate()
+
+        then: "Successfully bind page instance"
+        controller.pageInstance
+        controller.pageInstance.id == pageInstance.id
+    }
+
+    void "test before interceptor without page ID"() {
+        when: "Page id parameter passed"
+        controller.validate()
+
+        then: "Should not bind page instance"
+        controller.pageInstance == null
+    }
+
     void "test show action with default parameteres"() {
         given: "Populating parameters"
         controller.params.id = pageInstance.id
 
         when: "Page id parameter passed"
         controller.request.method = "GET"
+        controller.validate()
         controller.show()
 
         then: "Redirected to page show angular based URL."
@@ -47,6 +68,7 @@ class PageControllerSpec extends BaseIntegrationTestCase {
 
         when: "Page ID and _escaped_fragment_ parameter passed."
         controller.request.method = "GET"
+        controller.validate()
         controller.show()
 
         then: "Should render show GSP content in JSON format."
@@ -61,6 +83,7 @@ class PageControllerSpec extends BaseIntegrationTestCase {
         when: "Ajax request comes in for show action"
         controller.request.method = "GET"
         controller.request.makeAjaxRequest()
+        controller.validate()
         controller.show()
 
         then: "Should respond json data containing page instance"
