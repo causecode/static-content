@@ -8,7 +8,8 @@
 
 package com.cc.content.page
 
-import spock.lang.*
+import org.codehaus.groovy.grails.exceptions.RequiredPropertyMissingException
+import org.springframework.http.HttpStatus
 
 import com.cc.crm.BaseIntegrationTestCase
 
@@ -21,31 +22,21 @@ class PageControllerSpec extends BaseIntegrationTestCase {
         controller = new PageController()
 
         pageInstance = new Page(getContentParams(1))
-        assert pageInstance.save()
+        pageInstance.save()
         assert pageInstance.id
     }
 
     def cleanup() {
     }
 
-    void "test before interceptor with page ID"() {
-        given: "Populating parameters"
-        controller.params.id = pageInstance.id
+    void "test show action without ID parameter"() {
+        when: "Page id parameter not passed"
+        controller.request.method = "GET"
+        controller.show()
 
-        when: "Page id parameter passed"
-        controller.validate()
-
-        then: "Successfully bind page instance"
-        controller.pageInstance
-        controller.pageInstance.id == pageInstance.id
-    }
-
-    void "test before interceptor without page ID"() {
-        when: "Page id parameter passed"
-        controller.validate()
-
-        then: "Should not bind page instance"
-        controller.pageInstance == null
+        then: "Should throw equiredPropertyMissing Exception"
+        controller.response.status == HttpStatus.NOT_ACCEPTABLE.value()
+        controller.response.json.message == controller.message(code: 'page.not.found')
     }
 
     void "test show action with default parameteres"() {
@@ -54,7 +45,6 @@ class PageControllerSpec extends BaseIntegrationTestCase {
 
         when: "Page id parameter passed"
         controller.request.method = "GET"
-        controller.validate()
         controller.show()
 
         then: "Redirected to page show angular based URL."
@@ -68,7 +58,6 @@ class PageControllerSpec extends BaseIntegrationTestCase {
 
         when: "Page ID and _escaped_fragment_ parameter passed."
         controller.request.method = "GET"
-        controller.validate()
         controller.show()
 
         then: "Should render show GSP content in JSON format."
@@ -83,14 +72,13 @@ class PageControllerSpec extends BaseIntegrationTestCase {
         when: "Ajax request comes in for show action"
         controller.request.method = "GET"
         controller.request.makeAjaxRequest()
-        controller.validate()
         controller.show()
 
         then: "Should respond json data containing page instance"
-        controller.response.json["pageInstance"]
-        controller.response.json["pageInstance"].id
-        controller.response.json["pageInstance"].title == pageInstance.title
-        controller.response.json["pageInstance"].body == pageInstance.body
-        controller.response.json["pageInstance"].subTitle == pageInstance.subTitle
+        controller.response.json
+        controller.response.json["id"]
+        controller.response.json["title"] == pageInstance.title
+        controller.response.json["body"] == pageInstance.body
+        controller.response.json["subTitle"] == pageInstance.subTitle
     }
 }

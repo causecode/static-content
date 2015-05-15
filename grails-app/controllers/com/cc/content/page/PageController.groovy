@@ -10,6 +10,7 @@ package com.cc.content.page
 
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.annotation.Secured
+import grails.transaction.Transactional
 
 import org.codehaus.groovy.grails.exceptions.RequiredPropertyMissingException
 import org.springframework.dao.DataIntegrityViolationException
@@ -30,14 +31,14 @@ import com.cc.content.meta.Meta
 @ControllerShorthand(value = "c")
 class PageController {
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [show: "GET", save: "POST", update: "PUT", delete: "DELETE"]
     static responseFormats = ["json"]
 
     def contentService
 
     // Added common RequiredPropertyMissing Exception for ID parameter.
     def handleRequiredPropertyMissingException(RequiredPropertyMissingException exception) {
-        log.info "Throwing RequiredPropertyMissingException: ", exception
+        log.warn "Throwing RequiredPropertyMissing Exception: ", exception
         response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
         respond ([message: message(code: 'page.not.found')])
         return
@@ -82,9 +83,15 @@ class PageController {
         redirect uri: pageInstance.searchLink()
     }
 
+    /**
+     * Transactional annotation is required since we are using autowire feature of 
+     * Grails domain classes so anyone can pass the domain field data which will update
+     * the Page instance.
+     */
+    @Transactional(readOnly = true)
     @Secured(["permitAll"])
     def show(Page pageInstance) {
-        if (!pageInstance) {
+        if (!pageInstance || pageInstance.hasErrors()) {
             throw new RequiredPropertyMissingException()
         }
         /*
@@ -98,7 +105,7 @@ class PageController {
         }
 
         if (request.xhr) {
-            respond pageInstance
+            respond(pageInstance)
             return
         }
         String pageShowUrl = grailsApplication.config.app.defaultURL + "/page/show/${pageInstance.id}"
@@ -106,14 +113,14 @@ class PageController {
     }
 
     def edit(Page pageInstance) {
-        if (!pageInstance) {
+        if (!pageInstance || pageInstance.hasErrors()) {
             throw new RequiredPropertyMissingException()
         }
         [pageInstance: pageInstance, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)]
     }
 
     def update(Page pageInstance, Long version) {
-        if (!pageInstance) {
+        if (!pageInstance || pageInstance.hasErrors()) {
             throw new RequiredPropertyMissingException()
         }
         Map requestData = request.JSON
@@ -145,7 +152,7 @@ class PageController {
     }
 
     def delete(Page pageInstance) {
-        if (!pageInstance) {
+        if (!pageInstance || pageInstance.hasErrors()) {
             throw new RequiredPropertyMissingException()
         }
         try {
