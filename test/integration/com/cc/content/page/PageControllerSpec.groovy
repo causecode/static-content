@@ -30,51 +30,51 @@ class PageControllerSpec extends BaseIntegrationTestCase {
     }
 
     void "test show action without ID parameter"() {
-        when: "Page id parameter not passed"
+        when: "page id parameter not passed"
         controller.request.method = "GET"
         controller.show()
 
-        then: "Should throw equiredPropertyMissing Exception"
+        then: "should throw equiredPropertyMissing Exception"
         controller.response.status == HttpStatus.NOT_ACCEPTABLE.value()
         controller.response.json.message == controller.message(code: 'page.not.found')
     }
 
     void "test show action with default parameteres"() {
-        given: "Populating parameters"
+        given: "populating parameters"
         controller.params.id = pageInstance.id
 
-        when: "Page id parameter passed"
+        when: "page id parameter passed"
         controller.request.method = "GET"
         controller.show()
 
-        then: "Redirected to page show angular based URL."
+        then: "redirected to page show angular based URL."
         controller.response.redirectedUrl.contains('/page/show/' + pageInstance.id)
     }
 
     void "test show action for Google crawler request"() {
-        given: "Populating parameters"
+        given: "populating parameters"
         controller.params.id = pageInstance.id
         controller.params._escaped_fragment_ = true
 
-        when: "Page ID and _escaped_fragment_ parameter passed."
+        when: "page ID and _escaped_fragment_ parameter passed."
         controller.request.method = "GET"
         controller.show()
 
-        then: "Should render show GSP content in JSON format."
+        then: "should render show GSP content in JSON format."
         controller.modelAndView.model.pageInstance == pageInstance
         controller.modelAndView.viewName == "/page/show"
     }
 
     void "test show action for ajax request"() {
-        given: "Populating parameters"
+        given: "populating parameters"
         controller.params.id = pageInstance.id
 
-        when: "Ajax request comes in for show action"
+        when: "ajax request comes in for show action"
         controller.request.method = "GET"
         controller.request.makeAjaxRequest()
         controller.show()
 
-        then: "Should respond json data containing page instance"
+        then: "should respond json data containing page instance"
         controller.response.json
         controller.response.json["id"]
         controller.response.json["title"] == pageInstance.title

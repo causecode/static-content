@@ -27,7 +27,7 @@ class BaseIntegrationTestCase extends IntegrationSpec {
     private static Log log = LogFactory.getLog(this)
 
     def cleanup() {
-        log.debug "cleanup called."
+        log.debug "Cleanup called."
     }
 
     def setup() {
