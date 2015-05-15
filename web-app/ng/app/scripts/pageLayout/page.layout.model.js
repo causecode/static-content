@@ -13,7 +13,7 @@ models.factory('PageLayoutModel', ['BaseModel', function(BaseModel) {
             this.postConstruct();
             return clazz;
         };
-        
+
         this.customActions = {
             getPageLayoutList: {
                 method: 'GET',

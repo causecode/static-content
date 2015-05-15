@@ -1,9 +1,11 @@
-<div class="row main-content" ng-controller="PageController">
-    <div class="col-md-2"></div>
-    <div class="col-md-8">
-        <div class="page-header custom">
-            <h1>Page List</h1>
-        </div>
-        <paged-list model-name="'Page'" items-per-page="15"></paged-list>
+<div class="container" ng-controller="PageController">
+    <div class="page-header custom">
+        <h1>
+            Page List 
+            <small>
+                <a ui-sref="urlMap({action: 'create'})" > <i class="fa fa-plus"> </i></a>
+            </small>
+        </h1>
     </div>
+    <paged-list model-name="'Page'" items-per-page="15"></paged-list>
 </div>

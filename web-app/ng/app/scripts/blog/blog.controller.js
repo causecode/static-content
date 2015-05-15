@@ -2,8 +2,8 @@
 
 'use strict';
 
-controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal',
-    function($scope, $state, BlogModel, appService, $modal) {
+controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal', 'PageModel',
+    function($scope, $state, BlogModel, appService, $modal, PageModel) {
     console.info('BlogController executing.', $scope);
 
     $scope.commentData = {};
@@ -15,7 +15,14 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
         BlogModel.get({id: blogId}, function(blogData) {
             if (blogData.blogInstance) {
-                $scope.blogInstance = blogData.blogInstance;
+                $scope.blogInstance = new BlogModel(blogData.blogInstance);
+                /*
+                 * TODO: Remove this duplicate scope variable dependency.
+                 * Copying same blogInstance into another scope variable to reuse
+                 * existing partials added for creating contentInstnace.
+                 */
+                $scope.contentInstance = $scope.blogInstance;
+                $scope.contentInstance.metaList = [];
                 $scope.commentData.id = blogData.blogInstance.id;
             }
             $scope.comments = blogData.comments;
@@ -24,6 +31,14 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             appService.blockPage(false);
         });
     };
+
+    $scope.addForm = function() {
+        $scope.contentInstance.metaList.push({});
+    };
+
+    PageModel.getMetaList(null, function(data){
+        $scope.metaList = data.metaTypeList;
+    }, function() {});
 
     $scope.changePage = function(toPage) {
         $scope.offset = $scope.itemsPerPage * toPage;
@@ -82,7 +97,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         $scope.commentData.id = blogId;
         var commentModalInstance = $modal.open({
             scope: $scope,
-            templateUrl: 'views/modals/add-comment.html',
+            templateUrl: 'views/blog/add-comment.html',
             size: 'sm',
             keyboard: false,
             backdrop: 'static'
@@ -98,7 +113,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     function addComment(comments) {
         if ($scope.commentData.commentId) {
             if (comments && comments.length === 0) { return []; }
-            angular.forEach(comments, function(comment, index) {  //jshint ignore:line
+            angular.forEach(comments, function(comment, index) {  // jshint ignore:line
                 if (comment.id.toString() === $scope.commentData.commentId) {
                     comment.comments.push($scope.commentData);
                     return;
@@ -121,7 +136,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         });
     };
 
-    if (($scope.controllerName === 'blog') && ($scope.actionName === 'show')) {
+    if (($scope.controllerName === 'blog') && (['edit', 'show'].indexOf($scope.actionName) > -1)) {
         $scope.fetchBlog($scope.id);
         $scope.$watch('id', function(newId, oldId) {
             if (newId && oldId && newId !== oldId) {
@@ -130,5 +145,8 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         });
     } else if ($scope.actionName === 'list') {
         $scope.list();
+    } else if ($scope.actionName === 'create') {
+        $scope.contentInstance = new BlogModel();
+        $scope.contentInstance.metaList = [];
     }
 }]);

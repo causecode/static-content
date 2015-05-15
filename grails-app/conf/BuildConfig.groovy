@@ -1,3 +1,5 @@
+import grails.util.Environment
+
 /*
  * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
  * All rights reserved.
@@ -42,6 +44,8 @@ grails.project.dependency.resolution = {
         build (":tomcat:7.0.50", ":release:3.0.1", ":rest-client-builder:2.0.1") {
             export = false
         }
-
+        if (Environment.isDevelopmentMode()) {
+            compile ":codenarc:0.22"
+        }
     }
 }

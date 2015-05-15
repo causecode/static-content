@@ -379,35 +379,49 @@ module.exports = function (grunt) {
                 configFile: 'test/karma.conf.js',
                 singleRun: true
             }
+        },
+
+        symlinks: {
+            options: {
+                overwrite: true
+            },
+            createLinks: {
+                files: [{
+                    expand : true,
+                    flatten : true,
+                    src : ['<%= grunt.option.contentBasePath %>/web-app/ng/app/scripts/*'],
+                    dest : 'app/scripts'
+                }, {
+                    expand : true,
+                    flatten : true,
+                    src : ['<%= grunt.option.contentBasePath %>/web-app/ng/app/views/*'],
+                    dest : 'app/views'
+                }],
+                options: {
+                    type: 'dir'
+                }
+            }
         }
     });
 
-    // Custom code
-    grunt.registerTask('contentInstall', 'Used to create symlinks for content plugin screens.', function() {
+    grunt.registerTask('contentInstall', 'Used to create symlinks for content plugin screens.', function(forDevelopment) {
         var options = {force: true};
-        var basePath = './app/scripts';
+        var scriptPathList = ['/blog', '/faq', '/menu', '/menuItem', '/news', '/page', '/pageLayout'];
+        var viewsPathList = scriptPathList.concat(['/content', '/meta']);
 
         grunt.log.writeln('Deleting existing symlinks of Content plugin scripts.');
-        grunt.file.delete(basePath + '/blog', options);
-        grunt.file.delete(basePath + '/faq', options);
-        grunt.file.delete(basePath + '/menu', options);
-        grunt.file.delete(basePath + '/menuItem', options);
-        grunt.file.delete(basePath + '/news', options);
-        grunt.file.delete(basePath + '/page', options);
-        grunt.file.delete(basePath + '/pageLayout', options);
+        var basePath = './app/scripts';
+        scriptPathList.forEach(function(relativePath) {
+            grunt.file.delete(basePath + relativePath, options);
+        });
 
-        basePath = './app/views';
         grunt.log.writeln('Deleting existing symlinks of Content plugin views.');
-        grunt.file.delete(basePath + '/blog', options);
-        grunt.file.delete(basePath + '/content', options);
-        grunt.file.delete(basePath + '/faq', options);
-        grunt.file.delete(basePath + '/menu', options);
-        grunt.file.delete(basePath + '/menuItem', options);
-        grunt.file.delete(basePath + '/meta', options);
-        grunt.file.delete(basePath + '/news', options);
-        grunt.file.delete(basePath + '/page', options);
-        grunt.file.delete(basePath + '/pageLayout', options);
+        basePath = './app/views';
+        viewsPathList.forEach(function(relativePath) {
+            grunt.file.delete(basePath + relativePath, options);
+        });
 
+        grunt.option.contentBasePath = forDevelopment ? '../../../content' : '../../plugins/content-*';
         grunt.task.run(['symlinks']);
     });
 

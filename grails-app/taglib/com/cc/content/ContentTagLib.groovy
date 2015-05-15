@@ -8,8 +8,6 @@
 
 package com.cc.content
 
-import java.util.Map;
-
 /**
  * This taglib provides generic tags for rendering different types of content.
  * @author Shashank Agrawal

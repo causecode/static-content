@@ -8,15 +8,18 @@
 
 package com.cc.content.blog
 
-import grails.plugin.springsecurity.annotation.Secured
-import org.grails.databinding.SimpleMapDataBindingSource
 import grails.converters.JSON
+import grails.plugin.springsecurity.annotation.Secured
+import grails.transaction.Transactional
+
 import java.text.DateFormatSymbols
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import grails.transaction.Transactional
+
+import org.grails.databinding.SimpleMapDataBindingSource
 import org.grails.taggable.TagLink
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.blog.comment.BlogComment
@@ -34,8 +37,8 @@ import com.cc.content.blog.comment.Comment
 @ControllerShorthand(value = "blog")
 class BlogController {
 
-    static allowedMethods = [save: "POST", update: "POST"]
-    
+    static allowedMethods = [save: "POST", update: "PUT"]
+
     static responseFormats = ["json"]
 
     def contentService
@@ -69,7 +72,6 @@ class BlogController {
 
         log.info "Parameters received to filter blogs : $params"
         long blogInstanceTotal
-        boolean publish = false
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
         List<String> monthFilterList = []
         String month, year
@@ -139,8 +141,17 @@ class BlogController {
             it.numberOfComments = BlogComment.countByBlog(blogInstance)
             blogInstanceList.add(it)
         }
-        Blog.list().each {
-            monthFilterList.add( new DateFormatSymbols().months[it.publishedDate[Calendar.MONTH]] + "-" + it.publishedDate[Calendar.YEAR] )
+
+        List<Blog> publishDateList = Blog.createCriteria().list {
+            projections {
+                property("publishedDate")
+            }
+            eq("publish", true)
+            isNotNull("publishedDate")
+        }
+        publishDateList.each { publishedDate ->
+            monthFilterList.add(new DateFormatSymbols().months[publishedDate[Calendar.MONTH]] + "-" + 
+                publishedDate[Calendar.YEAR])
         }
 
         Map result = [blogInstanceList: blogInstanceList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
@@ -161,18 +172,21 @@ class BlogController {
      */
     @Transactional
     def save() {
-        params.putAll(request.JSON)
+        Map requestData = request.JSON
+        log.info "Parameters received to save blog: ${requestData}"
+        List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
+        List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
+        
         Blog.withTransaction { status ->
-            blogInstance = contentService.create(params, params.metaList.type, params.metaList.value, Blog.class)
+            Blog blogInstance = contentService.create(requestData, metaTypeList, metaValueList, Blog.class)
             if (blogInstance.hasErrors()) {
                 status.setRollbackOnly()
                 respond(blogInstance.errors)
-                return
+                return false
             }
-            blogInstance.setTags(params.tags.tokenize(",")*.trim())
+            blogInstance.setTags(requestData.tags?.tokenize(",")*.trim())
             blogInstance.save(flush: true)
-            //flash.message = message(code: 'default.created.message', args: [message(code: 'blog.label'), blogInstance.title])
-            redirect uri: blogInstance.searchLink()
+            respond([success: true])
         }
     }
 
@@ -209,43 +223,42 @@ class BlogController {
      */
     @Transactional
     def update(Blog blogInstance, Long version) {
+        Map requestData = request.JSON
         if (version != null) {
             if (blogInstance.version > version) {
                 blogInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
                         [message(code: 'blog.label')] as Object[],
                         "Another user has updated this Blog while you were editing")
-                render(view: "edit", model: [blogInstance: blogInstance])
-                return
+                respond(blogInstance.errors)
+                return false
             }
         }
 
         Blog.withTransaction { status ->
-            String tags = params.remove("tags")
-            contentService.update(params, blogInstance, params.meta.list("type"), params.meta.list("value"))
+            String tags = requestData.remove("tags")
+            List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
+            List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
+            contentService.update(requestData, blogInstance, metaTypeList, metaValueList)
 
             if (blogInstance.hasErrors()) {
                 status.setRollbackOnly()
-                render(view: "edit", model: [blogInstance: blogInstance])
-                return
+                respond(blogInstance.errors)
+                return false
             }
-
-            blogInstance.setTags(tags.tokenize(",")*.trim())
+            blogInstance.setTags(tags?.tokenize(",")*.trim())
             blogInstance.save(flush: true)
 
-            flash.message = message(code: 'default.updated.message', args: [message(code: 'blog.label'), blogInstance.id])
-            redirect uri: blogInstance.searchLink()
+            respond([success: true])
         }
     }
 
     def delete(Blog blogInstance) {
         try {
             contentService.delete(blogInstance)
-            flash.message = message(code: 'default.deleted.message', args: [message(code: 'blog.label'), id])
-            redirect(uri: "/blog")
+            render status: HttpStatus.OK
         } catch (DataIntegrityViolationException e) {
             log.warn "Error deleting blog.", e
-            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'blog.label'), id])
-            redirect uri: blogInstance.searchLink()
+            render status: HttpStatus.NOT_MODIFIED
         }
     }
 
