@@ -2,16 +2,24 @@
 
 'use strict';
 
-controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel', 
-        function($scope, PageModel, PageLayoutModel) {
+controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel', '$state', 'appService',
+        function($scope, PageModel, PageLayoutModel, $state, appService) {
 
-    if (($scope.controllerName === 'page') && ($scope.actionName === 'show')) {
+    function getPageModelInstance() {
         PageModel.get({id: $scope.id}, function(pageInstance) {
             $scope.pageInstance = pageInstance;
+        }, function(resp) {
+            // Redirecting to Home state with alert on Error.
+            $state.go('home');
+            appService.showAlertMessage(resp.data.message, 'danger');
         });
+    }
+
+    if (($scope.controllerName === 'page') && ($scope.actionName === 'show')) {
+        getPageModelInstance();
         $scope.$watch('id', function(newId, oldId) {
             if (newId && oldId && newId !== oldId) {
-                $scope.pageInstance = PageModel.get({id: $scope.id});
+                getPageModelInstance();
             }
         });
     }

@@ -8,10 +8,10 @@
 
 package com.cc.content.page
 
-import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.annotation.Secured
 
+import org.codehaus.groovy.grails.exceptions.RequiredPropertyMissingException
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 
@@ -33,21 +33,16 @@ class PageController {
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
     static responseFormats = ["json"]
 
-    def beforeInterceptor = [action: this.&validate, only: ["show", "update", "delete"]]
+    def contentService
 
-    private Page pageInstance
-
-    private validate() {
-        pageInstance = Page.get(params.id)
-        if (!pageInstance) {
-            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
-            respond ([message: message(code: 'default.not.found.message', args: [message(code: 'page.label'), params.id])])
-            return
-        }
-        return true
+    // Added common RequiredPropertyMissing Exception for ID parameter.
+    def handleRequiredPropertyMissingException(RequiredPropertyMissingException exception) {
+        log.info "Throwing RequiredPropertyMissingException: ", exception
+        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
+        respond ([message: message(code: 'page.not.found')])
+        return
     }
 
-    def contentService
 
     def index() {
         redirect(action: "list", params: params)
@@ -88,7 +83,10 @@ class PageController {
     }
 
     @Secured(["permitAll"])
-    def show() {
+    def show(Page pageInstance) {
+        if (!pageInstance) {
+            throw new RequiredPropertyMissingException()
+        }
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
          * any change in data model must be updated in the GSP.
@@ -107,11 +105,17 @@ class PageController {
         redirect(url: pageShowUrl, permanent: true)
     }
 
-    def edit() {
+    def edit(Page pageInstance) {
+        if (!pageInstance) {
+            throw new RequiredPropertyMissingException()
+        }
         [pageInstance: pageInstance, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)]
     }
 
-    def update(Long version) {
+    def update(Page pageInstance, Long version) {
+        if (!pageInstance) {
+            throw new RequiredPropertyMissingException()
+        }
         Map requestData = request.JSON
 
         if(version != null) {
@@ -140,7 +144,10 @@ class PageController {
         redirect uri: pageInstance.searchLink()
     }
 
-    def delete() {
+    def delete(Page pageInstance) {
+        if (!pageInstance) {
+            throw new RequiredPropertyMissingException()
+        }
         try {
             contentService.delete(pageInstance)
             respond ([success: true])
