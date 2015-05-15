@@ -8,13 +8,17 @@
 
 package com.cc.content.page
 
-import grails.converters.JSON
-import grails.plugin.springsecurity.annotation.Secured
-import com.cc.content.meta.Meta
 import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.annotation.Secured
+import grails.transaction.Transactional
+
+import org.codehaus.groovy.grails.exceptions.RequiredPropertyMissingException
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
+
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.ContentRevision
+import com.cc.content.meta.Meta
 
 /**
  * Provides default CRUD end point for Content Manager.
@@ -27,25 +31,16 @@ import com.cc.content.ContentRevision
 @ControllerShorthand(value = "c")
 class PageController {
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
-
+    static allowedMethods = [show: "GET", save: "POST", update: "PUT", delete: "DELETE"]
     static responseFormats = ["json"]
 
-    def beforeInterceptor = [action: this.&validate]
     def contentService
 
-    private Page pageInstance
-
-    private validate() {
-        if(!params.id) return true;
-
-        pageInstance = Page.get(params.id)
-        if(!pageInstance) {
-            flash.message = g.message(code: 'default.not.found.message', args: [message(code: 'page.label'), params.id])
-            redirect(action: "list")
-            return false
-        }
-        return true
+    def handleRequiredPropertyMissingException(RequiredPropertyMissingException exception) {
+        log.debug "Page instance not found"
+        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
+        respond ([message: message(code: "page.not.found")])
+        return
     }
 
     def index() {
@@ -76,7 +71,7 @@ class PageController {
 
     def save() {
         Map requestData = request.JSON
-        pageInstance = contentService.create(requestData, requestData.metaList.type, requestData.metaList.value, Page.class)
+        Page pageInstance = contentService.create(requestData, requestData.metaList.type, requestData.metaList.value, Page.class)
         if(!pageInstance.save(flush: true)) {
             render(view: "create", model: [pageInstance: pageInstance])
             return
@@ -86,30 +81,62 @@ class PageController {
         redirect uri: pageInstance.searchLink()
     }
 
+    /**
+     * Transactional annotation is required since we are using autowire feature of 
+     * Grails domain classes so anyone can pass the domain field data which will update
+     * the Page instance.
+     */
+    @Transactional(readOnly = true)
     @Secured(["permitAll"])
     def show(Page pageInstance) {
-        respond(pageInstance)
+        if (!pageInstance || pageInstance.hasErrors()) {
+            throw new RequiredPropertyMissingException()
+        }
+        /*
+         * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
+         * any change in data model must be updated in the GSP.
+         * Render GSP content in JSON format.
+         */
+        if (params._escaped_fragment_) {
+            render (view: "show", model: [pageInstance: pageInstance], contentType: "application/json")
+            return
+        }
+
+        if (request.xhr) {
+            respond(pageInstance)
+            return
+        }
+
+        String pageShowUrl = grailsApplication.config.app.defaultURL + "/page/show/${pageInstance.id}"
+        redirect(url: pageShowUrl, permanent: true)
     }
 
     def edit(Page pageInstance) {
+        if (!pageInstance || pageInstance.hasErrors()) {
+            throw new RequiredPropertyMissingException()
+        }
+
         [pageInstance: pageInstance, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)]
     }
 
     def update(Page pageInstance, Long version) {
+        if (!pageInstance || pageInstance.hasErrors()) {
+            throw new RequiredPropertyMissingException()
+        }
         Map requestData = request.JSON
 
         if(version != null) {
             if (pageInstance.version > version) {
                 pageInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                                [message(code: 'page.label')] as Object[],
-                                "Another user has updated this Page while you were editing")
+                        [message(code: 'page.label')] as Object[],
+                        "Another user has updated this Page while you were editing")
                 respond(pageInstance.errors)
                 return
             }
         }
         log.info "Parameters received to update page instance: $params, $requestData"
-        pageInstance = contentService.update(requestData, pageInstance, requestData.metaList?.type, 
-            requestData.metaList?.value)
+        pageInstance = contentService.update(requestData, pageInstance, requestData.metaList?.type,
+                requestData.metaList?.value)
 
         if(pageInstance.hasErrors()) {
             respond(pageInstance.errors)
@@ -125,6 +152,9 @@ class PageController {
     }
 
     def delete(Page pageInstance) {
+        if (!pageInstance || pageInstance.hasErrors()) {
+            throw new RequiredPropertyMissingException()
+        }
         try {
             contentService.delete(pageInstance)
             respond ([success: true])

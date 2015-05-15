@@ -11,11 +11,15 @@ package com.cc.content.blog
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
+import grails.converters.JSON
+import grails.plugin.springsecurity.annotation.Secured
+import grails.transaction.Transactional
 
 import java.text.DateFormatSymbols
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.grails.databinding.SimpleMapDataBindingSource
 import org.grails.taggable.TagLink
 import org.springframework.dao.DataIntegrityViolationException
@@ -27,10 +31,10 @@ import com.cc.content.blog.comment.Comment
 
 /**
  * Provides default CRUD end point for Content Manager.
+ * 
  * @author Vishesh Duggar
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
- *
  */
 @Secured(["ROLE_CONTENT_MANAGER"])
 @Transactional(readOnly = true)
@@ -47,6 +51,7 @@ class BlogController {
     def commentService
     def blogService
     def grailsWebDataBinder
+    GrailsApplication grailsApplication
 
     private static String HTML_P_TAG_PATTERN = "(?s)<p(.*?)>(.*?)<\\/p>"
 
@@ -76,7 +81,7 @@ class BlogController {
         List<String> monthFilterList = []
         String month, year
 
-        if(monthFilter) {
+        if (monthFilter) {
             List blogFilter =  monthFilter.split("-")
             month = blogFilter[0]
             year = blogFilter[1]
@@ -88,28 +93,28 @@ class BlogController {
         StringBuilder query = new StringBuilder("""SELECT new Map(b.id as id, b.body as body, b.title as title,
                             b.subTitle as subTitle, b.author as author, b.publishedDate as publishedDate) FROM Blog b """)
 
-        if(tag) {
+        if (tag) {
             query.append(", ${TagLink.class.name} tagLink WHERE b.id = tagLink.tagRef ")
             query.append("AND tagLink.type = 'blog' AND tagLink.tag.name = '$tag' ")
         }
-        if(monthFilter) {
+        if (monthFilter) {
             tag ? query.append(" AND ") : query.append(" WHERE ")
             query.append(" monthname(b.publishedDate) = '$month' AND year(b.publishedDate) = '$year'")
         }
-        if(queryFilter) {
+        if (queryFilter) {
             tag ? query.append(" AND ") : ( monthFilter ? query.append(" AND ") : query.append(" WHERE "))
             query.append(" b.title LIKE '%$queryFilter%' OR b.subTitle LIKE '%$queryFilter%' ")
             query.append(" OR b.body LIKE '%$queryFilter%' OR b.author LIKE '%$queryFilter%'")
         }
 
-        if(contentService.contentManager) {
+        if (contentService.contentManager) {
             blogInstanceTotal = tag ? Blog.countByTag(tag) : Blog.count()
-        } else if(tag) {
+        } else if (tag) {
             query.append("AND b.publish = true")
             blogInstanceTotal = Blog.findAllByTagWithCriteria(tag) {
                 eq("publish", true)
             }.size()
-        } else if(monthFilter) {
+        } else if (monthFilter) {
             query.append("AND b.publish = true")
             blogInstanceTotal = Blog.countByPublish(true)
         } else {
@@ -130,7 +135,7 @@ class BlogController {
             it.body = matcherTag.find() ? matcherTag.group(2) : ""
         }
 
-        if(monthFilter) {
+        if (monthFilter) {
             blogInstanceTotal = Blog.executeQuery(query.toString()).size()
         }
 
@@ -150,17 +155,28 @@ class BlogController {
             isNotNull("publishedDate")
         }
         publishDateList.each { publishedDate ->
-            monthFilterList.add(new DateFormatSymbols().months[publishedDate[Calendar.MONTH]] + "-" + 
-                publishedDate[Calendar.YEAR])
+            monthFilterList.add(new DateFormatSymbols().months[publishedDate[Calendar.MONTH]] + "-" +
+                    publishedDate[Calendar.YEAR])
         }
 
         Map result = [blogInstanceList: blogInstanceList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
             tagList: blogService.getAllTags()]
-        if(request.xhr) {
+
+        /*
+         * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
+         * any change in data model must be updated in the GSP.
+         * Render GSP content in JSON format.
+         */
+        if (params._escaped_fragment_) {
+            render (view: "list", model: result, contentType: "application/json")
+            return
+        }
+        if (request.xhr) {
             render text:(result as JSON)
             return
         }
-        result
+        String blogListUrl = grailsApplication.config.app.defaultURL + "/blog/list"
+        redirect(url: blogListUrl, permanent: true)
     }
 
     def create() {
@@ -176,7 +192,7 @@ class BlogController {
         log.info "Parameters received to save blog: ${requestData}"
         List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
         List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
-        
+
         Blog.withTransaction { status ->
             Blog blogInstance = contentService.create(requestData, metaTypeList, metaValueList, Blog.class)
             if (blogInstance.hasErrors()) {
@@ -203,14 +219,24 @@ class BlogController {
         blogInstance.body = blogInstance.body?.markdownToHtml()
 
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
-        Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList, 
+        Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
             blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags]
 
-        if(request.xhr) {
+        /*
+         * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
+         * any change in data model must be updated in the GSP.
+         * Render GSP content in JSON format.
+         */
+        if (params._escaped_fragment_) {
+            render (view: "show", model: result, contentType: "application/json")
+            return
+        }
+        if (request.xhr) {
             render text:(result as JSON)
             return
         }
-        result
+        String blogShowUrl = grailsApplication.config.app.defaultURL + "/blog/show/${blogInstance.id}"
+        redirect(url: blogShowUrl, permanent: true)
     }
 
     @Transactional
@@ -324,5 +350,4 @@ class BlogController {
             redirect uri: blogInstance.searchLink()
         }
     }
-
 }
