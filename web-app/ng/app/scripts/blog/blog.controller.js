@@ -2,8 +2,8 @@
 
 'use strict';
 
-controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal', 'PageModel',
-    function($scope, $state, BlogModel, appService, $modal, PageModel) {
+controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal', 'PageModel', '$timeout',
+    function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout) {
     console.info('BlogController executing.', $scope);
 
     $scope.commentData = {};
@@ -95,7 +95,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     $scope.showCommentOverlay = function(blogId, commentId) {
         $scope.commentData.commentId = commentId;
         $scope.commentData.id = blogId;
-        var commentModalInstance = $modal.open({
+        $scope.commentModalInstance = $modal.open({
             scope: $scope,
             templateUrl: 'views/blog/add-comment.html',
             size: 'sm',
@@ -103,9 +103,10 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             backdrop: 'static'
         });
 
-        commentModalInstance.result.then(function () {
+        $scope.commentModalInstance.result.then(function () {
             $scope.commentData = {};
         }, function () {
+            $scope.commentData = {};
             console.log('Modal dismissed at: ' + new Date());
         });
     };
@@ -115,8 +116,11 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             if (comments && comments.length === 0) { return []; }
             angular.forEach(comments, function(comment, index) {  // jshint ignore:line
                 if (comment.id.toString() === $scope.commentData.commentId) {
-                    comment.comments.push($scope.commentData);
-                    return;
+                    if (comment.comments) {
+                        comment.comments.push($scope.commentData);
+                    } else {
+                        comment.comments = [$scope.commentData];
+                    }
                 }
                 comment.comments = addComment(comment.comments);
             });
@@ -128,9 +132,12 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     $scope.comment = function() {
         $scope.commentData.id = $scope.blogInstance.id;
-        BlogModel.comment($scope.commentData, function() {
+        BlogModel.comment($scope.commentData, null, function() {
             $scope.comments = addComment($scope.comments);
             appService.showAlertMessage('Comment added successfully.', 'info', {element: '.modal .alert', makeStrong: false});
+            $timeout(function() {
+                $scope.commentModalInstance.dismiss();
+            }, 5100);
         }, function(resp) {
             appService.showAlertMessage(resp.data.message, 'danger', {element: '.modal .alert', makeStrong: false});
         });
