@@ -1,8 +1,9 @@
-<div class="container" ng-controller="MenuController">
-    <div class="page-header">
-        <h1>Create Menu</h1>
-    </div>
-    <div>
+<section ng-controller="MenuController">
+    <df-header page-header="true">
+        Create Menu
+    </df-header>
+
+    <df-content>
         <form class="form-horizontal" on-submit="menuInstance.$save()">
             <fieldset>
                 <div ng-include="'views/menu/_form.html'"></div>
@@ -14,5 +15,5 @@
                 </div>
             </fieldset>
         </form>
-    </div>
-</div>
+    </df-content>
+</section>

@@ -1,17 +1,15 @@
 <section ng-controller="MenuItemController">
-    <div class="container">
-        <div class="page-header">
-            <h1>
-                Menu Items
-                <small>
-                    {{menuInstance.name}}
-                    <a ng-click="open()" ng-hide="buttonDisabled" title="Create New Menu Item">
-                        <i class="fa fa-plus"></i>
-                    </a>
-                </small>
-            </h1>
-        </div>
+    <df-header page-header="true">
+        Menu Items
+        <small>
+            {{menuInstance.name}}
+            <a ng-click="open()" ng-hide="buttonDisabled" title="Create New Menu Item">
+                <i class="fa fa-plus"></i>
+            </a>
+        </small>
+    </df-header>
 
+    <df-content>
         <ul as-sortable="sortableOptions" ng-model="menuItemInstanceList" class="list-unstyled">
             <li ng-repeat="menuItemInstance in menuItemInstanceList" as-sortable-item class="thumbnail"
                 ng-model="menuItemInstance">
@@ -51,6 +49,5 @@
                 </ul>
             </li>
         </ul>
-    </div>
+    </df-content>
 </section>
-
