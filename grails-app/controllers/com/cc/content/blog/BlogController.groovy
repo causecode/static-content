@@ -90,7 +90,7 @@ class BlogController {
         params.offset = offset ? offset: 0
         params.max = Math.min(max ?: defaultMax, 100)
 
-        StringBuilder query = new StringBuilder("""SELECT new Map(b.id as id, b.body as body, b.title as title,
+        StringBuilder query = new StringBuilder("""SELECT distinct new Map(b.id as id, b.body as body, b.title as title,
                             b.subTitle as subTitle, b.author as author, b.publishedDate as publishedDate) FROM Blog b """)
 
         if (tag) {
@@ -159,7 +159,7 @@ class BlogController {
                     publishedDate[Calendar.YEAR])
         }
 
-        Map result = [blogInstanceList: blogInstanceList, blogInstanceTotal: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
+        Map result = [instanceList: blogInstanceList, totalCount: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
             tagList: blogService.getAllTags()]
 
         /*

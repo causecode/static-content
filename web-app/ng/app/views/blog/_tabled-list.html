@@ -1,5 +1,5 @@
 <div show-on-promise="blogListPromise">
-    <article class="post" ng-repeat="blog in blogInstanceList | filter: queryText">
+    <article class="post" ng-repeat="blog in instanceList | filter: queryText">
         <div class="content">
             <h3 class="post-title">
                 <a ui-sref="urlMap.resource({ctrl: 'blog', action: 'show', resource: blog.id})">
@@ -25,9 +25,10 @@
             </div>
         </div>
     </article>
-    <div ng-if="!blogInstanceList">
+    <div ng-if="!instanceList">
         <span>Blogs not found.</span>
     </div>
-    <pagination total-items="blogInstanceTotal" ng-model="currentPage" ng-change="changePage(currentPage)" 
-        items-per-page="itemsPerPage" ></pagination>
+    <pagination total-items="totalCount" ng-model="elementModels.currentPage" max-size="paginationSize"
+        ng-change="changePage()" items-per-page="itemsPerPage" ng-show="totalCount && totalCount > itemsPerPage">
+    </pagination>
 </div>
