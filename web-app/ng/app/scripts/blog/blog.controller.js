@@ -127,9 +127,10 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         BlogModel.comment($scope.commentData, null, function() {
             $scope.comments = addComment($scope.comments);
             appService.showAlertMessage('Comment added successfully.', 'info', {element: '.modal .alert', makeStrong: false});
+            // Auto hide the modal after 5 seconds
             $timeout(function() {
                 $scope.commentModalInstance.dismiss();
-            }, 5100);
+            }, 5000);
         }, function(resp) {
             appService.showAlertMessage(resp.data.message, 'danger', {element: '.modal .alert', makeStrong: false});
         });
