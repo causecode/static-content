@@ -44,7 +44,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
      * Initializing response returned by query ajax call from paged list directive in 
      * current controllers scope.
      */
-    $scope.initialiseGetListResponse = function(data) {
+    $scope.initializeGetListResponse = function(data) {
         if (data) {
             $scope.instanceList = data.instanceList;
             $scope.monthFilterList = data.monthFilterList;
@@ -130,7 +130,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             // Auto hide the modal after 5 seconds
             $timeout(function() {
                 $scope.commentModalInstance.dismiss();
-            }, 5000);
+            }, 2000);
         }, function(resp) {
             appService.showAlertMessage(resp.data.message, 'danger', {element: '.modal .alert', makeStrong: false});
         });
