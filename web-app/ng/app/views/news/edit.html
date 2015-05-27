@@ -1,8 +1,9 @@
-<div class="container" ng-controller="NewsController">
-    <div class="page-header">
-        <h2>Edit News</h2>
-    </div>
-    <div class="row text-left">
+<section ng-controller="NewsController">
+    <df-header page-header="true">
+        Edit News
+    </df-header>
+
+    <df-content>
         <form class="form-horizontal" on-submit="contentInstance.$update()" name="listForm">
             <fieldset>
                 <div ng-include="'views/content/_form.html'"></div>
@@ -16,7 +17,7 @@
                 </div>
             </fieldset>
         </form>
-    </div>
-</div>
+    </df-content>
+</section>
 
 

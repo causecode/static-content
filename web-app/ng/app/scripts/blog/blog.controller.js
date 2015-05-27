@@ -2,8 +2,8 @@
 
 'use strict';
 
-controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal', 'PageModel',
-    function($scope, $state, BlogModel, appService, $modal, PageModel) {
+controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal', 'PageModel', '$timeout',
+        '$location', function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location) {
     console.info('BlogController executing.', $scope);
 
     $scope.commentData = {};
@@ -26,7 +26,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
                 $scope.commentData.id = blogData.blogInstance.id;
             }
             $scope.comments = blogData.comments;
-            $scope.blogInstanceList = blogData.blogInstanceList;
+            $scope.instanceList = blogData.blogInstanceList;
             $scope.tagList = blogData.tagList;
             appService.blockPage(false);
         });
@@ -40,35 +40,27 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         $scope.metaList = data.metaTypeList;
     }, function() {});
 
-    $scope.changePage = function(toPage) {
-        $scope.offset = $scope.itemsPerPage * toPage;
-        $scope.list(toPage);
-    };
-
-    $scope.list = function(toPage) {
-        toPage = toPage ? toPage : 1;
-        var params = {
-            max: $scope.itemsPerPage,
-            offset: $scope.offset,
-            monthFilter: encodeURIComponent($scope.monthFilter),
-            tag: encodeURIComponent($scope.tag),
-            queryFilter: encodeURIComponent($scope.queryFilter)
-        };
-        $scope.blogListPromise = BlogModel.query(params, function(data) {
-            $scope.currentPage = toPage;
-            $scope.blogInstanceList = data.blogInstanceList;
-            $scope.blogInstanceTotal = data.blogInstanceTotal;
+    /*
+     * Initializing response returned by query ajax call from paged list directive in 
+     * current controllers scope.
+     */
+    $scope.initializeGetListResponse = function(data) {
+        if (data) {
+            $scope.instanceList = data.instanceList;
             $scope.monthFilterList = data.monthFilterList;
             $scope.tagList = data.tagList;
-        });
+        }
     };
 
     $scope.filterBlogs = function(monthFilter, tag, queryFilter) {
-        $state.go('urlMap', {ctrl: 'blog', action: 'list'});
         $scope.monthFilter = monthFilter !== '' ? monthFilter : $scope.monthFilter;
         $scope.tag = tag !== '' ? tag : $scope.tag;
         $scope.queryFilter = queryFilter !== '' ? queryFilter : $scope.queryFilter;
-        $scope.list();
+        $location.search({monthFilter: $scope.monthFilter, tag: $scope.tag, queryFilter: $scope.queryFilter});
+        // Redirecting to List page if filters applied on show page.
+        if ($scope.actionName === 'show') {
+            $state.go('urlMap', {ctrl: 'blog', action: 'list'});
+        }
     };
 
     $scope.deleteBlogComment = function(blogId, commentId) {
@@ -95,7 +87,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     $scope.showCommentOverlay = function(blogId, commentId) {
         $scope.commentData.commentId = commentId;
         $scope.commentData.id = blogId;
-        var commentModalInstance = $modal.open({
+        $scope.commentModalInstance = $modal.open({
             scope: $scope,
             templateUrl: 'views/blog/add-comment.html',
             size: 'sm',
@@ -103,9 +95,10 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             backdrop: 'static'
         });
 
-        commentModalInstance.result.then(function () {
+        $scope.commentModalInstance.result.then(function () {
             $scope.commentData = {};
         }, function () {
+            $scope.commentData = {};
             console.log('Modal dismissed at: ' + new Date());
         });
     };
@@ -115,8 +108,11 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             if (comments && comments.length === 0) { return []; }
             angular.forEach(comments, function(comment, index) {  // jshint ignore:line
                 if (comment.id.toString() === $scope.commentData.commentId) {
-                    comment.comments.push($scope.commentData);
-                    return;
+                    if (comment.comments) {
+                        comment.comments.push($scope.commentData);
+                    } else {
+                        comment.comments = [$scope.commentData];
+                    }
                 }
                 comment.comments = addComment(comment.comments);
             });
@@ -128,9 +124,13 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     $scope.comment = function() {
         $scope.commentData.id = $scope.blogInstance.id;
-        BlogModel.comment($scope.commentData, function() {
+        BlogModel.comment($scope.commentData, null, function() {
             $scope.comments = addComment($scope.comments);
             appService.showAlertMessage('Comment added successfully.', 'info', {element: '.modal .alert', makeStrong: false});
+            // Auto hide the modal after 5 seconds
+            $timeout(function() {
+                $scope.commentModalInstance.dismiss();
+            }, 2000);
         }, function(resp) {
             appService.showAlertMessage(resp.data.message, 'danger', {element: '.modal .alert', makeStrong: false});
         });
@@ -143,8 +143,6 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
                 $scope.fetchBlog($scope.id);
             }
         });
-    } else if ($scope.actionName === 'list') {
-        $scope.list();
     } else if ($scope.actionName === 'create') {
         $scope.contentInstance = new BlogModel();
         $scope.contentInstance.metaList = [];

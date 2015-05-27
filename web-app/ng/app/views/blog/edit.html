@@ -1,8 +1,9 @@
-<div class="container" ng-controller="BlogController">
-    <div class="page-header">
-        <h2>Edit Blog</h2> 
-    </div>
-    <div class="row">
+<section ng-controller="BlogController">
+    <df-header page-header="true">
+        Edit Blog
+    </df-header>
+
+    <df-content>
         <form class="form-horizontal" on-submit="contentInstance.$update()">
             <div ng-include="'views/content/_form.html'"></div>
             <div ng-include="'views/meta/_form.html'"></div>
@@ -16,5 +17,5 @@
                 </div>
             </div>
         </form>
-    </div>
-</div>
+    </df-content>
+</section>

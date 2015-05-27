@@ -1,8 +1,9 @@
-<div class="container" ng-controller="PageController">
-    <div class="page-header">
-        <h1>Create Page</h1>
-    </div>
-    <div>
+<section ng-controller="PageController">
+    <df-header page-header="true">
+        Create Page
+    </df-header>
+
+    <df-content>
         <form class="form-horizontal" on-submit="contentInstance.$save()">
             <fieldset>
                 <div ng-include="'views/page/_form.html'"></div>
@@ -15,5 +16,5 @@
                 </div>
             </fieldset>
         </form>
-    </div>
-</div>
+    </df-content>
+</section>

@@ -52,7 +52,7 @@
     <section class="widget recent-posts">
         <h3 class="title">Recent Posts</h3>
         <ul class="list-unstyled">
-            <li ng-repeat="blog in blogInstanceList| limitTo: 5 | orderBy: '-publishedDate'">
+            <li ng-repeat="blog in instanceList| limitTo: 5 | orderBy: '-publishedDate'">
                 <a ui-sref="urlMap.resource({ctrl: 'blog', action: 'show', resource: blog.id})">
                     {{blog.title}}
                 </a><br />

@@ -1,7 +1,9 @@
-<div class="container" ng-controller="FAQController">
-    <div class="page-header">
-        <h1>FAQ</h1>
-    </div>
+<section ng-controller="FAQController">
+    <df-header page-header="true">
+        FAQ
+    </df-header>
 
-    <div ng-include="'views/content/show.html'"></div>
-</div>
+    <df-content>
+        <div ng-include="'views/content/show.html'"></div>
+    </df-content>
+</section>

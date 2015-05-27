@@ -1,11 +1,12 @@
-<div class="container" ng-controller="PageController">
-    <div class="page-header custom">
-        <h1>
-            Page List 
-            <small>
-                <a ui-sref="urlMap({action: 'create'})" > <i class="fa fa-plus"> </i></a>
-            </small>
-        </h1>
-    </div>
-    <paged-list model-name="'Page'" items-per-page="15"></paged-list>
-</div>
+<section ng-controller="PageController">
+    <df-header page-header="true">
+        Page List 
+        <small>
+            <a ui-sref="urlMap({action: 'create'})" > <i class="fa fa-plus"> </i></a>
+        </small>
+    </df-header>
+
+    <df-content>
+        <paged-list model-name="'Page'" items-per-page="15"></paged-list>
+    </df-content>
+</section>

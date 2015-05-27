@@ -1,11 +1,11 @@
-<div ng-controller="PageController">
-    <section id="static-pages" class="static-pages section">
-        <div class="container">
-            <div class="page-header">
-                <h2 class="tab-heading inline">{{pageInstance.title}}</h2>
-                <span class="text-muted">{{pageInstance.subTitle}}</span>
-            </div>
-            <div ng-bind-html="pageInstance.body"></div>
-        </div>
-    </section>
-</div>
+<section ng-controller="PageController">
+    <df-header page-header="true">
+        {{pageInstance.title}}
+        <br/>
+        <small class="text-muted">{{pageInstance.subTitle}}</small>
+    </df-header>
+
+    <df-content>
+        <div ng-bind-html="pageInstance.body"></div>
+    </df-content>
+</section>
