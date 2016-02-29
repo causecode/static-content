@@ -99,7 +99,7 @@ class ContentService {
         if(!metaTypes || !metaValues)
             return contentInstance
 
-        metaTypes.eachWithIndex { type, index ->
+        /*metaTypes.eachWithIndex { type, index ->
             Meta metaInstance = ContentMeta.withCriteria(uniqueResult: true) {
                 createAlias("content", "contentInstance")
                 createAlias("meta", "metaInstance")
@@ -118,7 +118,7 @@ class ContentService {
                 metaInstance.save()
                 ContentMeta.findOrSaveByContentAndMeta(contentInstance, metaInstance)
             }
-        }
+        }*/
         return contentInstance
     }
 

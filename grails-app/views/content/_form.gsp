@@ -1,5 +1,4 @@
-<ckeditor:resources />
-<r:require module="validation" />
+<script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script>
 
 <g:hasErrors bean="${contentInstance}">
     <ul class="text-danger field-error icons-ul">
@@ -33,9 +32,9 @@
     <label class="control-label col-sm-2" for="body"> <g:message code="page.body.label" default="Body" />
     </label>
     <div class="col-sm-8">
-        <ckeditor:editor name="body" height="300px" width="120%">
+        <textarea name="body" height="300px" width="120%" id="body">
             <%= contentInstance?.body %>
-        </ckeditor:editor>
+        </textarea>
     </div>
 </div>
 
@@ -81,11 +80,6 @@
                 <g:textField name="revisionComment" class="form-control required" placeholder="Comment this revision" />
             </div>
         </div>
-        <r:script>
-            $("input#createRevision").change(function() {
-                $("input#revisionComment").parents('.form-group').toggleClass("hide", !$(this).is(":checked"));
-            })
-        </r:script>
     </g:if>
 </g:if>
 
@@ -147,39 +141,6 @@
             <li>Sorry, no revision found.</li>
         </g:if>
     </ul>
-    <r:script>
-        $("a#delete-revision").click(function() {
-            var $this = $(this);
-            var confirmDelete = confirm("Are you sure want to delete this.");
-            if(!confirmDelete) return false;
-
-            $.ajax({
-                method: "POST",
-                url: "/contentRevision/delete/" + $this.data('revision-id'),
-                success: function(resp) {
-                    $this.parents("li").fadeOut().remove();
-                },
-                error: function() {
-                    showAlertMessage("Sorry, somthing went wrong.", "danger", {scrollToAlert: true});
-                }
-            })
-            return false;
-        })
-        $("a#load-revision").click(function() {
-            var $this = $(this);
-            $.ajax({
-                url: "/contentRevision/load/" + $this.data('revision-id'),
-                success: function(resp) {
-                    $("input#title").val(resp.title);
-                    $("input#subTitle").val(resp.subTitle);
-                    CKEDITOR.instances['body'].setData(resp.body);
-                    showAlertMessage("Revision content loaded.", "info", {scrollToAlert: true});
-                },
-                error: function() {
-                    showAlertMessage("Sorry, somthing went wrong.", "danger", {scrollToAlert: true});
-                }
-            })
-            return false;
-        })
-    </r:script>
 </g:if>
+
+<script>tinymce.init({selector: '#body'});</script>
