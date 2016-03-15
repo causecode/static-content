@@ -5,7 +5,7 @@
                 <h2 class="title">
                     {{blogInstance.title}}
                     <small if-any-granted="ROLE_CONTENT_MANAGER,ROLE_ADMIN" ng-class="ng-hide">
-                        <a href="#/blog/edit/{{blogInstance.id}}" > 
+                    	<a ui-sref="urlMap.resource({ctrl: 'blog', action: 'edit', resource: blogInstance.id})">
                             <i class="fa fa-edit"> </i>
                         </a>
                     </small>
@@ -20,7 +20,7 @@
                     </ul>
                 </div>
                 <div class="content">
-                    <p ng-bind-html="blogInstance.body"></p>
+                    <p ng-bind-html="blogInstance.body | to_trusted"></p>
                 </div>
             </article>
             <article class="comments">
