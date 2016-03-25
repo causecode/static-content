@@ -65,12 +65,7 @@ class BlogController {
      * @return Map containing blog list and total count.
      */
     @Secured(["permitAll"])
-    def index() {
-        redirect( action: 'list', params: params)
-    }
-
-    @Secured(["permitAll"])
-    def list(Integer max, Integer offset, String tag, String monthFilter, String queryFilter) {
+    def index(Integer max, Integer offset, String tag, String monthFilter, String queryFilter) {
         if (tag == 'undefined') tag = ''
         if (monthFilter == 'undefined') monthFilter = ''
         if (queryFilter == 'undefined') queryFilter = ''
