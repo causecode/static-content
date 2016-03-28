@@ -1,18 +1,18 @@
 <div class="blog wrapper container" ng-controller="BlogController">
-    <div class="row blog">
+    <div class="row blog" ng-show=blogInstance>
         <div id="blog-entry" class="blog-entry section col-md-8 col-sm-8 col-xs-12">
             <article class="post">
                 <h2 class="title">
                     {{blogInstance.title}}
                     <small if-any-granted="ROLE_CONTENT_MANAGER,ROLE_ADMIN" ng-class="ng-hide">
-                    	<a ui-sref="urlMap.resource({ctrl: 'blog', action: 'edit', resource: blogInstance.id})">
+                        <a ui-sref="urlMap.resource({ctrl: 'blog', action: 'edit', resource: blogInstance.id})">
                             <i class="fa fa-edit"> </i>
                         </a>
                     </small>
                 </h2>
                 <div class="meta">
                     <ul class="meta-list list-inline">
-                        <li class="post-time post_date date updated">{{blogInstance.lastUpdated | date: MM/dd/yyyy}}</li>
+                        <li class="post-time post_date date updated">{{blogInstance.publishedDate | date: mm/dd/yyyy}}</li>
                         <li class="post-author"> by <a href="#">{{blogInstance.author}}</a></li>
                         <li class="post-comments-link">
                             <i class="fa fa-comments"></i>{{comments.length}} {{comments.length > 1 ? 'Comments': 'Comment'}}
