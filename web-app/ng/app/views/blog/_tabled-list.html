@@ -8,7 +8,8 @@
             </h3>
             <div class="meta">
                 <ul class="meta-list list-inline">
-                    <li class="post-time post_date date updated">{{blog.publishedDate | date: mm/dd/yyyy}}</li>
+                    <li class="post-time post_date date updated" ng-if="!blog.publishedDate">{{blog.lastUpdated | date: MM/dd/yyyy}}</li>
+                    <li class="post-time post_date date updated" ng-if="blog.publishedDate">{{blog.publishedDate | date: MM/dd/yyyy}}</li>
                     <li class="post-author"> by {{blog.author}}</li>
                     <li class="post-comments-link">
                         <a ui-sref="blogView({resource: blog.id, title: blog.title})">

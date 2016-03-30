@@ -86,7 +86,7 @@ class BlogController {
         params.max = Math.min(max ?: defaultMax, 100)
 
         StringBuilder query = new StringBuilder("""SELECT distinct new Map(b.id as id, b.body as body, b.title as title,
-                            b.subTitle as subTitle, b.author as author, b.publishedDate as publishedDate) FROM Blog b """)
+                            b.subTitle as subTitle, b.author as author, b.lastUpdated as lastUpdated, b.publishedDate as publishedDate) FROM Blog b """)
 
         if (tag) {
             query.append(", ${TagLink.class.name} tagLink WHERE b.id = tagLink.tagRef ")
