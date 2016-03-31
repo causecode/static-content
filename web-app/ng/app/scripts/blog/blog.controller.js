@@ -42,14 +42,14 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
                 script2.type = 'text/javascript';
                 script2.src = 'https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js';
                 document.body.appendChild(script2);
-
-                addEventListener('load', function (event) {
-                    $window.PR.prettyPrint()
-                }, false);
             } else {
-                $timeout(function(){
+                /*
+                 * Prettify library modify HTML content but AngularJS takes few milliseconds to bind data to HTML (blogInstance in this case).
+                 * Hence adding few milliseconds wait for that.
+                 */ 
+                $timeout(function() {
                     $window.PR.prettyPrint();
-                }, 1000);
+                }, 500);
             }
         });
     };

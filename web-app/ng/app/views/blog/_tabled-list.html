@@ -19,7 +19,7 @@
                 </ul>
             </div>
             <div class="post-entry">
-                <p ng-bind-html="blog.body | to_trusted: 25"></p>
+                <p ng-bind-html="blog.body | htmlToText: 30"></p>
                 <a class="read-more" ui-sref="blogView({resource: blog.id, title: blog.title})">
                     Read more <i class="fa fa-long-arrow-right"></i>
                 </a>
