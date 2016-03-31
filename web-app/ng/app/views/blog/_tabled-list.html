@@ -2,24 +2,25 @@
     <article class="post" ng-repeat="blog in instanceList | filter: queryText">
         <div class="content">
             <h3 class="post-title">
-                <a ui-sref="urlMap.resource({ctrl: 'blog', action: 'show', resource: blog.id})">
+                <a ui-sref="blogView({resource: blog.id, title: blog.title})">
                     {{blog.title}} {{queryText}}
                 </a>
             </h3>
             <div class="meta">
                 <ul class="meta-list list-inline">
-                    <li class="post-time post_date date updated">{{blog.publishedDate | date: mm/dd/yyyy}}</li>
+                    <li class="post-time post_date date updated" ng-if="!blog.publishedDate">{{blog.lastUpdated | date: MM/dd/yyyy}}</li>
+                    <li class="post-time post_date date updated" ng-if="blog.publishedDate">{{blog.publishedDate | date: MM/dd/yyyy}}</li>
                     <li class="post-author"> by {{blog.author}}</li>
                     <li class="post-comments-link">
-                        <a ui-sref="urlMap.resource({ctrl: 'blog', action: 'show', resource: blog.id})">
+                        <a ui-sref="blogView({resource: blog.id, title: blog.title})">
                             <i class="fa fa-comments"></i>{{blog.numberOfComments}} Comments
                         </a>
                     </li>
                 </ul>
             </div>
             <div class="post-entry">
-                <p ng-bind-html="blog.body | limitTo: 250 | to_trusted"></p>
-                <a class="read-more" ui-sref="urlMap.resource({ctrl: 'blog', action: 'show', resource: blog.id})">
+                <p ng-bind-html="blog.body | htmlToText: 30"></p>
+                <a class="read-more" ui-sref="blogView({resource: blog.id, title: blog.title})">
                     Read more <i class="fa fa-long-arrow-right"></i>
                 </a>
             </div>

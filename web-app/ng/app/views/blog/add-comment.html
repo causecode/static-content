@@ -18,11 +18,6 @@
     <div class="modal-body">
         <div class="login-form-container">
             <form class="login-form" name="lead-gen-form" ng-submit="comment()">
-                <div class="form-group subject">
-                    <label class="sr-only" for="subject">Subject</label>
-                    <input id="subject" type="text" class="form-control subject" 
-                        placeholder="Subject" ng-model="commentData.subject">
-                </div>
                 <div class="form-group">
                     <label class="sr-only" for="name">Name</label>
                     <input id="name" type="text" class="form-control login-name" ng-model="commentData.name"
@@ -30,7 +25,7 @@
                 </div>
                 <div class="form-group email">
                     <label class="sr-only" for="email">Email</label>
-                    <input id="email" type="email" class="form-control login-email" placeholder="Email"
+                    <input id="email" type="email" class="form-control login-email" placeholder="Your email is confidential, we won't share your email"
                          ng-model="commentData.email">
                 </div>
                 <div class="form-group signup-message">
@@ -39,7 +34,7 @@
                         placeholder="Comment"  ng-model="commentData.commentText"></textarea>
                 </div>
                 <div class="form-group captcha text-center">
-                    <img class="thumbnail img-responsive" src="/simpleCaptcha/captcha"/>
+                    <img class="thumbnail img-responsive" src="/be/simpleCaptcha/captcha"/>
                     <input id="captcha" type="text" class="form-control captcha" ng-model="commentData.captcha"
                          placeholder="Enter the words in above image (Case Insensitive)">
                 </div>

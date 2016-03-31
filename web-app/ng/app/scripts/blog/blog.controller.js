@@ -3,7 +3,7 @@
 'use strict';
 
 controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal', 'PageModel', '$timeout',
-        '$location', function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location) {
+        '$location', '$window', function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location, $window) {
     console.info('BlogController executing.', $scope);
 
     $scope.commentData = {};
@@ -11,7 +11,6 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     $scope.offset = 0;
 
     $scope.fetchBlog = function(blogId) {
-        appService.blockPage(true);
 
         BlogModel.get({id: blogId}, function(blogData) {
             if (blogData.blogInstance) {
@@ -28,7 +27,30 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             $scope.comments = blogData.comments;
             $scope.instanceList = blogData.blogInstanceList;
             $scope.tagList = blogData.tagList;
-            appService.blockPage(false);
+
+            /*
+             * Async load Prettify API. Loading two scripts since "prettify.js" doesn't include the "prettify.css"
+             * And "run_prettify.js" doesn't provide the "prettyPrint()" global method.
+             */
+            if (!$window.PR_SHOULD_USE_CONTINUATION) {
+                var script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = 'https://cdn.rawgit.com/google/code-prettify/master/loader/prettify.js';
+                document.body.appendChild(script);
+
+                var script2 = document.createElement('script');
+                script2.type = 'text/javascript';
+                script2.src = 'https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js';
+                document.body.appendChild(script2);
+            } else {
+                /*
+                 * Prettify library modify HTML content but AngularJS takes few milliseconds to bind data to HTML (blogInstance in this case).
+                 * Hence adding few milliseconds wait for that.
+                 */ 
+                $timeout(function() {
+                    $window.PR.prettyPrint();
+                }, 500);
+            }
         });
     };
 

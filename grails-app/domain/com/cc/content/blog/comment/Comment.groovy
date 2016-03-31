@@ -32,6 +32,7 @@ class Comment {
         name nullable: true
         replyTo nullable: true
         email email: true
+        subject nullable: true
     }
 
     static mapping = {

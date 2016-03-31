@@ -1,5 +1,4 @@
 <article>
-    <h4 class="media-heading inline">{{commentInstance.subject}}&nbsp;</h4>
     <a ng-click="deleteBlogComment('{{blogInstance.id}}', '{{commentInstance.id}}')" if-any-granted="ROLE_CONTENT_MANAGER">
         <i class="fa fa-trash-o"></i>
     </a>
