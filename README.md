@@ -1,4 +1,4 @@
-# Content Plugin (Current 2.4.0)
+# Content Plugin (Current 2.4.2)
 
 A plugin used to manage contents like static pages, menus etc. at one place.
 
