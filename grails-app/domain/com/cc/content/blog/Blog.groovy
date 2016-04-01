@@ -11,6 +11,7 @@ package com.cc.content.blog
 import org.grails.taggable.Taggable
 
 import com.cc.content.Content
+import com.lucastex.grails.fileuploader.UFile
 
 /**
  * Used to store blogs. These domain extends Content implements taggable(Taggable Plugin Required).
@@ -19,5 +20,11 @@ import com.cc.content.Content
  *
  */
 class Blog extends Content implements Taggable {
+	static transients = [ "blogImgSrc" ]
+
+	UFile blogImg
+	String blogImgSrc
+
+	static final String UFILE_GROUP = "blogImg"
 
 }

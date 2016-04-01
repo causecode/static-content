@@ -42,6 +42,8 @@ class BlogDomainMarshaller implements ObjectMarshaller<JSON> {
                 .value(author)
         writer.key("publish")
                 .value(blogInstance.publish)
+        writer.key("blogImgSrc")
+                .value(blogInstance.blogImgSrc)
         writer.key("dateCreated")
         converter.convertAnother(blogInstance.dateCreated)
         writer.key("lastUpdated")

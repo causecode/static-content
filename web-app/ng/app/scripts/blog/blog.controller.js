@@ -3,12 +3,13 @@
 'use strict';
 
 controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal', 'PageModel', '$timeout',
-        '$location', function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location) {
+        '$location', 'fileService',  function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location, fileService) {
     console.info('BlogController executing.', $scope);
 
     $scope.commentData = {};
     $scope.currentPage = 1;
     $scope.offset = 0;
+    $scope.isBlogCtrl = true;
 
     $scope.fetchBlog = function(blogId) {
         appService.blockPage(true);
@@ -24,6 +25,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
                 $scope.contentInstance = $scope.blogInstance;
                 $scope.contentInstance.metaList = [];
                 $scope.commentData.id = blogData.blogInstance.id;
+                $scope.blogImgSrc = blogData.blogImgSrc;
             }
             $scope.comments = blogData.comments;
             $scope.instanceList = blogData.blogInstanceList;
@@ -135,6 +137,35 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             appService.showAlertMessage(resp.data.message, 'danger', {element: '.modal .alert', makeStrong: false});
         });
     };
+
+    $scope.onFileSelect = function($files) {
+        $scope.selectedFile = $files[0];
+    };
+
+    $scope.saveBlogPost = function(blogContent) {
+        var blogPostRef = blogContent;
+        fileService.uploadFile($scope.selectedFile).then(function(data) {
+            blogPostRef.blogImgFilePath = data.filepath,
+            blogPostRef.$save();
+        }, function(data) {
+            $scope.selectedFile = null;
+        }); 
+    };
+
+    $scope.updateBlogPost = function(blogContent) {
+        if($scope.selectedFile) {
+            var blogPostRef = blogContent;
+            fileService.uploadFile($scope.selectedFile).then(function(data) {
+            blogPostRef.blogImgFilePath = data.filepath,
+            blogPostRef.$update();
+            }, function(data) {
+                $scope.selectedFile = null;
+            });
+        } else {
+            blogContent.$update()
+        }
+    }
+
 
     if (($scope.controllerName === 'blog') && (['edit', 'show'].indexOf($scope.actionName) > -1)) {
         $scope.fetchBlog($scope.id);

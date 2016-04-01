@@ -28,6 +28,8 @@ import org.springframework.http.HttpStatus
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.blog.comment.BlogComment
 import com.cc.content.blog.comment.Comment
+import com.lucastex.grails.fileuploader.UFile
+import com.lucastex.grails.fileuploader.FileUploaderServiceException
 
 /**
  * Provides default CRUD end point for Content Manager.
@@ -51,6 +53,7 @@ class BlogController {
     def commentService
     def blogService
     def grailsWebDataBinder
+    def fileUploaderService
     GrailsApplication grailsApplication
 
     private static String HTML_P_TAG_PATTERN = "(?s)<p(.*?)>(.*?)<\\/p>"
@@ -91,7 +94,7 @@ class BlogController {
         params.max = Math.min(max ?: defaultMax, 100)
 
         StringBuilder query = new StringBuilder("""SELECT distinct new Map(b.id as id, b.body as body, b.title as title,
-                            b.subTitle as subTitle, b.author as author, b.publishedDate as publishedDate) FROM Blog b """)
+                            b.subTitle as subTitle, b.author as author, b.publishedDate as publishedDate, b.blogImg.path as blogImgSrc) FROM Blog b """)
 
         if (tag) {
             query.append(", ${TagLink.class.name} tagLink WHERE b.id = tagLink.tagRef ")
@@ -195,6 +198,19 @@ class BlogController {
 
         Blog.withTransaction { status ->
             Blog blogInstance = contentService.create(requestData, metaTypeList, metaValueList, Blog.class)
+            UFile blogUfileInstance
+            String blogImgFilePath = requestData['blogImgFilePath']
+            if(blogImgFilePath) {
+                try {
+                    blogUfileInstance = fileUploaderService.saveFile(Blog.UFILE_GROUP, new File(blogImgFilePath))
+                } catch (FileUploaderServiceException e) {
+                    log.debug "Unable to upload file", e
+                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
+                    respond ([message: e.message])
+                }
+            }
+            blogInstance.blogImg = blogUfileInstance
+            blogInstance.validate()
             if (blogInstance.hasErrors()) {
                 status.setRollbackOnly()
                 respond(blogInstance.errors)
@@ -214,6 +230,7 @@ class BlogController {
 
         tagList = blogService.getAllTags()
         def blogInstanceTags = blogInstance.tags
+        blogInstance.blogImgSrc = blogInstance?.blogImg?.path
 
         // Convert markdown content into html format
         blogInstance.body = blogInstance.body?.markdownToHtml()
@@ -241,6 +258,18 @@ class BlogController {
 
     @Transactional
     def edit(Blog blogInstance) {
+        String blogImgFilePath = request.JSON['blogImgFilePath']
+        UFile blogUfileInstance
+        if(blogImgFilePath) {
+            try {
+                blogUfileInstance = fileUploaderService.saveFile(Blog.UFILE_GROUP, new File(blogImgFilePath))
+            } catch (FileUploaderServiceException e) {
+                log.debug "Unable to upload file", e
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
+                respond ([message: e.message])
+            }
+            blogInstance.blogImg = blogUfileInstance
+        }
         [blogInstance: blogInstance]
     }
 
@@ -350,4 +379,5 @@ class BlogController {
             redirect uri: blogInstance.searchLink()
         }
     }
+
 }

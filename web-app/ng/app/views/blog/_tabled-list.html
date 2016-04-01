@@ -17,6 +17,9 @@
                     </li>
                 </ul>
             </div>
+            <div>
+                <img ng-src="{{blog.blogImgSrc}}" class="blog-img">
+            </div>
             <div class="post-entry">
                 <p>{{blog.body | limitTo: 120 }}</p>
                 <a class="read-more" ui-sref="urlMap.resource({ctrl: 'blog', action: 'show', resource: blog.id})">

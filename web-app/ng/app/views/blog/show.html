@@ -5,7 +5,7 @@
                 <h2 class="title">
                     {{blogInstance.title}}
                     <small if-any-granted="ROLE_CONTENT_MANAGER,ROLE_ADMIN" ng-class="ng-hide">
-                        <a href="#/blog/edit/{{blogInstance.id}}" > 
+                        <a href="/blog/edit/{{blogInstance.id}}" > 
                             <i class="fa fa-edit"> </i>
                         </a>
                     </small>
@@ -20,6 +20,7 @@
                     </ul>
                 </div>
                 <div class="content">
+                    <img ng-src="{{blogInstance.blogImgSrc}}" class="blog-img">
                     <p ng-bind-html="blogInstance.body"></p>
                 </div>
             </article>
