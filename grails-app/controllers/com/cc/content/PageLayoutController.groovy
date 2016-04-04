@@ -12,7 +12,7 @@ import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
 
-import org.grails.databinding.SimpleMapDataBindingSource
+import grails.databinding.SimpleMapDataBindingSource
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 

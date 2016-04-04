@@ -1,0 +1,19 @@
+<section ng-controller="MenuController">
+    <df-header page-header="true">
+        Create Menu
+    </df-header>
+
+    <df-content>
+        <form class="form-horizontal" on-submit="menuInstance.$save()">
+            <fieldset>
+                <div ng-include="'views/menu/_form.html'"></div>
+                <div class="form-actions col-sm-offset-3 df-gutter-bottom">
+                    <a ui-sref="urlMap({action: 'list'})" class="btn btn-default"> <i class="fa fa-th-list fa-fw"></i>
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </fieldset>
+        </form>
+    </df-content>
+</section>

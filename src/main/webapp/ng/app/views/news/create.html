@@ -1,0 +1,19 @@
+<section ng-controller="NewsController">
+    <df-header page-header="true">
+        Create News
+    </df-header>
+
+    <df-content>
+        <form class="form-horizontal" on-submit="contentInstance.$save()">
+            <fieldset>
+                <div ng-include="'views/content/_form.html'"></div>
+                <div class="form-actions df-gutter-bottom col-sm-offset-3">
+                    <a ui-sref="urlMap({action: 'list'})" class="btn btn-default"> <i class="fa fa-th-list fa-fw"></i>
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </fieldset>
+        </form>
+    </df-content>
+</section>

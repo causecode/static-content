@@ -19,9 +19,9 @@ import java.text.DateFormatSymbols
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.grails.databinding.SimpleMapDataBindingSource
-import org.grails.taggable.TagLink
+import grails.core.GrailsApplication
+import grails.databinding.SimpleMapDataBindingSource
+import grails.plugins.taggable.TagLink
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 

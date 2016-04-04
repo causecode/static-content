@@ -12,7 +12,7 @@ import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
 
-import org.codehaus.groovy.grails.exceptions.RequiredPropertyMissingException
+import com.cc.exceptions.RequiredPropertyMissingException
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 

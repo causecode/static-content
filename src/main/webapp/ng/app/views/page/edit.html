@@ -1,0 +1,24 @@
+<section ng-controller="PageController">
+    <df-header page-header="true">
+        Edit Page
+    </df-header>
+
+    <df-content>
+        <form class="form-horizontal" on-submit="contentInstance.$update()" name="listForm">
+            <fieldset>
+                <div ng-include="'views/page/_form.html'"></div>
+                <div ng-include="'views/meta/_form.html'"></div>
+                <div class="form-actions col-sm-offset-3 df-gutter-bottom">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-fw fa-check-square-o"></i> Update
+                    </button>
+                    <button type="button" ng-click="contentInstance.$delete()" class="btn btn-danger">Delete</button>
+                    <a ui-sref="urlMap({action: 'list'})" class="btn btn-default"> <i class="fa fa-th-list fa-fw"></i>
+                        Cancel
+                    </a>
+                </div>
+            </fieldset>
+        </form>
+    </df-content>
+</section>
+

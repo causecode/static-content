@@ -8,7 +8,7 @@
 
 package com.cc.content.blog
 
-import org.grails.taggable.TagLink
+import grails.plugins.taggable.TagLink
 
 class BlogService {
 

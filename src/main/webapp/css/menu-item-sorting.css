@@ -1,0 +1,63 @@
+#menu-item-sorting ul {
+    list-style: none;
+}
+
+#menu-item-sorting ul.top-level-container {
+    margin-left: -40px;
+}
+
+#menu-item-sorting ul li.thumbnail {
+    float: none;
+    margin-bottom:10px;
+    -webkit-transition: none;
+    -moz-transition: none;
+    -o-transition: none;
+    transition: none;
+    cursor: move;
+}
+
+#menu-item-sorting a#save-button {
+    float:right;
+    margin-top:1px;
+    font-weight:bold;
+}
+
+li.ui-sortable-placeholder {
+    visibility:visible !important;
+    background-color: whitesmoke;
+}
+ul.menu-item-container li.ui-sortable-placeholder {
+    padding: 4px;
+    margin-bottom: 10px;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    line-height: 1.428571429;
+}
+ul.menu-item-container:not(.top-level-container) li.ui-sortable-placeholder {
+    padding: 0;
+    margin-bottom: 0;
+    border: none;
+}
+
+li.un-saved {
+    background-color: #FFFFCC;
+}
+
+li.ui-sortable-helper {
+    visibility:visible !important;
+    background-color: #CCCCFF;
+}
+
+i.icon-move {
+    font-size:10px;
+    margin-right:5px;
+    line-height:25px;
+}
+
+a.edit-menu-item, a.delete-menu-item, a.save-menu-item {
+    padding: 5px;
+}
+
+a.edit-menu-item:hover, a.delete-menu-item:hover, a.save-menu-item:hover {
+    text-decoration: none;
+}

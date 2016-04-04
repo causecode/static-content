@@ -13,8 +13,8 @@ import grails.util.Environment
 import java.lang.reflect.Field
 
 import grails.plugin.springsecurity.SpringSecurityUtils
-import org.codehaus.groovy.grails.web.mapping.LinkGenerator
-import org.grails.databinding.SimpleMapDataBindingSource
+import grails.web.mapping.LinkGenerator
+import grails.databinding.SimpleMapDataBindingSource
 import org.springframework.transaction.annotation.Transactional
 
 import com.cc.annotation.sanitizedTitle.SanitizedTitle

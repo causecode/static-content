@@ -6,6 +6,33 @@
  * without modification, are not permitted.
  */
 
+dataSource = {
+    pooled = true
+    driverClassName = "org.h2.Driver"
+    username = "root"
+    password = "causecode.11"
+}
+hibernate = {
+    cache.use_second_level_cache = true
+    cache.use_query_cache = false
+    cache.region.factory_class = 'net.sf.ehcache.hibernate.EhCacheRegionFactory'
+}
+
+// environment specific settings
+environments = {
+    development = {
+        plugins = {
+            runtime "org.grails.plugins:hibernate4"
+        }
+    }
+    test = {
+        dataSource = {
+            dbCreate = "create-drop"
+            url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
+        }
+    }
+}
+
 grails.mime.types = [ html: ['text/html','application/xhtml+xml'],
      xml: ['text/xml', 'application/xml'],
      text: 'text/plain',
@@ -41,18 +68,18 @@ log4j = {
 }
 
 grails.resources.modules = {
-    validator {
+    validator = {
         resource url: '/js/jquery.validate.js'
     }
 }
 
 grails.plugin.springsecurity.securityConfigType = "Annotation"
 
-ckeditor {
-    upload {
+ckeditor = {
+    upload = {
         basedir = "/images/"
         overwrite = false
-        image {
+        image = {
             browser = true
             upload = true
             allowed = ['jpg', 'gif', 'jpeg', 'png']
@@ -61,9 +88,9 @@ ckeditor {
     }
 }
 
-environments {
-    test {
-        app {
+environments = {
+    test = {
+        app = {
             defaultURL = "/ng/app/index.html#"
         }
     }

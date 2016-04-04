@@ -8,7 +8,7 @@
 
 package com.cc.content.blog
 
-import org.grails.taggable.Taggable
+import grails.plugins.taggable.Taggable
 
 import com.cc.content.Content
 

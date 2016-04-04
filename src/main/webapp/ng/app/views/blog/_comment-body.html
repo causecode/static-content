@@ -1,0 +1,29 @@
+<article>
+    <h4 class="media-heading inline">{{commentInstance.subject}}&nbsp;</h4>
+    <a ng-click="deleteBlogComment('{{blogInstance.id}}', '{{commentInstance.id}}')" if-any-granted="ROLE_CONTENT_MANAGER">
+        <i class="fa fa-trash-o"></i>
+    </a>
+    <div class="comment-info">
+        <div class="meta">
+            <ul class="meta-list list-inline">
+                <li class="post-time post_date date updated">
+                    {{commentInstance.lastUpdated | date: MM/dd/yyyy}}
+                </li>
+                <li class="post-author"> by <a href="#">{{commentInstance.name}}</a></li>
+            </ul>
+        </div>
+    </div>
+    <p class="comment-text">
+        {{commentInstance.commentText}}
+    </p>
+    <a class="btn btn-cta btn-cta-secondary" ng-click="showCommentOverlay('{{blogInstance.id}}', '{{commentInstance.id}}')">
+        <i class="icon-reply"></i> Reply
+    </a>
+    <div ng-if="commentInstance.comments">
+        <div class="media sub-comment" ng-repeat="commentInstance in commentInstance.comments">
+            <div class="media-body">
+                <div ng-include src="'views/blog/_comment-body.html'"></div>
+            </div>
+        </div>
+    </div>
+</article>
