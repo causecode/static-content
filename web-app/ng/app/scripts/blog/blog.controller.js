@@ -3,7 +3,7 @@
 'use strict';
 
 controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal', 'PageModel', '$timeout',
-        '$location', '$window', function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location, $window) {
+        '$location', '$window', '$http', function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location, $window, $http) {
     console.info('BlogController executing.', $scope);
 
     $scope.commentData = {};
@@ -157,6 +157,14 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             appService.showAlertMessage(resp.data.message, 'danger', {element: '.modal .alert', makeStrong: false});
         });
     };
+
+    $scope.auth = function() {
+        if($scope.actionName == 'create') {
+            $http.get('/api/v1/blog/action/create');
+        } else if($scope.actionName == 'edit') {
+            $http.get('/api/v1/blog/action/edit');
+        }
+    }
 
     if (($scope.controllerName === 'blog') && (['edit', 'show'].indexOf($scope.actionName) > -1)) {
         $scope.fetchBlog($scope.id);

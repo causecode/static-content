@@ -35,7 +35,7 @@ grails.project.dependency.resolution = {
 
     plugins {
         compile ":markdown:1.1.1"
-        compile (":spring-security-core:2.0-RC4", ":taggable:1.1.0") {
+        /*compile (":spring-security-core:2.0-RC4", ":taggable:1.1.0") {
             export = false
         }
         runtime (":hibernate:3.6.10.7") {
@@ -48,6 +48,6 @@ grails.project.dependency.resolution = {
             compile (":codenarc:0.22") {
                 export = false
             }
-        }
+        }*/
     }
 }
