@@ -124,7 +124,7 @@ class BlogController {
 
         blogList.each {
             // Convert markdown content into html format so that first paragraph could be extracted from it
-            //it.body = it.body?.markdownToHtml()
+            it.body = it.body?.markdownToHtml()
             // Extracting content from first <p> tag of body to display
             Matcher matcherTag = patternTag.matcher(it.body)
             it.body = matcherTag.find() ? matcherTag.group(2) : ""
@@ -212,7 +212,7 @@ class BlogController {
         def blogInstanceTags = blogInstance.tags
 
         // Convert markdown content into html format
-        //blogInstance.body = blogInstance.body?.markdownToHtml()
+        blogInstance.body = blogInstance.body?.markdownToHtml()
 
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
