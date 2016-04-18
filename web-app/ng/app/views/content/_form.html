@@ -15,9 +15,26 @@
 </div>
 
 <div class="form-group">
+    <label class="col-sm-3 control-label" for="editorType">Editor Type</label>
+    <div class="col-sm-4">
+        <select id="editorType" ng-model="editorType" class="form-control">
+            <option value="tinymce">Tiny-MCE</option>
+            <option value="rawTextArea">Text Area</option>
+        </select>
+    </div>
+</div>
+
+<div class="form-group" ng-show="!editorType || editorType === 'tinymce'">
     <label class="col-sm-3 control-label" for="body">Body</label>
     <div class="col-sm-8">
         <textarea ui-tinymce="tinymceOptions" class="form-control" ng-model="contentInstance.body"></textarea>
+    </div>
+</div>
+
+<div class="form-group" ng-show="editorType && editorType === 'rawTextArea'">
+    <label class="col-sm-3 control-label" for="body">Raw HTML/Markdown Body</label>
+    <div class="col-sm-8">
+        <textarea class="form-control" ng-model="contentInstance.body" rows="12"></textarea>
     </div>
 </div>
 
