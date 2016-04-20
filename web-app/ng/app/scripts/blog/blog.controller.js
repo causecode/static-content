@@ -169,4 +169,8 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         $scope.contentInstance = new BlogModel();
         $scope.contentInstance.metaList = [];
     }
+
+    $scope.showMarkdownHelp = function() {
+        $window.open("http://daringfireball.net/projects/markdown/syntax", "_blank");
+    };
 }]);
