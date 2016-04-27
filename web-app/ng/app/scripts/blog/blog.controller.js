@@ -171,6 +171,6 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     }
 
     $scope.showMarkdownHelp = function() {
-        $window.open("http://daringfireball.net/projects/markdown/syntax", "_blank");
+        $window.open("http://daringfireball.net/projects/markdown/syntax");
     };
 }]);

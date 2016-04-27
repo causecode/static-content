@@ -102,13 +102,24 @@ class PageController {
             return
         }
 
+        // Check if a subject parameter is coming in request if yes, then use that an email subject
+        String subject = params.subject
+        if (subject && pageInstance.body.contains("mailto:jobs@causecode.com")) {
+            pageInstance.body = pageInstance.body.replaceAll("subject=.*?\"", "subject=$subject\"")
+        }
+
         if (request.xhr) {
             respond(pageInstance)
             return
         }
 
         String pageShowUrl = grailsApplication.config.app.defaultURL + "/page/show/${pageInstance.id}"
-        redirect(url: pageShowUrl, permanent: true)
+
+        if (subject) {
+            pageShowUrl += "?subject=$subject"
+        }
+
+        redirect(url: pageShowUrl, permanent: true, params: params)
     }
 
     def edit(Page pageInstance) {

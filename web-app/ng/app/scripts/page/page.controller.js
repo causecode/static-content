@@ -2,11 +2,13 @@
 
 'use strict';
 
-controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel', '$state', 'appService',
-        function($scope, PageModel, PageLayoutModel, $state, appService) {
+controllers.controller('PageController', ['$scope', 'PageModel','PageLayoutModel', '$state', 'appService', '$location',
+        function($scope, PageModel, PageLayoutModel, $state, appService, $location) {
+
+    var subject = $location.search().subject;
 
     function getPageModelInstance() {
-        PageModel.get({id: $scope.id}, function(pageInstance) {
+        PageModel.get({id: $scope.id, subject: subject}, function(pageInstance) {
             $scope.pageInstance = pageInstance;
         }, function(resp) {
             // Redirecting to Home state with alert on Error.

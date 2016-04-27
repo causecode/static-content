@@ -41,7 +41,9 @@
                 </div>
             </article>
         </div>
-        <div class="blog-entry section col-md-8 col-sm-8 col-xs-12" ng-if="!blogInstance"></div>
+        <div class="blog-entry section col-md-8 col-sm-8 col-xs-12" ng-if="!blogInstance">
+            <span>Blog not found.</span>
+        </div>
         <div ng-include src="'views/blog/_filter.html'"></div>
     </div>
 </div>
