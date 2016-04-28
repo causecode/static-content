@@ -1,6 +1,6 @@
 <div class="blog wrapper container" ng-controller="BlogController">
     <div class="row blog">
-        <div id="blog-entry" class="blog-entry section col-md-8 col-sm-8 col-xs-12" feedback="blogInstance">
+        <div id="blog-entry" class="blog-entry section col-md-8 col-sm-8 col-xs-12" ng-if="blogInstance">
             <article class="post">
                 <h2 class="title">
                     {{blogInstance.title}}
@@ -40,6 +40,9 @@
                     <p>Sorry, no comments to display.</p>
                 </div>
             </article>
+        </div>
+        <div class="blog-entry section col-md-8 col-sm-8 col-xs-12" ng-if="!blogInstance">
+            <span>Blog not found.</span>
         </div>
         <div ng-include src="'views/blog/_filter.html'"></div>
     </div>
