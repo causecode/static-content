@@ -88,6 +88,7 @@ class BlogController {
         params.offset = offset ? offset: 0
         params.max = Math.min(max ?: defaultMax, 100)
 
+        // TODO Improve blog string query to support GORM/Hibernate criteria query
         StringBuilder query = new StringBuilder("""SELECT distinct new Map(b.id as id, b.body as body, b.title as title,
                             b.subTitle as subTitle, b.author as author, b.lastUpdated as lastUpdated, b.publishedDate as publishedDate) FROM Blog b """)
 
