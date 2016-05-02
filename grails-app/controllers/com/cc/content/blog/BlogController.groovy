@@ -124,6 +124,7 @@ class BlogController {
 
         List<Map> blogList = Blog.executeQuery(query.toString(), [max: params.max, offset: params.offset])
         Pattern patternTag = Pattern.compile(HTML_P_TAG_PATTERN)
+
         blogList.each {
             // Convert markdown content into html format so that first paragraph could be extracted from it
             it.body = it.body?.markdownToHtml()
@@ -159,6 +160,7 @@ class BlogController {
 
         Map result = [instanceList: blogInstanceList, totalCount: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
             tagList: blogService.getAllTags()]
+
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
          * any change in data model must be updated in the GSP.
@@ -377,5 +379,4 @@ class BlogController {
             redirect uri: blogInstance.searchLink()
         }
     }
-
 }
