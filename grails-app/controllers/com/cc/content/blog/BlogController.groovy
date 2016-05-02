@@ -94,7 +94,7 @@ class BlogController {
         params.max = Math.min(max ?: defaultMax, 100)
 
         StringBuilder query = new StringBuilder("""SELECT distinct new Map(b.id as id, b.body as body, b.title as title,
-                            b.subTitle as subTitle, b.author as author, b.publishedDate as publishedDate, b.blogImg.path as blogImgSrc) FROM Blog b """)
+                            b.subTitle as subTitle, b.author as author, b.publishedDate as publishedDate) FROM Blog b """)
 
         if (tag) {
             query.append(", ${TagLink.class.name} tagLink WHERE b.id = tagLink.tagRef ")
@@ -129,7 +129,6 @@ class BlogController {
 
         List<Map> blogList = Blog.executeQuery(query.toString(), [max: params.max, offset: params.offset])
         Pattern patternTag = Pattern.compile(HTML_P_TAG_PATTERN)
-
         blogList.each {
             // Convert markdown content into html format so that first paragraph could be extracted from it
             it.body = it.body?.markdownToHtml()
@@ -147,6 +146,7 @@ class BlogController {
             Blog blogInstance = Blog.get(it.id as long)
             it.author = contentService.resolveAuthor(blogInstance)
             it.numberOfComments = BlogComment.countByBlog(blogInstance)
+            it.blogImgSrc = blogInstance.blogImg?.path
             blogInstanceList.add(it)
         }
 
@@ -164,7 +164,6 @@ class BlogController {
 
         Map result = [instanceList: blogInstanceList, totalCount: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
             tagList: blogService.getAllTags()]
-
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
          * any change in data model must be updated in the GSP.
@@ -258,18 +257,6 @@ class BlogController {
 
     @Transactional
     def edit(Blog blogInstance) {
-        String blogImgFilePath = request.JSON['blogImgFilePath']
-        UFile blogUfileInstance
-        if(blogImgFilePath) {
-            try {
-                blogUfileInstance = fileUploaderService.saveFile(Blog.UFILE_GROUP, new File(blogImgFilePath))
-            } catch (FileUploaderServiceException e) {
-                log.debug "Unable to upload file", e
-                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
-                respond ([message: e.message])
-            }
-            blogInstance.blogImg = blogUfileInstance
-        }
         [blogInstance: blogInstance]
     }
 
@@ -277,8 +264,12 @@ class BlogController {
      * Update blog instance also sets tags for blog instance.
      */
     @Transactional
-    def update(Blog blogInstance, Long version) {
+    def update() {
         Map requestData = request.JSON
+        Blog blogInstance = Blog.get(requestData['id'] as long)
+        bindData(blogInstance, requestData) 
+        String version = requestData['version']
+
         if (version != null) {
             if (blogInstance.version > version) {
                 blogInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
@@ -288,12 +279,24 @@ class BlogController {
                 return false
             }
         }
-
         Blog.withTransaction { status ->
             String tags = requestData.remove("tags")
             List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
             List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
             contentService.update(requestData, blogInstance, metaTypeList, metaValueList)
+            
+            String blogImgFilePath = requestData['blogImgFilePath']
+            UFile blogUfileInstance
+            if(blogImgFilePath) {
+                try {
+                    blogUfileInstance = fileUploaderService.saveFile(Blog.UFILE_GROUP, new File(blogImgFilePath))
+                } catch (FileUploaderServiceException e) {
+                    log.debug "Unable to upload file", e
+                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
+                    respond ([message: e.message])
+                }
+                blogInstance.blogImg = blogUfileInstance
+            }
 
             if (blogInstance.hasErrors()) {
                 status.setRollbackOnly()
