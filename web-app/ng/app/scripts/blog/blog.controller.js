@@ -32,14 +32,13 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             var keywords = [];
             var descriptions = [];
 
-            for (var i = blogData.metaList.length - 1; i >= 0; i--) {
-                if (blogData.metaList[i].type == "keywords") {
-                    keywords.push(blogData.metaList[i].value)
-                } else if (blogData.metaList[i].type == "description") {
-                    descriptions.push(blogData.metaList[i].value)
+            blogData.metaList.forEach(function (meta) {
+                if (meta.type == "keywords") {
+                    keywords.push(meta.value)
+                } else if (meta.type == "description") {
+                    descriptions.push(meta.value)
                 }
-                
-            }
+            });
 
             $rootScope.description = descriptions[0] ? descriptions[0] : '';
             $rootScope.keywords = keywords.toString();
@@ -177,7 +176,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     $scope.auth = function() {
         if($scope.actionName == 'create') {
             $http.get('/api/v1/blog/action/create');
-        } else if($scope.actionName == 'edit') {
+        } else if ($scope.actionName == 'edit') {
             $http.get('/api/v1/blog/action/update');
         }
     }

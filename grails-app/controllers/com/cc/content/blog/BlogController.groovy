@@ -176,7 +176,6 @@ class BlogController {
         redirect(url: blogListUrl, permanent: true)
     }
 
-    @Secured(['ROLE_CONTENT_MANAGER', 'ROLE_EMPLOYEE'])
     def create() {
         [blogInstance: new Blog(params)]
     }
@@ -217,18 +216,10 @@ class BlogController {
         blogInstance.body = blogInstance.body?.markdownToHtml()
 
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
-        List<Map> metaInstanceMapList = []
-        List<Meta> metaInstanceList = ContentMeta.withCriteria {
-            projections {
-                property("meta")
-            }
-            eq("content", blogInstance)
-        }
-        metaInstanceList.each {
-            metaInstanceMapList.add([type: it.type, value: it.value])
-        }
+        List<Meta> metaInstanceList = blogInstance.getMetaTags()
+        
         Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
-            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceMapList]
+            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
 
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
