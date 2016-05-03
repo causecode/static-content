@@ -178,7 +178,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         if($scope.actionName == 'create') {
             $http.get('/api/v1/blog/action/create');
         } else if($scope.actionName == 'edit') {
-            $http.get('/api/v1/blog/action/edit');
+            $http.get('/api/v1/blog/action/update');
         }
     }
 

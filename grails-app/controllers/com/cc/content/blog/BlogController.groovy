@@ -250,6 +250,7 @@ class BlogController {
     /**
      * Update blog instance also sets tags for blog instance.
      */
+    @Secured(['ROLE_CONTENT_MANAGER', 'ROLE_EMPLOYEE'])
     @Transactional
     def update() {
         Map requestData = request.JSON
