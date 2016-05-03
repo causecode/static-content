@@ -28,6 +28,8 @@ import org.springframework.http.HttpStatus
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.blog.comment.BlogComment
 import com.cc.content.blog.comment.Comment
+import com.cc.content.meta.Meta
+import com.cc.content.ContentMeta
 
 /**
  * Provides default CRUD end point for Content Manager.
@@ -215,8 +217,18 @@ class BlogController {
         blogInstance.body = blogInstance.body?.markdownToHtml()
 
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
+        List<Map> metaInstanceMapList = []
+        List<Meta> metaInstanceList = ContentMeta.withCriteria {
+            projections {
+                property("meta")
+            }
+            eq("content", blogInstance)
+        }
+        metaInstanceList.each {
+            metaInstanceMapList.add([type: it.type, value: it.value])
+        }
         Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
-            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags]
+            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceMapList]
 
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
@@ -235,18 +247,16 @@ class BlogController {
         redirect(url: blogShowUrl, permanent: true)
     }
 
-    @Transactional
-    @Secured(['ROLE_CONTENT_MANAGER', 'ROLE_EMPLOYEE'])
-    def edit(Blog blogInstance) {
-        [blogInstance: blogInstance]
-    }
-
     /**
      * Update blog instance also sets tags for blog instance.
      */
     @Transactional
-    def update(Blog blogInstance, Long version) {
+    def update() {
         Map requestData = request.JSON
+        Blog blogInstance = Blog.get(requestData['id'] as long)
+        bindData(blogInstance, requestData) 
+        String version = requestData['version']
+
         if (version != null) {
             if (blogInstance.version > version) {
                 blogInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
