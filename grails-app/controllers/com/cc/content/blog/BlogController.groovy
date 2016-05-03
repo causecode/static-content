@@ -29,7 +29,6 @@ import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.blog.comment.BlogComment
 import com.cc.content.blog.comment.Comment
 import com.cc.content.meta.Meta
-import com.cc.content.ContentMeta
 
 /**
  * Provides default CRUD end point for Content Manager.
