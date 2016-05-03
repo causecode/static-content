@@ -228,7 +228,6 @@ class BlogController {
 
         tagList = blogService.getAllTags()
         def blogInstanceTags = blogInstance.tags
-        blogInstance.blogImgSrc = blogInstance?.blogImg?.path
 
         // Convert markdown content into html format
         blogInstance.body = blogInstance.body?.markdownToHtml()

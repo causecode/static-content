@@ -20,16 +20,11 @@ import com.lucastex.grails.fileuploader.UFile
  *
  */
 class Blog extends Content implements Taggable {
-    // Used to hold UFile's path value
-    static transients = ["blogImgSrc"]
-
     UFile blogImg
-    String blogImgSrc
 
     static constraints = {
         blogImg nullable:true
     }
 
     static final String UFILE_GROUP = "blogImg"
-
 }
