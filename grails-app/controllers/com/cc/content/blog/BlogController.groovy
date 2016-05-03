@@ -30,6 +30,7 @@ import com.cc.content.blog.comment.BlogComment
 import com.cc.content.blog.comment.Comment
 import com.lucastex.grails.fileuploader.UFile
 import com.lucastex.grails.fileuploader.FileUploaderServiceException
+import com.lucastex.grails.fileuploader.FileUploaderService
 
 /**
  * Provides default CRUD end point for Content Manager.
@@ -53,7 +54,7 @@ class BlogController {
     def commentService
     def blogService
     def grailsWebDataBinder
-    def fileUploaderService
+    FileUploaderService fileUploaderService
     GrailsApplication grailsApplication
 
     private static String HTML_P_TAG_PATTERN = "(?s)<p(.*?)>(.*?)<\\/p>"
@@ -197,7 +198,7 @@ class BlogController {
             Blog blogInstance = contentService.create(requestData, metaTypeList, metaValueList, Blog.class)
             UFile blogUfileInstance
             String blogImgFilePath = requestData['blogImgFilePath']
-            if(blogImgFilePath) {
+            if (blogImgFilePath) {
                 try {
                     blogUfileInstance = fileUploaderService.saveFile(Blog.UFILE_GROUP, new File(blogImgFilePath))
                 } catch (FileUploaderServiceException e) {
