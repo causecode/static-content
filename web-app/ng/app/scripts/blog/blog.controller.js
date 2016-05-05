@@ -3,7 +3,7 @@
 'use strict';
 
 controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal', 'PageModel', '$timeout',
-        '$location', '$window','fileService', function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location, $window, fileService) {
+        '$location', '$window', '$http', 'fileService', '$rootScope', function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location, $window, $http, fileService, $rootScope) {
     console.info('BlogController executing.', $scope);
 
     $scope.commentData = {};
@@ -29,6 +29,21 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             $scope.comments = blogData.comments;
             $scope.instanceList = blogData.blogInstanceList;
             $scope.tagList = blogData.tagList;
+            
+            // Setting meta tags
+            var keywords = [];
+            var descriptions = [];
+
+            blogData.metaList.forEach(function (meta) {
+                if (meta.type == "keywords") {
+                    keywords.push(meta.value)
+                } else if (meta.type == "description") {
+                    descriptions.push(meta.value)
+                }
+            });
+
+            $rootScope.description = descriptions[0] ? descriptions[0] : '';
+            $rootScope.keywords = keywords.toString();
 
             /*
              * Async load Prettify API. Loading two scripts since "prettify.js" doesn't include the "prettify.css"
@@ -160,6 +175,14 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         });
     };
 
+    $scope.auth = function() {
+        if($scope.actionName == 'create') {
+            $http.get('/api/v1/blog/action/create');
+        } else if ($scope.actionName == 'edit') {
+            $http.get('/api/v1/blog/action/update');
+        }
+    }
+
     $scope.onFileSelect = function($files) {
         $scope.selectedFile = $files[0];
     };
@@ -187,8 +210,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             blogContent.$update()
         }
     }
-
-
+    
     if (($scope.controllerName === 'blog') && (['edit', 'show'].indexOf($scope.actionName) > -1)) {
         $scope.fetchBlog($scope.id);
         $scope.$watch('id', function(newId, oldId) {

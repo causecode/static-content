@@ -28,6 +28,8 @@ import org.springframework.http.HttpStatus
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.blog.comment.BlogComment
 import com.cc.content.blog.comment.Comment
+
+import com.cc.content.meta.Meta
 import com.lucastex.grails.fileuploader.UFile
 import com.lucastex.grails.fileuploader.FileUploaderServiceException
 import com.lucastex.grails.fileuploader.FileUploaderService
@@ -233,8 +235,10 @@ class BlogController {
         blogInstance.body = blogInstance.body?.markdownToHtml()
 
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
+        List<Meta> metaInstanceList = blogInstance.getMetaTags()
+        
         Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
-            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags]
+            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
 
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
@@ -253,14 +257,10 @@ class BlogController {
         redirect(url: blogShowUrl, permanent: true)
     }
 
-    @Transactional
-    def edit(Blog blogInstance) {
-        [blogInstance: blogInstance]
-    }
-
     /**
      * Update blog instance also sets tags for blog instance.
      */
+    @Secured(['ROLE_CONTENT_MANAGER', 'ROLE_EMPLOYEE'])
     @Transactional
     def update() {
         Map requestData = request.JSON
