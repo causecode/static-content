@@ -28,7 +28,11 @@ import org.springframework.http.HttpStatus
 import com.cc.annotation.shorthand.ControllerShorthand
 import com.cc.content.blog.comment.BlogComment
 import com.cc.content.blog.comment.Comment
+
 import com.cc.content.meta.Meta
+import com.lucastex.grails.fileuploader.UFile
+import com.lucastex.grails.fileuploader.FileUploaderServiceException
+import com.lucastex.grails.fileuploader.FileUploaderService
 
 /**
  * Provides default CRUD end point for Content Manager.
@@ -52,6 +56,7 @@ class BlogController {
     def commentService
     def blogService
     def grailsWebDataBinder
+    FileUploaderService fileUploaderService
     GrailsApplication grailsApplication
 
     private static String HTML_P_TAG_PATTERN = "(?s)<p(.*?)>(.*?)<\\/p>"
@@ -86,6 +91,7 @@ class BlogController {
         params.offset = offset ? offset: 0
         params.max = Math.min(max ?: defaultMax, 100)
 
+        // TODO Improve blog string query to support GORM/Hibernate criteria query
         StringBuilder query = new StringBuilder("""SELECT distinct new Map(b.id as id, b.body as body, b.title as title,
                             b.subTitle as subTitle, b.author as author, b.lastUpdated as lastUpdated, b.publishedDate as publishedDate) FROM Blog b """)
 
@@ -140,6 +146,7 @@ class BlogController {
             Blog blogInstance = Blog.get(it.id as long)
             it.author = contentService.resolveAuthor(blogInstance)
             it.numberOfComments = BlogComment.countByBlog(blogInstance)
+            it.blogImgSrc = blogInstance.blogImg?.path
             blogInstanceList.add(it)
         }
 
@@ -191,14 +198,27 @@ class BlogController {
 
         Blog.withTransaction { status ->
             Blog blogInstance = contentService.create(requestData, metaTypeList, metaValueList, Blog.class)
-            if (blogInstance.hasErrors()) {
-                status.setRollbackOnly()
-                respond(blogInstance.errors)
-                return false
+            UFile blogUfileInstance
+            String blogImgFilePath = requestData['blogImgFilePath']
+            try {
+                if (blogImgFilePath) {
+                    blogUfileInstance = fileUploaderService.saveFile(Blog.UFILE_GROUP, new File(blogImgFilePath))
+                }
+                blogInstance.blogImg = blogUfileInstance
+                blogInstance.validate()
+                if (blogInstance.hasErrors()) {
+                    status.setRollbackOnly()
+                    respond(blogInstance.errors)
+                    return false
+                }
+                blogInstance.setTags(requestData.tags?.tokenize(",")*.trim())
+                blogInstance.save(flush: true)
+                respond([success: true])
+            } catch (FileUploaderServiceException e) {
+                log.debug "Unable to upload file", e
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
+                respond ([message: e.message])
             }
-            blogInstance.setTags(requestData.tags?.tokenize(",")*.trim())
-            blogInstance.save(flush: true)
-            respond([success: true])
         }
     }
 
@@ -257,22 +277,35 @@ class BlogController {
                 return false
             }
         }
-
         Blog.withTransaction { status ->
             String tags = requestData.remove("tags")
             List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
             List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
             contentService.update(requestData, blogInstance, metaTypeList, metaValueList)
+            
+            String blogImgFilePath = requestData['blogImgFilePath']
+            UFile blogUfileInstance
+            try {
+               if(blogImgFilePath) {
+                    blogUfileInstance = fileUploaderService.saveFile(Blog.UFILE_GROUP, new File(blogImgFilePath))
+                    blogInstance.blogImg = blogUfileInstance
+                }
 
-            if (blogInstance.hasErrors()) {
-                status.setRollbackOnly()
-                respond(blogInstance.errors)
-                return false
+                if (blogInstance.hasErrors()) {
+                    status.setRollbackOnly()
+                    respond(blogInstance.errors)
+                    return false
+                }
+                blogInstance.setTags(tags?.tokenize(",")*.trim())
+                blogInstance.save(flush: true)
+
+                respond([success: true]) 
+            } catch (FileUploaderServiceException e) {
+                log.debug "Unable to upload file", e
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
+                respond ([message: e.message])
             }
-            blogInstance.setTags(tags?.tokenize(",")*.trim())
-            blogInstance.save(flush: true)
-
-            respond([success: true])
+            
         }
     }
 
