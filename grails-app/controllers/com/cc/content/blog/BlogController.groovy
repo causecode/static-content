@@ -198,25 +198,25 @@ class BlogController {
             Blog blogInstance = contentService.create(requestData, metaTypeList, metaValueList, Blog.class)
             UFile blogUfileInstance
             String blogImgFilePath = requestData['blogImgFilePath']
-            if (blogImgFilePath) {
-                try {
+            try {
+                if (blogImgFilePath) {
                     blogUfileInstance = fileUploaderService.saveFile(Blog.UFILE_GROUP, new File(blogImgFilePath))
-                } catch (FileUploaderServiceException e) {
-                    log.debug "Unable to upload file", e
-                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
-                    respond ([message: e.message])
                 }
+                blogInstance.blogImg = blogUfileInstance
+                blogInstance.validate()
+                if (blogInstance.hasErrors()) {
+                    status.setRollbackOnly()
+                    respond(blogInstance.errors)
+                    return false
+                }
+                blogInstance.setTags(requestData.tags?.tokenize(",")*.trim())
+                blogInstance.save(flush: true)
+                respond([success: true])
+            } catch (FileUploaderServiceException e) {
+                log.debug "Unable to upload file", e
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
+                respond ([message: e.message])
             }
-            blogInstance.blogImg = blogUfileInstance
-            blogInstance.validate()
-            if (blogInstance.hasErrors()) {
-                status.setRollbackOnly()
-                respond(blogInstance.errors)
-                return false
-            }
-            blogInstance.setTags(requestData.tags?.tokenize(",")*.trim())
-            blogInstance.save(flush: true)
-            respond([success: true])
         }
     }
 
