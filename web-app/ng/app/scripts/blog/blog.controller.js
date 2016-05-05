@@ -3,7 +3,7 @@
 'use strict';
 
 controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal', 'PageModel', '$timeout',
-        '$location', '$window', function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location, $window) {
+        '$location', '$window', '$http', '$rootScope', function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location, $window, $http, $rootScope) {
     console.info('BlogController executing.', $scope);
 
     $scope.commentData = {};
@@ -27,6 +27,21 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             $scope.comments = blogData.comments;
             $scope.instanceList = blogData.blogInstanceList;
             $scope.tagList = blogData.tagList;
+            
+            // Setting meta tags
+            var keywords = [];
+            var descriptions = [];
+
+            blogData.metaList.forEach(function (meta) {
+                if (meta.type == "keywords") {
+                    keywords.push(meta.value)
+                } else if (meta.type == "description") {
+                    descriptions.push(meta.value)
+                }
+            });
+
+            $rootScope.description = descriptions[0] ? descriptions[0] : '';
+            $rootScope.keywords = keywords.toString();
 
             /*
              * Async load Prettify API. Loading two scripts since "prettify.js" doesn't include the "prettify.css"
@@ -157,6 +172,14 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             appService.showAlertMessage(resp.data.message, 'danger', {element: '.modal .alert', makeStrong: false});
         });
     };
+
+    $scope.auth = function() {
+        if($scope.actionName == 'create') {
+            $http.get('/api/v1/blog/action/create');
+        } else if ($scope.actionName == 'edit') {
+            $http.get('/api/v1/blog/action/update');
+        }
+    }
 
     if (($scope.controllerName === 'blog') && (['edit', 'show'].indexOf($scope.actionName) > -1)) {
         $scope.fetchBlog($scope.id);
