@@ -21,16 +21,20 @@ grails.project.dependency.resolution = {
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
         inherits true
+        mavenRepo ([id: "ccRepo", url: "http://maven.causecode.com"])
         grailsHome()
         grailsPlugins()
         mavenRepo "http://repo.spring.io/milestone/"
-        mavenRepo "http://maven.causecode.com"
         grailsCentral()
         mavenLocal()
         mavenCentral()
     }
 
     dependencies {
+        compile ("org.apache.jclouds.provider:cloudfiles-us:1.6.2-incubating", "org.jclouds:jclouds-compute:1.6.0") {
+            excludes "jclouds-core"
+        }
+        compile "org.apache.jclouds:jclouds-core:1.7.2"
     }
 
     plugins {
@@ -39,6 +43,9 @@ grails.project.dependency.resolution = {
             export = false
         }
         runtime (":hibernate:3.6.10.7") {
+            export = false
+        }
+        compile ("com.cc.plugins:file-uploader:2.3.1") {
             export = false
         }
         build (":tomcat:7.0.50", ":release:3.1.1", ":rest-client-builder:2.1.1") {
