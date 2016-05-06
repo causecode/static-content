@@ -1,4 +1,4 @@
-<%@ page import="com.cc.content.meta.Meta"%>
+<%@ page import="com.causecode.content.meta.Meta"%>
 
 <div class="form-group">
     <label class="control-label col-sm-2" for="type">

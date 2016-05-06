@@ -7,7 +7,7 @@ build/**
 .settings/*
 plugins/**
 /plugin.xml
-/*.iml
+*.iml
 stacktrace.log
 target/**
 target-eclipse/**

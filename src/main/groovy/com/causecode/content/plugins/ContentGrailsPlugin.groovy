@@ -12,8 +12,8 @@ import java.lang.annotation.Annotation
 
 import grails.plugin.springsecurity.SpringSecurityUtils
 
-import com.cc.annotation.shorthand.ControllerShorthand
-import com.cc.content.ContentService
+import com.causecode.annotation.shorthand.ControllerShorthand
+import com.causecode.content.ContentService
 
 class ContentGrailsPlugin {
 
@@ -89,6 +89,7 @@ Also provides shortened and user friendly urls.
             }
             println "\nShorthand annotated controller map: $shorthandAnnotatedControllerMap"
             println ""
+            println "<<<<<<<<<<<Dynamic method added to $metaClassInstance"
         }
     }
 

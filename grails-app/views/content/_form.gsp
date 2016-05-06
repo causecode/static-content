@@ -39,7 +39,7 @@
     </div>
 </div>
 
-<g:if test="${contentInstance instanceof com.cc.content.blog.Blog }">
+<g:if test="${contentInstance instanceof com.causecode.content.blog.Blog }">
     <div class="form-group">
         <label class="control-label col-sm-2" for="tags"><g:message code="blog.body.label" default="Tags" /></label>
         <div class="col-sm-5">
@@ -48,13 +48,13 @@
     </div>
 </g:if>
 
-<g:if test="${contentInstance instanceof com.cc.content.page.Page }">
+<g:if test="${contentInstance instanceof com.causecode.content.page.Page }">
     <div class="form-group ${hasErrors(bean: contentInstance, field: 'pageLayout', 'has-error')}">
         <label class="control-label col-sm-2" for="pageLayout">
             <g:message code="page.pageLayout.label" default="Page Layout" />
         </label>
         <div class="col-sm-5">
-            <g:select id="pageLayout" name="pageLayout.id" from="${com.cc.content.PageLayout.list()}" optionKey="id"
+            <g:select id="pageLayout" name="pageLayout.id" from="${com.causecode.content.PageLayout.list()}" optionKey="id"
                 value="${contentInstance?.pageLayout?.id}" noSelection="['null': '']" class="form-control" />
         </div>
     </div>
@@ -122,7 +122,7 @@
     <g:render template="/meta/form" />
 </div>
 
-<g:if test="${contentInstance instanceof com.cc.content.page.Page && contentInstance.id }">
+<g:if test="${contentInstance instanceof com.causecode.content.page.Page && contentInstance.id }">
     <div class="page-header">
         <h2>Revisions</h2>
     </div>

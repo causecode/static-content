@@ -99,10 +99,10 @@
         </div>
     </div>
     <r:script>
-        var startSize = ${grailsApplication.config.cc.plugins.content.tags.startSize ?:'15'}
-        var endSize = ${grailsApplication.config.cc.plugins.content.tags.endSize ?:'25'}
-        var startColor = "${grailsApplication.config.cc.plugins.content.tags.startColor ?:'#428bca'}"
-        var endColor = "${grailsApplication.config.cc.plugins.content.tags.endColor ?:'#428bca'}"
+        var startSize = ${grailsApplication.config.causecode.plugins.content.tags.startSize ?:'15'}
+        var endSize = ${grailsApplication.config.causecode.plugins.content.tags.endSize ?:'25'}
+        var startColor = "${grailsApplication.config.causecode.plugins.content.tags.startColor ?:'#428bca'}"
+        var endColor = "${grailsApplication.config.causecode.plugins.content.tags.endColor ?:'#428bca'}"
         $(function () {
           $('div.blog-tags a').tagcloud({
               size: {start: parseInt(startSize), end: parseInt(endSize), unit:'px'},

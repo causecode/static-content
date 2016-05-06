@@ -18,7 +18,7 @@
                 </ul>
             </div>
             <div class="post-entry">
-                <p ng-bind-html="blog.body | limitTo: 250 | to_trusted"></p>
+                <p ng-bind-html="blog.body | limitTo: 250"></p>
                 <a class="read-more" ui-sref="urlMap.resource({ctrl: 'blog', action: 'show', resource: blog.id})">
                     Read more <i class="fa fa-long-arrow-right"></i>
                 </a>

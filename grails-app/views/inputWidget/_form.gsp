@@ -2,8 +2,8 @@
     <label class="control-label col-sm-3" for="type"> <g:message code="inputWidget.type.label" default="Type" />
     </label>
     <div class=" col-lg-6">
-        <g:select name="${prefix}type" from="${com.cc.content.inputWidget.InputWidgetType?.values()}"
-            keys="${com.cc.content.inputWidget.InputWidgetType.values()*.name()}" required=""
+        <g:select name="${prefix}type" from="${com.causecode.content.inputWidget.InputWidgetType?.values()}"
+            keys="${com.causecode.content.inputWidget.InputWidgetType.values()*.name()}" required=""
             class="form-control input-widget-type-selector" value="${inputWidgetInstance.type.toString()}" 
             noSelection="${['null':'Select One...']}"/>
     </div>
@@ -63,8 +63,8 @@
             default="Help Type" />
     </label>
     <div class=" col-lg-6">
-        <g:select name="${prefix}helpType" from="${com.cc.content.inputWidget.InputWidgetHelpType?.values()}"
-            keys="${com.cc.content.inputWidget.InputWidgetHelpType.values()*.name()}"
+        <g:select name="${prefix}helpType" from="${com.causecode.content.inputWidget.InputWidgetHelpType?.values()}"
+            keys="${com.causecode.content.inputWidget.InputWidgetHelpType.values()*.name()}"
             value="${inputWidgetInstance.helpType.toString()}" required="" class="form-control " />
     </div>
 </div>
@@ -84,8 +84,8 @@
             default="validation" />
     </label>
     <div class=" col-lg-6">
-        <g:select name="${prefix}validation" from="${com.cc.content.inputWidget.InputWidgetValidation?.values()}"
-            keys="${com.cc.content.inputWidget.InputWidgetValidation.values()*.name()}" required=""
+        <g:select name="${prefix}validation" from="${com.causecode.content.inputWidget.InputWidgetValidation?.values()}"
+            keys="${com.causecode.content.inputWidget.InputWidgetValidation.values()*.name()}" required=""
             class="form-control " value="${inputWidgetInstance.validation.toString()}"
             multiple="true" noSelection="['':'Select Validation']" />
     </div>

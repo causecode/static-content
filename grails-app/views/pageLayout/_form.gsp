@@ -4,7 +4,7 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are not permitted. -->
 
-<%@ page import="com.cc.content.PageLayout"%>
+<%@ page import="com.causecode.content.PageLayout"%>
 
 <div class="form-group ${hasErrors(bean: pageLayoutInstance, field: 'layoutName', 'error')} ">
     <label class="control-label col-sm-2" for="layoutName"> <g:message code="pageLayout.layoutName.label"

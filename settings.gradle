@@ -1,0 +1,5 @@
+rootProject.name = 'content'
+
+include 'taggable'
+
+project(':taggable').projectDir = new File('../taggable')

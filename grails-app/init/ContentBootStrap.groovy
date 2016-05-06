@@ -6,8 +6,8 @@
  * without modification, are not permitted.
  */
 
-import com.cc.marshaller.BlogDomainMarshaller
-import com.cc.marshaller.MenuItemMarshaller
+import com.causecode.marshaller.BlogDomainMarshaller
+import com.causecode.marshaller.MenuItemMarshaller
 import grails.converters.JSON
 
 class ContentBootStrap {
