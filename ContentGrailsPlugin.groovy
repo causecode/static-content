@@ -15,7 +15,7 @@ import com.cc.content.ContentService
 
 class ContentGrailsPlugin {
 
-    def version = "Release 2.4.3-RC3"
+    def version = "2.4.3-RC4"
     def groupId = "com.cc.plugins"
     def grailsVersion = "2.1 > *"
     def pluginExcludes = [
