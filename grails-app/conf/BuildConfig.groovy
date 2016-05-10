@@ -45,10 +45,11 @@ grails.project.dependency.resolution = {
         runtime (":hibernate:3.6.10.7") {
             export = false
         }
-        compile ("com.cc.plugins:file-uploader:2.3.1") {
+
+        compile ("com.cc.plugins:file-uploader:2.4.5-RC3") {
             export = false
         }
-        build (":tomcat:7.0.50", ":release:3.1.1", ":rest-client-builder:2.1.1") {
+        build (":tomcat:7.0.50", ":release:3.0.1", ":rest-client-builder:2.0.1") {
             export = false
         }
         if (Environment.isDevelopmentMode()) {
