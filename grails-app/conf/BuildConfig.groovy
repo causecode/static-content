@@ -31,10 +31,6 @@ grails.project.dependency.resolution = {
     }
 
     dependencies {
-        compile ("org.apache.jclouds.provider:cloudfiles-us:1.6.2-incubating", "org.jclouds:jclouds-compute:1.6.0") {
-            excludes "jclouds-core"
-        }
-        compile "org.apache.jclouds:jclouds-core:1.7.2"
     }
 
     plugins {

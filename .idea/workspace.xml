@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d49d2452-daa4-4d21-99aa-4a561b19520b" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ContentGrailsPlugin.groovy" afterPath="$PROJECT_DIR$/ContentGrailsPlugin.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/conf/BuildConfig.groovy" afterPath="$PROJECT_DIR$/grails-app/conf/BuildConfig.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugin.xml" afterPath="$PROJECT_DIR$/plugin.xml" />
-    </list>
+    <list default="true" id="d49d2452-daa4-4d21-99aa-4a561b19520b" name="Default" comment="" />
     <ignored path="static-content.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/target-eclipse/classes/" />
@@ -82,8 +78,8 @@
       <file leaf-file-name="BuildConfig.groovy" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/grails-app/conf/BuildConfig.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6701031">
-              <caret line="51" column="76" selection-start-line="51" selection-start-column="76" selection-end-line="51" selection-end-column="76" />
+            <state vertical-scroll-proportion="-0.010309278">
+              <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -441,7 +437,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="80609000" />
+    <option name="totallyTimeSpent" value="80965000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1366" y="-4" width="1920" height="1084" extended-state="6" />
@@ -898,8 +894,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/grails-app/conf/BuildConfig.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6701031">
-          <caret line="51" column="76" selection-start-line="51" selection-start-column="76" selection-end-line="51" selection-end-column="76" />
+        <state vertical-scroll-proportion="-0.010309278">
+          <caret line="18" column="5" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="5" />
           <folding />
         </state>
       </provider>
