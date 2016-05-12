@@ -42,7 +42,7 @@ grails.project.dependency.resolution = {
             export = false
         }
 
-        compile ("com.cc.plugins:file-uploader:2.4.5-RC3") {
+        compile ("com.cc.plugins:file-uploader:2.4.6") {
             export = false
         }
         build (":tomcat:7.0.50", ":release:3.0.1", ":rest-client-builder:2.0.1") {
