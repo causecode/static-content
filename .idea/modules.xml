@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/static-content.iml" filepath="$PROJECT_DIR$/static-content.iml" />
+      <module fileurl="file://$PROJECT_DIR$/grails-app/grails-app.iml" filepath="$PROJECT_DIR$/grails-app/grails-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/main/groovy/groovy.iml" filepath="$PROJECT_DIR$/src/main/groovy/groovy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/integration-test/integration-test.iml" filepath="$PROJECT_DIR$/src/integration-test/integration-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/main/main.iml" filepath="$PROJECT_DIR$/src/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/main/templates/templates.iml" filepath="$PROJECT_DIR$/src/main/templates/templates.iml" />
     </modules>
   </component>
 </project>

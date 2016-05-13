@@ -6,7 +6,7 @@
  * without modification, are not permitted.
  */  -->
 
-<%@ page import="com.cc.content.PageLayout"%>
+<%@ page import="com.causecode.content.PageLayout"%>
 <!DOCTYPE html>
 <html>
 <head>

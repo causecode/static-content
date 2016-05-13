@@ -6,7 +6,7 @@
  * without modification, are not permitted.
  */ -->
 
-<%@ page import="com.cc.content.blog.Blog"%>
+<%@ page import="com.causecode.content.blog.Blog"%>
 <!doctype html>
 <html>
 <head>
