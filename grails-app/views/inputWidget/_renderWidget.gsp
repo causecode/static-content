@@ -1,4 +1,4 @@
-<%@ page import="com.cc.content.inputWidget.InputWidgetType"%>
+<%@ page import="com.causecode.content.inputWidget.InputWidgetType"%>
 
 <g:set var="inputWidgetType" value="${inputWidgetInstance.type}"></g:set>
 <g:set var="additionalAttrs" value="${additionalAttrs }" />

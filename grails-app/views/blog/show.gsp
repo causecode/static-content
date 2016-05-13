@@ -84,10 +84,10 @@
     <g:render template="/blog/templates/commentOverlay" plugin="comment" />
 
     <r:script>
-        var startSize = ${grailsApplication.config.cc.plugins.content.tags.startSize }
-        var endSize = ${grailsApplication.config.cc.plugins.content.tags.endSize }
-        var startColor = "${grailsApplication.config.cc.plugins.content.tags.startColor }"
-        var endColor = "${grailsApplication.config.cc.plugins.content.tags.endColor }"
+        var startSize = ${grailsApplication.config.causecode.plugins.content.tags.startSize }
+        var endSize = ${grailsApplication.config.causecode.plugins.content.tags.endSize }
+        var startColor = "${grailsApplication.config.causecode.plugins.content.tags.startColor }"
+        var endColor = "${grailsApplication.config.causecode.plugins.content.tags.endColor }"
         $(function () {
           $('div.blog-tags a').tagcloud({
               size: {start: parseInt(startSize), end: parseInt(endSize), unit:'px'},
