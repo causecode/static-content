@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus
 import com.causecode.annotation.shorthand.ControllerShorthand
 import com.causecode.content.ContentRevision
 import com.causecode.content.meta.Meta
+import grails.core.GrailsApplication
 
 /**
  * Provides default CRUD end point for Content Manager.
@@ -35,6 +36,7 @@ class PageController {
     static responseFormats = ["json"]
 
     def contentService
+    GrailsApplication grailsApplication
 
     def handleRequiredPropertyMissingException(RequiredPropertyMissingException exception) {
         log.debug "Page instance not found"
@@ -57,7 +59,7 @@ class PageController {
         params.order = "desc"
         params.max = Math.min(max ?: 10, 100)
 
-        String contentManagerRole = grailsApplication.config.causecode.plugins.content.contentMangerRole
+        String contentManagerRole = grailsApplication.config.cc.plugins.content.contentMangerRole
         List pageInstanceList = Page.createCriteria().list(params) {
             if(SpringSecurityUtils.ifNotGranted(contentManagerRole))
                 eq("publish", true)

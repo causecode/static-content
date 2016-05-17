@@ -59,7 +59,7 @@ class MenuController {
     def show(Menu menuInstance) {
         List<MenuItem> menuItemInstanceList = menuInstance.menuItems.findAll { !it.parent }
         respond ([menuItemInstanceList: menuItemInstanceList, menuInstance: menuInstance,
-            roleList: contentService.getRoleClass().list()])
+                  roleList: contentService.getRoleClass().list()])
     }
 
     def edit(Menu menuInstance) {

@@ -15,11 +15,11 @@ import grails.plugin.springsecurity.SpringSecurityUtils
 import com.causecode.annotation.shorthand.ControllerShorthand
 import com.causecode.content.ContentService
 
-class ContentGrailsPlugin {
+class StaticContentGrailsPlugin {
 
-    def version = "2.4.4"
+    def version = "2.4.3-RC4"
     def groupId = "com.cc.plugins"
-    def grailsVersion = "2.1 > *"
+    def grailsVersion = "3.1.4"
     def pluginExcludes = [
         "grails-app/views/error.gsp",
         ".gitmodules",
@@ -81,14 +81,9 @@ Also provides shortened and user friendly urls.
             metaClassInstance.getShorthandAnnotatedControllers {
                 return shorthandAnnotatedControllerMap
             }
-            metaClassInstance.getRoleClass {
-                application.getDomainClass(SpringSecurityUtils.securityConfig.authority.className).clazz
-            }
             metaClassInstance.getAuthorClass {
                 application.getDomainClass(SpringSecurityUtils.securityConfig.userLookup.userDomainClassName).clazz
             }
-            println "\nShorthand annotated controller map: $shorthandAnnotatedControllerMap"
-            println ""
         }
     }
 
