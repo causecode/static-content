@@ -39,14 +39,14 @@ class ContentTagLib {
         if(!(attrs.map instanceof Map))
             throwTagError("Tag [content:breadcrumb] attribute [map] must be of type java.util.Map")
 
-        LinkedHashMap baseURLMap = grailsApplication.config.causecode.plugins.content.breadcrumbs.baseMap
+        LinkedHashMap baseURLMap = grailsApplication.config.cc.plugins.content.breadcrumbs.baseMap
         out << g.render(template: "/home/templates/breadcrumb", model: [baseURLMap: baseURLMap,
             urlMap: attrs.map])
     }
 
     /**
      * Used when current user have content role
-     * described by causecode.plugins.content.contentManagerRole
+     * described by cc.plugins.content.contentManagerRole
      */
     @Deprecated
     def canEdit = { attrs, body ->

@@ -8,8 +8,8 @@
 
 package com.causecode.content.inputWidget
 
-import static static com.causecode.content.inputWidget.InputWidgetHelpType.*
-import static static com.causecode.content.inputWidget.InputWidgetType.*
+import static com.causecode.content.inputWidget.InputWidgetHelpType.*
+import static com.causecode.content.inputWidget.InputWidgetType.*
 
 /**
  * This taglib provides tags for rendering comments on blog.

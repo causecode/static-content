@@ -22,6 +22,8 @@ import com.causecode.content.blog.Blog
 import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.page.Page
 import com.causecode.content.meta.Meta
+import grails.core.GrailsApplication
+import grails.plugin.springsecurity.SpringSecurityUtils
 
 /**
  * This taglib provides tags for rendering comments on blog.
@@ -46,11 +48,7 @@ class ContentService {
      */
     def friendlyUrlService
     def springSecurityService
-    
-    /**
-     * Dependency injection for the grailsApplication
-     */
-    def grailsApplication
+    GrailsApplication grailsApplication
 
     /**
      * Used to get author of content instance with the help of author property passed.
@@ -61,7 +59,8 @@ class ContentService {
      * author field is not a number the default string 'ANONYMOUS_USER' returned.
      */
     String resolveAuthor(Content contentInstance, String authorProperty = "fullName") {
-        //return "Temp User"
+        // TODO: Fix this
+        return "Temp User"
         if(!contentInstance?.id) {
             def currentUser = springSecurityService.currentUser
             return currentUser ? currentUser.id.toString() : ANONYMOUS_USER
@@ -276,4 +275,7 @@ class ContentService {
         return grailsLinkGenerator.link(attrs)
     }
 
+    def getRoleClass() {
+        return grailsApplication.getDomainClass(SpringSecurityUtils.securityConfig.authority.className).clazz
+    }
 }
