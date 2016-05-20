@@ -8,27 +8,29 @@
 
 package static.content
 
+import grails.plugins.*
+import grails.core.GrailsApplication
 import java.lang.annotation.Annotation
-
 import grails.plugin.springsecurity.SpringSecurityUtils
 
 import com.causecode.annotation.shorthand.ControllerShorthand
 import com.causecode.content.ContentService
 
-class StaticContentGrailsPlugin {
+
+class StaticContentGrailsPlugin extends Plugin {
 
     def version = "2.4.3-RC4"
     def groupId = "com.cc.plugins"
-    def grailsVersion = "3.1.4"
+    def grailsVersion = "3.1.4 > *"
     def pluginExcludes = [
         "grails-app/views/error.gsp",
         ".gitmodules",
-        "src/templates/*",
-        "web-app/ng/app/app.js",
-        "web-app/ng/app/index.html",
-        "web-app/ng/Gruntfile.js",
-        "web-app/ng/bower.json",
-        "web-app/ng/package.json"
+        "src/main/templates/*",
+        "src/main/webapp/ng/app/app.js",
+        "src/main/webapp/ng/app/index.html",
+        "src/main/webapp/ng/Gruntfile.js",
+        "src/main/webapp/ng/bower.json",
+        "src/main/webapp/ng/package.json"
     ]
 
     def title = "Content Plugin"
@@ -38,6 +40,7 @@ class StaticContentGrailsPlugin {
 A plugin used to manage contents like static pages, menus etc. at one place.
 Also provides shortened and user friendly urls.
 '''
+    def profiles = ['web']
     def documentation = "http://grails.org/plugin/content"
 
     //    def license = "APACHE"
@@ -52,39 +55,40 @@ Also provides shortened and user friendly urls.
 
     def watchedResources = "file:./grails-app/services/*ContentService.groovy"
 
-    def doWithDynamicMethods = { ctx ->
+    GrailsApplication grailsApplication
+
+    Closure doWithSpring() { {->
+            // TODO Implement runtime spring config (optional)
+        }
+    }
+
+    void doWithDynamicMethods() {
+        // TODO Implement registering dynamic methods to classes (optional)
+        def ctx = grailsApplication.mainContext
         println "\nConfiguring content plugin ..."
-        addServiceMethod(ctx)
+
         println "... finished configuring content plugin\n"
     }
 
-    def onChange = { event ->
+    void doWithApplicationContext() {
+        // TODO Implement post initialization spring config (optional)
+    }
+
+    void onChange(Map<String, Object> event) {
+        // TODO Implement code that is executed when any artefact that this plugin is
+        // watching is modified and reloaded. The event contains: event.source,
+        // event.application, event.manager, event.ctx, and event.plugin.
         if (event.source && application.isServiceClass(event.source)) {
             addServiceMethod(event.ctx)
         }
     }
 
-    private void addServiceMethod(ctx) {
-        def application = ctx.grailsApplication
-        MetaClass metaClassInstance = application.getServiceClass(ContentService.class.name).metaClass
-
-        if (!metaClassInstance.respondsTo(null, 'getShorthandAnnotatedControllers')) {
-            Map shorthandAnnotatedControllerMap = [:]
-            for(controller in application.controllerClasses) {
-                Annotation controllerAnnotation = controller.clazz.getAnnotation(ControllerShorthand.class)
-                if(controllerAnnotation) {  // Searching for shorthand for grails controller
-                    String actualName = controller.name
-                    String camelCaseName = actualName.replace(actualName.charAt(0), actualName.charAt(0).toLowerCase())
-                    shorthandAnnotatedControllerMap.put(camelCaseName, controllerAnnotation.value())
-                }
-            }
-            metaClassInstance.getShorthandAnnotatedControllers {
-                return shorthandAnnotatedControllerMap
-            }
-            metaClassInstance.getAuthorClass {
-                application.getDomainClass(SpringSecurityUtils.securityConfig.userLookup.userDomainClassName).clazz
-            }
-        }
+    void onConfigChange(Map<String, Object> event) {
+        // TODO Implement code that is executed when the project configuration changes.
+        // The event is the same as for 'onChange'.
     }
 
+    void onShutdown(Map<String, Object> event) {
+        // TODO Implement code that is executed when the application shuts down (optional)
+    }
 }
