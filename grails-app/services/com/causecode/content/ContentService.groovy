@@ -10,6 +10,7 @@ package com.causecode.content
 
 import grails.util.Environment
 
+import java.lang.annotation.Annotation
 import java.lang.reflect.Field
 
 import grails.plugin.springsecurity.SpringSecurityUtils
@@ -275,6 +276,19 @@ class ContentService {
         return grailsLinkGenerator.link(attrs)
     }
 
+    def getShorthandAnnotatedControllers() {
+
+        Map shorthandAnnotatedControllerMap = [:]
+        for(controller in application.controllerClasses) {
+            Annotation controllerAnnotation = controller.clazz.getAnnotation(ControllerShorthand.class)
+            if(controller.clazz.getAnnotation(ControllerShorthand.class)) {  // Searching for shorthand for grails controller
+                String actualName = controller.name
+                String camelCaseName = actualName.replace(actualName.charAt(0), actualName.charAt(0).toLowerCase())
+                shorthandAnnotatedControllerMap.put(camelCaseName, controllerAnnotation.value())
+            }
+        }
+            return shorthandAnnotatedControllerMap
+    }
     def getRoleClass() {
         return grailsApplication.getDomainClass(SpringSecurityUtils.securityConfig.authority.className).clazz
     }
