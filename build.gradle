@@ -21,11 +21,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "com.netflix.nebula:nebula-publishing-plugin:4.4.4"
+        // Uncomment while publishing 
+        //classpath "com.netflix.nebula:nebula-publishing-plugin:4.4.4"
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
     }
 }
 
+/*
 plugins {
     id 'nebula.maven-publish' version '4.4.4'
 }
@@ -50,13 +52,14 @@ project.publishing {
     repositories {
         maven {
             credentials {
-                username mavenUser
-                password mavenPassword
+                //username mavenUser
+                //password mavenPassword
             }
             url "http://maven-upload.causecode.com"
         }
     }
 }
+*/
 
 version "2.4.1"
 group "static.content"
