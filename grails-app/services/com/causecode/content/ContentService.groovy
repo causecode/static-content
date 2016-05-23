@@ -114,7 +114,7 @@ class ContentService {
     }
 
     /**
-     * Used to create Content instance with given parameters. 
+     * Used to create Content instance with given parameters.
      * @param args Map containing parameters required to create content instance.
      * @param metaTypes List containing meta types for Content instance.
      * @param metaValues List containing meta values for Content instance.
@@ -223,7 +223,7 @@ class ContentService {
      * @param attrs.domain REQUIRED the name of the domain class from which
      * sanitized title will be appended in uri. Domain class must have SanitizedTitle
      * annotation.
-     * @param attrs.controller REQUIRED the name of the controller for which 
+     * @param attrs.controller REQUIRED the name of the controller for which
      * SEO friendly url needs to be generated. The controller must have annotaion
      * ControllerShortHand ehich specific value.
      * @return String SEO friendly url.
@@ -257,8 +257,9 @@ class ContentService {
 
         // See hooking into dynamic events
         getShorthandAnnotatedControllers().each { controllerName, shorthand ->
-            if(controllerName == attrs.controller)
+            if(controllerName == attrs.controller) {
                 controllerShortHand = shorthand
+            }
         }
 
         if(controllerShortHand)
@@ -276,10 +277,11 @@ class ContentService {
         return grailsLinkGenerator.link(attrs)
     }
 
-    def getShorthandAnnotatedControllers() {
+    Map getShorthandAnnotatedControllers() {
 
         Map shorthandAnnotatedControllerMap = [:]
-        for(controller in application.controllerClasses) {
+
+        for(controller in grailsApplication.mainContext.controllerClasses) {
             Annotation controllerAnnotation = controller.clazz.getAnnotation(ControllerShorthand.class)
             if(controller.clazz.getAnnotation(ControllerShorthand.class)) {  // Searching for shorthand for grails controller
                 String actualName = controller.name
@@ -287,7 +289,7 @@ class ContentService {
                 shorthandAnnotatedControllerMap.put(camelCaseName, controllerAnnotation.value())
             }
         }
-            return shorthandAnnotatedControllerMap
+        return shorthandAnnotatedControllerMap
     }
     def getRoleClass() {
         return grailsApplication.getDomainClass(SpringSecurityUtils.securityConfig.authority.className).clazz
