@@ -42,8 +42,10 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
                 }
             });
 
-            $rootScope.description = descriptions[0] ? descriptions[0] : '';
-            $rootScope.keywords = keywords.toString();
+            // Setting blog meta tags
+            document.querySelector( 'meta[name="description"]' ).setAttribute("content", descriptions[0] ? descriptions[0] : '')
+            document.querySelector( 'meta[property="og:description"]' ).setAttribute("content", descriptions[0] ? descriptions[0] : '')
+            document.querySelector( 'meta[name="keywords"]' ).setAttribute("content", keywords.toString())
 
             /*
              * Async load Prettify API. Loading two scripts since "prettify.js" doesn't include the "prettify.css"
