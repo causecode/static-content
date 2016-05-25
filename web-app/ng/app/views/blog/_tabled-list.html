@@ -2,7 +2,7 @@
     <article class="post" ng-repeat="blog in instanceList | filter: queryText">
         <div class="content">
             <h3 class="post-title">
-                <a ui-sref="blogView({resource: blog.id, title: blog.title})">
+                <a ui-sref="blogView({resource: blog.id, title: blog.encodedTitle})">
                     {{blog.title}} {{queryText}}
                 </a>
             </h3>
@@ -12,7 +12,7 @@
                     <li class="post-time post_date date updated" ng-if="blog.publishedDate">{{blog.publishedDate | date: MM/dd/yyyy}}</li>
                     <li class="post-author"> by {{blog.author}}</li>
                     <li class="post-comments-link">
-                        <a ui-sref="blogView({resource: blog.id, title: blog.title})">
+                        <a ui-sref="blogView({resource: blog.id, title: blog.encodedTitle})">
                             <i class="fa fa-comments"></i>{{blog.numberOfComments}} Comments
                         </a>
                     </li>
@@ -23,14 +23,14 @@
             </div>
             <div class="post-entry">
                 <p ng-bind-html="blog.body | htmlToText: 30"></p>
-                <a class="read-more" ui-sref="blogView({resource: blog.id, title: blog.title})">
+                <a class="read-more" ui-sref="blogView({resource: blog.id, title: blog.encodedTitle})">
                     Read more <i class="fa fa-long-arrow-right"></i>
                 </a>
             </div>
         </div>
     </article>
     <div ng-if="!instanceList">
-        <span>Blogs not found.</span>
+        <span>Loading Blogs</span>
     </div>
     <pagination total-items="totalCount" ng-model="elementModels.currentPage" max-size="paginationSize"
         ng-change="changePage()" items-per-page="itemsPerPage" ng-show="totalCount && totalCount > itemsPerPage">

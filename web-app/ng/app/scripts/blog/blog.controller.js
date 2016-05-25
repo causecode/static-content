@@ -3,7 +3,7 @@
 'use strict';
 
 controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal', 'PageModel', '$timeout',
-        '$location', '$window', '$http', 'fileService', '$rootScope', function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location, $window, $http, fileService, $rootScope) {
+        '$location', '$window', '$http', 'fileService', '$rootScope', 'SecurityService', function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location, $window, $http, fileService, $rootScope, securityService) {
     console.info('BlogController executing.', $scope);
 
     $scope.commentData = {};
@@ -88,6 +88,9 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     $scope.initializeGetListResponse = function(data) {
         if (data) {
             $scope.instanceList = data.instanceList;
+            $scope.instanceList.forEach(function(instance) {
+                instance.encodedTitle = instance.title.replace(/\s+/g, '-').toLowerCase();
+            });
             $scope.monthFilterList = data.monthFilterList;
             $scope.tagList = data.tagList;
         }
@@ -143,6 +146,11 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             console.log('Modal dismissed at: ' + new Date());
         });
     };
+
+    $scope.isBlogEditable = function() {
+        return ($scope.userInstance && (securityService.ifAnyGranted($scope.userRoles, 'ROLE_CONTENT_MANAGER,ROLE_ADMIN') ||
+                $scope.blogInstance.author === $scope.userInstance.username))
+    }
 
     function addComment(comments) {
         if ($scope.commentData.commentId) {
