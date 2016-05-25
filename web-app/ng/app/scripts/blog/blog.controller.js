@@ -22,7 +22,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
                  * existing partials added for creating contentInstnace.
                  */
                 $scope.contentInstance = $scope.blogInstance;
-                $scope.contentInstance.metaList = [];
+                $scope.contentInstance.metaList = blogData.metaList;
                 $scope.commentData.id = blogData.blogInstance.id;
                 $scope.blogImgSrc = blogData.blogImgSrc;
             }
