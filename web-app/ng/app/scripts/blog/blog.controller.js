@@ -3,7 +3,7 @@
 'use strict';
 
 controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appService', '$modal', 'PageModel', '$timeout',
-        '$location', '$window', '$http', 'fileService', '$rootScope', function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location, $window, $http, fileService, $rootScope) {
+        '$location', '$window', '$http', 'fileService', '$rootScope', 'SecurityService', function($scope, $state, BlogModel, appService, $modal, PageModel, $timeout, $location, $window, $http, fileService, $rootScope, securityService) {
     console.info('BlogController executing.', $scope);
 
     $scope.commentData = {};
@@ -25,7 +25,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
                  * existing partials added for creating contentInstnace.
                  */
                 $scope.contentInstance = $scope.blogInstance;
-                $scope.contentInstance.metaList = [];
+                $scope.contentInstance.metaList = blogData.metaList;
                 $scope.commentData.id = blogData.blogInstance.id;
                 $scope.blogImgSrc = blogData.blogImgSrc;
             }
@@ -45,8 +45,10 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
                 }
             });
 
-            $rootScope.description = descriptions[0] ? descriptions[0] : '';
-            $rootScope.keywords = keywords.toString();
+            // Setting blog meta tags
+            document.querySelector( 'meta[name="description"]' ).setAttribute("content", descriptions[0] ? descriptions[0] : '')
+            document.querySelector( 'meta[property="og:description"]' ).setAttribute("content", descriptions[0] ? descriptions[0] : '')
+            document.querySelector( 'meta[name="keywords"]' ).setAttribute("content", keywords.toString())
 
             /*
              * Async load Prettify API. Loading two scripts since "prettify.js" doesn't include the "prettify.css"
@@ -89,6 +91,9 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     $scope.initializeGetListResponse = function(data) {
         if (data) {
             $scope.instanceList = data.instanceList;
+            $scope.instanceList.forEach(function(instance) {
+                instance.encodedTitle = instance.title.replace(/\s+/g, '-').toLowerCase();
+            });
             $scope.monthFilterList = data.monthFilterList;
             $scope.tagList = data.tagList;
         }
@@ -140,6 +145,11 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             console.log('Modal dismissed at: ' + new Date());
         });
     };
+
+    $scope.isBlogEditable = function() {
+        return ($scope.userInstance && (securityService.ifAnyGranted($scope.userRoles, 'ROLE_CONTENT_MANAGER,ROLE_ADMIN') ||
+                $scope.blogInstance.author === $scope.userInstance.username))
+    }
 
     function addComment(comments) {
         if ($scope.commentData.commentId) {

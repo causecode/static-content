@@ -4,7 +4,7 @@
     </h2>
 </div>
 
-<div ng-repeat="meta in contentInstance.metaList">
+<div ng-controller="BlogController" ng-repeat="meta in contentInstance.metaList">
     <div class="form-group">
         <label class="col-sm-3 control-label" for="metaType">Type</label>
         <div class="col-sm-4">
