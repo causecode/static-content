@@ -10,6 +10,9 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     $scope.currentPage = 1;
     $scope.offset = 0;
     $scope.isBlogCtrl = true;
+    $scope.contentInstance = {};
+    $scope.monthFilter = '';
+    $scope.tag = '';
 
     $scope.fetchBlog = function(blogId) {
 
@@ -96,10 +99,6 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         $scope.tag = tag !== '' ? tag : $scope.tag;
         $scope.queryFilter = queryFilter !== '' ? queryFilter : $scope.queryFilter;
         $location.search({monthFilter: $scope.monthFilter, tag: $scope.tag, queryFilter: $scope.queryFilter});
-        // Redirecting to List page if filters applied on show page.
-        if ($scope.actionName === 'show') {
-            $state.go('urlMap', {ctrl: 'blog', action: 'list'});
-        }
     };
 
     $scope.deleteBlogComment = function(blogId, commentId) {
