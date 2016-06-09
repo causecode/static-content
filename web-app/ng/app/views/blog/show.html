@@ -4,9 +4,14 @@
             <article class="post">
                 <h2 class="title">
                     {{blogInstance.title}}
-                    <small if-any-granted="ROLE_CONTENT_MANAGER,ROLE_ADMIN" ng-class="ng-hide">
+                    <small ng-show="isBlogEditable(blogInstance)" ng-class="ng-hide">
                         <a ui-sref="urlMap.resource({ctrl: 'blog', action: 'edit', resource: blogInstance.id})">
                             <i class="fa fa-edit"> </i>
+                        </a>
+                    </small>
+                    <small if-any-granted="ROLE_CONTENT_MANAGER,ROLE_ADMIN" ng-class="ng-hide">
+                        <a href="" ng-click="deleteBlog(blogInstance)">
+                            <i class="fa fa-times"> </i>
                         </a>
                     </small>
                 </h2>
@@ -20,8 +25,8 @@
                         </li>
                     </ul>
                 </div>
-                <div class="content">
-                    <img ng-src="{{blogInstance.blogImgSrc}}" class="blog-img">
+                <div class="cover" ng-if="blogInstance.blogImgSrc">
+                    <div class="blog-img" style="background-image: url('{{blogInstance.blogImgSrc}}');"></div>
                     <p ng-bind-html="blogInstance.body"></p>
                 </div>
             </article>

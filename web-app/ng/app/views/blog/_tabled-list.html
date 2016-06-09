@@ -18,8 +18,8 @@
                     </li>
                 </ul>
             </div>
-            <div>
-                <img ng-src="{{blog.blogImgSrc}}" class="blog-img">
+            <div class="cover" ng-if="blog.blogImgSrc">
+                <div class="blog-img" style="background-image: url('{{blog.blogImgSrc}}');"></div>
             </div>
             <div class="post-entry">
                 <p ng-bind-html="blog.body | htmlToText: 30"></p>

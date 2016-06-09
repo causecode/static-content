@@ -1,23 +1,39 @@
 <div class="page-header">
     <h2 class="inline">
-        Meta Tags <small><a ng-click="addForm()"> <i class="fa fa-plus"> </i></a></small>
+        <div>Meta Tags</div>
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-4">
+                <select ng-model="metaType" class="form-control"
+                    ng-options="meta for meta in metaList">
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <small><a ng-click="addFormByMeta(metaType)"> <i class="fa fa-plus"> </i></a></small>
+            </div>
+        </div>
     </h2>
 </div>
 
-<div ng-controller="BlogController" ng-repeat="meta in contentInstance.metaList">
+<div ng-repeat="meta in contentInstance.metaList">
     <div class="form-group">
-        <label class="col-sm-3 control-label" for="metaType">Type</label>
-        <div class="col-sm-4">
-            <select id="metaType" ng-model="meta.type" class="form-control" ng-options="meta for meta in metaList">
-                <option value=""></option>
-            </select>
+        <div class="row">
+            <div class="col-sm-6">
+                <select id="metaType" ng-model="meta.type" class="form-control" 
+                ng-options="meta for meta in metaList" style="display: none;"></select>
+            </div>
+            
         </div>
+        
     </div>
 
-    <div class="form-group">
-        <label class="col-sm-3 control-label" for="metaValue">Value</label>
+    <div class="form-group row">
+        <label class="col-sm-3 control-label" for="metaValue">{{meta.type}}</label>
         <div class="col-sm-4">
             <textarea rows="3" id="metaValue" class="form-control" ng-model="meta.value"></textarea>
+        </div>
+        <div class="col-sm-1">
+            <button type="button" class="close" ng-click="deleteMeta($index)">&times;</button>
         </div>
     </div>
 </div>

@@ -9,8 +9,17 @@
 package com.cc.content.blog
 
 import org.grails.taggable.TagLink
+import com.cc.content.blog.BlogContentType
+import java.lang.Integer
+import com.cc.content.blog.comment.CommentService
+import com.cc.content.blog.BlogService
+import com.cc.content.meta.Meta
 
 class BlogService {
+
+    static transactional = false
+
+    CommentService commentService
 
     List getAllTags() {
         List tagList = []
@@ -27,6 +36,26 @@ class BlogService {
             tagList.add(tagListInstance)
         }
         return tagList
+    }
+
+    BlogContentType findBlogContentTypeByValue(Integer value) {
+        return BlogContentType.values().find { it.value == value }
+    }
+
+    Map getBlog(Blog blogInstance, boolean convertToMarkdown) {
+        List blogComments = commentService.getComments(blogInstance)
+        List tagList = getAllTags()
+        def blogInstanceTags = blogInstance.tags
+        // Convert markdown content into html format
+        if (convertToMarkdown) {
+            blogInstance.body = blogInstance.body?.markdownToHtml()
+        }
+        
+        List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
+        List<Meta> metaInstanceList = blogInstance.getMetaTags()
+
+        return [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
+            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
     }
 
 }

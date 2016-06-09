@@ -200,6 +200,9 @@ class BlogController {
             Blog blogInstance = contentService.create(requestData, metaTypeList, metaValueList, Blog.class)
             UFile blogUfileInstance
             String blogImgFilePath = requestData['blogImgFilePath']
+            Integer type = requestData.type ? (requestData.type as int) : null
+            blogInstance.contentType = blogService.findBlogContentTypeByValue(type)
+
             try {
                 if (blogImgFilePath) {
                     blogUfileInstance = fileUploaderService.saveFile(Blog.UFILE_GROUP, new File(blogImgFilePath))
@@ -216,39 +219,19 @@ class BlogController {
                 respond([success: true])
             } catch (FileUploaderServiceException e) {
                 log.debug "Unable to upload file", e
-                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
-                respond ([message: e.message])
+                blogInstance.errors.reject("Image couldn't be uploaded " + e.message)
+                respond(blogInstance.errors)
+                return false
             }
         }
     }
 
-    @Transactional
     @Secured(["permitAll"])
-    def show(Blog blogInstance) {
-        List blogComments = commentService.getComments(blogInstance)
-        List tagList = []
+    def show() {
+        Blog blogInstance = Blog.get(params.id)
+        boolean convertToMarkdown = params.boolean('convertToMarkdown')
+        Map result = blogService.getBlog(blogInstance, convertToMarkdown)
 
-        tagList = blogService.getAllTags()
-        def blogInstanceTags = blogInstance.tags
-
-        // Convert markdown content into html format
-        blogInstance.body = blogInstance.body?.markdownToHtml()
-
-        List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
-        List<Meta> metaInstanceList = blogInstance.getMetaTags()
-        
-        Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
-            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
-
-        /*
-         * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
-         * any change in data model must be updated in the GSP.
-         * Render GSP content in JSON format.
-         */
-        if (params._escaped_fragment_) {
-            render (view: "show", model: result, contentType: "application/json")
-            return
-        }
         if (request.xhr) {
             render text:(result as JSON)
             return
@@ -265,7 +248,7 @@ class BlogController {
     def update() {
         Map requestData = request.JSON
         Blog blogInstance = Blog.get(requestData['id'] as long)
-        bindData(blogInstance, requestData) 
+        bindData(blogInstance, requestData)
         String version = requestData['version']
 
         if (version != null) {
@@ -282,20 +265,27 @@ class BlogController {
             List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
             List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
             contentService.update(requestData, blogInstance, metaTypeList, metaValueList)
-            
+            Integer type = requestData.type ? (requestData.type as int) : null
+            blogInstance.contentType = blogService.findBlogContentTypeByValue(type)
+
             String blogImgFilePath = requestData['blogImgFilePath']
             UFile blogUfileInstance
             try {
-               if(blogImgFilePath) {
-                    blogUfileInstance = fileUploaderService.saveFile(Blog.UFILE_GROUP, new File(blogImgFilePath))
-                    blogInstance.blogImg = blogUfileInstance
+                if (blogImgFilePath != blogInstance.blogImg?.path) {
+                    if (blogImgFilePath) {
+                        blogUfileInstance = fileUploaderService.saveFile(Blog.UFILE_GROUP, new File(blogImgFilePath))
+                        blogInstance.blogImg = blogUfileInstance
+                    } else {
+                        blogInstance.blogImg = null;
+                    }
                 }
-
+                
                 if (blogInstance.hasErrors()) {
                     status.setRollbackOnly()
                     respond(blogInstance.errors)
                     return false
                 }
+
                 blogInstance.setTags(tags?.tokenize(",")*.trim())
                 blogInstance.save(flush: true)
 
@@ -309,6 +299,7 @@ class BlogController {
         }
     }
 
+    @Transactional
     def delete(Blog blogInstance) {
         try {
             contentService.delete(blogInstance)

@@ -49,6 +49,8 @@ class BlogDomainMarshaller implements ObjectMarshaller<JSON> {
         converter.convertAnother(blogInstance.lastUpdated)
         writer.key("publishedDate")
         converter.convertAnother(blogInstance.publishedDate)
+        writer.key("type")
+                .value(blogInstance.contentType?.value?.toString())
 
         writer.endObject()
     }

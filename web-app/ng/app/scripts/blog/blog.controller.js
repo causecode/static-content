@@ -11,12 +11,10 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     $scope.offset = 0;
     $scope.isBlogCtrl = true;
     $scope.contentInstance = {};
-    $scope.monthFilter = '';
-    $scope.tag = '';
 
-    $scope.fetchBlog = function(blogId) {
+    $scope.fetchBlog = function(blogId, convertToMarkdown) {
 
-        BlogModel.get({id: blogId}, function(blogData) {
+        BlogModel.get({id: blogId, convertToMarkdown: convertToMarkdown}, function(blogData) {
             if (blogData.blogInstance) {
                 $scope.blogInstance = new BlogModel(blogData.blogInstance);
                 /*
@@ -77,11 +75,20 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     };
 
     $scope.addForm = function() {
-        $scope.contentInstance.metaList.push({});
+        $scope.contentInstance.metaList.unshift({});
+    };
+
+    $scope.addFormByMeta = function(metaOption) {
+        $scope.contentInstance.metaList.unshift({type: metaOption});
+    };
+
+    $scope.deleteMeta = function(index) {
+        $scope.contentInstance.metaList.splice(index, 1);
     };
 
     PageModel.getMetaList(null, function(data){
         $scope.metaList = data.metaTypeList;
+        $scope.metaType = data.metaTypeList[0];
     }, function() {});
 
     /*
@@ -92,18 +99,28 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         if (data) {
             $scope.instanceList = data.instanceList;
             $scope.instanceList.forEach(function(instance) {
-                instance.encodedTitle = instance.title.replace(/\s+/g, '-').toLowerCase();
+                // Remove special characters and replace spaces with hyphen
+                instance.encodedTitle = instance.title.replace(/[^\w\s]/gi, '').replace(/\s+/g, '-').toLowerCase();
             });
             $scope.monthFilterList = data.monthFilterList;
             $scope.tagList = data.tagList;
         }
     };
 
-    $scope.filterBlogs = function(monthFilter, tag, queryFilter) {
-        $scope.monthFilter = monthFilter !== '' ? monthFilter : $scope.monthFilter;
-        $scope.tag = tag !== '' ? tag : $scope.tag;
-        $scope.queryFilter = queryFilter !== '' ? queryFilter : $scope.queryFilter;
-        $location.search({monthFilter: $scope.monthFilter, tag: $scope.tag, queryFilter: $scope.queryFilter});
+    $scope.filterBlogContent = function(queryFilter) {
+        queryFilter = queryFilter === "" ? null : queryFilter;
+        $location.search({queryFilter: queryFilter});
+    };
+
+    $scope.filterTags = function(tag) {
+        tag = tag === "" ? null : tag;
+        $location.search({tag: tag});
+        
+    };
+
+    $scope.filterArchives = function(monthFilter) {
+        monthFilter === "" ? null : monthFilter;
+        $location.search({monthFilter: monthFilter});
     };
 
     $scope.deleteBlogComment = function(blogId, commentId) {
@@ -125,7 +142,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             comment.comments = removeComment(comment.comments, commentId);
         });
         return comments;
-    }
+    };
 
     $scope.showCommentOverlay = function(blogId, commentId) {
         $scope.commentData.commentId = commentId;
@@ -146,10 +163,12 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         });
     };
 
-    $scope.isBlogEditable = function() {
-        return ($scope.userInstance && (securityService.ifAnyGranted($scope.userRoles, 'ROLE_CONTENT_MANAGER,ROLE_ADMIN') ||
-                $scope.blogInstance.author === $scope.userInstance.username))
-    }
+    $scope.isBlogEditable = function(blogInstance) {
+        var author = blogInstance? blogInstance.author : undefined;
+        var isAdminOrManager = securityService.ifAnyGranted($scope.userInstance, 
+            $scope.userRoles, 'ROLE_CONTENT_MANAGER,ROLE_ADMIN');
+        return ($scope.userInstance && (isAdminOrManager ||  author === $scope.userInstance.username));
+    };
 
     function addComment(comments) {
         if ($scope.commentData.commentId) {
@@ -168,7 +187,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             $scope.comments.push($scope.commentData);
         }
         return comments;
-    }
+    };
 
     $scope.comment = function() {
         $scope.commentData.id = $scope.blogInstance.id;
@@ -184,16 +203,21 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         });
     };
 
-    $scope.auth = function() {
-        if($scope.actionName == 'create') {
-            $http.get('/api/v1/blog/action/create');
-        } else if ($scope.actionName == 'edit') {
-            $http.get('/api/v1/blog/action/update');
-        }
-    }
-
     $scope.onFileSelect = function($files) {
         $scope.selectedFile = $files[0];
+        var fileReader = new $window.FileReader();
+        fileReader.onload = function(result) {
+            $scope.$apply(function() {
+                $scope.contentInstance.blogImgSrc = result.target.result;
+            });
+        }
+        fileReader.readAsDataURL($scope.selectedFile);
+    };
+
+    $scope.removeBlogImg = function() {
+        appService.confirm('Are you sure you want to remove image?', null, function() {
+            $scope.selectedFile = $scope.contentInstance.blogImgSrc = null;
+        });
     };
 
     $scope.saveBlogPost = function(blogContent) {
@@ -210,28 +234,30 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         if($scope.selectedFile) {
             var blogPostRef = blogContent;
             fileService.uploadFile($scope.selectedFile).then(function(data) {
-            blogPostRef.blogImgFilePath = data.filepath,
+            blogPostRef.blogImgFilePath = data.filepath;
             blogPostRef.$update();
             }, function(data) {
                 $scope.selectedFile = null;
             });
         } else {
+            blogContent.blogImgFilePath = blogContent.blogImgSrc;
             blogContent.$update()
         }
-    }
+    };
+
+    $scope.deleteBlog = function(blogInstance) {
+        blogInstance.$delete(null, function() {
+            $state.go('urlMap', {ctrl: 'blog', action: 'list'});
+        });
+    };
     
     if (($scope.controllerName === 'blog') && (['edit', 'show'].indexOf($scope.actionName) > -1)) {
-        $scope.fetchBlog($scope.id);
-        $scope.$watch('id', function(newId, oldId) {
-            if (newId && oldId && newId !== oldId) {
-                $scope.fetchBlog($scope.id);
-            }
-        });
+        var convertToMarkdown = (['edit'].indexOf($scope.actionName) > -1) ? false : true;
+        $scope.fetchBlog($scope.id, convertToMarkdown);
     } else if ($scope.actionName === 'create') {
         $scope.contentInstance = new BlogModel();
         $scope.contentInstance.metaList = [];
     }
-
     $scope.showMarkdownHelp = function() {
         $window.open("http://daringfireball.net/projects/markdown/syntax");
     };

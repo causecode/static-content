@@ -140,8 +140,18 @@ class ContentService {
             return contentInstance
         }
         contentInstance.save()
-        if(!metaTypes || !metaValues)
+        if (!metaTypes || !metaValues) {
             return contentInstance
+        }
+
+        // Remove all content meta relations
+        List<ContentMeta> contentMetas = ContentMeta.withCriteria {
+            createAlias("content", "contentInstance")
+            eq("contentInstance.id", contentInstance.id)
+        }*.delete();
+
+        // Remove all metas
+        contentMetas.meta*.delete()
 
         metaTypes.eachWithIndex { type, index ->
             Meta metaInstance = ContentMeta.withCriteria(uniqueResult: true) {
