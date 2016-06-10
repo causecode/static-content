@@ -67,6 +67,9 @@ class ContentService {
         }
         if(contentInstance.author?.isNumber()) {
             def authorInstance = getAuthorClass().get(contentInstance.author)
+            if (authorInstance.fullName) {
+                authorProperty = "fullName"
+            }
             return authorInstance[authorProperty]
         }
         return ANONYMOUS_USER
