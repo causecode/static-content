@@ -230,25 +230,27 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         }); 
     };
 
+    function blogUpdateCallback() {
+        $state.go('blogs');
+    }
+
     $scope.updateBlogPost = function(blogContent) {
         if($scope.selectedFile) {
             var blogPostRef = blogContent;
             fileService.uploadFile($scope.selectedFile).then(function(data) {
             blogPostRef.blogImgFilePath = data.filepath;
-            blogPostRef.$update();
+            blogPostRef.$update(null, blogUpdateCallback);
             }, function(data) {
                 $scope.selectedFile = null;
             });
         } else {
             blogContent.blogImgFilePath = blogContent.blogImgSrc;
-            blogContent.$update()
+            blogContent.$update(null, blogUpdateCallback)
         }
     };
 
     $scope.deleteBlog = function(blogInstance) {
-        blogInstance.$delete(null, function() {
-            $state.go('urlMap', {ctrl: 'blog', action: 'list'});
-        });
+        blogInstance.$delete(null, blogUpdateCallback);
     };
     
     if (($scope.controllerName === 'blog') && (['edit', 'show'].indexOf($scope.actionName) > -1)) {
