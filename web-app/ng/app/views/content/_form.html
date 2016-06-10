@@ -17,13 +17,16 @@
 <div class="form-group" ng-if="isBlogCtrl">
     <label class="col-sm-3 control-label" for="image">Image</label>
     <div class="col-sm-4">
-        <div class="blog-cover-img" ng-show="contentInstance.blogImgSrc" 
-        style="background-image: url('{{contentInstance.blogImgSrc}}'); height: 150px;">
+        <div ng-show="contentInstance.blogImgSrc">
+            <img class="blog-img" ng-src="{{contentInstance.blogImgSrc}}" style="height: 100px;" />
         </div>
-        <input type="button" class="btn btn-default btn-sm" value="Upload" 
-        onclick="document.querySelector('#blogImgUpload').click();" />
+        <h4>
+            <input type="button" class="btn btn-default btn-sm" value="Upload" 
+            onclick="document.querySelector('#blogImgUpload').click();" />  
+            <small>Max 2 MB size allowed</small>
+        </h4>
         <input id="blogImgUpload" style="display:none;" type="file" 
-        ng-file-select="onFileSelect($files, contentInstance)" class="df-margin-bottom" />
+            ng-file-select="onFileSelect($files, contentInstance)" class="df-margin-bottom" />
     </div>
     <div class="col-sm-1" ng-show="contentInstance.blogImgSrc">
         <span class="close" ng-click="removeBlogImg()">&times;</span>

@@ -9,11 +9,6 @@
                             <i class="fa fa-edit"> </i>
                         </a>
                     </small>
-                    <small if-any-granted="ROLE_CONTENT_MANAGER,ROLE_ADMIN" ng-class="ng-hide">
-                        <a href="" ng-click="deleteBlog(blogInstance)">
-                            <i class="fa fa-times"> </i>
-                        </a>
-                    </small>
                 </h2>
                 <div class="meta">
                     <ul class="meta-list list-inline">
@@ -25,8 +20,10 @@
                         </li>
                     </ul>
                 </div>
-                <div class="cover" ng-if="blogInstance.blogImgSrc">
-                    <div class="blog-cover-img" style="background-image: url('{{blogInstance.blogImgSrc}}');"></div>
+                <div class="cover">
+                    <div ng-if="blogInstance.blogImgSrc">
+                        <img class="blog-img" ng-src="{{blogInstance.blogImgSrc}}"/>
+                    </div>
                     <p ng-bind-html="blogInstance.body"></p>
                 </div>
             </article>

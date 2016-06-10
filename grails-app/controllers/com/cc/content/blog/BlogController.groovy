@@ -229,8 +229,7 @@ class BlogController {
     @Secured(["permitAll"])
     def show() {
         Blog blogInstance = Blog.get(params.id)
-        boolean convertToMarkdown = params.boolean('convertToMarkdown')
-        Map result = blogService.getBlog(blogInstance, convertToMarkdown)
+        Map result = blogService.getBlog(blogInstance, params.boolean('convertToMarkdown'))
 
         if (request.xhr) {
             render text:(result as JSON)

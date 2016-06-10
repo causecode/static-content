@@ -19,7 +19,9 @@
                 </ul>
             </div>
             <div class="cover" ng-if="blog.blogImgSrc">
-                <div class="blog-cover-img" style="background-image: url('{{blog.blogImgSrc}}');"></div>
+                <div>
+                    <img class="blog-img" ng-src="{{blog.blogImgSrc}}"/>
+                </div>
             </div>
             <div class="post-entry">
                 <p ng-bind-html="blog.body | htmlToText: 30"></p>
@@ -31,6 +33,9 @@
     </article>
     <div ng-if="!instanceList">
         <span>Loading Blogs</span>
+    </div>
+    <div ng-if="instanceList.length == 0">
+        <span>No results found</span>
     </div>
     <pagination total-items="totalCount" ng-model="elementModels.currentPage" max-size="paginationSize"
         ng-change="changePage()" items-per-page="itemsPerPage" ng-show="totalCount && totalCount > itemsPerPage">
