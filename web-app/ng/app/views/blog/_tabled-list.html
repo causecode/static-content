@@ -19,7 +19,7 @@
                 </ul>
             </div>
             <div class="cover" ng-if="blog.blogImgSrc">
-                <div class="blog-img" style="background-image: url('{{blog.blogImgSrc}}');"></div>
+                <div class="blog-cover-img" style="background-image: url('{{blog.blogImgSrc}}');"></div>
             </div>
             <div class="post-entry">
                 <p ng-bind-html="blog.body | htmlToText: 30"></p>
