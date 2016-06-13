@@ -10,6 +10,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     $scope.currentPage = 1;
     $scope.offset = 0;
     $scope.isBlogCtrl = true;
+    // Required, contentInstance created inside async method foudn uninitilazed under nested templates.
     $scope.contentInstance = {};
 
     $scope.fetchBlog = function(blogId, convertToMarkdown) {
