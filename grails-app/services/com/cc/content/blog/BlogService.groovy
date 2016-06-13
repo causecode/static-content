@@ -45,12 +45,12 @@ class BlogService {
     Map getBlog(Blog blogInstance, boolean convertToMarkdown) {
         List blogComments = commentService.getComments(blogInstance)
         List tagList = getAllTags()
-        def blogInstanceTags = blogInstance.tags
+        List<String> blogInstanceTags = blogInstance.tags
         // Convert markdown content into html format
         if (convertToMarkdown) {
             blogInstance.body = blogInstance.body?.markdownToHtml()
         }
-        
+
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         List<Meta> metaInstanceList = blogInstance.getMetaTags()
 

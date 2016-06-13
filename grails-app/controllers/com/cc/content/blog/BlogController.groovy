@@ -271,7 +271,7 @@ class BlogController {
                 if (blogImgFilePath != blogInstance.blogImg?.path) {
                     blogInstance.blogImg = blogImgFilePath ? fileUploaderService.saveFile(Blog.UFILE_GROUP, new File(blogImgFilePath)) : null
                 }
-                
+
                 if (blogInstance.hasErrors()) {
                     status.setRollbackOnly()
                     respond(blogInstance.errors)
