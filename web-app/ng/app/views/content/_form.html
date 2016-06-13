@@ -2,7 +2,7 @@
     <label class="col-sm-3 control-label" for="title">Title</label>
     <div class="col-sm-4">
         <input id="body" type="text" class="form-control" placeholder="Enter Title" autofocus 
-            ng-model="contentInstance.title">
+                ng-model="contentInstance.title">
     </div>
 </div>
 
@@ -10,7 +10,7 @@
     <label class="col-sm-3 control-label" for="subTitle">Sub Title</label>
     <div class="col-sm-4">
         <input id="subTitle" type="text" class="form-control" placeholder="Enter Sub Title"
-            ng-model="contentInstance.subTitle">
+                ng-model="contentInstance.subTitle">
     </div>
 </div>
 
@@ -22,11 +22,11 @@
         </div>
         <h4>
             <input type="button" class="btn btn-default btn-sm" value="Upload" 
-            onclick="document.querySelector('#blogImgUpload').click();" />  
+                    onclick="document.querySelector('#blogImgUpload').click();" />  
             <small>Max 2 MB size allowed</small>
         </h4>
         <input id="blogImgUpload" style="display:none;" type="file" 
-            ng-file-select="onFileSelect($files, contentInstance)" class="df-margin-bottom" />
+                ng-file-select="onFileSelect($files, contentInstance)" class="df-margin-bottom" />
     </div>
     <div class="col-sm-1" ng-show="contentInstance.blogImgSrc">
         <span class="close" ng-click="removeBlogImg()">&times;</span>
@@ -36,22 +36,19 @@
 <div class="row form-group">
     <label class="col-sm-3 control-label" for="editorType">Editor Type</label>
     <div class="col-sm-4">
-        <select id="editorType" ng-model="contentInstance.type" class="form-control">
-            <option value="tinymce">Tiny-MCE</option>
-            <option value="markdown">Markdown</option>
-            <option value="rawcontent">Raw Content</option>
-        </select>
+        <select id="editorType" ng-model="contentInstance.type" 
+                ng-options="selectedEditorType.id as selectedEditorType.name for selectedEditorType in editorTypeValues" class="form-control"></select>
     </div>
 </div>
 
-<div class="row form-group" ng-show="!contentInstance.type || contentInstance.type === 'tinymce'">
+<div class="row form-group" ng-show="!contentInstance.type || contentInstance.type === 1">
     <label class="col-sm-3 control-label">Body</label>
     <div class="col-sm-8">
         <textarea ui-tinymce="tinymceOptions" class="form-control" ng-model="contentInstance.body"></textarea>
     </div>
 </div>
 
-<div class="form-group" ng-show="contentInstance.type && contentInstance.type === 'markdown'">
+<div class="form-group" ng-show="contentInstance.type && contentInstance.type === 2">
     <label class="col-sm-3 control-label" style="margin-top: 25px;">Markdown Body</label>
     <div class="col-sm-9 padding-left-z padding-right-z" style="margin-bottom: 30px;">
         <pagedown-editor content="contentInstance.body" placeholder="Enter Markdown text" help="showMarkdownHelp()"
@@ -63,7 +60,7 @@
     </div>
 </div>
 
-<div class="form-group" ng-show="contentInstance.type && contentInstance.type === 'rawcontent'">
+<div class="form-group" ng-show="contentInstance.type && contentInstance.type === 3">
     <label class="col-sm-3 control-label">Raw Body</label>
     <div class="col-sm-9 padding-left-z padding-right-z" style="margin-bottom: 30px;">
         <textarea class="form-control color-text-area" style="height: 300px;" ng-model="contentInstance.body"

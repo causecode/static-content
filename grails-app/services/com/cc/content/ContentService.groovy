@@ -66,9 +66,10 @@ class ContentService {
             return currentUser ? currentUser.id.toString() : ANONYMOUS_USER
         }
         if(contentInstance.author?.isNumber()) {
+            // authorInstance returns User instance, keeping it def so that method remains generic.
             def authorInstance = getAuthorClass().get(contentInstance.author)
             if (!authorInstance[authorProperty]) {
-                authorInstance = "username"
+                authorProperty = "username"
             }
             return authorInstance[authorProperty]
         }

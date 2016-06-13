@@ -12,6 +12,10 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     $scope.isBlogCtrl = true;
     // Required, contentInstance created inside async method foudn uninitilazed under nested templates.
     $scope.contentInstance = {};
+    $scope.editorTypeValues = [
+        {name : "Tiny-MCE", id : 1},
+        {name : "Markdown", id : 2},
+        {name : "Raw Content", id : 3}];
 
     $scope.fetchBlog = function(blogId, convertToMarkdown) {
 
@@ -165,7 +169,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     };
 
     $scope.isBlogEditable = function(blogInstance) {
-        var author = blogInstance? blogInstance.author : undefined;
+        var author = blogInstance? blogInstance.author : null;
         var isAdminOrManager = securityService.ifAnyGranted($scope.userInstance, 
             $scope.userRoles, 'ROLE_CONTENT_MANAGER,ROLE_ADMIN');
         return ($scope.userInstance && (isAdminOrManager ||  author === $scope.userInstance.username));

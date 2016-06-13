@@ -38,7 +38,7 @@ class BlogService {
         return tagList
     }
 
-    BlogContentType findBlogContentTypeByValue(String value) {
+    BlogContentType findBlogContentTypeByValue(Integer value) {
         return BlogContentType.values().find { it.id == value }
     }
 
