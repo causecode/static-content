@@ -200,8 +200,7 @@ class BlogController {
             Blog blogInstance = contentService.create(requestData, metaTypeList, metaValueList, Blog.class)
             UFile blogUfileInstance
             String blogImgFilePath = requestData['blogImgFilePath']
-            Integer type = requestData.type ? (requestData.type as int) : null
-            blogInstance.contentType = blogService.findBlogContentTypeByValue(type)
+            blogInstance.contentType = blogService.findBlogContentTypeByValue(requestData.type)
 
             try {
                 if (blogImgFilePath) {
@@ -264,19 +263,13 @@ class BlogController {
             List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
             List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
             contentService.update(requestData, blogInstance, metaTypeList, metaValueList)
-            Integer type = requestData.type ? (requestData.type as int) : null
-            blogInstance.contentType = blogService.findBlogContentTypeByValue(type)
+            blogInstance.contentType = blogService.findBlogContentTypeByValue(requestData.type)
 
             String blogImgFilePath = requestData['blogImgFilePath']
             UFile blogUfileInstance
             try {
                 if (blogImgFilePath != blogInstance.blogImg?.path) {
-                    if (blogImgFilePath) {
-                        blogUfileInstance = fileUploaderService.saveFile(Blog.UFILE_GROUP, new File(blogImgFilePath))
-                        blogInstance.blogImg = blogUfileInstance
-                    } else {
-                        blogInstance.blogImg = null;
-                    }
+                    blogInstance.blogImg = blogImgFilePath ? fileUploaderService.saveFile(Blog.UFILE_GROUP, new File(blogImgFilePath)) : null
                 }
                 
                 if (blogInstance.hasErrors()) {

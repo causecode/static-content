@@ -38,8 +38,8 @@ class BlogService {
         return tagList
     }
 
-    BlogContentType findBlogContentTypeByValue(Integer value) {
-        return BlogContentType.values().find { it.value == value }
+    BlogContentType findBlogContentTypeByValue(String value) {
+        return BlogContentType.values().find { it.id == value }
     }
 
     Map getBlog(Blog blogInstance, boolean convertToMarkdown) {
@@ -55,7 +55,7 @@ class BlogService {
         List<Meta> metaInstanceList = blogInstance.getMetaTags()
 
         return [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
-            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
+                blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
     }
 
 }

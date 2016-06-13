@@ -108,18 +108,18 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     };
 
     $scope.filterBlogContent = function(queryFilter) {
-        queryFilter = queryFilter === "" ? null : queryFilter;
+        queryFilter = (queryFilter === "") ? null : queryFilter;
         $location.search({queryFilter: queryFilter});
     };
 
     $scope.filterTags = function(tag) {
-        tag = tag === "" ? null : tag;
+        tag = (tag === "") ? null : tag;
         $location.search({tag: tag});
         
     };
 
     $scope.filterArchives = function(monthFilter) {
-        monthFilter === "" ? null : monthFilter;
+        monthFilter = (monthFilter === "") ? null : monthFilter;
         $location.search({monthFilter: monthFilter});
     };
 
@@ -254,7 +254,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     };
     
     if (($scope.controllerName === 'blog') && (['edit', 'show'].indexOf($scope.actionName) > -1)) {
-        var convertToMarkdown = (['edit'].indexOf($scope.actionName) > -1) ? false : true;
+        var convertToMarkdown =  !($scope.actionName == 'edit');
         $scope.fetchBlog($scope.id, convertToMarkdown);
     } else if ($scope.actionName === 'create') {
         $scope.contentInstance = new BlogModel();

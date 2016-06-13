@@ -35,23 +35,23 @@ grails.project.dependency.resolution = {
 
     plugins {
         compile ":markdown:1.1.1"
-        // compile (":spring-security-core:2.0-RC4", ":taggable:1.1.0") {
-        //     export = false
-        // }
-        // runtime (":hibernate:3.6.10.7") {
-        //     export = false
-        // }
+        compile (":spring-security-core:2.0-RC4", ":taggable:1.1.0") {
+            export = false
+        }
+        runtime (":hibernate:3.6.10.7") {
+            export = false
+        }
 
-        // compile ("com.cc.plugins:file-uploader:2.4.6") {
-        //     export = false
-        // }
-        // build (":tomcat:7.0.50", ":release:3.0.1", ":rest-client-builder:2.0.1") {
-        //     export = false
-        // }
-        // if (Environment.isDevelopmentMode()) {
-        //     compile (":codenarc:0.22") {
-        //         export = false
-        //     }
-        // }
+        compile ("com.cc.plugins:file-uploader:2.4.6") {
+            export = false
+        }
+        build (":tomcat:7.0.50", ":release:3.0.1", ":rest-client-builder:2.0.1") {
+            export = false
+        }
+        if (Environment.isDevelopmentMode()) {
+            compile (":codenarc:0.22") {
+                export = false
+            }
+        }
     }
 }

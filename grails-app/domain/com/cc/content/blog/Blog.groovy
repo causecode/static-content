@@ -32,15 +32,12 @@ class Blog extends Content implements Taggable {
 }
 
 enum BlogContentType {
-    TINYMCE(1),
-    MARKDOWN(2),
-    RAWCONTENT(3)
+    TINYMCE("tinymce"),
+    MARKDOWN("markdown"),
+    RAWCONTENT("rawcontent")
     
-    final int id
-    BlogContentType(int id) {
+    final String id
+    BlogContentType(String id) {
         this.id = id
-    }
-    int getValue() {
-        return id
     }
 }

@@ -55,20 +55,20 @@ class ContentService {
     /**
      * Used to get author of content instance with the help of author property passed.
      * @param contentInstance Content instance whose author needs to be resolved.
-     * @param authorProperty String representing property of current user to be returned. Default set to 'username' 
+     * @param authorProperty String representing property of current user to be returned. Default set to 'fullName' 
      * field.
      * @return String specifying author for content instance. If content instance not specified and content instance
      * author field is not a number the default string 'ANONYMOUS_USER' returned.
      */
-    String resolveAuthor(Content contentInstance, String authorProperty = "username") {
+    String resolveAuthor(Content contentInstance, String authorProperty = "fullName") {
         if(!contentInstance?.id) {
             def currentUser = springSecurityService.currentUser
             return currentUser ? currentUser.id.toString() : ANONYMOUS_USER
         }
         if(contentInstance.author?.isNumber()) {
             def authorInstance = getAuthorClass().get(contentInstance.author)
-            if (authorInstance.fullName) {
-                authorProperty = "fullName"
+            if (!authorInstance[authorProperty]) {
+                authorInstance = "username"
             }
             return authorInstance[authorProperty]
         }
