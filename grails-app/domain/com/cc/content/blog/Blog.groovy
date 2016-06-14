@@ -21,10 +21,23 @@ import com.lucastex.grails.fileuploader.UFile
  */
 class Blog extends Content implements Taggable {
     UFile blogImg
+    BlogContentType contentType
 
     static constraints = {
         blogImg nullable:true
+        contentType nullable:true
     }
 
     static final String UFILE_GROUP = "blogImg"
+}
+
+enum BlogContentType {
+    TINYMCE(1),
+    MARKDOWN(2),
+    RAWCONTENT(3)
+    
+    final int id
+    BlogContentType(int id) {
+        this.id = id
+    }
 }

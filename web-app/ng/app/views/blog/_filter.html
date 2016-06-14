@@ -1,7 +1,7 @@
 <aside id="blog-sidebar" class="blog-sidebar col-md-3 col-sm-4 col-xs-12 col-md-offset-1 col-sm-offset-0 col-xs-offset-0">
-    <section class="widget search" ng-if="actionName === 'list'">
+    <section class="widget search">
         <h3 class="sr-only title">Search Blog</h3>
-        <form class="search-blog-form" on-submit="filterBlogs('', '', '{{queryText}}')">
+        <form class="search-blog-form" on-submit="filterBlogContent(queryText)">
             <div class="form-group">
                 <input type="text" class="form-control" ng-model="queryText" placeholder="Search blog...">
             </div>
@@ -32,10 +32,9 @@
         <h3 class="title">Archives</h3>
         <div class="blog-archives">
             <tabset vertical="true" type="pills">
-                <tab ng-click="filterBlogs()" heading="ALL"></tab>
-                <tab ng-repeat="monthFilter in monthFilterList" ng-click="filterBlogs('{{monthFilter}}', '{{tag}}')"
-                    heading="{{monthFilter}}">
-                </tab>
+                <tab ng-click="filterArchives()" heading="ALL"></tab>
+                <tab ng-repeat="monthFilter in monthFilterList" ng-click="filterArchives(monthFilter)"
+                    heading="{{monthFilter}}"></tab>
             </tabset>
         </div>
     </section>
@@ -43,8 +42,8 @@
         <h3 class="title inline">Tags </h3><i class="fa fa-tags"></i>
         <div class="blog-tags">
             <tabset>
-                <tab ng-click="filterBlogs()" heading="ALL"></tab>
-                <tab ng-repeat="tag in tagList" ng-click="filterBlogs('{{monthFilter}}', '{{tag[1]}}')" rel="{{tag[0]}}"
+                <tab ng-click="filterTags()" heading="ALL"></tab>
+                <tab ng-repeat="tag in tagList" ng-click="filterTags(tag[1])"
                     heading="{{tag[1]}}"></tab>
             </tabset>
         </div>

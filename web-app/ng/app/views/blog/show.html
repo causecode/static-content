@@ -4,7 +4,7 @@
             <article class="post">
                 <h2 class="title">
                     {{blogInstance.title}}
-                    <small if-any-granted="ROLE_CONTENT_MANAGER,ROLE_ADMIN" ng-class="ng-hide">
+                    <small ng-show="isBlogEditable(blogInstance)" ng-class="ng-hide">
                         <a ui-sref="urlMap.resource({ctrl: 'blog', action: 'edit', resource: blogInstance.id})">
                             <i class="fa fa-edit"> </i>
                         </a>
@@ -20,8 +20,10 @@
                         </li>
                     </ul>
                 </div>
-                <div class="content">
-                    <img ng-src="{{blogInstance.blogImgSrc}}" class="blog-img">
+                <div class="cover">
+                    <div ng-if="blogInstance.blogImgSrc">
+                        <img class="blog-img" ng-src="{{blogInstance.blogImgSrc}}"/>
+                    </div>
                     <p ng-bind-html="blogInstance.body"></p>
                 </div>
             </article>
