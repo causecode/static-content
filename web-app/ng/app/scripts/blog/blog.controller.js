@@ -91,11 +91,6 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
         $scope.contentInstance.metaList.splice(index, 1);
     };
 
-    PageModel.getMetaList(null, function(data){
-        $scope.metaList = data.metaTypeList;
-        $scope.metaType = data.metaTypeList[0];
-    }, function() {});
-
     /*
      * Initializing response returned by query ajax call from paged list directive in 
      * current controllers scope.
@@ -261,6 +256,12 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     if (($scope.controllerName === 'blog') && (['edit', 'show'].indexOf($scope.actionName) > -1)) {
         var convertToMarkdown =  !($scope.actionName == 'edit');
         $scope.fetchBlog($scope.id, convertToMarkdown);
+        if ($scope.actionName == 'show') {
+            PageModel.getMetaList(null, function(data){
+                $scope.metaList = data.metaTypeList;
+                $scope.metaType = data.metaTypeList[0];
+            }, function() {});
+        }
     } else if ($scope.actionName === 'create') {
         $scope.contentInstance = new BlogModel();
         $scope.contentInstance.metaList = [];

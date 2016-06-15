@@ -36,19 +36,22 @@
 <div class="row form-group">
     <label class="col-sm-3 control-label" for="editorType">Editor Type</label>
     <div class="col-sm-4">
-        <select id="editorType" ng-model="contentInstance.type" 
-                ng-options="selectedEditorType.id as selectedEditorType.name for selectedEditorType in editorTypeValues" class="form-control"></select>
+        <select id="editorType" ng-model="contentInstance.type" class="form-control">
+            <option value="TINYMCE">Tiny-MCE</option>
+            <option value="MARKDOWN">Markdown</option>
+            <option value="RAWCONTENT">Raw Content</option>
+        </select>
     </div>
 </div>
 
-<div class="row form-group" ng-show="!contentInstance.type || contentInstance.type === 1">
+<div class="row form-group" ng-show="!contentInstance.type || contentInstance.type === 'TINYMCE'">
     <label class="col-sm-3 control-label">Body</label>
     <div class="col-sm-8">
         <textarea ui-tinymce="tinymceOptions" class="form-control" ng-model="contentInstance.body"></textarea>
     </div>
 </div>
 
-<div class="form-group" ng-show="contentInstance.type && contentInstance.type === 2">
+<div class="form-group" ng-show="contentInstance.type && contentInstance.type === 'MARKDOWN'">
     <label class="col-sm-3 control-label" style="margin-top: 25px;">Markdown Body</label>
     <div class="col-sm-9 padding-left-z padding-right-z" style="margin-bottom: 30px;">
         <pagedown-editor content="contentInstance.body" placeholder="Enter Markdown text" help="showMarkdownHelp()"
@@ -60,7 +63,7 @@
     </div>
 </div>
 
-<div class="form-group" ng-show="contentInstance.type && contentInstance.type === 3">
+<div class="form-group" ng-show="contentInstance.type && contentInstance.type === 'RAWCONTENT'">
     <label class="col-sm-3 control-label">Raw Body</label>
     <div class="col-sm-9 padding-left-z padding-right-z" style="margin-bottom: 30px;">
         <textarea class="form-control color-text-area" style="height: 300px;" ng-model="contentInstance.body"

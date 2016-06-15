@@ -14,6 +14,7 @@ import java.lang.Integer
 import com.cc.content.blog.comment.CommentService
 import com.cc.content.blog.BlogService
 import com.cc.content.meta.Meta
+import java.lang.IllegalArgumentException
 
 class BlogService {
 
@@ -38,8 +39,14 @@ class BlogService {
         return tagList
     }
 
-    BlogContentType findBlogContentTypeByValue(Integer value) {
-        return BlogContentType.values().find { it.id == value }
+    BlogContentType findBlogContentTypeByValue(String value) {
+        BlogContentType blogContentType
+        try {
+            blogContentType = BlogContentType.valueOf(value?.toUpperCase() ?: "")
+        } catch (IllegalArgumentException e) {
+            log.info("Invalid value $value for BlogContentType")
+        }
+        return blogContentType
     }
 
     Map getBlog(Blog blogInstance, boolean convertToMarkdown) {

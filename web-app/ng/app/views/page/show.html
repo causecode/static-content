@@ -1,11 +1,14 @@
+<!-- Overriding Causecode specific page show partial of Content plugin. -->
 <section ng-controller="PageController">
     <df-header page-header="true">
         {{pageInstance.title}}
-        <br/>
-        <small class="text-muted">{{pageInstance.subTitle}}</small>
+        <span class="text-muted">{{pageInstance.subTitle}}</span>
     </df-header>
 
     <df-content>
         <div ng-bind-html="pageInstance.body"></div>
     </df-content>
+    <div class="has-bg-color">
+        <div ng-include src="'get-in-touch.html'"></div>
+    </div>
 </section>
