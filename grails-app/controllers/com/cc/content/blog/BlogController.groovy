@@ -200,7 +200,7 @@ class BlogController {
             Blog blogInstance = contentService.create(requestData, metaTypeList, metaValueList, Blog.class)
             UFile blogUfileInstance
             String blogImgFilePath = requestData['blogImgFilePath']
-            blogInstance.contentType = blogService.findBlogContentTypeByValue(requestData.type)
+            blogInstance.contentType = blogService.findBlogContentTypeByValue(requestData.type.toString())
 
             try {
                 if (blogImgFilePath) {
