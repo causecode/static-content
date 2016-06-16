@@ -263,7 +263,7 @@ class BlogController {
             List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
             List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
             contentService.update(requestData, blogInstance, metaTypeList, metaValueList)
-            blogInstance.contentType = blogService.findBlogContentTypeByValue(requestData.type)
+            blogInstance.contentType = blogService.findBlogContentTypeByValue(requestData.type.toString())
 
             String blogImgFilePath = requestData['blogImgFilePath']
             UFile blogUfileInstance

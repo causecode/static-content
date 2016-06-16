@@ -256,7 +256,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     if (($scope.controllerName === 'blog') && (['edit', 'show'].indexOf($scope.actionName) > -1)) {
         var convertToMarkdown =  !($scope.actionName == 'edit');
         $scope.fetchBlog($scope.id, convertToMarkdown);
-        if ($scope.actionName == 'show') {
+        if ($scope.actionName == 'edit') {
             PageModel.getMetaList(null, function(data){
                 $scope.metaList = data.metaTypeList;
                 $scope.metaType = data.metaTypeList[0];
