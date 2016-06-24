@@ -22,30 +22,26 @@
                 </div>
 
                 <div>
-                    <button class="btn btn-primary facebook-share-icon-background" >
-                        <a href="#"
-                                socialshare-text="{{blog.title}}"
-                                socialshare socialshare-provider="facebook" 
-                                socialshare-url="">
+                    <button class="btn btn-primary facebook-share-icon-background"
+                                socialshare socialshare-provider="facebook"
+                                socialshare-text="{{blogInstance.title}}"
+                                socialshare-url=""
+                                socialshare-description="{{blogInstance.body | htmlToText: 30}}">
                             <i class="fa fa-facebook share-icon"></i>
-                        </a>
                     </button>
-                    <button class="btn btn-info twitter-share-icon-background" >
-                        <a href="#"
+                    <button class="btn btn-info twitter-share-icon-background"
                                 socialshare socialshare-provider="twitter" 
-                                socialshare-text="{{blog.title}}" 
+                                socialshare-text="{{blogInstance.title}}" 
                                 socialshare-hashtags="angularjs, causecode, groovy, grails"
                                 socialshare-url="">
                             <i class="fa fa-twitter share-icon"></i>
-                        </a>
                     </button>
-                    <button class="btn linkedin-share-icon-background " >
-                        <a href="#"
+                    <button class="btn linkedin-share-icon-background "
                                 socialshare socialshare-provider="linkedin" 
-                                socialshare-text="{{blog.title}}" 
-                                socialshare-url="">
+                                socialshare-text="{{blogInstance.title}}" 
+                                socialshare-url=""
+                                socialshare-description="{{blogInstance.body | htmlToText: 30}}">
                             <i class="fa fa-linkedin share-icon"></i>
-                        </a>
                     </button>
                 </div>
                 <hr>
