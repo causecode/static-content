@@ -1,3 +1,24 @@
+<style type="text/css">
+    .facebook-share-icon-background {
+        background-color: #3b5998;
+        width: 50px;
+        border-radius: 0px;
+    }
+    .linkedin-share-icon-background {
+        background-color: #1b86bc;
+        width: 50px;
+        border-radius: 0px;
+    }
+    .twitter-share-icon-background{
+        width: 50px;
+        border-radius: 0px;
+    }
+    .share-icon {
+        color: white;
+        font-size: 1.5em;
+    }
+</style>
+
 <div show-on-promise="blogListPromise">
     <article class="post" ng-repeat="blog in instanceList | filter: queryText">
         <div class="content">
@@ -24,10 +45,38 @@
                 </div>
             </div>
             <div class="post-entry">
-                <p ng-bind-html="blog.body | htmlToText: 30"></p>
+                <span ng-bind-html="blog.body | htmlToText: 30"></span>
                 <a class="read-more" ui-sref="blogView({resource: blog.id, title: blog.encodedTitle})">
                     Read more <i class="fa fa-long-arrow-right"></i>
                 </a>
+                <br><br>
+                <div>
+                    <button class="btn btn-primary facebook-share-icon-background" >
+                        <a href="#"
+                                socialshare-text="{{blog.title}}"
+                                socialshare socialshare-provider="facebook" 
+                                socialshare-url="">
+                            <i class="fa fa-facebook share-icon"></i>
+                        </a>
+                    </button>
+                    <button class="btn btn-info twitter-share-icon-background" >
+                        <a href="#"
+                                socialshare socialshare-provider="twitter" 
+                                socialshare-text="{{blog.title}}" 
+                                socialshare-hashtags="angularjs, causecode, groovy, grails"
+                                socialshare-url="">
+                            <i class="fa fa-twitter share-icon"></i>
+                        </a>
+                    </button>
+                    <button class="btn linkedin-share-icon-background " >
+                        <a href="#"
+                                socialshare socialshare-provider="linkedin" 
+                                socialshare-text="{{blog.title}}" 
+                                socialshare-url="">
+                            <i class="fa fa-linkedin share-icon"></i>
+                        </a>
+                    </button>
+                </div>
             </div>
         </div>
     </article>

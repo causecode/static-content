@@ -1,3 +1,24 @@
+<style type="text/css">
+    .facebook-share-icon-background {
+        background-color: #3b5998;
+        width: 50px;
+        border-radius: 0px;
+    }
+    .linkedin-share-icon-background {
+        background-color: #1b86bc;
+        width: 50px;
+        border-radius: 0px;
+    }
+    .twitter-share-icon-background{
+        width: 50px;
+        border-radius: 0px;
+    }
+    .share-icon {
+        color: white;
+        font-size: 1.5em;
+    }
+</style>
+
 <div class="blog wrapper container" ng-controller="BlogController">
     <div class="row blog">
         <div id="blog-entry" class="blog-entry section col-md-8 col-sm-8 col-xs-12" ng-if="blogInstance">
@@ -20,6 +41,35 @@
                         </li>
                     </ul>
                 </div>
+
+                <div>
+                    <button class="btn btn-primary facebook-share-icon-background" >
+                        <a href="#"
+                                socialshare-text="{{blog.title}}"
+                                socialshare socialshare-provider="facebook" 
+                                socialshare-url="">
+                            <i class="fa fa-facebook share-icon"></i>
+                        </a>
+                    </button>
+                    <button class="btn btn-info twitter-share-icon-background" >
+                        <a href="#"
+                                socialshare socialshare-provider="twitter" 
+                                socialshare-text="{{blog.title}}" 
+                                socialshare-hashtags="angularjs, causecode, groovy, grails"
+                                socialshare-url="">
+                            <i class="fa fa-twitter share-icon"></i>
+                        </a>
+                    </button>
+                    <button class="btn linkedin-share-icon-background " >
+                        <a href="#"
+                                socialshare socialshare-provider="linkedin" 
+                                socialshare-text="{{blog.title}}" 
+                                socialshare-url="">
+                            <i class="fa fa-linkedin share-icon"></i>
+                        </a>
+                    </button>
+                </div>
+                <hr>
                 <div class="cover">
                     <div ng-if="blogInstance.blogImgSrc">
                         <img class="blog-img" ng-src="{{blogInstance.blogImgSrc}}"/>
