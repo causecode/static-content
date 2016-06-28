@@ -20,6 +20,29 @@
                         </li>
                     </ul>
                 </div>
+
+                <div>
+                    <button class="btn btn-primary facebook-share-icon-background"
+                                socialshare socialshare-provider="facebook"
+                                socialshare-url="https://www.causecode.com">
+                            <i class="fa fa-facebook share-icon"></i>
+                    </button>
+                    <button class="btn btn-info twitter-share-icon-background"
+                                socialshare socialshare-provider="twitter" 
+                                socialshare-text="{{blogInstance.title}}" 
+                                socialshare-hashtags="angularjs, causecode, groovy, grails"
+                                socialshare-url="">
+                            <i class="fa fa-twitter share-icon"></i>
+                    </button>
+                    <button class="btn linkedin-share-icon-background "
+                                socialshare socialshare-provider="linkedin" 
+                                socialshare-text="{{blogInstance.title}}" 
+                                socialshare-url=""
+                                socialshare-description="{{blogInstance.body | htmlToText: 30}}">
+                            <i class="fa fa-linkedin share-icon"></i>
+                    </button>
+                </div>
+                <hr>
                 <div class="cover">
                     <div ng-if="blogInstance.blogImgSrc">
                         <img class="blog-img" ng-src="{{blogInstance.blogImgSrc}}"/>
