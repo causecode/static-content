@@ -1,39 +1,38 @@
- <section ng-if="$stateParams.resource == 1">
-	<div ng-controller="PageController">
-			<div class="row" ng-controller="UserController">
-				<div class="col-sm-3">
-					<div class="sidebar-nav">
-							<div class="navbar" role="navigation">
-								<div class="navbar-header">
-											<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-navbar-collapse">
-													<span class="sr-only">Toggle navigation</span>
-													<span class="icon-bar"></span>
-													<span class="icon-bar"></span>
-													<span class="icon-bar"></span>
-											</button>
-											<span class="visible-xs navbar-brand">Sidebar menu</span>
-									</div>
-											<div class="navbar-collapse collapse sidebar-navbar-collapse">
-													<ul class="nav navbar-nav">
-															<li><h2 class="team-content-padding"><a class="team-content-color"href="#">{{pageInstance.title}}</a></h2></li>
-															<li><h2 class="team-content-padding"><a class="team-color" ui-sref="urlMap.resource({ctrl: 'user', action: 'team'})">Teams Page</a></h2></li>
-													</ul>
-											</div><!--/.nav-collapse -->
-							</div>
-					</div>
-			</div>
-			<div class="col-sm-9" ng-bind-html="pageInstance.body"></div>
-			</div>
-	</div>
- </section>
-	<section ng-if="$stateParams.resource == 3" ng-controller="PageController">
-					<df-header page-header="true">
-									{{pageInstance.title}}
-									<br>
-									<small class="text-muted">{{pageInstance.subTitle}}</small>
-					</df-header>
-
-				<df-content>
-									<div ng-bind-html="pageInstance.body"></div>
-				</df-content>
-	</section>
+<section ng-if ="$stateParams.resource == 1">
+    <div ng-controller="PageController">
+        <div class="row" ng-controller="UserController">
+            <div class="col-sm-3">
+                <div class="sidebar-nav">
+                    <div class="navbar" role="navigation">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            </button>
+                            <span class="visible-xs navbar-brand">Sidebar menu</span>
+                        </div>
+                        <div class="navbar-collapse collapse sidebar-navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li> <h2  class="team-content-padding"><a class="team-content-color"href="#">{{pageInstance.title}}</a></h2></li>
+                                <li><h2  class="team-content-padding"><a class="team-color" ui-sref="urlMap.resource({ctrl: 'user', action: 'team'})">Teams Page</a></h2></li>
+                            </ul>
+                        </div><!--/.nav-collapse -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-9" ng-bind-html="pageInstance.body"></div>
+        </div>
+    </div>
+</section>
+<section ng-if="$stateParams.resource == 3" ng-controller="PageController">
+    <df-header page-header="true">
+        {{pageInstance.title}}
+        <br>
+        <small class="text-muted">{{pageInstance.subTitle}}</small>
+    </df-header>
+    <df-content>
+        <div ng-bind-html="pageInstance.body"></div>
+    </df-content>
+</section>
