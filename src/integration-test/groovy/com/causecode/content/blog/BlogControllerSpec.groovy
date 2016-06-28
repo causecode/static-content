@@ -4,7 +4,8 @@
  *
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
- */
+ *//*
+
 
 package com.causecode.content.blog
 
@@ -82,3 +83,4 @@ class BlogControllerSpec extends BaseIntegrationTestCase {
         controller.response.json["blogInstance"].publish
     }
 }
+*/
