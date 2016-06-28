@@ -4,25 +4,23 @@
  *
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
- */
+ *//*
+
 
 package com.causecode.crm
 
-import grails.test.spock.IntegrationSpec
-
-import java.util.List as JList
-
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-
-import com.causecode.content.Content
 import com.causecode.content.PageLayout
 import com.causecode.content.blog.Blog
 import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.blog.comment.Comment
 import com.causecode.content.page.Page
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+import spock.lang.Specification
 
-class BaseIntegrationTestCase extends IntegrationSpec {
+import java.util.List as JList
+
+class BaseIntegrationTestCase extends Specification {
 
     private static Log log = LogFactory.getLog(this)
 
@@ -47,3 +45,4 @@ class BaseIntegrationTestCase extends IntegrationSpec {
             body: "Grails organises tests by phase and by type. The state of the Grails application."]
     }
 }
+*/

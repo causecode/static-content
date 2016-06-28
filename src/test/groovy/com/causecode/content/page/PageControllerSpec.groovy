@@ -4,32 +4,54 @@
  *
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
- *//*
+ */
 
 package com.causecode.content.page
 
-import grails.exceptions.RequiredPropertyMissingException
 import org.springframework.http.HttpStatus
 
-import com.causecode.crm.BaseIntegrationTestCase
+import com.causecode.content.Content
+import grails.test.mixin.Mock
+import grails.test.mixin.TestFor
+import grails.test.mixin.TestMixin
+import grails.test.mixin.support.GrailsUnitTestMixin
+import spock.lang.*
 
-class PageControllerSpec extends BaseIntegrationTestCase {
+/**
+ * Unit Test for PageController
+ */
+@TestMixin(GrailsUnitTestMixin)
+@TestFor(PageController)
+@Mock([Page, Content])
+class PageControllerSpec extends Specification {
 
     PageController controller
-    Page pageInstance
+    @Shared Page pageInstance
+    @Shared Page pageInstance1
+    @Shared Page pageInstance2
+    @Shared Page pageInstance3
+    @Shared Page pageInstance4
 
     def setup() {
         controller = new PageController()
 
-        pageInstance = new Page(getContentParams(1))
-        pageInstance.save()
-        assert pageInstance.id
-    }
-
-    def cleanup() {
+        pageInstance1 = new Page(getContentParams(1))
+        pageInstance2 = new Page(getContentParams(2))
+        pageInstance3 = new Page(getContentParams(3))
+        pageInstance4 = new Page(getContentParams(4))
+        assert pageInstance1.save()
+        assert pageInstance2.save()
+        assert pageInstance3.save()
+        assert pageInstance4.save()
+        assert pageInstance1.id
+        assert pageInstance2.id
+        assert pageInstance3.id
+        assert pageInstance4.id
     }
 
     void "test show action without ID parameter"() {
+        given: "Before controller show called"
+
         when: "page id parameter not passed"
         controller.request.method = "GET"
         controller.show()
@@ -39,7 +61,8 @@ class PageControllerSpec extends BaseIntegrationTestCase {
         controller.response.json.message == controller.message(code: 'page.not.found')
     }
 
-    void "test show action with default parameteres"() {
+    @Unroll
+    void "test show action with default parameters"() {
         given: "populating parameters"
         controller.params.id = pageInstance.id
 
@@ -48,12 +71,15 @@ class PageControllerSpec extends BaseIntegrationTestCase {
         controller.show()
 
         then: "redirected to page show angular based URL."
-        controller.response.redirectedUrl.contains('/page/show/' + pageInstance.id)
+        controller.response.redirectedUrl.contains("/page/show/${pageInstance.id}")
+
+        where:
+        pageInstance << [pageInstance1, pageInstance2, pageInstance3, pageInstance4]
     }
 
     void "test show action for Google crawler request"() {
         given: "populating parameters"
-        controller.params.id = pageInstance.id
+        controller.params.id = pageInstance1.id
         controller.params._escaped_fragment_ = true
 
         when: "page ID and _escaped_fragment_ parameter passed."
@@ -61,10 +87,12 @@ class PageControllerSpec extends BaseIntegrationTestCase {
         controller.show()
 
         then: "should render show GSP content in JSON format."
-        controller.modelAndView.model.pageInstance == pageInstance
+        controller.modelAndView.model.pageInstance == pageInstance1
         controller.modelAndView.viewName == "/page/show"
+
     }
 
+    @Unroll
     void "test show action for ajax request"() {
         given: "populating parameters"
         controller.params.id = pageInstance.id
@@ -80,6 +108,16 @@ class PageControllerSpec extends BaseIntegrationTestCase {
         controller.response.json["title"] == pageInstance.title
         controller.response.json["body"] == pageInstance.body
         controller.response.json["subTitle"] == pageInstance.subTitle
+
+        where:
+        pageInstance << [pageInstance1,pageInstance2,pageInstance3,pageInstance4]
+    }
+
+    private Map getContentParams(Integer i) {
+        return [
+                title: "Targeting Test $i Types and/or Phases",
+                author: "Test User",
+                subTitle: "To execute the JUnit integration test $i",
+                body: "Grails organises tests by phase and by type. The state of the Grails application."]
     }
 }
-*/

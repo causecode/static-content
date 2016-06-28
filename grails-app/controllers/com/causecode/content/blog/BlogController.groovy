@@ -8,35 +8,30 @@
 
 package com.causecode.content.blog
 
+import com.causecode.annotation.shorthand.ControllerShorthand
+import com.causecode.content.blog.comment.BlogComment
+import com.causecode.content.blog.comment.Comment
+import com.causecode.content.meta.Meta
+import com.lucastex.grails.fileuploader.FileUploaderService
+import com.lucastex.grails.fileuploader.FileUploaderServiceException
+import com.lucastex.grails.fileuploader.UFile
+import com.naleid.grails.MarkdownService
 import grails.converters.JSON
+import grails.core.GrailsApplication
+import grails.databinding.SimpleMapDataBindingSource
 import grails.plugin.springsecurity.annotation.Secured
+import grails.plugins.taggable.TagLink
 import grails.transaction.Transactional
-import grails.converters.JSON
-import grails.plugin.springsecurity.annotation.Secured
-import grails.transaction.Transactional
+import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 
 import java.text.DateFormatSymbols
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-import grails.core.GrailsApplication
-import grails.databinding.SimpleMapDataBindingSource
-import grails.plugins.taggable.TagLink
-import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.http.HttpStatus
-
-import com.causecode.annotation.shorthand.ControllerShorthand
-import com.causecode.content.blog.comment.BlogComment
-import com.causecode.content.blog.comment.Comment
-
-import com.causecode.content.meta.Meta
-import com.lucastex.grails.fileuploader.UFile
-import com.lucastex.grails.fileuploader.FileUploaderServiceException
-import com.lucastex.grails.fileuploader.FileUploaderService
-
 /**
  * Provides default CRUD end point for Content Manager.
- * 
+ *
  * @author Vishesh Duggar
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
@@ -57,16 +52,17 @@ class BlogController {
     def blogService
     def grailsWebDataBinder
     FileUploaderService fileUploaderService
+    MarkdownService markdownService
     GrailsApplication grailsApplication
 
     private static String HTML_P_TAG_PATTERN = "(?s)<p(.*?)>(.*?)<\\/p>"
 
     /**
      * Action list filters blog list with tags and returns Blog list and total matched result count.
-     * If current user has role content manager then all Blog list will be returned otherwise blog with publish field 
+     * If current user has role content manager then all Blog list will be returned otherwise blog with publish field
      * set to true will be returned.
      * @param max Pagination parameters used to specify maximum number of list items to be returned.
-     * @param offset Pagination parameter 
+     * @param offset Pagination parameter
      * @param tag String Used to filter Blogs with tag.
      * @return Map containing blog list and total count.
      */
@@ -232,11 +228,11 @@ class BlogController {
         def blogInstanceTags = blogInstance.tags
 
         // Convert markdown content into html format
-        blogInstance.body = blogInstance.body?.markdownToHtml()
+        blogInstance.body = markdownService.markdown(blogInstance.body)
 
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         List<Meta> metaInstanceList = blogInstance.getMetaTags()
-        
+
         Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
             blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
 
@@ -265,7 +261,7 @@ class BlogController {
     def update() {
         Map requestData = request.JSON
         Blog blogInstance = Blog.get(requestData['id'] as long)
-        bindData(blogInstance, requestData) 
+        bindData(blogInstance, requestData)
         String version = requestData['version']
 
         if (version != null) {
@@ -282,7 +278,7 @@ class BlogController {
             List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
             List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
             contentService.update(requestData, blogInstance, metaTypeList, metaValueList)
-            
+
             String blogImgFilePath = requestData['blogImgFilePath']
             UFile blogUfileInstance
             try {
@@ -299,13 +295,13 @@ class BlogController {
                 blogInstance.setTags(tags?.tokenize(",")*.trim())
                 blogInstance.save(flush: true)
 
-                respond([success: true]) 
+                respond([success: true])
             } catch (FileUploaderServiceException e) {
                 log.debug "Unable to upload file", e
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
                 respond ([message: e.message])
             }
-            
+
         }
     }
 
@@ -322,7 +318,7 @@ class BlogController {
     /**
      * This action adds comments for blog with verified Captcha and redirects to blog show page.
      * If captcha is invalid comments will not be added for blog.
-     * @param commentId Identity of Comment domain.If these parameter received then newly created comment will be added 
+     * @param commentId Identity of Comment domain.If these parameter received then newly created comment will be added
      * as reply to given comment instance otherwise comment will be added as reference to blog instance instance.
      */
     @Transactional
