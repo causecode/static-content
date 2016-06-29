@@ -31,6 +31,13 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
                 $scope.contentInstance.metaList = blogData.metaList;
                 $scope.commentData.id = blogData.blogInstance.id;
                 $scope.blogImgSrc = blogData.blogImgSrc;
+                for (i in $scope.blogInstance.metaList) {
+                    if ($scope.blogInstance.metaList[i].type === "keywords") {
+                        var tagString = $scope.blogInstance.metaList[i].value;
+                    }
+                }
+                $scope.hashtags = tagString;
+                $scope.tags = tagString.split(",");
             }
             $scope.comments = blogData.comments;
             $scope.instanceList = blogData.blogInstanceList;

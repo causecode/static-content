@@ -30,7 +30,8 @@
                     <button class="btn btn-info twitter-share-icon-background"
                                 socialshare socialshare-provider="twitter" 
                                 socialshare-text="{{blogInstance.title}}" 
-                                socialshare-hashtags="angularjs, causecode, groovy, grails"
+                                socialshare-hashtags="{{hashtags}}"
+                                socialshare-via="causecode"
                                 socialshare-url="">
                             <i class="fa fa-twitter share-icon"></i>
                     </button>
@@ -48,6 +49,15 @@
                         <img class="blog-img" ng-src="{{blogInstance.blogImgSrc}}"/>
                     </div>
                     <p ng-bind-html="blogInstance.body"></p>
+                </div>
+            </article>
+            <article ng-show="tags">
+                <h2 class="title">Tags</h2>
+                <hr>
+                <div>
+                    <span ng-repeat="tag in tags">
+                        &nbsp; <span class="label label-warning">{{tag}}</span>
+                    </span>
                 </div>
             </article>
             <article class="comments">
