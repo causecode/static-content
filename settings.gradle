@@ -1,6 +1,1 @@
 rootProject.name = 'content'
-
-include 'taggable', 'file-uploader'
-
-project(':taggable').projectDir = new File('../taggable')
-project(':file-uploader').projectDir = new File('../grails-file-uploader')

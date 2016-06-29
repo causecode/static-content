@@ -1,13 +1,5 @@
 import grails.util.Environment
 
-/*
- * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or
- * without modification, are not permitted.
- */
-
 buildscript {
     ext {
         grailsVersion = project.grailsVersion
@@ -17,17 +9,22 @@ buildscript {
         maven { url "https://plugins.gradle.org/m2/" }
         maven { url "https://repo.grails.org/grails/core" }
         maven { url "http://repo.spring.io/milestone/" }
-        maven { url "http://maven.causecode.com" }
+        maven { url "https://repo.grails.org/grails/plugins" }
+        maven {
+           credentials {
+               username "padawans"
+               password "yokadcknvdbqssg"
+           }
+           url "http://maven.causecode.com"
+        }
         mavenCentral()
     }
     dependencies {
-        // Uncomment while publishing
-        //classpath "com.netflix.nebula:nebula-publishing-plugin:4.4.4"
+        classpath "com.netflix.nebula:nebula-publishing-plugin:4.4.4"
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
     }
 }
 
-/*
 plugins {
     id 'nebula.maven-publish' version '4.4.4'
 }
@@ -37,6 +34,10 @@ project.publishing {
         mavenJava(MavenPublication) {
             from project.components.java
             println "Removing dependencies without a version"
+
+            groupId "com.causecode.plugins"
+            artifactId "content"
+            version "2.4.8-RC1"
 
             pom.withXml {
                 def pomNode = asNode()
@@ -59,9 +60,8 @@ project.publishing {
         }
     }
 }
-*/
 
-version "2.4.1"
+version "2.4.7"
 group "static.content"
 
 apply plugin:"eclipse"
@@ -78,6 +78,13 @@ ext {
 repositories {
     mavenLocal()
     maven { url "https://repo.grails.org/grails/core" }
+    maven {
+       credentials {
+           username "padawans"
+           password "yokadcknvdbqssg"
+       }
+       url "http://maven.causecode.com"
+    }
 }
 
 dependencyManagement {
@@ -113,19 +120,36 @@ dependencies {
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
+    compile "com.causecode.plugins:file-uploader:2.4.7-RC2"
+    // TODO Replace with maven version
+    // compile "com.causecode.plugins:taggable:1.2-RC2"
+    provided project(":taggable")
+
     if (Environment.isDevelopmentMode()) {
         apply plugin: 'codenarc'
     }
 }
 
+
 grails {
     exploded = true
-    plugins {
-        provided project(":taggable")
-        provided project(":file-uploader")
-    }
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = gradleWrapperVersion
+}
+
+grailsPublish {
+    // TODO: Provide values here
+    user = 'user'
+    key = 'key'
+    githubSlug = 'foo/bar'
+    license {
+        name = 'Apache-2.0'
+    }
+    title = "My Plugin"
+    desc = "Full plugin description"
+    developers = [johndoe:"John Doe"]
+    portalUser = ""
+    portalPassword = ""    
 }
