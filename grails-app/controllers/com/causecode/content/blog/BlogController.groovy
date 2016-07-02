@@ -224,9 +224,8 @@ class BlogController {
     @Secured(["permitAll"])
     def show() {
         Blog blogInstance = Blog.get(params.id)
-        Map result = blogService.getBlog(blogInstance, params.boolean('convertToMarkdown'))
 
-        tagList = blogService.getAllTags()
+        List tagList = blogService.getAllTags()
         def blogInstanceTags = blogInstance.tags
 
         // Convert markdown content into html format
@@ -235,7 +234,7 @@ class BlogController {
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         List<Meta> metaInstanceList = blogInstance.getMetaTags()
 
-        Map result = [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
+        Map result = [blogInstance: blogInstance, comments: null, tagList: tagList,
             blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
 
         /*

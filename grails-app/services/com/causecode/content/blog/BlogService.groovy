@@ -8,13 +8,8 @@
 
 package com.causecode.content.blog
 
-import org.grails.taggable.TagLink
-import com.com.content.blog.BlogContentType
-import java.lang.Integer
-import com.com.content.blog.comment.CommentService
-import com.com.content.blog.BlogService
-import com.com.content.meta.Meta
-import java.lang.IllegalArgumentException
+import com.causecode.content.blog.comment.CommentService
+import com.causecode.content.meta.Meta
 import grails.plugins.taggable.TagLink
 
 class BlogService {
