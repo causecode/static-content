@@ -29,7 +29,7 @@ plugins {
     id 'nebula.maven-publish' version '4.4.4'
 }
 
-/*project.publishing {
+project.publishing {
     publications {
         mavenJava(MavenPublication) {
             from project.components.java
@@ -37,7 +37,7 @@ plugins {
 
             groupId "com.causecode.plugins"
             artifactId "content"
-            version "2.4.8-RC1"
+            version "2.5.0-RC1"
 
             pom.withXml {
                 def pomNode = asNode()
@@ -59,7 +59,7 @@ plugins {
             url "http://maven-upload.causecode.com"
         }
     }
-}*/
+}
 
 version "2.4.7"
 group "static.content"
