@@ -12,8 +12,8 @@ buildscript {
         maven { url "https://repo.grails.org/grails/plugins" }
         maven {
             credentials {
-                username "padawans"
-                password "yokadcknvdbqssg"
+                username mavenUser
+                password mavenPassword
             }
             url "http://maven.causecode.com"
         }
@@ -53,16 +53,16 @@ project.publishing {
     repositories {
         maven {
             credentials {
-                username mavenUser
-                password mavenPassword
+                username mavenPublishUser
+                password mavenPublishPassword
             }
             url "http://maven-upload.causecode.com"
         }
     }
 }
 
-version "2.4.7"
-group "static.content"
+group "com.causecode.plugins"
+version "2.5.0"
 
 apply plugin: "eclipse"
 apply plugin: "idea"
