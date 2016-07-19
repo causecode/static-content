@@ -37,7 +37,7 @@ project.publishing {
 
             groupId "com.causecode.plugins"
             artifactId "content"
-            version "2.5.0"
+            version "2.5.1"
 
             pom.withXml {
                 def pomNode = asNode()
@@ -62,13 +62,14 @@ project.publishing {
 }
 
 group "com.causecode.plugins"
-version "2.5.0"
+version "2.5.1"
 
 apply plugin: "eclipse"
 apply plugin: "idea"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-plugin-publish"
 apply plugin: "org.grails.grails-gsp"
+apply plugin: 'codenarc'
 
 ext {
     grailsVersion = project.grailsVersion
@@ -122,10 +123,6 @@ dependencies {
 
     compile "com.causecode.plugins:file-uploader:2.4.7"
     compile "com.causecode.plugins:taggable:1.2"
-
-    if (Environment.isDevelopmentMode()) {
-        apply plugin: 'codenarc'
-    }
 }
 
 grails {
@@ -149,4 +146,16 @@ grailsPublish {
     developers = [johndoe: "John Doe"]
     portalUser = ""
     portalPassword = ""
+}
+
+codenarc {
+    toolVersion = "0.25.2"
+}
+
+codenarcMain {
+    configFile file('config/codenarc/codenarc.groovy')
+}
+
+codenarcTest {
+    configFile file('config/codenarc/codenarc.groovy')
 }

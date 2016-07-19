@@ -60,8 +60,6 @@ class ContentService {
      * author field is not a number the default string 'ANONYMOUS_USER' returned.
      */
     String resolveAuthor(Content contentInstance, String authorProperty = "fullName") {
-        // TODO: Fix this
-        return "Temp User"
         if(!contentInstance?.id) {
             def currentUser = springSecurityService.currentUser
             return currentUser ? currentUser.id.toString() : ANONYMOUS_USER
