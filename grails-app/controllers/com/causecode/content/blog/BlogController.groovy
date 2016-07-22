@@ -142,6 +142,7 @@ class BlogController {
             Blog blogInstance = Blog.get(it.id as long)
             if (!blogInstance) {
                 log.debug("No blog found")
+                return
             }
             it.author = contentService.resolveAuthor(blogInstance)
             it.numberOfComments = BlogComment.countByBlog(blogInstance)
