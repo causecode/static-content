@@ -6,7 +6,7 @@
  * without modification, are not permitted.
  */
 
-package static.content
+package content
 
 import grails.plugins.*
 import grails.core.GrailsApplication
@@ -17,7 +17,7 @@ import com.causecode.annotation.shorthand.ControllerShorthand
 import com.causecode.content.ContentService
 
 
-class StaticContentGrailsPlugin extends Plugin {
+class ContentGrailsPlugin extends Plugin {
 
     def version = "2.4.3-RC4"
     def groupId = "com.cc.plugins"
@@ -78,9 +78,7 @@ Also provides shortened and user friendly urls.
         // TODO Implement code that is executed when any artefact that this plugin is
         // watching is modified and reloaded. The event contains: event.source,
         // event.application, event.manager, event.ctx, and event.plugin.
-        if (event.source && application.isServiceClass(event.source)) {
-            addServiceMethod(event.ctx)
-        }
+
     }
 
     void onConfigChange(Map<String, Object> event) {

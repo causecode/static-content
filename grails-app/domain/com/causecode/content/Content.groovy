@@ -56,8 +56,8 @@ class Content {
         title
     }
 
-    String resolveAuthor(String authorProperty = "username") {
-        return contentService.resolveAuthor(this, authorProperty)
+    String resolveAuthor() {
+        return contentService.resolveAuthor(this)
     }
 
     String getSanitizedTitle() {

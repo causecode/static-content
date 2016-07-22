@@ -9,7 +9,6 @@
 package com.causecode.content
 
 import grails.util.Environment
-
 import java.lang.annotation.Annotation
 import java.lang.reflect.Field
 
@@ -66,13 +65,14 @@ class ContentService {
         }
         if(contentInstance.author?.isNumber()) {
             // authorInstance returns User instance, keeping it def so that method remains generic.
-            def authorInstance = getAuthorClass().get(contentInstance.author)
+            def className = SpringSecurityUtils.securityConfig.userLookup.userDomainClassName
+            def authorClazz = grailsApplication.getDomainClass(className).clazz
+            def authorInstance = authorClazz.get(contentInstance.author)
             if (!authorInstance[authorProperty]) {
                 authorProperty = "username"
             }
             return authorInstance[authorProperty]
         }
-        return ANONYMOUS_USER
     }
 
     /**
@@ -275,20 +275,6 @@ class ContentService {
         return grailsLinkGenerator.link(attrs)
     }
 
-    Map getShorthandAnnotatedControllers() {
-
-        Map shorthandAnnotatedControllerMap = [:]
-
-        for(controller in grailsApplication.mainContext.controllerClasses) {
-            Annotation controllerAnnotation = controller.clazz.getAnnotation(ControllerShorthand.class)
-            if(controller.clazz.getAnnotation(ControllerShorthand.class)) {  // Searching for shorthand for grails controller
-                String actualName = controller.name
-                String camelCaseName = actualName.replace(actualName.charAt(0), actualName.charAt(0).toLowerCase())
-                shorthandAnnotatedControllerMap.put(camelCaseName, controllerAnnotation.value())
-            }
-        }
-        return shorthandAnnotatedControllerMap
-    }
     def getRoleClass() {
         return grailsApplication.getDomainClass(SpringSecurityUtils.securityConfig.authority.className).clazz
     }

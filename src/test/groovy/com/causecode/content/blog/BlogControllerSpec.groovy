@@ -71,7 +71,7 @@ class BlogControllerSpec extends Specification {
 
         then: "redirected to blog show angular based URL."
         controller.modelAndView.model.blogInstance == blogInstance
-        controller.modelAndView.model.comments == []
+        controller.modelAndView.model.comments == null
         controller.modelAndView.model.tagList == []
         controller.modelAndView.model.blogInstanceList == blogInstanceList
         controller.modelAndView.viewName == '/blog/show'
