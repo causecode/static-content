@@ -73,6 +73,7 @@ class ContentService {
             }
             return authorInstance[authorProperty]
         }
+        return contentInstance.author
     }
 
     /**
