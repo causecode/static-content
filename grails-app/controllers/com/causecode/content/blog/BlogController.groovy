@@ -79,12 +79,12 @@ class BlogController {
         String month, year
 
         if (monthFilter) {
-            List blogFilter =  monthFilter.split("-")
+            List blogFilter = monthFilter.split("-")
             month = blogFilter[0]
             year = blogFilter[1]
         }
 
-        params.offset = offset ? offset: 0
+        params.offset = offset ? offset : 0
         params.max = Math.min(max ?: defaultMax, 100)
 
         // TODO Improve blog string query to support GORM/Hibernate criteria query
@@ -100,7 +100,7 @@ class BlogController {
             query.append(" monthname(b.publishedDate) = '$month' AND year(b.publishedDate) = '$year'")
         }
         if (queryFilter) {
-            tag ? query.append(" AND ") : ( monthFilter ? query.append(" AND ") : query.append(" WHERE "))
+            tag ? query.append(" AND ") : (monthFilter ? query.append(" AND ") : query.append(" WHERE "))
             query.append(" b.title LIKE '%$queryFilter%' OR b.subTitle LIKE '%$queryFilter%' ")
             query.append(" OR b.body LIKE '%$queryFilter%' OR b.author LIKE '%$queryFilter%'")
         }
@@ -140,6 +140,10 @@ class BlogController {
         List<Blog> blogInstanceList = []
         blogList.each {
             Blog blogInstance = Blog.get(it.id as long)
+            if (!blogInstance) {
+                log.debug("No blog found")
+                return
+            }
             it.author = contentService.resolveAuthor(blogInstance)
             it.numberOfComments = BlogComment.countByBlog(blogInstance)
             it.blogImgSrc = blogInstance.blogImg?.path
@@ -167,11 +171,11 @@ class BlogController {
          * Render GSP content in JSON format.
          */
         if (params._escaped_fragment_) {
-            render (view: "list", model: result, contentType: "application/json")
+            render(view: "list", model: result, contentType: "application/json")
             return
         }
         if (request.xhr) {
-            render text:(result as JSON)
+            render text: (result as JSON)
             return
         }
         String blogListUrl = grailsApplication.config.app.defaultURL + "/blog/list"
@@ -243,11 +247,11 @@ class BlogController {
          * Render GSP content in JSON format.
          */
         if (params._escaped_fragment_) {
-            render (view: "show", model: result, contentType: "application/json")
+            render(view: "show", model: result, contentType: "application/json")
             return
         }
         if (request.xhr) {
-            render text:(result as JSON)
+            render text: (result as JSON)
             return
         }
         String blogShowUrl = grailsApplication.config.app.defaultURL + "/blog/show/${blogInstance.id}"
@@ -301,7 +305,7 @@ class BlogController {
             } catch (FileUploaderServiceException e) {
                 log.debug "Unable to upload file", e
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
-                respond ([message: e.message])
+                respond([message: e.message])
             }
 
         }
@@ -340,7 +344,7 @@ class BlogController {
         }
         Comment.withTransaction { status ->
             boolean captchaValid = simpleCaptchaService.validateCaptcha(params.captcha)
-            if(!captchaValid) {
+            if (!captchaValid) {
                 if (request.xhr) {
                     Map result = [message: "Invalid capthca entered."]
                     render status: 403, text: result as JSON
@@ -352,7 +356,7 @@ class BlogController {
             }
             Comment commentInstance = new Comment()
             grailsWebDataBinder.bind(commentInstance, params as SimpleMapDataBindingSource, ['subject', 'name', 'email', 'commentText'])
-            if(!commentInstance.save()) {
+            if (!commentInstance.save()) {
                 status.setRollbackOnly()
                 if (request.xhr) {
                     Map result = [message: "Something went wrong, Please try again later."]
@@ -362,8 +366,8 @@ class BlogController {
                 redirect uri: blogInstance.searchLink()
                 return
             }
-            commentId = commentId ?: (params.commentId ?  params.commentId as long : 0l)
-            if(commentId) {
+            commentId = commentId ?: (params.commentId ? params.commentId as long : 0l)
+            if (commentId) {
                 commentInstance.replyTo = Comment.get(commentId)
                 commentInstance.save()
             } else {
