@@ -14,7 +14,7 @@
                     <ul class="meta-list list-inline">
                         <li class="post-time post_date date updated" ng-show="blogInstance.publishedDate">{{blogInstance.publishedDate | date: MM/dd/yyyy}}</li>
                         <li class="post-time post_date date updated" ng-show="!blogInstance.publishedDate">{{blogInstance.lastUpdated | date: MM/dd/yyyy}}</li>
-                        <li class="post-author"> by <a href="#">{{blogInstance.author}}</a></li>
+                        <li class="post-author"> by {{blogInstance.author}}</li>
                         <li class="post-comments-link">
                             <i class="fa fa-comments"></i>{{comments.length}} {{comments.length > 1 ? 'Comments': 'Comment'}}
                         </li>
@@ -28,16 +28,16 @@
                             <i class="fa fa-facebook share-icon"></i>
                     </button>
                     <button class="btn btn-info twitter-share-icon-background"
-                                socialshare socialshare-provider="twitter" 
-                                socialshare-text="{{blogInstance.title}}" 
+                                socialshare socialshare-provider="twitter"
+                                socialshare-text="{{blogInstance.title}}"
                                 socialshare-hashtags="{{hashtags}}"
                                 socialshare-via="causecode"
                                 socialshare-url="">
                             <i class="fa fa-twitter share-icon"></i>
                     </button>
                     <button class="btn linkedin-share-icon-background "
-                                socialshare socialshare-provider="linkedin" 
-                                socialshare-text="{{blogInstance.title}}" 
+                                socialshare socialshare-provider="linkedin"
+                                socialshare-text="{{blogInstance.title}}"
                                 socialshare-url=""
                                 socialshare-description="{{blogInstance.body | htmlToText: 30}}">
                             <i class="fa fa-linkedin share-icon"></i>
