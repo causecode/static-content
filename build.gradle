@@ -37,7 +37,7 @@ project.publishing {
 
             groupId "com.causecode.plugins"
             artifactId "content"
-            version "2.5.1"
+            version "2.5.2"
 
             pom.withXml {
                 def pomNode = asNode()
@@ -62,7 +62,7 @@ project.publishing {
 }
 
 group "com.causecode.plugins"
-version "2.5.1"
+version "2.5.2"
 
 apply plugin: "eclipse"
 apply plugin: "idea"
