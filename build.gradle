@@ -122,7 +122,7 @@ dependencies {
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
     compile "com.causecode.plugins:file-uploader:2.4.8"
-    compile "com.causecode.plugins:taggable:1.4.0"
+    compile "com.causecode.plugins:taggable:1.4.1"
 }
 
 grails {

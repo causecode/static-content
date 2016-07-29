@@ -271,7 +271,7 @@ class BlogController {
         bindData(blogInstance, requestData)
         String version = requestData['version']
         String tags = requestData.tags
-        if(requestData.tags != blogInstance.tags){
+        if(requestData.tags != blogInstance.tags) {
             blogInstance.setTags(tags?.tokenize(",")*.trim())
         }
         requestData.remove('tags')
