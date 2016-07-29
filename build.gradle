@@ -121,7 +121,7 @@ dependencies {
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
-    compile "com.causecode.plugins:file-uploader:2.4.7"
+    compile "com.causecode.plugins:file-uploader:2.4.8"
     compile "com.causecode.plugins:taggable:1.4.0"
 }
 

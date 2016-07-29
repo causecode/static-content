@@ -270,6 +270,11 @@ class BlogController {
         Blog blogInstance = Blog.get(requestData['id'] as long)
         bindData(blogInstance, requestData)
         String version = requestData['version']
+        String tags = requestData.tags
+        if(requestData.tags != blogInstance.tags){
+            blogInstance.setTags(tags?.tokenize(",")*.trim())
+        }
+        requestData.remove('tags')
 
         if (version != null) {
             if (blogInstance.version > version) {
@@ -281,7 +286,6 @@ class BlogController {
             }
         }
         Blog.withTransaction { status ->
-            String tags = requestData.remove("tags")
             List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
             List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
             contentService.update(requestData, blogInstance, metaTypeList, metaValueList)
@@ -300,7 +304,6 @@ class BlogController {
                     return false
                 }
 
-                blogInstance.setTags(tags?.tokenize(",")*.trim())
                 blogInstance.save(flush: true)
 
                 respond([success: true])

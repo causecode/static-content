@@ -38,7 +38,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
                     }
                 }
                 $scope.hashtags = tagString;
-                $scope.tags = blogData.blogInstanceTags;
+                $scope.contentInstance.tags = blogData.blogInstanceTags;
             }
             $scope.comments = blogData.comments;
             $scope.instanceList = blogData.blogInstanceList;
