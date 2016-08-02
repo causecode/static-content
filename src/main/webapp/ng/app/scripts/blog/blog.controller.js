@@ -31,18 +31,19 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
                 $scope.contentInstance.metaList = blogData.metaList;
                 $scope.commentData.id = blogData.blogInstance.id;
                 $scope.blogImgSrc = blogData.blogImgSrc;
-                for (i in $scope.blogInstance.metaList) {
-                    if ($scope.blogInstance.metaList[i].type === "keywords") {
-                        var tagString = $scope.blogInstance.metaList[i].value;
+                var tagString;
+                for (i in $scope.contentInstance.metaList) {
+                    if ($scope.contentInstance.metaList[i].type === "keywords") {
+                        tagString += $scope.contentInstance.metaList[i].value;
                     }
                 }
                 $scope.hashtags = tagString;
-                $scope.tags = tagString.split(",");
+                $scope.tags = blogData.blogInstanceTags;
             }
             $scope.comments = blogData.comments;
             $scope.instanceList = blogData.blogInstanceList;
             $scope.tagList = blogData.tagList;
-            
+
             // Setting meta tags
             var keywords = [];
             var descriptions = [];
@@ -78,7 +79,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
                 /*
                  * Prettify library modify HTML content but AngularJS takes few milliseconds to bind data to HTML (blogInstance in this case).
                  * Hence adding few milliseconds wait for that.
-                 */ 
+                 */
                 $timeout(function() {
                     $window.PR.prettyPrint();
                 }, 500);
@@ -99,7 +100,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     };
 
     /*
-     * Initializing response returned by query ajax call from paged list directive in 
+     * Initializing response returned by query ajax call from paged list directive in
      * current controllers scope.
      */
     $scope.initializeGetListResponse = function(data) {
@@ -122,7 +123,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     $scope.filterTags = function(tag) {
         tag = (tag === "") ? null : tag;
         $location.search({tag: tag});
-        
+
     };
 
     $scope.filterArchives = function(monthFilter) {
@@ -172,7 +173,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     $scope.isBlogEditable = function(blogInstance) {
         var author = blogInstance? blogInstance.author : null;
-        var isAdminOrManager = securityService.ifAnyGranted($scope.userInstance, 
+        var isAdminOrManager = securityService.ifAnyGranted($scope.userInstance,
             $scope.userRoles, 'ROLE_CONTENT_MANAGER,ROLE_ADMIN');
         return ($scope.userInstance && (isAdminOrManager ||  author === $scope.userInstance.username));
     };
@@ -234,7 +235,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
             blogPostRef.$save();
         }, function(data) {
             $scope.selectedFile = null;
-        }); 
+        });
     };
 
     function blogUpdateCallback() {
@@ -259,7 +260,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     $scope.deleteBlog = function(blogInstance) {
         blogInstance.$delete(null, blogUpdateCallback);
     };
-    
+
     if (($scope.controllerName === 'blog') && (['edit', 'show'].indexOf($scope.actionName) > -1)) {
         var convertToMarkdown =  !($scope.actionName == 'edit');
         $scope.fetchBlog($scope.id, convertToMarkdown);
