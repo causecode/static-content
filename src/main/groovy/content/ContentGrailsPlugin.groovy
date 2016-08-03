@@ -19,7 +19,7 @@ import com.causecode.content.ContentService
 
 class ContentGrailsPlugin extends Plugin {
 
-    def version = "2.4.3-RC4"
+    def version = "2.5.3"
     def groupId = "com.cc.plugins"
     def grailsVersion = "3.1.4 > *"
     def pluginExcludes = [
