@@ -137,7 +137,7 @@ class ContentService {
      */
     @Transactional
     Content update(Map args, Content contentInstance, List metaTypes, List metaValues) {
-        grailsWebDataBinder.bind(contentInstance, args as SimpleMapDataBindingSource)
+        grailsWebDataBinder.bind(contentInstance, args as SimpleMapDataBindingSource, null, null, ['tags'], null)
         contentInstance.validate()
         if(contentInstance.hasErrors()) {
             log.warn "Error saving ${contentInstance.class.name}: " + contentInstance.errors
