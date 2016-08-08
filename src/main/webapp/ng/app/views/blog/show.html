@@ -51,11 +51,11 @@
                     <p ng-bind-html="blogInstance.body"></p>
                 </div>
             </article>
-            <article ng-show="tags">
+            <article ng-show="contentInstance.tags">
                 <h2 class="title">Tags</h2>
                 <hr>
                 <div>
-                    <span ng-repeat="tag in tags">
+                    <span ng-repeat="tag in contentInstance.tags">
                         &nbsp; <span class="label label-warning">{{tag}}</span>
                     </span>
                 </div>
