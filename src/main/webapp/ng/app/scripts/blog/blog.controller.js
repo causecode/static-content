@@ -31,13 +31,12 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
                 $scope.contentInstance.metaList = blogData.metaList;
                 $scope.commentData.id = blogData.blogInstance.id;
                 $scope.blogImgSrc = blogData.blogImgSrc;
-                var tagString;
-                for (i in $scope.contentInstance.metaList) {
+                for (var i in $scope.contentInstance.metaList) {
                     if ($scope.contentInstance.metaList[i].type === "keywords") {
-                        tagString += $scope.contentInstance.metaList[i].value;
+                        $scope.hashtags = $scope.contentInstance.metaList[i].value;
+                        break;
                     }
                 }
-                $scope.hashtags = tagString;
                 $scope.contentInstance.tags = blogData.blogInstanceTags;
             }
             $scope.comments = blogData.comments;
@@ -213,12 +212,18 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
 
     $scope.onFileSelect = function($files) {
         $scope.selectedFile = $files[0];
+        if ($scope.selectedFile.size > 2090000) {
+            appService.showAlertMessage('Image size exceeds limit.', 'danger', {element: '.modal .alert'});
+            $scope.selectedFile = null;
+            return;
+        }
+
         var fileReader = new $window.FileReader();
         fileReader.onload = function(result) {
             $scope.$apply(function() {
                 $scope.contentInstance.blogImgSrc = result.target.result;
             });
-        }
+        };
         fileReader.readAsDataURL($scope.selectedFile);
     };
 
@@ -231,7 +236,7 @@ controllers.controller('BlogController', ['$scope', '$state', 'BlogModel', 'appS
     $scope.saveBlogPost = function(blogContent) {
         var blogPostRef = blogContent;
         fileService.uploadFile($scope.selectedFile).then(function(data) {
-            blogPostRef.blogImgFilePath = data.filepath,
+            blogPostRef.blogImgFilePath = data.filepath;
             blogPostRef.$save();
         }, function(data) {
             $scope.selectedFile = null;

@@ -192,8 +192,6 @@ class BlogController {
     @Transactional
     def save() {
         Map requestData = request.JSON
-        String tagsString = requestData.tags
-        requestData.remove('tags')
         log.info "Parameters received to save blog: ${requestData}"
         List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
         List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
@@ -215,7 +213,7 @@ class BlogController {
                     respond(blogInstance.errors)
                     return false
                 }
-                blogInstance.setTags(tagsString?.tokenize(",")*.trim())
+                blogInstance.setTags(requestData.tags?.tokenize(",")*.trim())
                 blogInstance.save(flush: true)
                 respond([success: true])
             } catch (FileUploaderServiceException e) {
@@ -270,11 +268,9 @@ class BlogController {
         Blog blogInstance = Blog.get(requestData['id'] as long)
         bindData(blogInstance, requestData)
         String version = requestData['version']
-        String tags = requestData.tags
         if(requestData.tags != blogInstance.tags) {
-            blogInstance.setTags(tags?.tokenize(",")*.trim())
+            blogInstance.setTags(requestData.tags?.tokenize(",")*.trim())
         }
-        requestData.remove('tags')
 
         if (version != null) {
             if (blogInstance.version > version) {
