@@ -72,8 +72,6 @@ class BlogController {
         if (monthFilter == 'undefined') monthFilter = ''
         if (queryFilter == 'undefined') queryFilter = ''
 
-        log.info "Parameters received to filter blogs : $params"
-        log.info(">>> Action index called")
         long blogInstanceTotal
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
         List<String> monthFilterList = []
@@ -193,7 +191,6 @@ class BlogController {
     @Transactional
     def save() {
         Map requestData = request.JSON
-        log.info "Parameters received to save blog: ${requestData}"
         List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
         List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
 
@@ -228,43 +225,43 @@ class BlogController {
 
     @Secured(["permitAll"])
     def show() {
-        log.info "Hello World"
         Blog blogInstance = Blog.get(params.id)
-        if (blogInstance.publish == false && !springSecurityService.currentUser) {
-            log.info "I am inside"
+        if (!blogInstance.publish && !springSecurityService.currentUser) {
             String blogShowUrl = grailsApplication.config.app.defaultURL + "/blogs"
             redirect(url: blogShowUrl, permanent: true)
-            return
-        } else {
-            List tagList = blogService.getAllTags()
-            def blogInstanceTags = blogInstance.tags
-
-            // Convert markdown content into html format
-            blogInstance.body = markdownService.markdown(blogInstance.body)
-
-            List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
-            List<Meta> metaInstanceList = blogInstance.getMetaTags()
-
-            Map result = [blogInstance    : blogInstance, comments: null, tagList: tagList,
-                          blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
-
-            /*
-         * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
-         * any change in data model must be updated in the GSP.
-         * Render GSP content in JSON format.
-         */
-            if (params._escaped_fragment_) {
-                render(view: "show", model: result, contentType: "application/json")
-                return
-            }
-            if (request.xhr) {
-                render text: (result as JSON)
-                return
-            }
-            String blogShowUrl = grailsApplication.config.app.defaultURL + "/blog/show/${blogInstance.id}"
-            redirect(url: blogShowUrl, permanent: true)
-            return
+            return true
         }
+
+        List tagList = blogService.getAllTags()
+        def blogInstanceTags = blogInstance.tags
+
+        // Convert markdown content into html format
+           if (params.convertToMarkdown == "true") {
+               blogInstance.body = markdownService.markdown(blogInstance.body)
+           }
+
+        List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
+        List<Meta> metaInstanceList = blogInstance.getMetaTags()
+
+        Map result = [blogInstance    : blogInstance, comments: null, tagList: tagList,
+                      blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
+
+        /*
+     * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
+     * any change in data model must be updated in the GSP.
+     * Render GSP content in JSON format.
+     */
+        if (params._escaped_fragment_) {
+            render(view: "show", model: result, contentType: "application/json")
+            return true
+        }
+        if (request.xhr) {
+            render text: (result as JSON)
+            return true
+        }
+        String blogShowUrl = grailsApplication.config.app.defaultURL + "/blog/show/${blogInstance.id}"
+        redirect(url: blogShowUrl, permanent: true)
+        return
     }
     /**
      * Update blog instance also sets tags for blog instance.
