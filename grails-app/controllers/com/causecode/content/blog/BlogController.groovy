@@ -340,7 +340,6 @@ class BlogController {
         Map requestData = request.JSON
         String errorMessage
         params.putAll(requestData)
-        log.info "Parameters received to comment on blog: $params"
         if (!params.id) {
             errorMessage = "Not enough parameters recived to add comment."
             log.info errorMessage
@@ -382,7 +381,6 @@ class BlogController {
                 blogCommentInstance.comment = commentInstance
                 blogCommentInstance.save()
             }
-            log.info "Comment Added successfully."
             if (request.xhr) {
                 render text: ([success: true] as JSON)
                 return
