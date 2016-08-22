@@ -162,7 +162,7 @@ class BlogController {
         }
 
         Map result = [instanceList: blogInstanceList, totalCount: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
-            tagList: blogService.getAllTags()]
+                      tagList: blogService.getAllTags()]
 
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
@@ -236,9 +236,9 @@ class BlogController {
         def blogInstanceTags = blogInstance.tags
 
         // Convert markdown content into html format
-           if (params.convertToMarkdown == "true") {
-               blogInstance.body = markdownService.markdown(blogInstance.body)
-           }
+        if (params.convertToMarkdown == "true") {
+            blogInstance.body = markdownService.markdown(blogInstance.body)
+        }
 
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         List<Meta> metaInstanceList = blogInstance.getMetaTags()
