@@ -150,8 +150,7 @@ class ContentService {
 
         // Remove all content meta relations
         List<ContentMeta> contentMetas = ContentMeta.withCriteria {
-            createAlias("content", "contentInstance")
-            eq("contentInstance.id", contentInstance.id)
+            eq("content", contentInstance)
         }*.delete();
 
         // Remove all metas
@@ -159,13 +158,11 @@ class ContentService {
 
         metaTypes.eachWithIndex { type, index ->
             Meta metaInstance = ContentMeta.withCriteria(uniqueResult: true) {
-                createAlias("content", "contentInstance")
-                createAlias("meta", "metaInstance")
                 projections {
                     property("meta")
                 }
-                eq("contentInstance.id", contentInstance.id)
-                eq("metaInstance.type", type)
+                eq("content", contentInstance)
+                eq("metaInstance", type)
             }
             if(!metaInstance) {
                 metaInstance = new Meta(type: type)
@@ -254,12 +251,12 @@ class ContentService {
 
         action = attrs.action ? attrs.action + "/" : ""
 
-        // See hooking into dynamic events
-        getShorthandAnnotatedControllers().each { controllerName, shorthand ->
-            if(controllerName == attrs.controller) {
-                controllerShortHand = shorthand
-            }
-        }
+//         See hooking into dynamic events
+//     getShorthandAnnotatedControllers().each { controllerName, shorthand ->
+//            if(controllerName == attrs.controller) {
+//                controllerShortHand = shorthand
+//            }
+//        }
 
         if(controllerShortHand)
             attrs.uri = "/$controllerShortHand/${action}${attrs.id}/${sanitizedTitle ?: ''}"

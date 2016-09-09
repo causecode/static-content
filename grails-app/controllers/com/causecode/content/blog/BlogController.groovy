@@ -87,41 +87,59 @@ class BlogController {
         params.max = Math.min(max ?: defaultMax, 100)
 
         // TODO Improve blog string query to support GORM/Hibernate criteria query
-        StringBuilder query = new StringBuilder("""SELECT distinct new Map(b.id as id, b.body as body, b.title as title,
-                            b.subTitle as subTitle, b.author as author, b.lastUpdated as lastUpdated, b.publishedDate as publishedDate) FROM Blog b """)
+         log.info "You reached here"
+        List<Map> blogList = Blog.createCriteria().list {
+            projectionsDistinct {
+                log.info "Bye"
+                property('id')
+                property('body')
+                property('title')
+                property('subTitle')
+                property('author')
+                property('lastUpdated')
+                property('publishedDate')
 
-        if (tag) {
-            query.append(", ${TagLink.class.name} tagLink WHERE b.id = tagLink.tagRef ")
-            query.append("AND tagLink.type = 'blog' AND tagLink.tag.name = '$tag' ")
-        }
-        if (monthFilter) {
-            tag ? query.append(" AND ") : query.append(" WHERE ")
-            query.append(" monthname(b.publishedDate) = '$month' AND year(b.publishedDate) = '$year'")
-        }
-        if (queryFilter) {
-            tag ? query.append(" AND ") : (monthFilter ? query.append(" AND ") : query.append(" WHERE "))
-            query.append(" b.title LIKE '%$queryFilter%' OR b.subTitle LIKE '%$queryFilter%' ")
-            query.append(" OR b.body LIKE '%$queryFilter%' OR b.author LIKE '%$queryFilter%'")
-        }
+            }
+            if (tag) {
+                tagLink {
+                    eq(id, tagRef)
+                    eq(type, 'blog')
+                    tag {
+                        eq(name, tag)
+                    }
+                }
+            }
+            if (monthFilter) {
+                eq(publishedDate, month)
+                eq(publishedDate, year)
 
-        if (contentService.contentManager) {
-            blogInstanceTotal = tag ? Blog.countByTag(tag) : Blog.count()
-        } else if (tag) {
-            query.append("AND b.publish = true")
-            blogInstanceTotal = Blog.findAllByTagWithCriteria(tag) {
-                eq("publish", true)
-            }.size()
-        } else if (monthFilter) {
-            query.append("AND b.publish = true")
-            blogInstanceTotal = Blog.countByPublish(true)
-        } else {
-            (queryFilter) ? query.append(" AND ") : query.append(" where ")
-            query.append(" b.publish = true")
-            blogInstanceTotal = Blog.countByPublish(true)
-        }
-        query.append(" order by b.dateCreated desc")
+            }
+            if (queryFilter) {
+                OR {
+                    like(title, "%$queryFilter%")
+                    like(subTitle, "%$queryFilter%")
+                    like(body, "%$queryFilter%")
+                    like(author, "%$queryFilter%")
+                }
+            }
+            if (!contentService.contentManager) {
+                blogInstanceTotal = tag ? Blog.countByTag(tag) : Blog.count()
+            } else if (tag) {
+                eq(publish, true)
+                blogInstanceTotal = Blog.findAllByTagWithCriteria(tag) {
+                    eq("publish", true)
+                }.size()
+            } else if (monthFilter) {
+                eq(publish, true)
+                blogInstanceTotal = Blog.countByPublish(true)
+            } else {
+                eq(publish, true)
+                blogInstanceTotal = Blog.countByPublish(true)
 
-        List<Map> blogList = Blog.executeQuery(query.toString(), [max: params.max, offset: params.offset])
+            }
+            order("dateCreated", "asc")
+        }
+        List<Map> blogList1 = Blog.createCriteria(blogList.toString, [max:params.max, offset:params.offset])
         Pattern patternTag = Pattern.compile(HTML_P_TAG_PATTERN)
 
         blogList.each {
@@ -133,7 +151,8 @@ class BlogController {
         }
 
         if (monthFilter) {
-            blogInstanceTotal = Blog.executeQuery(query.toString()).size()
+            blogInstanceTotal = Blog.createCriteria(blogList.toString) {
+            }.size()
         }
 
         List<Blog> blogInstanceList = []
@@ -273,7 +292,7 @@ class BlogController {
         Blog blogInstance = Blog.get(requestData['id'] as long)
         bindData(blogInstance, requestData)
         String version = requestData['version']
-        if(requestData.tags != blogInstance.tags) {
+        if (requestData.tags != blogInstance.tags) {
             blogInstance.setTags(requestData.tags?.tokenize(",")*.trim())
         }
 

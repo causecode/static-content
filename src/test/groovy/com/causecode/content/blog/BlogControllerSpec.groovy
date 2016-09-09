@@ -1,18 +1,17 @@
 package com.causecode.content.blog
 
 import com.causecode.content.Content
+import com.causecode.content.ContentService
 import com.causecode.content.blog.comment.CommentService
 import com.naleid.grails.MarkdownService
+import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugins.taggable.Tag
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import spock.lang.Specification
 
-/**
- * Unit test for BlogController
- */
 @TestFor(BlogController)
-@Mock([Blog, Content, Tag])
+@Mock([Blog, Content, Tag, ContentService, CommentService, BlogService])
 class BlogControllerSpec extends Specification {
 
     Blog blogInstance
@@ -87,12 +86,12 @@ class BlogControllerSpec extends Specification {
         controller.show()
 
         then: "should respond json data containing page instance"
-        controller.response.json["blogInstance"]
-        controller.response.json["blogInstance"].id
+        //controller.response.json["blogInstance"]
+        controller.response.json["blogInstance"].id == blogInstance.id
         controller.response.json["blogInstance"].title == blogInstance.title
         controller.response.json["blogInstance"].body == blogInstance.body
         controller.response.json["blogInstance"].subTitle == blogInstance.subTitle
-        controller.response.json["blogInstance"].publish
+        controller.response.json["blogInstance"].publish == blogInstance.publish
     }
 
     void "test show action of blog"() {
@@ -113,7 +112,6 @@ class BlogControllerSpec extends Specification {
                 author  : "Test User",
                 subTitle: "To execute the JUnit integration test $i",
                 body    : "Grails organises tests by phase and by type. The state of the Grails application.",
-                tags    : [new Tag()]
         ]
     }
 }

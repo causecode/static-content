@@ -51,7 +51,7 @@ class PageController {
 
     def getMetaTypeList() {
         List metaTypeList = Meta.getTypeList()
-        respond ([metaTypeList:metaTypeList])
+        respond ([metaTypeList: metaTypeList])
     }
 
     def list(Integer max) {
@@ -76,11 +76,12 @@ class PageController {
         Page pageInstance = contentService.create(requestData, requestData.metaList.type, requestData.metaList.value, Page.class)
         if(!pageInstance.save(flush: true)) {
             render(view: "create", model: [pageInstance: pageInstance])
-            return
+            return true
         }
 
         flash.message = message(code: 'default.created.message', args: [message(code: 'page.label'), pageInstance.id])
         redirect uri: pageInstance.searchLink()
+        return true
     }
 
     /**
@@ -137,24 +138,17 @@ class PageController {
             throw new RequiredPropertyMissingException()
         }
         Map requestData = request.JSON
-
         if(version != null) {
             if (pageInstance.version > version) {
                 pageInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'page.label')] as Object[],
+                        [message: message(code: 'page.label')] as Object[],
                         "Another user has updated this Page while you were editing")
                 respond(pageInstance.errors)
-                return
+                return true
             }
         }
-        log.info "Parameters received to update page instance: $params, $requestData"
         pageInstance = contentService.update(requestData, pageInstance, requestData.metaList?.type,
                 requestData.metaList?.value)
-
-        if(pageInstance.hasErrors()) {
-            respond(pageInstance.errors)
-            return
-        }
         flash.message = "<em>$pageInstance</em> Page updated successfully."
         if(params.createRevision) {
             contentService.createRevision(pageInstance, PageRevision.class, params)

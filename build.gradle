@@ -68,6 +68,7 @@ apply plugin: "eclipse"
 apply plugin: "idea"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-plugin-publish"
+apply plugin: "jacoco"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: 'codenarc'
 
@@ -123,6 +124,12 @@ dependencies {
 
     compile "com.causecode.plugins:file-uploader:2.4.8"
     compile "com.causecode.plugins:taggable:1.4.1"
+
+}
+test {
+    testLogging {
+        showStandardStreams = true
+    }
 }
 
 grails {
@@ -146,6 +153,28 @@ grailsPublish {
     developers = [johndoe: "John Doe"]
     portalUser = ""
     portalPassword = ""
+}
+
+jacoco {
+    toolVersion = "0.7.7.201606060606"
+    reportsDir = file("$buildDir/jacoco")
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled true
+        html.destination "${buildDir}/jacoco/jacocoHtml/"
+    }
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ['com/causecode/content/navigation/**', 'com/causecode/content/inputWidget/**',
+                            'com/causecode/content/news/**', 'com/causecode/content/faq/**', 'com/causecode/seo/friendlyurl/**',
+                                      'com/causecode/exceptions/**', 'com/causecode/iframe/**', 'content/**', 'static/content/**', 'default/**'])
+        })
+    }
+    executionData test
+    jacocoTestReport.dependsOn test
 }
 
 codenarc {

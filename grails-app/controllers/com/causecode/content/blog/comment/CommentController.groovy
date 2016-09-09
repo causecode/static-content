@@ -26,7 +26,7 @@ class CommentController {
     /**
      * This action delete comment instance if it has been added as reply to another comment otherwise
      * delete join class reference added for blog for given comment instance.
-     * 
+     *
      * After delete operation redirects to blog show page.
      * @param id REQUIRED Identity of Comment domain instance to be deleted.
      * @param blogId Identity of Blog domain instance to get blog and redirect to blog show page.
