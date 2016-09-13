@@ -72,6 +72,7 @@ class BlogController {
         if (monthFilter == 'undefined') monthFilter = ''
         if (queryFilter == 'undefined') queryFilter = ''
 
+        log.info "Parameters received to filter blogs : $params"
         long blogInstanceTotal
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
         List<String> monthFilterList = []
@@ -162,7 +163,7 @@ class BlogController {
         }
 
         Map result = [instanceList: blogInstanceList, totalCount: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
-                      tagList: blogService.getAllTags()]
+                tagList: blogService.getAllTags()]
 
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
@@ -191,6 +192,7 @@ class BlogController {
     @Transactional
     def save() {
         Map requestData = request.JSON
+        log.info "Parameters received to save blog: ${requestData}"
         List metaTypeList = requestData.metaList ? requestData.metaList.getAt("type") : []
         List metaValueList = requestData.metaList ? requestData.metaList.getAt("value") : []
 
@@ -243,14 +245,14 @@ class BlogController {
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         List<Meta> metaInstanceList = blogInstance.getMetaTags()
 
-        Map result = [blogInstance    : blogInstance, comments: null, tagList: tagList,
-                      blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
+        Map result = [blogInstance: blogInstance, comments: null, tagList: tagList,
+                blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
 
         /*
-     * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
-     * any change in data model must be updated in the GSP.
-     * Render GSP content in JSON format.
-     */
+        * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
+        * any change in data model must be updated in the GSP.
+        * Render GSP content in JSON format.
+        */
         if (params._escaped_fragment_) {
             render(view: "show", model: result, contentType: "application/json")
             return true
@@ -261,6 +263,7 @@ class BlogController {
         }
         String blogShowUrl = grailsApplication.config.app.defaultURL + "/blog/show/${blogInstance.id}"
         redirect(url: blogShowUrl, permanent: true)
+
         return
     }
     /**
@@ -340,6 +343,7 @@ class BlogController {
         Map requestData = request.JSON
         String errorMessage
         params.putAll(requestData)
+        log.info "Parameters received to comment on blog: $params"
         if (!params.id) {
             errorMessage = "Not enough parameters recived to add comment."
             log.info errorMessage
@@ -381,6 +385,7 @@ class BlogController {
                 blogCommentInstance.comment = commentInstance
                 blogCommentInstance.save()
             }
+            log.info "Comment Added successfully."
             if (request.xhr) {
                 render text: ([success: true] as JSON)
                 return
