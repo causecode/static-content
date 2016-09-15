@@ -249,10 +249,10 @@ class BlogController {
                 blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
 
         /*
-        * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
-        * any change in data model must be updated in the GSP.
-        * Render GSP content in JSON format.
-        */
+         * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
+         * any change in data model must be updated in the GSP.
+         * Render GSP content in JSON format.
+         */
         if (params._escaped_fragment_) {
             render(view: "show", model: result, contentType: "application/json")
             return true
@@ -264,7 +264,7 @@ class BlogController {
         String blogShowUrl = grailsApplication.config.app.defaultURL + "/blog/show/${blogInstance.id}"
         redirect(url: blogShowUrl, permanent: true)
 
-        return
+        return true
     }
     /**
      * Update blog instance also sets tags for blog instance.
