@@ -113,7 +113,6 @@ class BlogControllerSpec extends Specification {
                 author  : "Test User",
                 subTitle: "To execute the JUnit integration test $i",
                 body    : "Grails organises tests by phase and by type. The state of the Grails application.",
-                tags    : [new Tag()]
         ]
     }
 }

@@ -163,7 +163,7 @@ class BlogController {
         }
 
         Map result = [instanceList: blogInstanceList, totalCount: blogInstanceTotal, monthFilterList: monthFilterList.unique(),
-            tagList: blogService.getAllTags()]
+                tagList: blogService.getAllTags()]
 
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
@@ -228,18 +228,25 @@ class BlogController {
     @Secured(["permitAll"])
     def show() {
         Blog blogInstance = Blog.get(params.id)
+        if (!blogInstance.publish && !springSecurityService.currentUser) {
+            String blogListUrl = grailsApplication.config.app.defaultURL + "/blogs"
+            redirect(url: blogListUrl, permanent: true)
+            return true
+        }
 
         List tagList = blogService.getAllTags()
         def blogInstanceTags = blogInstance.tags
 
         // Convert markdown content into html format
-        blogInstance.body = markdownService.markdown(blogInstance.body)
+        if (params.convertToMarkdown == "true") {
+            blogInstance.body = markdownService.markdown(blogInstance.body)
+        }
 
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         List<Meta> metaInstanceList = blogInstance.getMetaTags()
 
         Map result = [blogInstance: blogInstance, comments: null, tagList: tagList,
-            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
+                blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
 
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
@@ -248,16 +255,17 @@ class BlogController {
          */
         if (params._escaped_fragment_) {
             render(view: "show", model: result, contentType: "application/json")
-            return
+            return true
         }
         if (request.xhr) {
             render text: (result as JSON)
-            return
+            return true
         }
         String blogShowUrl = grailsApplication.config.app.defaultURL + "/blog/show/${blogInstance.id}"
         redirect(url: blogShowUrl, permanent: true)
-    }
 
+        return true
+    }
     /**
      * Update blog instance also sets tags for blog instance.
      */
