@@ -229,8 +229,8 @@ class BlogController {
     def show() {
         Blog blogInstance = Blog.get(params.id)
         if (!blogInstance.publish && !springSecurityService.currentUser) {
-            String blogShowUrl = grailsApplication.config.app.defaultURL + "/blogs"
-            redirect(url: blogShowUrl, permanent: true)
+            String blogListUrl = grailsApplication.config.app.defaultURL + "/blogs"
+            redirect(url: blogListUrl, permanent: true)
             return true
         }
 
