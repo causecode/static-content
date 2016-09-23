@@ -5,13 +5,13 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 dataSource = {
     pooled = true
     driverClassName = "org.h2.Driver"
     username = "root"
-    password = "causecode.11"
+    password = ""
 }
+
 hibernate = {
     cache.use_second_level_cache = true
     cache.use_query_cache = false
@@ -21,8 +21,12 @@ hibernate = {
 // environment specific settings
 environments = {
     development = {
-        plugins = {
-            runtime "org.grails.plugins:hibernate4"
+            plugins = {
+                runtime "org.grails.plugins:hibernate4"
+            }
+        dataSource {
+            dbCreate = "create-drop"
+            url = "jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE"
         }
     }
     test = {

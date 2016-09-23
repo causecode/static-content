@@ -5,14 +5,13 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content
 
-import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
 
 import grails.databinding.SimpleMapDataBindingSource
+import grails.web.databinding.GrailsWebDataBinder
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 
@@ -21,18 +20,22 @@ import org.springframework.http.HttpStatus
  * @author Vishesh Duggar
  * @author Shashank Agrawal
  * @author Bharti Nagdev
- *
  */
-@Secured(["ROLE_CONTENT_MANAGER"])
+@Secured(['ROLE_CONTENT_MANAGER'])
 class PageLayoutController {
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
-    static responseFormats = ["json"]
+    static allowedMethods = [save: 'POST', update: 'PUT', delete: 'DELETE']
+    static responseFormats = ['json']
 
-    def grailsWebDataBinder
+    private static final String LIST_STRING = 'list'
+    private static final String DEFAULT_NOT_FOUND = 'default.not.found.message'
+
+    private static final Map FLUSH_TRUE = [flush: true]
+
+    GrailsWebDataBinder grailsWebDataBinder
 
     def index() {
-        redirect(action: "list", params: params)
+        redirect(action: LIST_STRING, params: params)
     }
 
     def list(Integer max) {
@@ -41,11 +44,14 @@ class PageLayoutController {
     }
 
     def getPageLayoutList() {
-        respond([pageLayoutList: PageLayout.list()])
+        respond([pageLayoutList: PageLayout.list(max: 20)])
     }
 
     def create() {
-        [pageLayoutInstance: new PageLayout(params)]
+        def pageLayoutInstance = new PageLayout()
+        bindData(pageLayoutInstance, params, [include: 'layoutName'])
+
+        [pageLayoutInstance: pageLayoutInstance]
     }
 
     def save() {
@@ -59,10 +65,10 @@ class PageLayoutController {
             log.warn "Error saving pageLayout Instance: $pageLayoutInstance.errors."
             respond ([errors: pageLayoutInstance.errors], status: HttpStatus.NOT_MODIFIED)
             return
-        } else {
-            log.info "Pagelayout instance saved successfully."
-            pageLayoutInstance.save(flush: true)
         }
+
+        log.info 'Pagelayout instance saved successfully.'
+        pageLayoutInstance.save(FLUSH_TRUE)
 
         respond ([status: HttpStatus.OK])
     }
@@ -74,8 +80,8 @@ class PageLayoutController {
 
     def edit(PageLayout pageLayoutInstance) {
         if (!pageLayoutInstance) {
-            log.warn message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), params.id])
-            redirect(action: "list")
+            log.warn message(logWarnMessage())
+            redirect(action: LIST_STRING)
             return
         }
 
@@ -84,14 +90,14 @@ class PageLayoutController {
 
     def update(PageLayout pageLayoutInstance, Long version) {
         if (!pageLayoutInstance) {
-            log.warn message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), params.id])
-            redirect(action: "list")
+            log.warn message(logWarnMessage())
+            redirect(action: LIST_STRING)
             return
         }
 
         if (version != null) {
             if (pageLayoutInstance.version > version) {
-                respond ([message: "Another user has updated this page layout instance while you were editing"], 
+                respond ([message: 'Another user has updated this page layout instance while you were editing'],
                     status: HttpStatus.NOT_MODIFIED)
                 return
             }
@@ -105,22 +111,26 @@ class PageLayoutController {
             log.warn "Error updating pageLayout Instance: $pageLayoutInstance.errors."
             respond ([errors: pageLayoutInstance.errors], status: HttpStatus.NOT_MODIFIED)
             return
-        } else {
-            log.info "Pagelayout instance updated successfully."
-            pageLayoutInstance.save(flush: true)
         }
+
+        log.info 'Pagelayout instance updated successfully.'
+        pageLayoutInstance.save(FLUSH_TRUE)
 
         respond ([status: HttpStatus.OK])
     }
 
     def delete(PageLayout pageLayoutInstance) {
         try {
-            pageLayoutInstance.delete(flush: true)
+            pageLayoutInstance.delete(FLUSH_TRUE)
         }
         catch (DataIntegrityViolationException e) {
             respond ([status: HttpStatus.NOT_MODIFIED])
-            return
+            return false
         }
         respond ([status: HttpStatus.OK])
+    }
+
+    private Map logWarnMessage() {
+        return [code: DEFAULT_NOT_FOUND, args: [message(code: 'pageLayout.label'), params.id]]
     }
 }

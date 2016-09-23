@@ -5,25 +5,23 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content
-
-import grails.util.Environment
-import java.lang.annotation.Annotation
-import java.lang.reflect.Field
-
-import grails.plugin.springsecurity.SpringSecurityUtils
-import grails.web.mapping.LinkGenerator
-import grails.databinding.SimpleMapDataBindingSource
-import org.springframework.transaction.annotation.Transactional
 
 import com.causecode.annotation.sanitizedTitle.SanitizedTitle
 import com.causecode.content.blog.Blog
 import com.causecode.content.blog.comment.BlogComment
-import com.causecode.content.page.Page
 import com.causecode.content.meta.Meta
-import grails.core.GrailsApplication
+import com.causecode.content.page.Page
+import com.causecode.seo.friendlyurl.FriendlyUrlService
+import grails.databinding.SimpleMapDataBindingSource
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.util.Environment
+import grails.web.databinding.GrailsWebDataBinder
+import grails.web.mapping.LinkGenerator
+import org.springframework.transaction.annotation.Transactional
+
+import java.lang.reflect.Field
 
 /**
  * This taglib provides tags for rendering comments on blog.
@@ -35,43 +33,53 @@ class ContentService {
 
     static transactional = false
 
-    def grailsWebDataBinder
-    private static final String ANONYMOUS_USER = "anonymousUser"
+    private static final String ANONYMOUS_USER = 'anonymousUser'
+    private static final String CONTENT = 'content'
+    private static final String META = 'meta'
+    private static final String CONTENT_INSTANCE = 'contentInstance'
+    private static final String CONTENT_INSTANCE_ID = 'contentInstance.id'
+
+    private static final int RESULT_COUNT = 1000
+
+    private static final Map UNIQUE_TRUE = [uniqueResult: true]
 
     /**
      * Dependency Injection for the grailsLinkGenerator
      */
-    LinkGenerator grailsLinkGenerator
-    
+    def grailsLinkGenerator
+
     /**
      * Dependency injection for the services
      */
-    def friendlyUrlService
-    def springSecurityService
-    GrailsApplication grailsApplication
+    FriendlyUrlService friendlyUrlService
+    SpringSecurityService springSecurityService
+    def grailsApplication
+    def grailsWebDataBinder
 
     /**
      * Used to get author of content instance with the help of author property passed.
      * @param contentInstance Content instance whose author needs to be resolved.
-     * @param authorProperty String representing property of current user to be returned. Default set to 'fullName' 
+     * @param authorProperty String representing property of current user to be returned. Default set to 'fullName'
      * field.
      * @return String specifying author for content instance. If content instance not specified and content instance
      * author field is not a number the default string 'ANONYMOUS_USER' returned.
      */
-    String resolveAuthor(Content contentInstance, String authorProperty = "fullName") {
-        if(!contentInstance?.id) {
+    String resolveAuthor(Content contentInstance, String authorProperty = 'fullName') {
+        String updatedAuthorProperty = authorProperty
+
+        if (!contentInstance?.id) {
             def currentUser = springSecurityService.currentUser
             return currentUser ? currentUser.id.toString() : ANONYMOUS_USER
         }
-        if(contentInstance.author?.isNumber()) {
+        if (contentInstance.author?.isNumber()) {
             // authorInstance returns User instance, keeping it def so that method remains generic.
             def className = SpringSecurityUtils.securityConfig.userLookup.userDomainClassName
             def authorClazz = grailsApplication.getDomainClass(className).clazz
             def authorInstance = authorClazz.get(contentInstance.author)
-            if (!authorInstance[authorProperty]) {
-                authorProperty = "username"
+            if (!authorInstance[updatedAuthorProperty]) {
+                updatedAuthorProperty = 'username'
             }
-            return authorInstance[authorProperty]
+            return authorInstance[updatedAuthorProperty]
         }
         return contentInstance.author ?: ANONYMOUS_USER
     }
@@ -81,17 +89,20 @@ class ContentService {
      * @param id Identity of Content domain instance .
      */
     boolean isVisible(def id) {
-        if(contentManager) return true;
+        if (contentManager) { return true }
 
-        List restrictedDomainClassList = [Page.class.name, Blog.class.name]
-        Content contentInstance = Content.withCriteria(uniqueResult: true) {
+        List restrictedDomainClassList = [Page.name, Blog.name]
+        Content contentInstance = Content.withCriteria(UNIQUE_TRUE) {
             idEq(id.toLong())
-            'in'("class", restrictedDomainClassList)
-        }
-        if(!contentInstance || contentInstance.publish)
-            return true
+            'in'('class', restrictedDomainClassList)
 
-        return false
+            maxResults(RESULT_COUNT)
+        }
+
+        boolean result = false
+        if (!contentInstance || contentInstance.publish) { result = true }
+
+        return result
     }
 
     /**
@@ -120,7 +131,7 @@ class ContentService {
      * @return Newly created Content Instance.
      */
     @Transactional
-    Content create(Map args, List metaTypes, List metaValues, Class clazz = Content.class) {
+    Content create(Map args, List metaTypes, List metaValues, Class clazz = Content) {
         Content contentInstance = clazz.newInstance()
         contentInstance.author = resolveAuthor(contentInstance)
         update(args, contentInstance, metaTypes, metaValues)
@@ -139,7 +150,7 @@ class ContentService {
     Content update(Map args, Content contentInstance, List metaTypes, List metaValues) {
         grailsWebDataBinder.bind(contentInstance, args as SimpleMapDataBindingSource, null, null, ['tags'], null)
         contentInstance.validate()
-        if(contentInstance.hasErrors()) {
+        if (contentInstance.hasErrors()) {
             log.warn "Error saving ${contentInstance.class.name}: " + contentInstance.errors
             return contentInstance
         }
@@ -150,31 +161,33 @@ class ContentService {
 
         // Remove all content meta relations
         List<ContentMeta> contentMetas = ContentMeta.withCriteria {
-            createAlias("content", "contentInstance")
-            eq("contentInstance.id", contentInstance.id)
-        }*.delete();
+            createAlias(CONTENT, CONTENT_INSTANCE)
+            eq(CONTENT_INSTANCE_ID, contentInstance.id)
+
+            maxResults(RESULT_COUNT)
+        }*.delete()
 
         // Remove all metas
         contentMetas.meta*.delete()
 
         metaTypes.eachWithIndex { type, index ->
-            Meta metaInstance = ContentMeta.withCriteria(uniqueResult: true) {
-                createAlias("content", "contentInstance")
-                createAlias("meta", "metaInstance")
+            Meta metaInstance = ContentMeta.withCriteria(UNIQUE_TRUE) {
+                createAlias(CONTENT, CONTENT_INSTANCE)
+                createAlias(META, 'metaInstance')
                 projections {
-                    property("meta")
+                    property(META)
                 }
-                eq("contentInstance.id", contentInstance.id)
-                eq("metaInstance.type", type)
+                eq(CONTENT_INSTANCE_ID, contentInstance.id)
+                eq('metaInstance.type', type)
+
+                maxResults(100)
             }
-            if(!metaInstance) {
-                metaInstance = new Meta(type: type)
-            }
-            metaInstance.value = metaValues[index]
+            metaInstance = metaInstance ?: new Meta([type: type])
+            metaInstance.content = metaValues[index]
             metaInstance.validate()
-            if(!metaInstance.hasErrors()) {
+            if (!metaInstance.hasErrors()) {
                 metaInstance.save()
-                ContentMeta.findOrSaveByContentAndMeta(contentInstance, metaInstance)
+                ContentMeta.findOrSaveByContentAndMeta(contentInstance, metaInstance)app
             }
         }
         return contentInstance
@@ -190,7 +203,7 @@ class ContentService {
     boolean delete(Content contentInstance) {
         ContentMeta.findAllByContent(contentInstance)*.delete()
         ContentRevision.findAllByRevisionOf(contentInstance)*.delete()
-        if(contentInstance instanceof Blog) {
+        if (Blog.isCase(contentInstance)) {
             contentInstance.setTags([])
             BlogComment.findAllByBlog(contentInstance)*.delete()
         }
@@ -206,12 +219,13 @@ class ContentService {
      */
     @Transactional
     ContentRevision createRevision(Content contentInstance, Class clazz, Map params) {
-        ContentRevision contentRevisionInstance = clazz.newInstance()
-        contentRevisionInstance.title = contentInstance.title
-        contentRevisionInstance.body = contentInstance.body
-        contentRevisionInstance.subTitle = contentInstance.subTitle
-        contentRevisionInstance.revisionOf = contentInstance
-        contentRevisionInstance.comment = params.revisionComment ?: ""
+        ContentRevision contentRevisionInstance = clazz.newInstance().with {
+            title = contentInstance.title
+            body = contentInstance.body
+            subTitle = contentInstance.subTitle
+            revisionOf = contentInstance
+            comment = params.revisionComment ?: ''
+        }
         contentRevisionInstance.save()
         contentRevisionInstance
     }
@@ -228,49 +242,61 @@ class ContentService {
      * @return String SEO friendly url.
      */
     String createLink(Map attrs) {
-        Class DomainClass = grailsApplication.getDomainClass(attrs.domain).clazz
-        def domainClassInstance = DomainClass.get(attrs.id)     // Get actual domainInstance
+        Class domainClass = grailsApplication.getDomainClass(attrs.domain).clazz
+        // Get actual domainInstance
+        def domainClassInstance = domainClass.get(attrs.id)
         List<Field> fields = []
 
-        if(DomainClass.superclass && DomainClass.superclass != Object)
-            fields.addAll(DomainClass.superclass.getDeclaredFields())   // Adding fields from super class
-        fields.addAll(DomainClass.getDeclaredFields())      // Adding fields from current class
+        if (domainClass.superclass && domainClass.superclass != Object) {
+            // Adding fields from super class
+            fields.addAll(domainClass.superclass.declaredFields)
+        }
 
-        String action, fieldName, sanitizedTitle, controllerShortHand = ""
-        for(field in fields) {
-            if(field.isAnnotationPresent(SanitizedTitle.class) && field.type == String) {  // Searching annotation on each field
+        // Adding fields from current class
+        fields.addAll(domainClass.declaredFields)
+
+        String action, fieldName, sanitizedTitle, controllerShortHand
+        (action, fieldName, sanitizedTitle, controllerShortHand) = ''
+
+        for (field in fields) {
+            // Searching annotation on each field
+            if (field.isAnnotationPresent(SanitizedTitle) && field.type == String) {
                 fieldName = field.name
                 break
             }
         }
-        if(fieldName) {
-            if(domainClassInstance) {
+        if (fieldName) {
+            if (domainClassInstance) {
                 sanitizedTitle = friendlyUrlService.sanitizeWithDashes(domainClassInstance[fieldName])
             } else {
                 log.error "No entry found with id [$attrs.id] for domain [$attrs.domain]."
             }
-        } else
+        } else {
             log.error "No annotated field found in domain class [$attrs.domain]."
+        }
 
-        action = attrs.action ? attrs.action + "/" : ""
+        action = attrs.action ? attrs.action + '/' : ''
 
         // See hooking into dynamic events
-        getShorthandAnnotatedControllers().each { controllerName, shorthand ->
-            if(controllerName == attrs.controller) {
+        shorthandAnnotatedControllers().each { controllerName, shorthand ->
+            if (controllerName == attrs.controller) {
                 controllerShortHand = shorthand
             }
         }
 
-        if(controllerShortHand)
+        if (controllerShortHand) {
             attrs.uri = "/$controllerShortHand/${action}${attrs.id}/${sanitizedTitle ?: ''}"
-        else
+        } else {
             log.error "No shorthand found for controller: ${attrs.controller}"
+        }
 
-        if(attrs.absolute?.toBoolean()) {
+        if (attrs.absolute?.toBoolean()) {
             attrs.absolute = false
             attrs.base = grailsApplication.config.grails.serverURL
-            if(Environment.current == Environment.DEVELOPMENT)
-                attrs.base = grailsApplication.config.grails.other.serverURL    // Other config which contains public IP like: 13.14.28.153:8080
+            if (Environment.current == Environment.DEVELOPMENT) {
+                // Other config which contains public IP like: 13.14.28.153:8080
+                attrs.base = grailsApplication.config.grails.other.serverURL
+            }
         }
 
         return grailsLinkGenerator.link(attrs)

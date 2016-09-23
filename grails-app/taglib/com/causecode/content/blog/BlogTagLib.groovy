@@ -5,7 +5,6 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content.blog
 
 import com.causecode.content.blog.comment.Comment
@@ -17,14 +16,16 @@ import com.causecode.content.blog.comment.Comment
  */
 class BlogTagLib {
 
-    static namespace = "content"
+    static namespace = CONTENT
+
+    private static final String CONTENT = 'content'
 
     /**
-     * Used to render comment on blog . This tag uses template to render comment body.
-     * 
+     * Used to render comment on blog. This tag uses template to render comment body.
      * @attr commentInstance REQUIRED
      * @attr classes CSS classes used to apply for comments.
-     * @attr bodyTemplate Template path which is used to render comment body. Default set to '/blog/templates/commentBody'
+     * @attr bodyTemplate Template path which is used to render comment body.
+     *                    Default set to '/blog/templates/commentBody'
      * @attr inPlugin Used to Specify Plugin, Default set to 'content'.
      */
     def comment = { attrs, body ->
@@ -37,7 +38,8 @@ class BlogTagLib {
      *
      * @attr commentInstance REQUIRED
      * @attr classes CSS classes used to apply for comments.
-     * @attr bodyTemplate Template path which is used to render comment body. Default set to '/blog/templates/commentBody'
+     * @attr bodyTemplate Template path which is used to render comment body.
+     *                    Default set to '/blog/templates/commentBody'
      * @attr inPlugin Used to Specify Plugin, Default set to 'content'.
      */
     def nestedComment = { attrs, body ->
@@ -48,16 +50,17 @@ class BlogTagLib {
     }
 
     /**
-     * Common method block used to render comment on blog. 
+     * Common method block used to render comment on blog.
      * Uses all attributes from comment and nestedComment tag and renders comment body.
      */
     private void commentContent(Comment commentInstance, out, Map attrs, boolean nested) {
         out << """<${nested ? 'div' : 'li'} class="media comment ${nested ? 'nested' : ''} ${attrs.classes ?: ''}">"""
 
-        String template = attrs.bodyTemplate ?: "/blog/templates/commentBody"
-        String plugin = attrs.inPlugin ?: "content"
+        String template = attrs.bodyTemplate ?: '/blog/templates/commentBody'
+        String plugin = attrs.inPlugin ?: CONTENT
 
-        out << render(template: template, model: [commentInstance: commentInstance, nested: nested, attrs: attrs], plugin: plugin)
+        out << render(template: template, model: [commentInstance: commentInstance,
+                                                  nested: nested, attrs: attrs], plugin: plugin)
 
         out << """</${nested ? 'div' : 'li'}>"""
     }
@@ -69,5 +72,4 @@ class BlogTagLib {
     def searchLink = { attrs, body ->
         out << Blog.get(attrs.id).searchLink()
     }
-
 }

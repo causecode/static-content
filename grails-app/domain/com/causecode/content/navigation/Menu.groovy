@@ -5,8 +5,9 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content.navigation
+
+import groovy.transform.EqualsAndHashCode
 
 /**
  * Used for rendering menu bar with menu items.
@@ -16,6 +17,7 @@ package com.causecode.content.navigation
  * @author Bharti Nagdev
  *
  */
+@EqualsAndHashCode
 class Menu {
 
     String name
@@ -29,7 +31,7 @@ class Menu {
     List menuItems
 
     static hasMany = [menuItems: MenuItem]
-    static mappedBy = [menuItems: "menu"]
+    static mappedBy = [menuItems: 'menu']
 
     static constraints = {
         name blank: false
@@ -39,12 +41,11 @@ class Menu {
     }
 
     static mapping = {
-        table "cc_content_menu"
+        table 'cc_content_menu'
     }
 
     @Override
     String toString() {
         "Menu [$name][$id]"
     }
-
 }

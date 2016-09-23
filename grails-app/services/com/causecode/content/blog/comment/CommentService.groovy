@@ -5,7 +5,6 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content.blog.comment
 
 /**
@@ -14,6 +13,9 @@ package com.causecode.content.blog.comment
  */
 import com.causecode.content.blog.Blog
 
+/**
+ * A service for all comment related operations.
+ */
 class CommentService {
 
     static transactional = false
@@ -29,7 +31,7 @@ class CommentService {
         nestedCommentList.each {
             deleteNestedComment(it)
         }
-        if(deleteCommentAlso) {
+        if (deleteCommentAlso) {
             commentInstance.delete(flush: true)
         }
     }
@@ -40,12 +42,15 @@ class CommentService {
     }
 
     Map getCommentData(Comment commentInstance) {
-        if (!commentInstance) return [:]
-        return [
+        Map result
+        if (!commentInstance) { result = [:] }
+        result = [
             subject: commentInstance.subject, id: commentInstance.id,
-            name: commentInstance.name, email: commentInstance.email, 
+            name: commentInstance.name, email: commentInstance.email,
             commentText: commentInstance.commentText, lastUpdated: commentInstance.lastUpdated,
             comments: getCommentsWithNestedComments(Comment.findAllByReplyTo(commentInstance))]
+
+        return result
     }
 
     List getCommentsWithNestedComments(List<Comment> commentList) {
