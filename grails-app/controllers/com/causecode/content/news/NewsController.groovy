@@ -11,6 +11,7 @@ package com.causecode.content.news
 import grails.plugin.springsecurity.annotation.Secured
 
 import grails.databinding.SimpleMapDataBindingSource
+import grails.web.databinding.GrailsWebDataBinder
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 
@@ -29,7 +30,7 @@ class NewsController {
 
     static responseFormats = ["json"]
 
-    def grailsWebDataBinder
+    GrailsWebDataBinder grailsWebDataBinder
 
     def index() {
         redirect(action: "list", params: params)

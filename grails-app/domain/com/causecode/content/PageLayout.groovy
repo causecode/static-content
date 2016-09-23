@@ -5,8 +5,9 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content
+
+import groovy.transform.EqualsAndHashCode
 
 /**
  * Generic domain stores page layout ,used for pages.
@@ -15,6 +16,7 @@ package com.causecode.content
  * @author Bharti Nagdev
  *
  */
+@EqualsAndHashCode
 class PageLayout {
 
     String layoutName
@@ -23,11 +25,11 @@ class PageLayout {
     }
 
     static mapping = {
-        table "cc_content_page_layout"
+        table 'cc_content_page_layout'
     }
 
     @Override
-    public String toString() {
+    String toString() {
         layoutName
     }
 

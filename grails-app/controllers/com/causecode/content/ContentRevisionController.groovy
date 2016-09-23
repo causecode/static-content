@@ -5,7 +5,6 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content
 
 import grails.converters.JSON
@@ -16,10 +15,10 @@ import grails.plugin.springsecurity.annotation.Secured
  * @author Vishesh Duggar
  * @author Shashank Agrawal
  */
-@Secured("ROLE_CONTENT_MANAGER")
+@Secured('ROLE_CONTENT_MANAGER')
 class ContentRevisionController {
 
-    static defaultAction = "show"
+    static defaultAction = 'show'
 
     private ContentRevision contentRevisionInstance
 

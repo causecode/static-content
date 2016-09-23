@@ -5,16 +5,19 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content
 
 import com.causecode.content.meta.Meta
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * Join class provides meta tags for content.
  * @author Shashank Agrawal
  *
  */
+@ToString
+@EqualsAndHashCode
 class ContentMeta {
 
     Content content
@@ -30,8 +33,7 @@ class ContentMeta {
 
     static mapping = {
         version false
-        meta cascade: "delete"
-        table "cc_content_content_meta"
+        meta cascade: 'delete'
+        table 'cc_content_content_meta'
     }
-
 }
