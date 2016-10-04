@@ -36,6 +36,7 @@ class CommentController {
         Comment.withTransaction { status ->
             Blog blogInstance = Blog.get(blogId)
             Comment commentInstance = Comment.get(id)
+
             if (commentInstance.replyTo) {
                 commentInstance.delete(flush: true)
             } else {

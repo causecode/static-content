@@ -61,7 +61,7 @@ class BlogController {
     private static final String COMMA = ','
     private static final String LIST = 'list'
     private static final String TYPE = 'type'
-    private static final String VALUE = 'value'
+    private static final String CONTENT = 'content'
     private static final String BLOG_IMG_FILE_PATH = 'blogImgFilePath'
     private static final String UNABLE_TO_UPLOAD = 'Unable to upload file'
     private static final String TRUE = 'true'
@@ -119,6 +119,7 @@ class BlogController {
         query = blogService.queryModifierBasedOnFilter(query, updateTag, monthYearFilterMapInstance, updateQueryFilter,
                 updateMonthFilter)
 
+        // Modifying query and blogInstance Total based on Role @here : ROLE_CONTENT_MANAGER
         if (contentService.contentManager) {
             blogInstanceTotal = updateTag ? Blog.countByTag(updateTag) : Blog.count()
         } else if (updateTag) {
@@ -160,7 +161,7 @@ class BlogController {
         def blogInstance = new Blog()
         bindData(blogInstance, params)
 
-        [blogInstance: new Blog()]
+        [blogInstance: blogInstance]
     }
 
     /**
@@ -170,10 +171,10 @@ class BlogController {
     @Transactional
     def save() {
         Map requestData = request.JSON
-
         log.info "Parameters received to save blog: ${requestData}"
+
         List metaTypeList = requestData.metaList ? requestData.metaList[(TYPE)] : []
-        List metaValueList = requestData.metaList ? requestData.metaList[(VALUE)] : []
+        List metaValueList = requestData.metaList ? requestData.metaList[(CONTENT)] : []
 
         Blog.withTransaction { status ->
             Blog blogInstance = contentService.create(requestData, metaTypeList, metaValueList, Blog)
@@ -199,6 +200,7 @@ class BlogController {
                 log.debug UNABLE_TO_UPLOAD, e
                 blogInstance.errors.reject("Image couldn't be uploaded " + e.message)
                 respond(blogInstance.errors)
+
                 return false
             }
         }
@@ -207,6 +209,7 @@ class BlogController {
     @Secured([BlogController.PERMIT_ALL])
     def show() {
         Blog blogInstance = Blog.get(params.id)
+
         if (!blogInstance.publish && !springSecurityService.currentUser) {
             // Creating blogShowURL and redirect to the URL
             createBlogCustomURLAndRedirect(blogInstance)
@@ -215,10 +218,10 @@ class BlogController {
         List tagList = blogService.allTags
         def blogInstanceTags = blogInstance.tags
 
-        // Convert markdown content into html format
-           if (params.convertToMarkdown == TRUE) {
-               blogInstance.body = markdownService.markdown(blogInstance.body)
-           }
+       // Convert markdown content into html format
+       if (params.convertToMarkdown == TRUE) {
+           blogInstance.body = markdownService.markdown(blogInstance.body)
+       }
 
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         List<Meta> metaInstanceList = blogInstance.metaTags
@@ -227,10 +230,7 @@ class BlogController {
                       tagList: tagList, blogInstanceList: blogInstanceList,
                       blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
 
-        //renderGSPContent(result, SHOW_STRING)
-        renderGSPContentAndBlogCustomURLRedirect(result, SHOW_STRING)
-        // Creating blogShowURL and redirect to the URL
-        //createBlogCustomURLAndRedirect(blogInstance, SHOW_STRING, result)
+        renderGSPContentAndBlogCustomURLRedirect(blogInstance, result, SHOW_STRING)
 
         return
     }
@@ -255,15 +255,14 @@ class BlogController {
 
     // Creating blogListURL and redirect to the URL
     private boolean createBlogCustomURLAndRedirect(Blog blogInstance = null, String viewType) {
-        String resultURL
+        String blogCustomURL
 
         if (viewType.isCase(LIST)) {
-            resultURL = '/blog/list'
+            blogCustomURL = grailsApplication.config.app.defaultURL + '/blog/list'
         } else {
-            resultURL = "/blog/show/${blogInstance.id}"
+            blogCustomURL = grailsApplication.config.app.defaultURL + "/blog/show/${blogInstance.id}"
         }
 
-        String blogCustomURL = grailsApplication.config.app.defaultURL + resultURL
         redirect(url: blogCustomURL, permanent: true)
 
         return true
@@ -285,7 +284,7 @@ class BlogController {
         }
 
         if (version != null) {
-            if (blogInstance.version > version) {
+            if ((blogInstance.version).toString() > version) {
                 blogInstance.errors.rejectValue(VERSION, 'default.optimistic.locking.failure',
                         [message(code: 'blog.label')] as Object[],
                         'Another user has updated this Blog while you were editing')
@@ -293,11 +292,10 @@ class BlogController {
                 return false
             }
         }
+
         Blog.withTransaction { status ->
-//            List metaTypeList = requestData.metaList ? requestData.metaList.getAt('type') : []
-//            List metaValueList = requestData.metaList ? requestData.metaList.getAt('value') : []
             List metaTypeList = requestData.metaList ? requestData.metaList[(TYPE)] : []
-            List metaValueList = requestData.metaList ? requestData.metaList[(VALUE)] : []
+            List metaValueList = requestData.metaList ? requestData.metaList[(CONTENT)] : []
 
             contentService.update(requestData, blogInstance, metaTypeList, metaValueList)
             blogInstance.contentType = blogService.findBlogContentTypeByValue(requestData.type.toString())
@@ -324,7 +322,6 @@ class BlogController {
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
                 respond([message: e.message])
             }
-
         }
     }
 
@@ -354,17 +351,18 @@ class BlogController {
         params.putAll(requestData)
         log.info "Parameters received to comment on blog: $params"
         if (!params.id) {
-            errorMessage = 'Not enough parameters recived to add comment.'
+            errorMessage = 'Not enough parameters received to add comment.'
             log.info errorMessage
             Map result = [message: errorMessage]
             render status: STATUS_403, text: result as JSON
             return
         }
+
         Comment.withTransaction { status ->
             boolean captchaValid = simpleCaptchaService.validateCaptcha(params.captcha)
             if (!captchaValid) {
                 if (request.xhr) {
-                    Map result = [message: 'Invalid capthca entered.']
+                    Map result = [message: 'Invalid captcha entered.']
                     render status: STATUS_403, text: result as JSON
                     return
                 }

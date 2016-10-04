@@ -59,8 +59,8 @@ class MetaController {
             return
         }
         try {
-            ContentMeta.findAllByMeta(metaInstance)*.delete()
-            metaInstance.delete(flush: true)
+            ContentMeta.findAllByMeta(metaInstance)*.delete(flush: true)
+            //metaInstance.delete(flush: true)
             render DUMMY
         } catch (DataIntegrityViolationException e) {
             response.status = 500

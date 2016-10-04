@@ -12,14 +12,12 @@ import grails.plugins.taggable.Taggable
 import com.causecode.content.Content
 import com.lucastex.grails.fileuploader.UFile
 import groovy.transform.EqualsAndHashCode
-import groovy.transform.ToString
 
 /**
  * Used to store blogs. These domain extends Content implements taggable(Taggable Plugin Required).
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
  */
-@ToString
 @EqualsAndHashCode
 class Blog extends Content implements Taggable {
     UFile blogImg
@@ -31,9 +29,13 @@ class Blog extends Content implements Taggable {
     }
 
     static final String UFILE_GROUP = 'blogImg'
+
+    @Override
+    String toString() {
+        return "Blog ($title)($contentType)"
+    }
 }
 
-@ToString
 @SuppressWarnings('GrailsDomainHasEquals')
 enum BlogContentType {
     TINYMCE(1),
@@ -42,5 +44,10 @@ enum BlogContentType {
     final int id
     BlogContentType(int id) {
         this.id = id
+    }
+
+    @Override
+    String toString() {
+        return "${this.name()}($id)"
     }
 }
