@@ -5,6 +5,9 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
+
+grails.serverURL = 'http://localhost:8080'
+
 dataSource = {
     pooled = true
     driverClassName = "org.h2.Driver"
@@ -21,6 +24,7 @@ hibernate = {
 // environment specific settings
 environments = {
     development = {
+        defaultURL = "http://localhost:8080"
             plugins = {
                 runtime "org.grails.plugins:hibernate4"
             }
@@ -30,6 +34,7 @@ environments = {
         }
     }
     test = {
+        defaultURL = "http://localhost:8080"
         dataSource = {
             dbCreate = "create-drop"
             url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"

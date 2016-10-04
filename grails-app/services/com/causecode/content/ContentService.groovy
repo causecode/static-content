@@ -17,8 +17,6 @@ import grails.databinding.SimpleMapDataBindingSource
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.util.Environment
-import grails.web.databinding.GrailsWebDataBinder
-import grails.web.mapping.LinkGenerator
 import org.springframework.transaction.annotation.Transactional
 
 import java.lang.reflect.Field
@@ -74,6 +72,7 @@ class ContentService {
         if (contentInstance.author?.isNumber()) {
             // authorInstance returns User instance, keeping it def so that method remains generic.
             def className = SpringSecurityUtils.securityConfig.userLookup.userDomainClassName
+
             def authorClazz = grailsApplication.getDomainClass(className).clazz
             def authorInstance = authorClazz.get(contentInstance.author)
             if (!authorInstance[updatedAuthorProperty]) {
@@ -219,14 +218,26 @@ class ContentService {
      */
     @Transactional
     ContentRevision createRevision(Content contentInstance, Class clazz, Map params) {
+        Map localParams = params
         ContentRevision contentRevisionInstance = clazz.newInstance().with {
+
             title = contentInstance.title
             body = contentInstance.body
             subTitle = contentInstance.subTitle
             revisionOf = contentInstance
-            comment = params.revisionComment ?: ''
+            comment = localParams.revisionComment ?: ''
         }
+/*
+        contentRevisionInstance.title = contentInstance.title
+        contentRevisionInstance.body = contentInstance.body
+        contentRevisionInstance.subTitle = contentInstance.subTitle
+        contentRevisionInstance.revisionOf = contentInstance
+        contentRevisionInstance.comment = params.revisionComment ?: ''
         contentRevisionInstance.save()
+        contentRevisionInstance
+        contentRevisionInstance.save()
+        contentRevisionInstance
+*/
         contentRevisionInstance
     }
 
@@ -243,6 +254,7 @@ class ContentService {
      */
     String createLink(Map attrs) {
         Class domainClass = grailsApplication.getDomainClass(attrs.domain).clazz
+
         // Get actual domainInstance
         def domainClassInstance = domainClass.get(attrs.id)
         List<Field> fields = []
@@ -256,7 +268,7 @@ class ContentService {
         fields.addAll(domainClass.declaredFields)
 
         String action, fieldName, sanitizedTitle, controllerShortHand
-        (action, fieldName, sanitizedTitle, controllerShortHand) = ''
+        (action, fieldName, sanitizedTitle, controllerShortHand) = ['', '', '', '']
 
         for (field in fields) {
             // Searching annotation on each field
@@ -278,7 +290,7 @@ class ContentService {
         action = attrs.action ? attrs.action + '/' : ''
 
         // See hooking into dynamic events
-        shorthandAnnotatedControllers().each { controllerName, shorthand ->
+        shorthandAnnotatedControllers.each { controllerName, shorthand ->
             if (controllerName == attrs.controller) {
                 controllerShortHand = shorthand
             }
@@ -304,5 +316,10 @@ class ContentService {
 
     def getRoleClass() {
         return grailsApplication.getDomainClass(SpringSecurityUtils.securityConfig.authority.className).clazz
+    }
+
+    // TODO only to be executed for unit test case
+    def getShorthandAnnotatedControllers() {
+        return
     }
 }

@@ -52,6 +52,7 @@ class BlogService {
     }
 
     BlogContentType findBlogContentTypeByValue(String value) {
+
         BlogContentType blogContentType
         try {
             blogContentType = BlogContentType.valueOf(value?.toUpperCase() ?: '')
@@ -108,7 +109,6 @@ class BlogService {
             eq('publish', true)
             isNotNull(PUBLISHED_DATE)
         }
-
         publishDateList.each { publishedDate ->
             updateMonthFilterList.add(new DateFormatSymbols().months[publishedDate[Calendar.MONTH]] + '-' +
                     publishedDate[Calendar.YEAR])
@@ -126,7 +126,8 @@ class BlogService {
                 return
             }
             // Convert markdown content into html format so that first paragraph could be extracted from it
-            it.body = it.body?.markdownToHtml()
+            //println 'body'+it.body.markdownToHtml()
+            //it.body = it.body?.markdownToHtml()
             // Extracting content from first <p> tag of body to display
             Matcher matcherTag = patternTag.matcher(it.body)
             it.body = matcherTag.find() ? matcherTag.group(2) : ''

@@ -81,7 +81,6 @@ class FriendlyUrlService {
         String localText = text
 
         def chars, out
-
         if (!Pattern.matches('.*[\\x80-\\xFF].*', localText)) {
             return localText
         } else if (seemsUtf8(localText)) {
