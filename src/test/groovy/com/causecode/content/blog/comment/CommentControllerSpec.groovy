@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
+ * Copyright (c) 2016, CauseCode Technologies Pvt Ltd, India.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or
@@ -23,12 +23,13 @@ import spock.lang.Specification
 @TestFor(CommentController)
 class CommentControllerSpec extends Specification implements BaseTestSetup {
 
+    // Delete action
     void "test delete action when comment instance is passed with replyTo"() {
         given: 'Blog and Comment instance with replyTo'
         Blog blogInstance = getBlogInstance(1)
         Comment commentInstance = getCommentInstance(1)
         commentInstance.replyTo = getCommentInstance(2)
-        commentInstance.save(flush: true)
+        commentInstance.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
 
         assert commentInstance.id
 
@@ -47,9 +48,13 @@ class CommentControllerSpec extends Specification implements BaseTestSetup {
         Comment commentInstance = getCommentInstance(1)
         Blog blogInstance = getBlogInstance(1)
         BlogComment blogCommentInstance = new BlogComment([blog: blogInstance, comment: commentInstance])
-        blogCommentInstance.save(flush: true)
+        blogCommentInstance.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
 
         assert blogCommentInstance.id
+
+        and: 'Mocking blogInstance'
+        blogInstance.contentService = Mock(ContentService)
+        1 * blogInstance.contentService.createLink(_) >> '/blog?id=1'
 
         when: 'Delete action is called'
         controller.delete(commentInstance.id, blogInstance.id)

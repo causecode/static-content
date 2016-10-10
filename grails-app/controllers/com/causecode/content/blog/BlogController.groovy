@@ -301,7 +301,7 @@ class BlogController {
             blogInstance.contentType = blogService.findBlogContentTypeByValue(requestData.type.toString())
 
             String blogImgFilePath = requestData[BLOG_IMG_FILE_PATH]
-            //UFile blogUfileInstance
+            // UFile blogUfileInstance
             try {
                 if (blogImgFilePath != blogInstance.blogImg?.path) {
                     blogInstance.blogImg = blogImgFilePath ? fileUploaderService.saveFile(Blog.UFILE_GROUP,
@@ -383,6 +383,7 @@ class BlogController {
                 redirect uri: blogInstance.searchLink()
                 return
             }
+
             updateCommentId = updateCommentId ?: (params.commentId ? params.commentId as long : 0L)
             if (updateCommentId) {
                 commentInstance.replyTo = Comment.get(updateCommentId)

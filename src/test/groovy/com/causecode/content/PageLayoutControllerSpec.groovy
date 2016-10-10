@@ -1,14 +1,18 @@
+/*
+ * Copyright (c) 2016, CauseCode Technologies Pvt Ltd, India.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are not permitted.
+ */
 package com.causecode.content
 
 import com.causecode.BaseTestSetup
-import com.causecode.content.blog.Blog
-import com.causecode.content.blog.BlogContentType
-import grails.plugins.taggable.Tag
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
+import spock.lang.Unroll
 
 @TestFor(PageLayoutController)
 @Mock([PageLayout])
@@ -69,18 +73,37 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
         response.status == HttpStatus.OK.value()
     }
 
-    // Save action // error action Not Allowed
+    // Save action
+    @Unroll
     void "test save action when request parameters are passed"() {
         given: 'Map parameters instance'
-        Map params = [layoutName: 'TestPageLayout']
+        Map params = parameterMap
 
-        when: 'Save action is called'
+        when: 'Save action is hit'
         controller.request.method = 'POST'
         controller.request.json = params
         controller.save()
 
         then: 'A valid HttpStatus OK should be received'
-        response.status == HttpStatus.OK.value()
+        response.status == responseResult
+
+        where:
+        parameterMap                    | responseResult
+        [layoutName: 'TestPageLayout']  | HttpStatus.OK.value()
+        [abc: 'TestPageLayout']         | HttpStatus.NOT_MODIFIED.value()
+    }
+
+    void "test save action when invalid request parameters are passed"() {
+        given: 'Map parameters instance'
+        Map params = [abc: 'TestPageLayout']
+
+        when: 'Save action is hit'
+        controller.request.method = 'POST'
+        controller.request.json = params
+        controller.save()
+
+        then: 'A valid HttpStatus OK should be received'
+        response.status == HttpStatus.NOT_MODIFIED.value()
     }
 
     // Show action
@@ -106,21 +129,28 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
 
         then: 'Valid JSON response should be received'
         response.status == HttpStatus.OK.value()
+    }
 
-        /*when: 'Edit action is hit' // Error redirecting
+    void "test edit action when invalid pageLayoutInstance is passed"() {
+        // Cannot be clubbed into one block for DRYness gives: Cannot issue a redirect(..) here.
+        given: 'PageLayout instance'
+        PageLayout invalidPageLayoutInstance = null
+
+        when: 'Edit action is hit'
         controller.edit(invalidPageLayoutInstance)
 
         then: 'Valid JSON response should be received'
-        controller.response.redirectedUrl.contains('/blog/show/')*/
+        controller.response.redirectedUrl.contains('/list')
+        response.status == HttpStatus.MOVED_TEMPORARILY.value()
     }
 
     // Update action
-    void "test update action when pageLayoutInstance is passed"() { // action not allowed exception
+    void "test update action when pageLayoutInstance is passed"() {
         given: 'PageLayout and Map parameters instance'
         PageLayout pageLayoutInstance = getPageLayoutInstance(1)
         Map params = [layoutName: 'TestPageLayout']
 
-        when: 'Update action is called'
+        when: 'Update action is hit'
         controller.request.method = 'PUT'
         controller.request.json = params
         controller.update(pageLayoutInstance, 1L)
@@ -129,29 +159,58 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
         controller.response.status == HttpStatus.OK.value()
     }
 
+    void "test update action when invalid pageLayoutInstance is passed"() {
+        // Cannot be clubbed into one block for DRYness gives: Cannot issue a redirect(..) here.
+        given: 'PageLayout and Map parameters instance'
+        PageLayout pageLayoutInstance = null
+        Map params = [layoutName: 'TestPageLayout']
+
+        when: 'Update action is hit'
+        controller.request.method = 'PUT'
+        controller.request.json = params
+        controller.update(pageLayoutInstance, 1L)
+
+        then: 'Valid HttpStatus should be received'
+        controller.response.redirectedUrl.contains('/list')
+        response.status == HttpStatus.MOVED_TEMPORARILY.value()
+    }
+
+    void "test update action when pageLayoutInstance is passed, which is updated by another user"() {
+        given: 'PageLayout and Map parameters instance'
+        PageLayout pageLayoutInstance = getPageLayoutInstance(1)
+        PageLayout invalidPageLayoutInstance1 = new PageLayout()
+        pageLayoutInstance.version = 2L
+        Map params = [layoutName: 'TestPageLayout']
+        Map invalidParams1 = [name: 'abs']
+
+        when: 'Update action is hit'
+        controller.request.method = 'PUT'
+        controller.request.json = params
+        controller.update(pageLayoutInstance, 1L)
+
+        then: 'Valid HttpStatus should be received'
+        response.status == HttpStatus.NOT_MODIFIED.value()
+
+        when: 'Update action is hit '
+        controller.request.method = 'PUT'
+        controller.request.json = invalidParams1
+        controller.update(invalidPageLayoutInstance1, 1L)
+
+        then: 'Valid HttpStatus should be received'
+        response.status == HttpStatus.NOT_MODIFIED.value()
+    }
+
     // Delete action
     void "test delete action when pageLayoutInstance"() {
         given: 'PageLayout and Map parameters instance'
         PageLayout pageLayoutInstance = getPageLayoutInstance(1)
         Map params = [layoutName: 'TestPageLayout']
 
-        when: 'Delete action is called'
+        when: 'Delete action is hit'
         controller.request.method = 'DELETE'
         controller.delete(pageLayoutInstance)
 
         then: 'Valid HttpStatus should be received'
         controller.response.status == HttpStatus.OK.value()
-
-        /*when: 'Delete action is called and DataIntegrityViolationException is thrown'
-        PageLayout invalidPageLayoutInstance = new PageLayout()
-        controller.request.method = 'DELETE'
-        controller.delete(invalidPageLayoutInstance)
-
-        *//*controller.contentService = [delete: { Blog blogInstance1 ->
-            throw new DataIntegrityViolationException('Invalid blogInstance')
-        }] as ContentService*//*
-
-        then: 'A valid JSON response should be received'
-        controller.response.status == HttpStatus.NOT_MODIFIED.value()*/ // For exception thrown
     }
 }

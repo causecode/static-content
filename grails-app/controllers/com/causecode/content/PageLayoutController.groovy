@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
+ * Copyright (c) 2016, CauseCode Technologies Pvt Ltd, India.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or
@@ -67,7 +67,7 @@ class PageLayoutController {
             return
         }
 
-        log.info 'Pagelayout instance saved successfully.'
+        log.info 'PageLayout instance saved successfully.'
         pageLayoutInstance.save(FLUSH_TRUE)
         respond ([status: HttpStatus.OK])
     }

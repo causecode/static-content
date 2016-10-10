@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
+ * Copyright (c) 2016, CauseCode Technologies Pvt Ltd, India.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or
@@ -121,13 +121,14 @@ class BlogService {
         List<Blog> blogInstanceList = []
         blogList.each {
             Blog blogInstance = Blog.get(it.id as long)
+
             if (!blogInstance) {
                 log.debug('No blog found')
                 return
             }
+
             // Convert markdown content into html format so that first paragraph could be extracted from it
-            //println 'body'+it.body.markdownToHtml()
-            //it.body = it.body?.markdownToHtml()
+            it.body = it.body?.markdownToHtml()
             // Extracting content from first <p> tag of body to display
             Matcher matcherTag = patternTag.matcher(it.body)
             it.body = matcherTag.find() ? matcherTag.group(2) : ''

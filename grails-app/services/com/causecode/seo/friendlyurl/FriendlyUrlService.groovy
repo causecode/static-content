@@ -81,6 +81,8 @@ class FriendlyUrlService {
         String localText = text
 
         def chars, out
+
+        // Pattern matches: a single character in the range between  (ASCII 128) and ÿ (ASCII 255) (case sensitive)
         if (!Pattern.matches('.*[\\x80-\\xFF].*', localText)) {
             return localText
         } else if (seemsUtf8(localText)) {

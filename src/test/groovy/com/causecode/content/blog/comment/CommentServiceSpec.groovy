@@ -1,16 +1,19 @@
+/*
+ * Copyright (c) 2016, CauseCode Technologies Pvt Ltd, India.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are not permitted.
+ */
 package com.causecode.content.blog.comment
 
 import com.causecode.BaseTestSetup
-import com.causecode.content.PageLayout
 import com.causecode.content.blog.Blog
-import com.causecode.content.blog.BlogContentType
-import com.causecode.content.page.Page
 import grails.plugins.taggable.Tag
 import grails.plugins.taggable.TagLink
 import grails.plugins.taggable.TaggableService
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
-import org.springframework.http.HttpStatus
 import spock.lang.Specification
 
 @Mock([Comment, BlogComment, Blog, Tag, TaggableService, TagLink, CommentService])
@@ -19,10 +22,10 @@ class CommentServiceSpec extends Specification implements BaseTestSetup {
 
     // DeleteNestedComment method
     void "test deleteNestedComment method to delete commentInstance passed"() {
-        given: 'Comment instance' // Error Comment.findAllByReplyTo(commentInstance) not returning proper list
+        given: 'Comment instance'
         Comment commentInstance = getCommentInstance(1)
         commentInstance.replyTo = getCommentInstance(2)
-        commentInstance.save(flush: true)
+        commentInstance.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
 
         assert commentInstance.id
 
@@ -35,12 +38,12 @@ class CommentServiceSpec extends Specification implements BaseTestSetup {
     }
 
     // GetComments method
-    void "test getComment method to get comment of blog instance"() {
+    void "test getComments method to get comments of blog instance"() {
         given: 'Comment instance'
         Comment commentInstance = getCommentInstance(1)
         Blog blogInstance = getBlogInstance(1)
         BlogComment blogCommentInstance = new BlogComment([blog: blogInstance, comment: commentInstance])
-        blogCommentInstance.save(flush: true)
+        blogCommentInstance.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
 
         assert blogCommentInstance.id
 
@@ -55,11 +58,10 @@ class CommentServiceSpec extends Specification implements BaseTestSetup {
 
     // GetCommentData method
     void "test getCommentData when comment instance is passed"() {
-        // Comment.findAllByReplyTo(commentInstance) not returning value list
         given: 'Comment instance'
         Comment commentInstance = getCommentInstance(1)
         commentInstance.replyTo = getCommentInstance(2)
-        commentInstance.save(flush: true)
+        commentInstance.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
 
         assert commentInstance.id
 
