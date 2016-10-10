@@ -195,7 +195,7 @@ class BlogController {
                 respond(SUCCESS_TRUE)
             } catch (FileUploaderServiceException e) {
                 log.debug UNABLE_TO_UPLOAD, e
-                blogInstance.errors.reject("Image couldn't be uploaded " + e.message) // blog.fileUploader.exception
+                blogInstance.errors.reject("Image couldn't be uploaded " + e.message)
                 respond(blogInstance.errors)
 
                 return false
@@ -291,8 +291,6 @@ class BlogController {
         }
 
         Blog.withTransaction { status ->
-//            List metaTypeList = requestData.metaList ? requestData.metaList.getAt('type') : []
-//            List metaValueList = requestData.metaList ? requestData.metaList.getAt('value') : []
             List metaTypeList = requestData.metaList ? requestData.metaList[(TYPE)] : []
             List metaValueList = requestData.metaList ? requestData.metaList[(CONTENT)] : []
 
@@ -300,7 +298,7 @@ class BlogController {
             blogInstance.contentType = blogService.findBlogContentTypeByValue(requestData.type.toString())
 
             String blogImgFilePath = requestData[BLOG_IMG_FILE_PATH]
-            //UFile blogUfileInstance
+            // UFile blogUfileInstance
             try {
                 if (blogImgFilePath != blogInstance.blogImg?.path) {
                     blogInstance.blogImg = blogImgFilePath ? fileUploaderService.saveFile(Blog.UFILE_GROUP,
@@ -381,6 +379,7 @@ class BlogController {
                 redirect uri: blogInstance.searchLink()
                 return
             }
+
             updateCommentId = updateCommentId ?: (params.commentId ? params.commentId as long : 0L)
             if (updateCommentId) {
                 commentInstance.replyTo = Comment.get(updateCommentId)

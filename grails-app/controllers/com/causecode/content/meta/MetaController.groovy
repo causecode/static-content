@@ -23,6 +23,7 @@ import com.causecode.content.ContentMeta
 class MetaController {
 
     private static final String DUMMY = 'dummy'
+    private static final Map FLUSH_TRUE = [flush: true]
 
     def beforeInterceptor = [action: this.&validate]
     static responseFormats = ['json']
@@ -59,8 +60,8 @@ class MetaController {
             return
         }
         try {
-            ContentMeta.findAllByMeta(metaInstance)*.delete(flush: true)
-            //metaInstance.delete(flush: true)
+            ContentMeta.findAllByMeta(metaInstance)*.delete(FLUSH_TRUE)
+            metaInstance.delete(FLUSH_TRUE)
             render DUMMY
         } catch (DataIntegrityViolationException e) {
             response.status = 500

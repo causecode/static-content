@@ -5,7 +5,6 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content.page
 
 import com.causecode.BaseTestSetup
@@ -13,9 +12,7 @@ import com.causecode.content.ContentMeta
 import com.causecode.content.ContentRevision
 import com.causecode.content.ContentService
 import com.causecode.content.PageLayout
-import com.causecode.content.blog.BlogContentType
 import grails.plugin.springsecurity.SpringSecurityUtils
-import grails.plugins.taggable.Tag
 import grails.util.Holders
 import org.springframework.http.HttpStatus
 import com.causecode.content.Content
@@ -23,102 +20,13 @@ import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import spock.lang.Specification
 
-/**
- * Unit Test for PageController
- */
 @TestFor(PageController)
-@Mock([Page, Content, PageLayout, ContentService, ContentRevision, ContentMeta])
+@Mock([Page, Content, PageLayout, ContentRevision, ContentMeta])
 class PageControllerSpec extends Specification implements BaseTestSetup {
-
-    /*PageController controller
-
-    def setup() {
-        controller = new PageController()
-
-        pageInstance1 = new Page(getContentParams(1))
-        pageInstance2 = new Page(getContentParams(2))
-        pageInstance3 = new Page(getContentParams(3))
-        pageInstance4 = new Page(getContentParams(4))
-        assert pageInstance1.save()
-        assert pageInstance2.save()
-        assert pageInstance3.save()
-        assert pageInstance4.save()
-        assert pageInstance1.id
-        assert pageInstance2.id
-        assert pageInstance3.id
-        assert pageInstance4.id
-    }
-
-    void "test show action without ID parameter"() {
-        given: "Before controller show called"
-
-        when: "page id parameter not passed"
-        controller.request.method = "GET"
-        controller.show()
-
-        then: "should throw equiredPropertyMissing Exception"
-        controller.response.status == HttpStatus.NOT_ACCEPTABLE.value()
-        controller.response.json.message == controller.message(code: 'page.not.found')
-    }
-
-    @Unroll
-    void "test show action with default parameters"() {
-        given: "populating parameters"
-        controller.params.id = pageInstance.id
-
-        when: "page id parameter passed"
-        controller.request.method = "GET"
-        controller.show()
-
-        then: "redirected to page show angular based URL."
-        controller.response.redirectedUrl.contains("/page/show/${pageInstance.id}")
-
-        where:
-        pageInstance << [pageInstance1, pageInstance2, pageInstance3, pageInstance4]
-    }
-
-    void "test show action for Google crawler request"() {
-        given: "populating parameters"
-        controller.params.id = pageInstance1.id
-        controller.params._escaped_fragment_ = true
-
-        when: "page ID and _escaped_fragment_ parameter passed."
-        controller.request.method = "GET"
-        controller.show()
-
-        then: "should render show GSP content in JSON format."
-        controller.modelAndView.model.pageInstance == pageInstance1
-        controller.modelAndView.viewName == "/page/show"
-    }
-
-    @Unroll
-    void "test show action for ajax request"() {
-        given: "populating parameters"
-        controller.params.id = pageInstance.id
-
-        when: "ajax request comes in for show action"
-        controller.request.method = "GET"
-        controller.request.makeAjaxRequest()
-        controller.show()
-
-        then: "should respond json data containing page instance"
-        controller.response.json
-        controller.response.json["id"]
-        controller.response.json["title"] == pageInstance.title
-        controller.response.json["body"] == pageInstance.body
-        controller.response.json["subTitle"] == pageInstance.subTitle
-
-        where:
-        pageInstance << [pageInstance1,pageInstance2,pageInstance3,pageInstance4]
-    }*/
 
     def setup() {
         Holders.grailsApplication.config.cc.plugins.content.contentManagerRole = 'manager'
-
-        /*SpringSecurityUtils.getMetaClass().static.ifAllGranted = { String roles ->
-            return true
-        }*/
-        SpringSecurityUtils.metaClass.static.ifAllGranted = { String role ->
+        SpringSecurityUtils.metaClass.static.ifNotGranted = { String role ->
             return true
         }
     }
@@ -150,14 +58,13 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
         response.status == HttpStatus.OK.value()
     }
 
-
     // Create action
     void "test create action when parameters are passed"() {
         given: 'Map parameters instance'
         PageLayout pageLayoutInstance = getPageLayoutInstance(1)
         Map params = [pageLayout: 'pageLayoutInstance']
 
-        when: 'Create action is called'
+        when: 'Create action is hit'
         controller.request.parameters = params
         controller.create()
 
@@ -166,9 +73,13 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
     }
 
     // List action
-    /*void "test list action when parameters are passed"() { // Error  SpringSecurityUtils cannot be mocked
+    void "test list action when parameters are passed"() {
         given: 'Some Page Instance'
         createInstances("Page", 5)
+
+        and: 'Mock createCriteria'
+        def customCriteria = [list: { Object params = null, Closure cls -> [] }]
+        Page.metaClass.static.createCriteria = {customCriteria}
 
         when: 'List action is hit'
         controller.list(5)
@@ -177,37 +88,103 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
         Page.count() == 5
         response.contentType == 'application/json;charset=UTF-8'
         response.status == HttpStatus.OK.value()
-    }*/
+    }
 
-    // Save action // error contentService.create
-    /*void "test save action when request parameters are passed"() {
+    // Save action
+    void "test save action when request parameters are passed"() {
         given: 'Map parameters instance'
-        //Map params = [pageLayout: 'pageLayoutInstance', metaList: [type: 'type']]
+        Page pageInstance = getPageInstance(1)
+        String jsonRequest = '{"metaList": [{"type": "type", "content": "content"}]}'
 
         and: 'Mocking Services'
-        controller.metaClass.contentService = [create: { Map args, List metaTypes, List metaValues, Class clazz ->
-            return getPageInstance(1)
-        }] as ContentService
+        controller.contentService = Mock(ContentService)
+        1 * controller.contentService.create(_,_,_,_) >> pageInstance
 
-        when: 'Save action is called'
+        pageInstance.contentService = Mock(ContentService)
+        1 * pageInstance.contentService.createLink(_) >> '/page/list'
+
+        when: 'Save action is hit'
         controller.request.method = 'POST'
-        controller.request.json = params
+        controller.request.json = jsonRequest
+        controller.save()
+
+        then: 'A valid HttpStatus OK should be received'
+        response.status == HttpStatus.FOUND.value()
+        controller.response.redirectedUrl.contains('/page/list')
+    }
+
+    void "test save action when pageInstance cannot be saved"() {
+        given: 'Map parameters instance'
+        Page pageInstance = new Page()
+        String jsonRequest = '{"metaList": [{"type": "type", "content": "content"}]}'
+
+        and: 'Mocking Services'
+        controller.contentService = Mock(ContentService)
+        1 * controller.contentService.create(_,_,_,_) >> pageInstance
+
+        when: 'Save action is hit'
+        controller.request.method = 'POST'
+        controller.request.json = jsonRequest
         controller.save()
 
         then: 'A valid HttpStatus OK should be received'
         response.status == HttpStatus.OK.value()
-    }*/
+    }
 
     // Show action
     void "test show action when Page instance is passed"() {
         given: 'PageLayout instance'
         Page pageInstance = getPageInstance(1)
+        pageInstance.body = 'mailto:jobs@causecode.com'
+        pageInstance.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
+
+        assert pageInstance.id
 
         when: 'Show action is hit'
+        controller.request.method = 'GET'
+        controller.params.subject = 'subject'
         controller.show(pageInstance)
 
         then: 'Valid JSON response should be received'
         response.status == HttpStatus.MOVED_PERMANENTLY.value()
+    }
+
+    void "test show action when invalid instance is passed"() {
+        given: 'PageLayout instance'
+        Page pageInstance = null
+
+        when: 'Show action is hit'
+        controller.request.method = 'GET'
+        controller.show(pageInstance)
+
+        then: 'Valid JSON response should be received'
+        response.status == HttpStatus.NOT_ACCEPTABLE.value()
+    }
+
+    void "test show action when params is passed"() {
+        given: 'PageLayout instance'
+        Page pageInstance = getPageInstance(1)
+
+        when: 'Show action is hit'
+        controller.request.method = 'GET'
+        controller.params._escaped_fragment_ = true
+        controller.show(pageInstance)
+
+        then: 'Valid JSON response should be received'
+        response.status == HttpStatus.OK.value()
+    }
+
+    void "test show action when AJAX request is made"() {
+        given: 'PageLayout instance'
+        Page pageInstance = getPageInstance(1)
+
+        when: 'Show action is hit'
+        controller.request.method = 'GET'
+        controller.request.makeAjaxRequest()
+        controller.show(pageInstance)
+
+        then: 'Valid JSON response should be received'
+        response.status == HttpStatus.OK.value()
     }
 
     // Edit action
@@ -222,28 +199,101 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
         then: 'Valid JSON response should be received'
         response.status == HttpStatus.OK.value()
 
-        /*when: 'Edit action is hit' // Error redirecting
-        controller.edit(invalidPageLayoutInstance)
+        when: 'Edit action is hit'
+        controller.edit(invalidPageInstance)
 
         then: 'Valid JSON response should be received'
-        println 'res' + response.dump()
-        controller.response.redirectedUrl.contains('/blog/show/')*/
+        controller.response.json['message'] == 'page.not.found'
     }
 
     // Update action
-    /*void "test update action when pageLayoutInstance is passed"() { // Error java.lang.StringIndexOutOfBoundsException: String index out of range: 1
+    void "test update action when pageLayoutInstance is passed"() {
         given: 'Page and Map parameters instance'
+        Page pageInstanceWithErrors = new Page()
         Page pageInstance = getPageInstance(1)
+        Page pageInstanceVersionUpdated = getPageInstance(2)
+
+        pageInstanceVersionUpdated.version = 2L
+        pageInstanceVersionUpdated.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
+        assert pageInstanceVersionUpdated.id
+
+        Page invalidPageInstance
         Map params = [layoutName: 'TestPageLayout']
 
-        when: 'Update action is called'
+        and: 'Mocking Services'
+        controller.contentService = Mock(ContentService)
+        1 * controller.contentService.update(_,_,_,_) >> pageInstance
+
+        pageInstance.contentService = Mock(ContentService)
+        1 * pageInstance.contentService.createLink(_) >> '/page/list'
+
+        when: 'Update action is hit with pageInstance'
         controller.request.method = 'PUT'
         controller.request.json = params
         controller.update(pageInstance, 1L)
 
         then: 'Valid HttpStatus should be received'
-        controller.response.status == HttpStatus.OK.value()
-    }*/
+        controller.response.status == HttpStatus.FOUND.value()
+        controller.response.redirectedUrl.contains('/page/list')
+
+        when: 'Update action is hit with invalid instance'
+        controller.request.method = 'PUT'
+        controller.request.json = params
+        controller.update(invalidPageInstance, 1L)
+
+        then: 'Valid JSON response should be received'
+        controller.response.json['message'] == 'page.not.found'
+
+        when: 'Update action is hit with pageInstance updated version'
+        controller.request.method = 'PUT'
+        controller.request.json = params
+        controller.update(pageInstanceVersionUpdated, 1L)
+
+        then: 'Valid JSON response should be received'
+        controller.response.status == HttpStatus.NOT_ACCEPTABLE.value()
+    }
+
+    void "test update action when invalid instance is passed"() {
+        given: 'Page and Map parameters instance'
+        Page pageInstance = getPageInstance(1)
+        Page pageInstanceWithErrors = new Page([abc: 'abc'])
+        pageInstanceWithErrors.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
+
+        Map params = [layoutName: 'TestPageLayout']
+
+        and: 'Mock services'
+        controller.contentService = Mock(ContentService)
+        1 * controller.contentService.update(_,_,_,_) >> pageInstanceWithErrors
+
+        when: 'Update action is hit'
+        controller.request.method = 'PUT'
+        controller.request.json = params
+        controller.update(pageInstance, 1L)
+
+        then: 'Valid JSON response should be received'
+        controller.response.status == HttpStatus.UNPROCESSABLE_ENTITY.value()
+    }
+
+    void "test update action when parameters are passed"() {
+        given: 'Page and Map parameters instance'
+        Page pageInstance = getPageInstance(1)
+
+        and: 'Mocking Services'
+        controller.contentService = Mock(ContentService)
+        1 * controller.contentService.update(_,_,_,_) >> pageInstance
+
+        pageInstance.contentService = Mock(ContentService)
+        1 * pageInstance.contentService.createLink(_) >> '/page/list'
+
+        when: 'Update action is hit'
+        controller.request.method = 'PUT'
+        controller.params.createRevision = true
+        controller.update(pageInstance, 1L)
+
+        then: 'Valid JSON response should be received'
+        controller.response.status == HttpStatus.FOUND.value()
+        controller.response.redirectedUrl.contains('/page/list')
+    }
 
     // Delete action
     void "test delete action when pageInstance"() {
@@ -255,7 +305,7 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
             return
         }] as ContentService
 
-        when: 'Delete action is called'
+        when: 'Delete action is hit'
         controller.request.method = 'DELETE'
         controller.delete(pageInstance)
 
@@ -268,6 +318,6 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
         controller.delete(invalidPageInstance)
 
         then: 'A valid JSON response should be received'
-        controller.response.status == HttpStatus.OK.value() // For exception thrown
+        controller.response.status == HttpStatus.OK.value()
     }
 }

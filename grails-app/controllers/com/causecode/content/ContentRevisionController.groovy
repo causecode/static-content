@@ -27,7 +27,7 @@ class ContentRevisionController {
     }
 
     /**
-     * Used to load COntent Revision instance by ID.
+     * Used to load Content Revision instance by ID.
      * @param id REQUIRED Identity of ContentRevision domain instance to be loaded.
      * @return Renders content revision instance data in JSON format.
      */
@@ -42,5 +42,4 @@ class ContentRevisionController {
         ContentRevision.get(id).delete()
         render true
     }
-
 }

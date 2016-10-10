@@ -69,23 +69,26 @@ class ContentService {
             def currentUser = springSecurityService.currentUser
             return currentUser ? currentUser.id.toString() : ANONYMOUS_USER
         }
+
         if (contentInstance.author?.isNumber()) {
             // authorInstance returns User instance, keeping it def so that method remains generic.
             def className = SpringSecurityUtils.securityConfig.userLookup.userDomainClassName
-
             def authorClazz = grailsApplication.getDomainClass(className).clazz
             def authorInstance = authorClazz.get(contentInstance.author)
+
             if (!authorInstance[updatedAuthorProperty]) {
                 updatedAuthorProperty = 'username'
             }
+
             return authorInstance[updatedAuthorProperty]
         }
+
         return contentInstance.author ?: ANONYMOUS_USER
     }
 
     /**
      * A method to check if current user have authority to view the current content instance
-     * @param id Identity of Content domain instance .
+     * @param id Identity of Content domain instance.
      */
     boolean isVisible(def id) {
         if (contentManager) { return true }
@@ -99,7 +102,7 @@ class ContentService {
         }
 
         boolean result = false
-        if (!contentInstance || contentInstance.publish) { result = true }
+        if (contentInstance?.publish) { result = true }
 
         return result
     }
@@ -186,7 +189,7 @@ class ContentService {
             metaInstance.validate()
             if (!metaInstance.hasErrors()) {
                 metaInstance.save()
-                ContentMeta.findOrSaveByContentAndMeta(contentInstance, metaInstance)app
+                ContentMeta.findOrSaveByContentAndMeta(contentInstance, metaInstance)
             }
         }
         return contentInstance
@@ -214,30 +217,20 @@ class ContentService {
      * @param contentInstance REQUIRED Content Instance to be get revised.
      * @param clazz REQUIRED Class used to create new content revision instance.
      * @param params Map containing parameters for comments.
-     * @return Newly created ContentRevision for given conetentInstance.
+     * @return Newly created ContentRevision for given contentInstance.
      */
     @Transactional
     ContentRevision createRevision(Content contentInstance, Class clazz, Map params) {
-        Map localParams = params
-        ContentRevision contentRevisionInstance = clazz.newInstance().with {
+        Map contentRevisionDataMap = [
+                title: contentInstance.title,
+                body: contentInstance.body,
+                subTitle: contentInstance.subTitle,
+                revisionOf: contentInstance,
+                comment: params.revisionComment ?: ''
+        ]
 
-            title = contentInstance.title
-            body = contentInstance.body
-            subTitle = contentInstance.subTitle
-            revisionOf = contentInstance
-            comment = localParams.revisionComment ?: ''
-        }
-/*
-        contentRevisionInstance.title = contentInstance.title
-        contentRevisionInstance.body = contentInstance.body
-        contentRevisionInstance.subTitle = contentInstance.subTitle
-        contentRevisionInstance.revisionOf = contentInstance
-        contentRevisionInstance.comment = params.revisionComment ?: ''
-        contentRevisionInstance.save()
-        contentRevisionInstance
-        contentRevisionInstance.save()
-        contentRevisionInstance
-*/
+        ContentRevision contentRevisionInstance = clazz.newInstance(contentRevisionDataMap)
+        contentRevisionInstance.save(flush: true)
         contentRevisionInstance
     }
 
@@ -277,6 +270,7 @@ class ContentService {
                 break
             }
         }
+
         if (fieldName) {
             if (domainClassInstance) {
                 sanitizedTitle = friendlyUrlService.sanitizeWithDashes(domainClassInstance[fieldName])
@@ -316,10 +310,5 @@ class ContentService {
 
     def getRoleClass() {
         return grailsApplication.getDomainClass(SpringSecurityUtils.securityConfig.authority.className).clazz
-    }
-
-    // TODO only to be executed for unit test case
-    def getShorthandAnnotatedControllers() {
-        return
     }
 }

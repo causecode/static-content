@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
+ * Copyright (c) 2016, CauseCode Technologies Pvt Ltd, India.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or
@@ -24,7 +24,6 @@ hibernate = {
 // environment specific settings
 environments = {
     development = {
-        defaultURL = "http://localhost:8080"
             plugins = {
                 runtime "org.grails.plugins:hibernate4"
             }
@@ -34,7 +33,6 @@ environments = {
         }
     }
     test = {
-        defaultURL = "http://localhost:8080"
         dataSource = {
             dbCreate = "create-drop"
             url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"

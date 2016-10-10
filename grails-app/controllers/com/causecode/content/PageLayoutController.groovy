@@ -67,7 +67,7 @@ class PageLayoutController {
             return
         }
 
-        log.info 'Pagelayout instance saved successfully.'
+        log.info 'PageLayout instance saved successfully.'
         pageLayoutInstance.save(FLUSH_TRUE)
         respond ([status: HttpStatus.OK])
     }

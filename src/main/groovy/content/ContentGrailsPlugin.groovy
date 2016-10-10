@@ -7,6 +7,7 @@
  */
 package content
 
+import com.causecode.content.ContentService
 import grails.core.GrailsApplication
 import grails.plugins.Plugin
 
@@ -54,19 +55,19 @@ class ContentGrailsPlugin extends Plugin {
         }
     }*/
 
-    void doWithDynamicMethods(ctx) {
-        // TODO Implement registering dynamic methods to classes (optional)
-        /*def ctx = grailsApplication.mainContext
+    @Override
+    @SuppressWarnings('Println')
+    void doWithDynamicMethods() {
         println '\nConfiguring content plugin ...'
+        println '... finished configuring content plugin\n'
 
-        println '... finished configuring content plugin\n'*/
-        def application = ctx.grailsApplication
-        MetaClass metaClassInstance = application.getServiceClass(ContentService.name).metaClass
+        MetaClass metaClassInstance = grailsApplication.getArtefact('Service', ContentService.name).metaClass
 
         if (!metaClassInstance.respondsTo(null, 'getShorthandAnnotatedControllers')) {
             Map shorthandAnnotatedControllerMap = [:]
-            for (controller in application.controllerClasses) {
-                Annotation controllerAnnotation = controller.clazz.getAnnotation(ControllerShorthand)
+            for (controller in grailsApplication.controllerClasses) {
+                Annotation controllerAnnotation = controller.clazz
+                        .getAnnotation(com.causecode.annotation.shorthand.ControllerShorthand)
                 if (controllerAnnotation) {  // Searching for shorthand for grails controller
                     String actualName = controller.name
                     String camelCaseName = actualName.replace(actualName.charAt(0), actualName.charAt(0).toLowerCase())
@@ -77,13 +78,13 @@ class ContentGrailsPlugin extends Plugin {
                 return shorthandAnnotatedControllerMap
             }
             metaClassInstance.getRoleClass {
-                application.getDomainClass(SpringSecurityUtils.securityConfig.authority.className).clazz
+                grailsApplication.getDomainClass(SpringSecurityUtils.securityConfig.authority.className).clazz
             }
             metaClassInstance.getAuthorClass {
-                application.getDomainClass(SpringSecurityUtils.securityConfig.userLookup.userDomainClassName).clazz
+                grailsApplication
+                        .getDomainClass(SpringSecurityUtils.securityConfig.userLookup.userDomainClassName).clazz
             }
-            //println "\nShorthand annotated controller map: $shorthandAnnotatedControllerMap"
-            //println ""
+            println "\nShorthand annotated controller map: $shorthandAnnotatedControllerMap"
         }
     }
 

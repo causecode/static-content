@@ -1,12 +1,14 @@
+/*
+ * Copyright (c) 2016, CauseCode Technologies Pvt Ltd, India.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are not permitted.
+ */
 package com.causecode.content.faq
 
 import com.causecode.BaseTestSetup
-import com.causecode.content.ContentService
-import com.causecode.content.PageLayout
-import com.causecode.content.blog.BlogContentType
-import com.causecode.content.page.Page
 import grails.converters.JSON
-import grails.plugins.taggable.Tag
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import org.springframework.http.HttpStatus
@@ -30,20 +32,6 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
         response.redirectedUrl == '/FAQ/list'
     }
 
-    // GetMetaTypeList action
-//    void "test getMetaTypeList action to get metaList"() {
-//        given: 'Some Page Instance'
-//        createInstances("Page", 5)
-//
-//        when: 'getMetaList action is hit'
-//        controller.getMetaTypeList()
-//
-//        then: 'A valid JSON response should be received'
-//        PageLayout.count() == 5
-//        response.status == HttpStatus.OK.value()
-//    }
-//
-//
     // Create action
     void "test create action when parameters are passed"() {
         given: 'Map parameters instance'
@@ -53,14 +41,14 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
                 subTitle: "To execute the JUnit integration test",
                 body    : "Grails organises tests by phase and by type. The state of the Grails application."]
 
-        when: 'Create action is called'
+        when: 'Create action is hit'
         controller.request.parameters = params
         controller.create()
 
         then: 'Valid HttpStatus should be received'
         controller.response.status == HttpStatus.OK.value()
     }
-//
+
     // List action
     void "test list action when parameters are passed"() {
         given: 'Some Page Instance'
@@ -74,20 +62,22 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
         response.contentType == 'application/json;charset=UTF-8'
         response.status == HttpStatus.OK.value()
     }
-//
+
     // Save action
-    /*void "test save action when request parameters are passed"() {
+    void "test save action when request parameters are passed"() {
         given: 'Map parameters instance'
         String jsonRequest = (getContentParams(1) as JSON).toString()
 
-        when: 'Save action is called'
+        when: 'Save action is hit'
         controller.request.method = 'POST'
         controller.request.json = jsonRequest
         controller.save()
 
-        then: 'A valid HttpStatus OK should be received'
+        then: 'HttpStatus OK should be received'
         response.status == HttpStatus.OK.value()
+    }
 
+    void "test save action when invalid request parameters are passed"() {
         when: 'Invalid json is passed'
         String jsonRequest2 = ([] as JSON).toString()
         controller.request.method = 'POST'
@@ -95,8 +85,11 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
         controller.save()
 
         then: 'A valid error response should be received'
-    }*/
-//
+        controller.response.json['errors'][0].field == 'body'
+        controller.response.json['errors'][0].message == 'Property [body] of class ' +
+                '[class com.causecode.content.faq.FAQ] cannot be null'
+    }
+
     // Show action
     void "test show action when FAQ instance is passed"() {
         given: 'PageLayout instance'
@@ -108,10 +101,10 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
         then: 'Valid JSON response should be received'
         response.status == HttpStatus.OK.value()
     }
-//
+
     // Edit action
-    void "test edit action when pageInstance is passed"() {
-        given: 'PageLayout instance'
+    void "test edit action when faqInstance is passed"() {
+        given: 'faqInstance instance'
         FAQ validFaqInstance = getFAQInstance(1)
         FAQ invalidFaqInstance = null
 
@@ -120,47 +113,48 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
 
         then: 'Valid JSON response should be received'
         response.status == HttpStatus.OK.value()
-
-        /*when: 'Edit action is hit' // Error redirecting
-        controller.edit(invalidPageLayoutInstance)
-
-        then: 'Valid JSON response should be received'
-        controller.response.redirectedUrl.contains('/blog/show/')*/
     }
-//
+
     // Update action
-    void "test update action when pageLayoutInstance is passed"() { // Error java.lang.StringIndexOutOfBoundsException: String index out of range: 1
+    void "test update action when faqInstance is passed"() {
         given: 'Page and Map parameters instance'
-        FAQ validFaqInstance = getFAQInstance(1)
+        FAQ faqInstance = getFAQInstance(1)
         Map params = [author: 'Test Author']
 
-        when: 'Update action is called'
+        when: 'Update action is hit'
         controller.request.method = 'PUT'
         controller.request.json = params
-        controller.update(validFaqInstance, 1L)
+        controller.update(faqInstance, 1L)
 
         then: 'Valid HttpStatus should be received'
         controller.response.status == HttpStatus.OK.value()
     }
-//
+
+    void "test update action when faqInstance is passed with version updated"() {
+        given: 'Page and Map parameters instance'
+        FAQ faqInstance = getFAQInstance(1)
+        faqInstance.version = 2L
+        Map params = [author: 'Test Author']
+
+        when: 'Update action is hit'
+        controller.request.method = 'PUT'
+        controller.request.json = params
+        controller.update(faqInstance, 1L)
+
+        then: 'Valid HttpStatus should be received'
+        controller.response.status == HttpStatus.UNPROCESSABLE_ENTITY.value()
+    }
+
     // Delete action
     void "test delete action when pageInstance"() {
         given: 'Page and Map parameters instance'
         FAQ faqInstance = getFAQInstance(1)
 
-        when: 'Delete action is called'
+        when: 'Delete action is hit'
         controller.request.method = 'DELETE'
         controller.delete(faqInstance)
 
         then: 'Valid HttpStatus should be received'
         controller.response.status == HttpStatus.OK.value()
-
-        /*when: 'Delete action is called and RequiredPropertyMissingException is thrown'
-        Page invalidPageInstance = null
-        controller.request.method = 'DELETE'
-        controller.delete(invalidPageInstance)
-
-        then: 'A valid JSON response should be received'
-        controller.response.status == HttpStatus.OK.value() // For exception thrown*/
     }
 }

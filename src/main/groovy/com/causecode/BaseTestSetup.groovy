@@ -16,7 +16,7 @@ import com.causecode.content.blog.comment.Comment
 import com.causecode.content.faq.FAQ
 import com.causecode.content.meta.Meta
 import com.causecode.content.page.Page
-import grails.plugins.taggable.Tag
+import grails.plugin.springsecurity.SpringSecurityUtils
 
 /**
  * This class contains common setup that can be used in unit, functional and integration test cases.
@@ -39,6 +39,32 @@ import grails.plugins.taggable.Tag
 trait BaseTestSetup {
 
     private static final Map FLUSH_TRUE = [flush: true]
+    static final ROLE = 'ROLE_ADMIN'
+    static final USER_CLASS_NAME = 'com.causecode.user.User'
+    static final ROLE_CLASS_NAME = 'com.causecode.user.Role'
+    static final JOIN_CLASS_NAME = 'com.causecode.user.UserRole'
+
+    // Mocked SpringSecurityUtils
+    void mockOutSpringSecurityUtilsConfig() {
+        def config = new ConfigObject()
+
+        // set spring security core configuration
+        config.putAll([
+                authority: [nameField: 'authority', className: ROLE_CLASS_NAME ],
+                userLookup: [
+                        userDomainClassName: USER_CLASS_NAME,
+                        authorityJoinClassName: JOIN_CLASS_NAME,
+                        passwordPropertyName: 'password',
+                        usernamePropertyName: 'username',
+                        enabledPropertyName: 'enabled',
+                        authoritiesPropertyName: 'authorities',
+                        accountExpiredPropertyName: 'accountExpired',
+                        accountLockedPropertyName: 'accountLocked',
+                        passwordExpiredPropertyName: 'passwordExpired' ]
+        ])
+
+        SpringSecurityUtils.metaClass.static.getSecurityConfig = { config }
+    }
 
     // Create Instance
     def createInstances(String domainName, int count) {
@@ -48,8 +74,14 @@ trait BaseTestSetup {
     }
 
     // Tag
-    Tag getTagInstance(int index) {
-        Tag tagInstance = new Tag([name: "Tag name-$index"])
+    /*Tag getTagInstance(int index) {
+        Tag tagInstance = Tag.findByName('Tag name')
+
+        if (tagInstance) {
+            return tagInstance
+        }
+
+        tagInstance = new Tag()
         tagInstance.save(FLUSH_TRUE)
 
         if (tagInstance.hasErrors()) {
@@ -59,7 +91,7 @@ trait BaseTestSetup {
         assert tagInstance.id
 
         return tagInstance
-    }
+    }*/
 
     // Content
     Map getContentParams(int index) {
@@ -78,10 +110,6 @@ trait BaseTestSetup {
     // Blog
     Blog getBlogInstance(int index) {
         Blog blogInstance = new Blog(getContentParams(index))
-        blogInstance.save(FLUSH_TRUE)
-
-        // Adding Tags as List
-        blogInstance.tags = [getTagInstance(index)]
         blogInstance.save(FLUSH_TRUE)
 
         assert blogInstance.id
@@ -149,8 +177,8 @@ trait BaseTestSetup {
     }
 
     // Meta
-    Meta getMetaInstance(int index) {
-        Map args = [type: "keywords-$index", content: '500Hrs,TechStars,YCombinator,MassChallenge']
+    Meta getMetaInstance() {
+        Map args = [type: 'keywords', content: '500Hrs,TechStars,YCombinator,MassChallenge']
         Meta metaInstance = new Meta(args)
         metaInstance.save(FLUSH_TRUE)
 
@@ -161,7 +189,7 @@ trait BaseTestSetup {
 
     // ContentMeta Instance
     ContentMeta getContentMetaInstance(int index) {
-        Map args = [content: getContentInstance(index), meta: getMetaInstance(index)]
+        Map args = [content: getContentInstance(index), meta: metaInstance]
         ContentMeta contentMetaInstance = new ContentMeta(args)
         contentMetaInstance.save(FLUSH_TRUE)
 
