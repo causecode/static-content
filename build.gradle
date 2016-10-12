@@ -97,7 +97,7 @@ dependencies {
     profile "org.grails.profiles:web-plugin:3.1.4"
     provided "org.grails:grails-plugin-services"
     provided "org.grails:grails-plugin-domain-class"
-    compile "com.causecode.plugins:file-uploader:2.4.9"
+    compile "com.causecode.plugins:file-uploader:3.0.0"
     compile ("com.causecode.plugins:taggable:1.4.1") {
         exclude module: "hibernate"
     }
