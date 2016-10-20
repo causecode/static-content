@@ -7,7 +7,6 @@
  */
 package com.causecode.content
 
-import com.causecode.BaseTestSetup
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import org.springframework.http.HttpStatus
@@ -23,9 +22,11 @@ class ContentRevisionControllerSpec extends Specification implements BaseTestSet
         ContentRevision contentRevisionInstance = contentRevisionInstance
 
         when: 'Show action is hit'
-        controller.show(contentRevisionInstance.id)
+        controller.request.method = 'GET'
+        controller.params.id = contentRevisionInstance.id
+        controller.show()
 
-        then: 'Valid response should be received'
+        then: 'HttpStatus.OK should be received as response'
         controller.response.status == HttpStatus.OK.value()
     }
 
@@ -35,9 +36,11 @@ class ContentRevisionControllerSpec extends Specification implements BaseTestSet
         ContentRevision contentRevisionInstance = contentRevisionInstance
 
         when: 'Load action is hit'
-        controller.load(contentRevisionInstance.id)
+        controller.request.method = 'POST'
+        controller.params.id = contentRevisionInstance.id
+        controller.load()
 
-        then: 'Valid response should be received'
+        then: 'Valid json response should be received'
         controller.response.json['subTitle'] == 'Test subtitle'
         controller.response.json['title'] == 'Sample Title'
         controller.response.json['body'] == 'Test Body'
@@ -52,9 +55,11 @@ class ContentRevisionControllerSpec extends Specification implements BaseTestSet
         assert ContentRevision.count() == 1
 
         when: 'Delete action is hit'
-        controller.delete(contentRevisionInstance.id)
+        controller.request.method = 'POST'
+        controller.params.id = contentRevisionInstance.id
+        controller.delete()
 
-        then: 'Valid response should be received'
+        then: 'ContentRevision count should be equal to 0'
         assert ContentRevision.count() == 0
         controller.response.status == HttpStatus.OK.value()
     }
@@ -62,17 +67,18 @@ class ContentRevisionControllerSpec extends Specification implements BaseTestSet
     ContentRevision getContentRevisionInstance() {
         Content contentInstance = getContentInstance(1)
         Map contentRevisionDataMap = [
-                title: 'Sample Title',
-                body: 'Test Body',
-                subTitle: 'Test subtitle',
-                revisionOf: contentInstance,
-                comment: 'Sample comments'
+            title: 'Sample Title',
+            body: 'Test Body',
+            subTitle: 'Test subtitle',
+            revisionOf: contentInstance,
+            comment: 'Sample comments'
         ]
 
         ContentRevision contentRevisionInstance = new ContentRevision(contentRevisionDataMap)
-        contentRevisionInstance.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
+        contentRevisionInstance.save()
 
         assert contentRevisionInstance.id
+        assert contentRevisionInstance.toString() == "ContentRevision ($contentRevisionInstance.title)"
 
         return contentRevisionInstance
     }

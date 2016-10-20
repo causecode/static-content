@@ -7,13 +7,11 @@
  */
 package com.causecode.content
 
-import com.causecode.BaseTestSetup
 import com.causecode.content.blog.Blog
 import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.meta.Meta
 import com.causecode.content.page.Page
 import com.causecode.content.page.PageRevision
-import com.causecode.seo.friendlyurl.FriendlyUrlService
 import com.causecode.user.User
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.SpringSecurityUtils
@@ -22,45 +20,45 @@ import grails.plugins.taggable.TagLink
 import grails.plugins.taggable.TaggableService
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
-import grails.util.Holders
 import grails.web.mapping.LinkGenerator
 import spock.lang.Specification
 import spock.lang.Unroll
+import spock.util.mop.ConfineMetaClassChanges
 
 @TestFor(ContentService)
 @Mock([Content, SpringSecurityService, Meta, ContentMeta, ContentRevision, Blog, Tag,
         Page, PageRevision, User, TaggableService, TagLink, BlogComment])
 class ContentServiceSpec extends Specification implements BaseTestSetup {
 
-    def setup() {
-        mockOutSpringSecurityUtilsConfig()
-    }
-
     // Method resolveAuthor
     @Unroll
+    @ConfineMetaClassChanges([SpringSecurityService])
     void "test resolveAuthor method when contentInstance and authorProperty is passed"() {
         given: 'Instance of content and authorProperty'
         Content contentInstance1 = getContentInstance(1)
         contentInstance1.author = '1'
-        contentInstance1.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
+        contentInstance1.save()
 
         assert contentInstance1.id
 
         String authorProperty = authorParameter
 
-        and: 'Mock user'
-        User.metaClass.encodePassword = { -> }
+        and: 'Mock SpringSecurityService'
+        SpringSecurityService.metaClass.encodePassword = { String password ->
+            return password
+        }
+
         Date dateOfBirth = new Date().parse('MM/dd/yyyy', '01/08/1993')
         def user = new User([
-                        username: "cause-1",
-                        password: "code-1",
-                        email: "cause-1@code.com",
-                        firstName: 'Cause',
-                        lastName: "Code-1",
-                        dateOfBirth: dateOfBirth,
-                        bio: 'CauseCode beyond infinity',
-                        pictureUrl: 'https://causecode-picture.com'
-        ]).save(com_causecode_BaseTestSetup__FLUSH_TRUE)
+            username: "cause-1",
+            password: "code-1",
+            email: "cause-1@code.com",
+            firstName: 'Cause',
+            lastName: "Code-1",
+            dateOfBirth: dateOfBirth,
+            bio: 'CauseCode beyond infinity',
+            pictureUrl: 'https://causecode-picture.com'
+        ]).save()
 
         assert user.id
 
@@ -78,12 +76,13 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
     }
 
     // Method isVisible
+    @ConfineMetaClassChanges([SpringSecurityUtils])
     void "test isVisible method when id is passed when contentManager is true"() {
         given: 'Content instance'
         Content contentInstance = getContentInstance(1)
 
         and: 'Mock isContentManager method'
-        Holders.grailsApplication.config.cc.plugins.content.contentManagerRole = 'manager'
+        grailsApplication.config.cc.plugins.content.contentManagerRole = 'manager'
         SpringSecurityUtils.metaClass.static.ifAnyGranted = { String role ->
             return true
         }
@@ -91,10 +90,11 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
         when: 'isVisible method is called'
         boolean boolResult = service.isVisible(contentInstance.id)
 
-        then: 'Valid result should be received'
+        then: 'boolResult should be true'
         boolResult == true
     }
 
+    @ConfineMetaClassChanges([Content, ContentService])
     void "test isVisible method when id is passed"() {
         given: 'Content instance'
         Content contentInstance = getContentInstance(1)
@@ -103,7 +103,10 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
         Content.metaClass.static.withCriteria = { Map args, Closure closure ->
             return contentInstance
         }
-        service.metaClass.isContentManager = { -> return false }
+
+        service.metaClass.isContentManager = { ->
+        return false
+        }
 
         when: 'isVisible method is called'
         boolean boolResult = service.isVisible(contentInstance.id)
@@ -122,7 +125,7 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
         when: 'create method is called'
         Content content = service.create(args, metaTypes, metaValues)
 
-        then: 'Valid response should be received'
+        then: 'Valid content instance should be received'
         content.title == 'Targeting Test 1 Types and/or Phases'
         content.author == 'Author 1'
     }
@@ -138,17 +141,18 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
         when: 'update method is called'
         Content contentResult = service.update(args, contentInstance, metaTypes, metaValues)
 
-        then: 'Valid response should be received'
+        then: 'Error response should be received'
         contentResult.id == null
         contentResult.hasErrors() == true
         contentResult.errors.getFieldError("title").toString().contains("rejected value [null]")
     }
 
+    @ConfineMetaClassChanges([ContentMeta])
     void "test update method to remove all metas"() {
         given: 'Instance of contentMeta, contentInstance, map, metaTypes and metaValues'
-        ContentMeta contentMetaInstance1 = getContentMetaInstance(1)//new ContentMeta()
+        ContentMeta contentMetaInstance1 = getContentMetaInstance(1)
         ContentMeta contentMetaInstance2 = getContentMetaInstance(2)
-        Content contentInstance = contentMetaInstance1.content//new Content()
+        Content contentInstance = contentMetaInstance1.content
         Map args = getContentParams(1)
         Meta metaInstance1 = getMetaInstance()
         Meta metaInstance2 = getMetaInstance()
@@ -161,16 +165,16 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
         }
 
         ContentMeta.metaClass.static.withCriteria = { Map args1, Closure closure ->
-            metaInstance1.delete(com_causecode_BaseTestSetup__FLUSH_TRUE)
-            metaInstance2.delete(com_causecode_BaseTestSetup__FLUSH_TRUE)
+            metaInstance1.delete()
+            metaInstance2.delete()
             return contentMetaInstance2.meta
         }
 
         when: 'update method is called'
         Content resultContentInstance = service.update(args, contentInstance, metaTypes, metaValues)
 
-        then: 'Valid response should be received'
-        Meta.count() == 2
+        then: 'Valid content instance should be received and meta count should be 2'
+        assert Meta.count() == 2
         resultContentInstance.title == 'Targeting Test 1 Types and/or Phases'
     }
 
@@ -180,11 +184,11 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
         Content contentInstance = getContentInstance(1)
 
         when: 'delete method is called'
-        Content.count == 1
+        assert Content.count == 1
         service.delete(contentInstance)
 
         then: 'Content instance should be deleted'
-        Content.count() == 0
+        assert Content.count() == 0
     }
 
     void "test delete method for deleting both content and related blog"() {
@@ -192,13 +196,13 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
         Blog blogInstance = getBlogInstance(1)
 
         when: 'delete method is called'
-        Blog.count() == 1
-        Content.count == 1
+        assert Blog.count() == 1
+        assert Content.count == 1
         service.delete(blogInstance)
 
         then: 'Blog and related content should be deleted'
-        Content.count() == 0
-        Blog.count() == 0
+        assert Content.count() == 0
+        assert Blog.count() == 0
     }
 
     // Method CreateRevision
@@ -210,12 +214,13 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
         when: 'createRevision method is called'
         ContentRevision resultContentRevision = service.createRevision(contentInstance, ContentRevision, params)
 
-        then: 'Valid response should be received'
-        ContentRevision.count() == 1
+        then: 'ContentRevision instance should be received'
+        assert ContentRevision.count() == 1
         resultContentRevision.title == 'Targeting Test 1 Types and/or Phases'
         resultContentRevision.comment == 'hi'
     }
 
+    @ConfineMetaClassChanges([ContentService])
     void "test createLink method when map attributes is passed"() {
         given: 'Content instance'
         Content contentInstance = getContentInstance(1)
@@ -223,27 +228,26 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
         Map attrs = [domain: domain, id: 0, absolute: true]
 
         and: 'Mocked Services'
-        service.metaClass.getShorthandAnnotatedControllers = { ->return [] }
-
-        service.friendlyUrlService = Mock(FriendlyUrlService)
-        service.friendlyUrlService.sanitizeWithDashes(_) >> 'sanitized-title'
+        service.metaClass.getShorthandAnnotatedControllers = { ->
+            return []
+        }
 
         and: 'Mock LinkGenerator'
         service.grailsLinkGenerator = Mock(LinkGenerator)
         service.grailsLinkGenerator.link(_) >> '/blog/list'
 
-        when: 'createLink method is called'
+        when: 'createLink method is called with id 0'
         String result = service.createLink(attrs)
 
-        then: 'Valid response should be received'
+        then: 'Valid link should be received'
         result == '/blog/list'
 
-        when: 'createLink method is called'
+        when: 'createLink method is called with blogInstance id'
         Blog blogInstance = getBlogInstance(1)
         attrs = [domain: domain, id: blogInstance.id, absolute: true]
         String result1 = service.createLink(attrs)
 
-        then: 'Valid response should be received'
+        then: 'Valid link should be received'
         result1 == '/blog/list'
     }
 }

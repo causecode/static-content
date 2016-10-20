@@ -7,10 +7,6 @@
  */
 package com.causecode.content.blog.comment
 
-/**
- * This taglib provides tags for rendering comments on blog.
- * @author Shashank Agrawal
- */
 import com.causecode.content.blog.Blog
 
 /**
@@ -42,15 +38,17 @@ class CommentService {
     }
 
     Map getCommentData(Comment commentInstance) {
-        Map result
-        if (!commentInstance) { result = [:] }
-        result = [
+        if (!commentInstance) {
+            log.warn "Invalid comment instance $commentInstance"
+            return [:]
+        }
+
+        return  [
             subject: commentInstance.subject, id: commentInstance.id,
             name: commentInstance.name, email: commentInstance.email,
             commentText: commentInstance.commentText, lastUpdated: commentInstance.lastUpdated,
-            comments: getCommentsWithNestedComments(Comment.findAllByReplyTo(commentInstance))]
-
-        return result
+            comments: getCommentsWithNestedComments(Comment.findAllByReplyTo(commentInstance))
+        ]
     }
 
     List getCommentsWithNestedComments(List<Comment> commentList) {

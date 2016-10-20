@@ -50,7 +50,7 @@ environments:
 grails:
     profile: web-plugin
     codegen:
-        defaultPackage: sample
+        defaultPackage: com.causecode.content
     spring:
         transactionManagement:
             proxies: false

@@ -8,6 +8,8 @@
 package com.causecode.content.page
 
 import com.causecode.content.ContentService
+import com.causecode.springsecurity.Annotations
+import com.causecode.utility.UtilParameters
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
@@ -28,38 +30,42 @@ import grails.core.GrailsApplication
  * @author Laxmi Salunkhe
  *
  */
-@Secured(['ROLE_CONTENT_MANAGER'])
+@Secured([Annotations.ROLE_CONTENT_MANAGER])
 @ControllerShorthand(value = 'c')
 class PageController {
 
-    private static final String PAGE_LABEL = 'page.label'
-    private static final Map PAGE_LABEL_MAP = [code: PAGE_LABEL]
-
     static allowedMethods = [show: 'GET', save: 'POST', update: 'PUT', delete: 'DELETE']
     static responseFormats = ['json']
+
+    //private static final Map PAGE_NOT_FOUND = 'page.not.found'
 
     ContentService contentService
     GrailsApplication grailsApplication
 
     def handleRequiredPropertyMissingException(RequiredPropertyMissingException exception) {
-        log.debug 'Page instance not found' + exception
+        log.debug 'Page instance not found', exception
         response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
         respond ([message: message(code: 'page.not.found')])
+
         return
     }
 
     def index() {
         redirect(action: 'list', params: params)
+
+        return
     }
 
     def getMetaTypeList() {
         List metaTypeList = Meta.typeList
         respond ([metaTypeList: metaTypeList])
+
+        return
     }
 
     def list(Integer max) {
-        params.sort = 'dateCreated'
-        params.order = 'desc'
+        params.sort = params.sort ?: 'dateCreated'
+        params.order = params.order ?: 'desc'
         params.max = Math.min(max ?: 10, 100)
 
         String contentManagerRole = grailsApplication.config.cc.plugins.content.contentMangerRole
@@ -69,13 +75,14 @@ class PageController {
             }
         }
         respond ([instanceList: pageInstanceList, totalCount: pageInstanceList.totalCount])
+
+        return
     }
 
-    def create() {
-        def pageInstance = new Page()
-        bindData(pageInstance, params)
+    def create(Page pageInstance) {
+        respond([pageInstance: pageInstance])
 
-        [pageInstance: pageInstance]
+        return
     }
 
     def save() {
@@ -83,12 +90,13 @@ class PageController {
         Page pageInstance = contentService.create(requestData, requestData.metaList.type,
                 requestData.metaList.content, Page)
         if (!pageInstance.save(flush: true)) {
-            render(view: 'create', model: [pageInstance: pageInstance])
+            respond(view: 'create', model: [pageInstance: pageInstance], errors: pageInstance.errors)
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(PAGE_LABEL_MAP), pageInstance.id])
         redirect uri: pageInstance.searchLink()
+
+        return
     }
 
     /**
@@ -97,18 +105,20 @@ class PageController {
      * the Page instance.
      */
     @Transactional(readOnly = true)
-    @Secured(['permitAll'])
+    @Secured([Annotations.PERMIT_ALL])
     def show(Page pageInstance) {
         if (!pageInstance || pageInstance.hasErrors()) {
             throw new RequiredPropertyMissingException()
         }
+
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
          * any change in data model must be updated in the GSP.
          * Render GSP content in JSON format.
          */
         if (params._escaped_fragment_) {
-            render (view: 'show', model: [pageInstance: pageInstance], contentType: 'application/json')
+            respond([view: 'show', model: [pageInstance: pageInstance], contentType: 'application/json'])
+
             return
         }
 
@@ -130,6 +140,8 @@ class PageController {
         }
 
         redirect(url: pageShowUrl, permanent: true, params: params)
+
+        return
     }
 
     def edit(Page pageInstance) {
@@ -137,25 +149,19 @@ class PageController {
             throw new RequiredPropertyMissingException()
         }
 
-        [pageInstance: pageInstance, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)]
+        respond([pageInstance: pageInstance, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)])
+
+        return
     }
 
-    def update(Page pageInstance, Long version) {
+    def update(Page pageInstance) {
         Page updatePageInstance = pageInstance
         if (!updatePageInstance || updatePageInstance.hasErrors()) {
             throw new RequiredPropertyMissingException()
         }
+
         Map requestData = request.JSON
 
-        if (version != null) {
-            if (updatePageInstance.version > version) {
-                updatePageInstance.errors.rejectValue('version', 'default.optimistic.locking.failure',
-                        [message(PAGE_LABEL_MAP)] as Object[],
-                        'Another user has updated this Page while you were editing')
-                respond(updatePageInstance.errors)
-                return
-            }
-        }
         log.info "Parameters received to update page instance: $params, $requestData"
         updatePageInstance = contentService.update(requestData, updatePageInstance, requestData.metaList?.type,
                 requestData.metaList?.content)
@@ -164,13 +170,14 @@ class PageController {
             respond(updatePageInstance.errors)
             return
         }
-        flash.message = "<em>$updatePageInstance</em> Page updated successfully."
+
         if (params.createRevision) {
             contentService.createRevision(updatePageInstance, PageRevision, params)
-            flash.message += ' Revision created successfully.'
         }
 
         redirect uri: updatePageInstance.searchLink()
+
+        return
     }
 
     def delete(Page pageInstance) {
@@ -179,9 +186,11 @@ class PageController {
         }
         try {
             contentService.delete(pageInstance)
-            respond ([success: true])
+            respond (UtilParameters.SUCCESS_TRUE)
         } catch (DataIntegrityViolationException e) {
-            respond ([success: false])
+            respond (UtilParameters.SUCCESS_TRUE)
         }
+
+        return
     }
 }

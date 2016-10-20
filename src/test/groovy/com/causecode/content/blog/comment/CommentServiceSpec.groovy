@@ -7,7 +7,7 @@
  */
 package com.causecode.content.blog.comment
 
-import com.causecode.BaseTestSetup
+import com.causecode.content.BaseTestSetup
 import com.causecode.content.blog.Blog
 import grails.plugins.taggable.Tag
 import grails.plugins.taggable.TagLink
@@ -25,7 +25,7 @@ class CommentServiceSpec extends Specification implements BaseTestSetup {
         given: 'Comment instance'
         Comment commentInstance = getCommentInstance(1)
         commentInstance.replyTo = getCommentInstance(2)
-        commentInstance.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
+        commentInstance.save()
 
         assert commentInstance.id
 
@@ -43,7 +43,7 @@ class CommentServiceSpec extends Specification implements BaseTestSetup {
         Comment commentInstance = getCommentInstance(1)
         Blog blogInstance = getBlogInstance(1)
         BlogComment blogCommentInstance = new BlogComment([blog: blogInstance, comment: commentInstance])
-        blogCommentInstance.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
+        blogCommentInstance.save()
 
         assert blogCommentInstance.id
 
@@ -61,7 +61,7 @@ class CommentServiceSpec extends Specification implements BaseTestSetup {
         given: 'Comment instance'
         Comment commentInstance = getCommentInstance(1)
         commentInstance.replyTo = getCommentInstance(2)
-        commentInstance.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
+        commentInstance.save()
 
         assert commentInstance.id
 
@@ -71,5 +71,11 @@ class CommentServiceSpec extends Specification implements BaseTestSetup {
         then: 'ResultMap received should be valid'
         resultMap.subject.contains('Test comment subject')
         resultMap.email == 'comment-1@test.com'
+
+        when: 'GetCommentData method is called'
+        Map resultMap1 = service.getCommentData(null)
+
+        then: 'ResultMap received empty'
+        assert resultMap1 == [:]
     }
 }

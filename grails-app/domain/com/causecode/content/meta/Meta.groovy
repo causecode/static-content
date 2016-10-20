@@ -8,14 +8,11 @@
 package com.causecode.content.meta
 
 import groovy.transform.EqualsAndHashCode
-import groovy.transform.ToString
 
 /**
  * Used for storing meta tags for contents.
  * @author Shashank Agrawal
  */
-@SuppressWarnings('GrailsDomainReservedSqlKeywordName')
-@ToString
 @EqualsAndHashCode
 class Meta {
 
@@ -45,5 +42,10 @@ class Meta {
 
     static List<String> getTypeList() {
         return [KEYWORDS, DESCRIPTION, OG_DESCRIPTION, OG_TITLE, OG_IMAGE, OG_URL]
+    }
+
+    @Override
+    String toString() {
+        return "Meta ($type)"
     }
 }

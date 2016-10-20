@@ -7,7 +7,8 @@
  */
 package com.causecode.content
 
-import grails.converters.JSON
+import com.causecode.springsecurity.Annotations
+import com.causecode.utility.UtilParameters
 import grails.plugin.springsecurity.annotation.Secured
 
 /**
@@ -15,15 +16,18 @@ import grails.plugin.springsecurity.annotation.Secured
  * @author Vishesh Duggar
  * @author Shashank Agrawal
  */
-@Secured('ROLE_CONTENT_MANAGER')
+@Secured(Annotations.ROLE_CONTENT_MANAGER)
 class ContentRevisionController {
 
     static defaultAction = 'show'
+    static responseFormats = ['json']
 
     private ContentRevision contentRevisionInstance
 
     def show(Long id) {
-        [contentRevisionInstance: ContentRevision.get(id)]
+        respond(ContentRevision.get(id))
+
+        return
     }
 
     /**
@@ -33,13 +37,16 @@ class ContentRevisionController {
      */
     def load(Long id) {
         contentRevisionInstance = ContentRevision.get(id)
-        render ([title: contentRevisionInstance.title, subTitle: contentRevisionInstance.subTitle, body:
-            contentRevisionInstance.body] as JSON)
+        respond([title: contentRevisionInstance.title, subTitle: contentRevisionInstance.subTitle, body:
+            contentRevisionInstance.body])
+
         return
     }
 
     def delete(Long id) {
-        ContentRevision.get(id).delete()
-        render true
+        ContentRevision.get(id).delete(flush: true)
+        respond(UtilParameters.SUCCESS_TRUE)
+
+        return
     }
 }

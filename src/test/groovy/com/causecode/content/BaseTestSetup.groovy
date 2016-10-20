@@ -5,7 +5,7 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-package com.causecode
+package com.causecode.content
 
 import com.causecode.content.Content
 import com.causecode.content.ContentMeta
@@ -17,6 +17,7 @@ import com.causecode.content.faq.FAQ
 import com.causecode.content.meta.Meta
 import com.causecode.content.page.Page
 import grails.plugin.springsecurity.SpringSecurityUtils
+import spock.util.mop.ConfineMetaClassChanges
 
 /**
  * This class contains common setup that can be used in unit, functional and integration test cases.
@@ -28,42 +29,48 @@ import grails.plugin.springsecurity.SpringSecurityUtils
  * 'getDomainNameDataMap' method for creating new instances and asserting the ids.
  *
  * Example:
- *
  * For creating 10 Blog instance for testing index action. Simple call createInstances method with domain name
  * as first parameter and count as the second parameter.
  *
  * createInstances('Blog', 10)
  *
- * @author Sachidanand Vaishnav
+ * @author causecode
  */
 trait BaseTestSetup {
 
-    private static final Map FLUSH_TRUE = [flush: true]
     static final ROLE = 'ROLE_ADMIN'
     static final USER_CLASS_NAME = 'com.causecode.user.User'
     static final ROLE_CLASS_NAME = 'com.causecode.user.Role'
     static final JOIN_CLASS_NAME = 'com.causecode.user.UserRole'
 
     // Mocked SpringSecurityUtils
+    @ConfineMetaClassChanges([SpringSecurityUtils])
     void mockOutSpringSecurityUtilsConfig() {
         def config = new ConfigObject()
 
         // set spring security core configuration
         config.putAll([
-                authority: [nameField: 'authority', className: ROLE_CLASS_NAME ],
+            authority: [nameField: 'authority', className: ROLE_CLASS_NAME],
                 userLookup: [
-                        userDomainClassName: USER_CLASS_NAME,
-                        authorityJoinClassName: JOIN_CLASS_NAME,
-                        passwordPropertyName: 'password',
-                        usernamePropertyName: 'username',
-                        enabledPropertyName: 'enabled',
-                        authoritiesPropertyName: 'authorities',
-                        accountExpiredPropertyName: 'accountExpired',
-                        accountLockedPropertyName: 'accountLocked',
-                        passwordExpiredPropertyName: 'passwordExpired' ]
+                    userDomainClassName: USER_CLASS_NAME,
+                    authorityJoinClassName: JOIN_CLASS_NAME,
+                    passwordPropertyName: 'password',
+                    usernamePropertyName: 'username',
+                    enabledPropertyName: 'enabled',
+                    authoritiesPropertyName: 'authorities',
+                    accountExpiredPropertyName: 'accountExpired',
+                    accountLockedPropertyName: 'accountLocked',
+                    passwordExpiredPropertyName: 'passwordExpired'
+            ]
         ])
 
-        SpringSecurityUtils.metaClass.static.getSecurityConfig = { config }
+        SpringSecurityUtils.metaClass.static.getSecurityConfig = {
+            config
+        }
+    }
+
+    def setupSpec() {
+        mockOutSpringSecurityUtilsConfig()
     }
 
     // Create Instance
@@ -75,44 +82,49 @@ trait BaseTestSetup {
 
     // Content
     Map getContentParams(int index) {
-        return [
-                title: "Targeting Test $index Types and/or Phases",
-                subTitle: "To execute the JUnit integration test $index",
-                body: 'Grails organises tests by phase and by type. The state of the Grails application.',
-                author: "Author $index",
-                version: index,
-                publish: true,
-                publishedDate: new Date(),
-                contentType: BlogContentType.MARKDOWN
+        Map contentParamsMap = [
+            title: "Targeting Test $index Types and/or Phases",
+            subTitle: "To execute the JUnit integration test $index",
+            body: 'Grails organises tests by phase and by type. The state of the Grails application.',
+            author: "Author $index",
+            publish: true,
+            publishedDate: new Date(),
+            contentType: BlogContentType.MARKDOWN
         ]
+
+        return contentParamsMap
     }
 
     // Blog
     Blog getBlogInstance(int index) {
         Blog blogInstance = new Blog(getContentParams(index))
-        blogInstance.save(FLUSH_TRUE)
+        blogInstance.save()
 
         assert blogInstance.id
+        assert blogInstance.toString() == "Blog ($blogInstance.title)($blogInstance.contentType)"
 
         return blogInstance
     }
 
     // Comment
     Map getCommentDataMap(int index) {
-        return [
-                commentText: "Comment text $index",
-                email: "comment-$index@test.com",
-                name: "Test user-$index",
-                subject: 'Test comment subject',
-                dateCreated: new Date(),
-                lastUpdated: new Date() + 10
+        Map commentDataMap = [
+            commentText: "Comment text $index",
+            email: "comment-$index@test.com",
+            name: "Test user-$index",
+            subject: 'Test comment subject',
+            dateCreated: new Date(),
+            lastUpdated: new Date() + 10
         ]
+
+        return commentDataMap
     }
 
     Comment getCommentInstance(int index) {
         Comment commentInstance = new Comment(getCommentDataMap(index))
-        commentInstance.save(FLUSH_TRUE)
+        commentInstance.save()
         assert commentInstance.id
+        assert commentInstance.toString() == "Comment ($commentInstance.id)($commentInstance.commentText)"
 
         return commentInstance
     }
@@ -120,8 +132,9 @@ trait BaseTestSetup {
     // PageLayout Instance
     PageLayout getPageLayoutInstance(int index) {
         PageLayout pageLayoutInstance = new PageLayout([layoutName: "TestPageLayout-$index"])
-        pageLayoutInstance.save(FLUSH_TRUE)
+        pageLayoutInstance.save()
         assert pageLayoutInstance.id
+        assert pageLayoutInstance.toString() == "PageLayout ($pageLayoutInstance.id)($pageLayoutInstance.layoutName)"
 
         return pageLayoutInstance
     }
@@ -130,7 +143,7 @@ trait BaseTestSetup {
     Page getPageInstance(int index) {
         Page pageInstance = new Page(getContentParams(index))
         pageInstance.pageLayout = getPageLayoutInstance(index)
-        pageInstance.save(FLUSH_TRUE)
+        pageInstance.save()
         assert pageInstance.id
 
         return pageInstance
@@ -139,19 +152,19 @@ trait BaseTestSetup {
     // FAQ Instance
     FAQ getFAQInstance(int index) {
         FAQ faqInstance = new FAQ(getContentParams(index))
-        faqInstance.save(FLUSH_TRUE)
+        faqInstance.save()
         assert faqInstance.id
-
+        assert faqInstance.toString() == "FAQ ($faqInstance.title)"
         return faqInstance
     }
 
     // Content
     Content getContentInstance(int index) {
         Content contentInstance = new Content(getContentParams(index))
-        contentInstance.save(FLUSH_TRUE)
+        contentInstance.save()
 
         assert contentInstance.id
-        assert contentInstance.toString()
+        assert contentInstance.toString() == "$contentInstance.title"
 
         return contentInstance
     }
@@ -160,7 +173,7 @@ trait BaseTestSetup {
     Meta getMetaInstance() {
         Map args = [type: 'keywords', content: '500Hrs,TechStars,YCombinator,MassChallenge']
         Meta metaInstance = new Meta(args)
-        metaInstance.save(FLUSH_TRUE)
+        metaInstance.save()
 
         assert metaInstance.id
 
@@ -171,9 +184,10 @@ trait BaseTestSetup {
     ContentMeta getContentMetaInstance(int index) {
         Map args = [content: getContentInstance(index), meta: metaInstance]
         ContentMeta contentMetaInstance = new ContentMeta(args)
-        contentMetaInstance.save(FLUSH_TRUE)
+        contentMetaInstance.save()
 
         assert contentMetaInstance.id
+        assert contentMetaInstance.toString() == "ContentMeta ($contentMetaInstance.content)($contentMetaInstance.meta)"
 
         return contentMetaInstance
     }

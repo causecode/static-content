@@ -19,5 +19,4 @@ import groovy.transform.ToString
 @ToString
 @EqualsAndHashCode
 class PageRevision extends ContentRevision {
-
 }

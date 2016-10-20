@@ -7,7 +7,7 @@
  */
 package com.causecode.content.meta
 
-import com.causecode.BaseTestSetup
+import com.causecode.content.BaseTestSetup
 import com.causecode.content.Content
 import com.causecode.content.ContentMeta
 import grails.test.mixin.Mock
@@ -28,7 +28,7 @@ class MetaControllerSpec extends Specification implements BaseTestSetup {
         controller.params.id = metaInstance.id
         boolean boolResult = controller.validate()
 
-        then: 'Valid response should be received'
+        then: 'boolResult TRUE should be received'
         boolResult == true
     }
 
@@ -37,26 +37,42 @@ class MetaControllerSpec extends Specification implements BaseTestSetup {
         controller.params.id = 1L
         boolean boolResult = controller.validate()
 
-        then: 'Valid response should be received'
+        then: 'Redirect URL should be /meta/list'
         boolResult == false
         controller.response.redirectedUrl.contains('/meta/list')
 
-        when: 'Validate method is called'
+        when: 'Validate method is called with AJAX request'
         controller.params.id = 1L
         controller.request.makeAjaxRequest()
         boolean boolResult1 = controller.validate()
 
-        then: 'Valid response should be received'
+        then: 'boolResult FALSE should be received'
         boolResult == false
-        controller.response.status == HttpStatus.FOUND.value()
+        response.status == HttpStatus.NOT_FOUND.value()
     }
 
     // deleteMeta action
     void "test deleteMeta action when id is passed as 0"() {
         when: 'deleteMeta action is hit'
-        controller.deleteMeta(0)
+        controller.params.id = 0
+        controller.deleteMeta()
 
-        then: 'Valid response should be received'
+        then: 'HttpStatus NOT_FOUND should be received'
+        controller.response.status == HttpStatus.NOT_FOUND.value()
+    }
+
+    void "test deleteMeta action when id is passed"() {
+        given: 'Meta instance'
+        Meta meta = getMetaInstance()
+
+        when: 'Meta instance is passed'
+        controller.request.method = 'POST'
+        controller.params.id = metaInstance.id
+        controller.validate()
+        controller.deleteMeta()
+
+        then: 'Success TRUE should be received as JSON response'
+        controller.response.json.success == true
         controller.response.status == HttpStatus.OK.value()
     }
 }

@@ -9,14 +9,12 @@ package com.causecode.content
 
 import com.causecode.content.meta.Meta
 import groovy.transform.EqualsAndHashCode
-import groovy.transform.ToString
 
 /**
  * Join class provides meta tags for content.
  * @author Shashank Agrawal
  *
  */
-@ToString
 @EqualsAndHashCode
 class ContentMeta {
 
@@ -35,5 +33,10 @@ class ContentMeta {
         version false
         meta cascade: 'delete'
         table 'cc_content_content_meta'
+    }
+
+    @Override
+    String toString() {
+        return "ContentMeta ($content)($meta)"
     }
 }

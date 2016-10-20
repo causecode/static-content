@@ -7,7 +7,6 @@
  */
 package com.causecode.content
 
-import com.causecode.BaseTestSetup
 import com.causecode.content.meta.Meta
 import com.causecode.seo.friendlyurl.FriendlyUrlService
 import grails.test.mixin.Mock
@@ -26,7 +25,7 @@ class ContentSpec extends Specification implements BaseTestSetup {
         when: 'Method resolveAuthor is called'
         String resultString = contentInstance.resolveAuthor()
 
-        then: 'A valid result should be received'
+        then: 'Result string anonymousUser should be received'
         resultString == 'anonymousUser'
     }
 
@@ -38,7 +37,7 @@ class ContentSpec extends Specification implements BaseTestSetup {
         when: 'Method resolveAuthor is called'
         String resultString = contentInstance.getSanitizedTitle()
 
-        then: 'A valid result should be received'
+        then: 'A valid result string should be received'
         resultString == 'targeting-test-1-types-andor-phases'
     }
 
@@ -50,7 +49,7 @@ class ContentSpec extends Specification implements BaseTestSetup {
         when: 'getMetaTags method is called'
         List<Meta> resultMetaList = contentMetaInstance.content.getMetaTags()
 
-        then: 'A valid result list should be received'
+        then: 'Result list should not be null'
         resultMetaList != null
     }
 }

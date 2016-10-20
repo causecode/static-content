@@ -9,6 +9,7 @@ package com.causecode.content
 
 import com.causecode.annotation.sanitizedTitle.SanitizedTitle
 import com.causecode.content.meta.Meta
+import com.causecode.seo.friendlyurl.FriendlyUrlService
 import groovy.transform.EqualsAndHashCode
 
 /**
@@ -19,11 +20,13 @@ import groovy.transform.EqualsAndHashCode
  * @author Sakshi Gangarde
  */
 @EqualsAndHashCode
-@SuppressWarnings(['GrailsDomainWithServiceReference', 'UnnecessaryTransientModifier'])
+@SuppressWarnings(['GrailsDomainWithServiceReference'])
 class Content {
 
-    transient contentService
-    transient friendlyUrlService
+    static transients = ['contentService', 'friendlyUrlService']
+
+    ContentService contentService
+    FriendlyUrlService friendlyUrlService
 
     Date dateCreated
     Date lastUpdated
@@ -66,7 +69,9 @@ class Content {
     }
 
     List<Meta> getMetaTags() {
-        if (!this.id) { return [] }
+        if (!this.id) {
+            return []
+        }
 
         ContentMeta.findAllByContent(this)*.meta
     }

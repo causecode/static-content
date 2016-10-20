@@ -30,7 +30,6 @@ class PageLayout {
 
     @Override
     String toString() {
-        layoutName
+        return  "PageLayout ($id)($layoutName)"
     }
-
 }

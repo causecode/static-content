@@ -8,6 +8,9 @@
 
 /**
  * This class is used for mapping requests to controllers and views.
+ *
+ * Note: Removing implementation of "/blog/byTag/$tag" closure as its no being used, kindly refer previous version if
+ *       needed.
  */
 class ContentUrlMappings {
 
@@ -25,6 +28,7 @@ class ContentUrlMappings {
                 }
             }
         }
+
         "/c/$id/$sanitizedTitle" {
             controller = 'page'
             action = SHOW
@@ -34,17 +38,8 @@ class ContentUrlMappings {
                 }
             }
         }
+
         "/blog" (controller: BLOG, action: LIST)
         "/blogs" (controller: BLOG, action: LIST)
-
-        /*"/blog/byTag/$tag" {      // Not working
-            controller = 'blog'
-            action = 'list'
-            constraints {
-                tag validator: {  //Used to distinguish other Url like '/blog/edit/1'
-                    !it.isNumber()
-                }
-            }
-        }*/
     }
 }

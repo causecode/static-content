@@ -24,8 +24,4 @@ class RequiredPropertyMissingException extends Exception {
     RequiredPropertyMissingException(String message, Throwable cause) {
         super(message, cause)
     }
-
-    RequiredPropertyMissingException(Throwable cause) {
-        super(cause)
-    }
 }

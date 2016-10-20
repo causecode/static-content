@@ -35,7 +35,6 @@ project.publishing {
 
             groupId "com.causecode.plugins"
             artifactId "content"
-            version "2.5.5"
 
             pom.withXml {
                 def pomNode = asNode()
@@ -120,7 +119,7 @@ dependencies {
     testCompile "org.grails.plugins:geb"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
-    testCompile "com.causecode.plugins:nucleus:0.3.7"
+    testCompile "com.causecode.plugins:nucleus:0.3.9"
 
     compile "com.causecode.plugins:file-uploader:2.4.8"
     compile "com.causecode.plugins:taggable:1.4.1"
@@ -176,16 +175,16 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories = files(classDirectories.files.collect {
             fileTree(dir: it,
-                    exclude: ['**/*FriendlyUrlService.*/**',
-                              '**/*Scraper.*/**',
-                              '**/*Application.*/**',
-                              '**/*Scraper.*/**',
-                              '**/*BlogTagLib.*/**',
-                              '**/*ContentTagLib.*/**',
-                              '**/*PageTagLib.*/**',
-                              '**/*ContentBootStrap.*/**',
-                              '**/*ContentGrailsPlugin.*/**',
-                              '**/*ContentUrlMappings.*/**',
+                    exclude: ['**/FriendlyUrlService*/**',
+                              '**/Scraper*/**',
+                              '**/Application*/**',
+                              '**/Scraper*/**',
+                              '**/BlogTagLib*/**',
+                              '**/ContentTagLib*/**',
+                              '**/PageTagLib*/**',
+                              '**/ContentBootStrap*/**',
+                              '**/ContentGrailsPlugin*/**',
+                              '**/ContentUrlMappings*/**',
                               'com/causecode/marshaller/**',
                               'com/causecode/content/navigation/**',
                               'com/causecode/content/news/**',
@@ -196,5 +195,3 @@ jacocoTestReport {
     executionData test//, integrationTest
     jacocoTestReport.dependsOn test//, integrationTest
 }
-
-

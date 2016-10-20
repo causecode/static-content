@@ -8,7 +8,6 @@
 package com.causecode.content.blog.comment
 
 import groovy.transform.EqualsAndHashCode
-import groovy.transform.ToString
 
 /**
  * Used for storing comment contains reference for nested comment.
@@ -16,12 +15,13 @@ import groovy.transform.ToString
  * @author Laxmi Salunkhe
  *
  */
-@ToString
 @EqualsAndHashCode
-@SuppressWarnings(['GrailsDomainWithServiceReference', 'UnnecessaryTransientModifier'])
+@SuppressWarnings(['GrailsDomainWithServiceReference'])
 class Comment {
 
-    transient commentService
+    static transients = ['commentService']
+
+    CommentService commentService
 
     String commentText
     String email
@@ -49,5 +49,10 @@ class Comment {
         Comment.withNewSession {
             commentService.deleteNestedComment(this, false)
         }
+    }
+
+    @Override
+    String toString() {
+        return "Comment ($id)($commentText)"
     }
 }

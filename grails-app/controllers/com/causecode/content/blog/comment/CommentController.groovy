@@ -7,6 +7,7 @@
  */
 package com.causecode.content.blog.comment
 
+import com.causecode.springsecurity.Annotations
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
 import com.causecode.content.blog.Blog
@@ -17,7 +18,7 @@ import com.causecode.content.blog.Blog
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
  */
-@Secured(['ROLE_CONTENT_MANAGER'])
+@Secured([Annotations.ROLE_CONTENT_MANAGER])
 @Transactional(readOnly = true)
 class CommentController {
 
@@ -48,8 +49,10 @@ class CommentController {
                 render TRUE
                 return
             }
-            flash.message = 'Comments deleted successfully.'
+
             redirect uri: blogInstance.searchLink()
+
+            return
         }
     }
 }

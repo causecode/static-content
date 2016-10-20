@@ -7,7 +7,7 @@
  */
 package com.causecode.content.blog.comment
 
-import com.causecode.BaseTestSetup
+import com.causecode.content.BaseTestSetup
 import com.causecode.content.ContentService
 import com.causecode.content.blog.Blog
 import com.causecode.seo.friendlyurl.FriendlyUrlService
@@ -29,14 +29,16 @@ class CommentControllerSpec extends Specification implements BaseTestSetup {
         Blog blogInstance = getBlogInstance(1)
         Comment commentInstance = getCommentInstance(1)
         commentInstance.replyTo = getCommentInstance(2)
-        commentInstance.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
+        commentInstance.save()
 
         assert commentInstance.id
 
         when: 'Delete action is called'
         Comment.count() == 2
         request.makeAjaxRequest()
-        controller.delete(commentInstance.id, blogInstance.id)
+        controller.params.id = commentInstance.id
+        controller.params.blogId = blogInstance.id
+        controller.delete()
 
         then: 'Comment should be deleted'
         Comment.count() == 1
@@ -48,16 +50,19 @@ class CommentControllerSpec extends Specification implements BaseTestSetup {
         Comment commentInstance = getCommentInstance(1)
         Blog blogInstance = getBlogInstance(1)
         BlogComment blogCommentInstance = new BlogComment([blog: blogInstance, comment: commentInstance])
-        blogCommentInstance.save(com_causecode_BaseTestSetup__FLUSH_TRUE)
+        blogCommentInstance.save()
 
         assert blogCommentInstance.id
+        assert blogCommentInstance.toString() == "BlogComment ($blogCommentInstance.id)($blogCommentInstance.blog.title)"
 
         and: 'Mocking blogInstance'
         blogInstance.contentService = Mock(ContentService)
         1 * blogInstance.contentService.createLink(_) >> '/blog?id=1'
 
         when: 'Delete action is called'
-        controller.delete(commentInstance.id, blogInstance.id)
+        controller.params.id = commentInstance.id
+        controller.params.blogId = blogInstance.id
+        controller.delete()
 
         then: 'Comment should be deleted'
         Comment.count() == 0

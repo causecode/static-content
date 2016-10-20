@@ -10,16 +10,20 @@ package content
 import com.causecode.content.ContentService
 import grails.core.GrailsApplication
 import grails.plugins.Plugin
+import groovy.util.logging.Log4j
+import groovy.util.logging.Slf4j
 
 import java.lang.annotation.Annotation
 
 /**
  * This is content grails plugin.
+ *
+ * Note: Removing the methods without implementation - doWithSpring, doWithApplicationContext, onChange, onConfigChange,
+ *       onShutdown and variable license for reference kindly refer previous version.
  */
+@Slf4j
 class ContentGrailsPlugin extends Plugin {
 
-    def version = '2.5.3'
-    def groupId = 'com.cc.plugins'
     def grailsVersion = '3.1.4 > *'
     def pluginExcludes = [
         'grails-app/views/error.gsp',
@@ -36,30 +40,20 @@ class ContentGrailsPlugin extends Plugin {
     def author = 'CauseCode'
     def authorEmail = ''
     def description = '''A plugin used to manage contents like static pages, menus etc. at one place.
-                         Also provides shortened and user friendly urls.'''
+            Also provides shortened and user friendly urls.'''
     def profiles = ['web']
     def documentation = 'http://grails.org/plugin/content'
-
-    // def license = 'APACHE'
-
-    def organization = [ name: 'Causecode Technologies Pvt. Ltd.', url: 'http://causecode.com' ]
-    def developers = [ [ name: 'Shashank Agrawal', email: 'shashank.agrawal@causecode.com' ]]
-    def issueManagement = [ system: 'BITBUCKET', url: 'https://bitbucket.org/causecode/static-content/issues' ]
-    def scm = [ url: 'https://bitbucket.org/causecode/static-content' ]
+    def organization = [name: 'Causecode Technologies Pvt. Ltd.', url: 'http://causecode.com']
+    def developers = [[name: 'Shashank Agrawal', email: 'shashank.agrawal@causecode.com']]
+    def issueManagement = [system: 'BITBUCKET', url: 'https://bitbucket.org/causecode/static-content/issues']
+    def scm = [url: 'https://bitbucket.org/causecode/static-content']
     def watchedResources = 'file:./grails-app/services/*ContentService.groovy'
 
     GrailsApplication grailsApplication
 
-    /*Closure doWithSpring() { {->
-            // TODO Implement runtime spring config (optional)
-        }
-    }*/
-
     @Override
-    @SuppressWarnings('Println')
     void doWithDynamicMethods() {
-        println '\nConfiguring content plugin ...'
-        println '... finished configuring content plugin\n'
+        log.info '\nConfiguring content plugin ...'
 
         MetaClass metaClassInstance = grailsApplication.getArtefact('Service', ContentService.name).metaClass
 
@@ -84,27 +78,9 @@ class ContentGrailsPlugin extends Plugin {
                 grailsApplication
                         .getDomainClass(SpringSecurityUtils.securityConfig.userLookup.userDomainClassName).clazz
             }
-            println "\nShorthand annotated controller map: $shorthandAnnotatedControllerMap"
+
+            log.debug "\nShorthand annotated controller map: ${shorthandAnnotatedControllerMap}"
+            log.info '... finished configuring content plugin\n'
         }
     }
-
-    /*void doWithApplicationContext() {
-        // TODO Implement post initialization spring config (optional)
-    }
-
-    void onChange(Map<String, Object> event) {
-        // TODO Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
-
-    }
-
-    void onConfigChange(Map<String, Object> event) {
-        // TODO Implement code that is executed when the project configuration changes.
-        // The event is the same as for 'onChange'.
-    }
-
-    void onShutdown(Map<String, Object> event) {
-        // TODO Implement code that is executed when the application shuts down (optional)
-    }*/
 }

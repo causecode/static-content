@@ -7,7 +7,7 @@
  */
 package com.causecode.content
 
-import com.causecode.BaseTestSetup
+import grails.converters.JSON
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import org.springframework.http.HttpStatus
@@ -20,14 +20,14 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
 
     // Index action
     void "test index action for valid JSON response"() {
-        given: 'Some PageLayout Instance'
+        given: 'PageLayout Instances'
         createInstances("PageLayout", 5)
+        assert PageLayout.count() == 5
 
         when: 'Index action is hit'
         controller.index()
 
-        then: 'A valid JSON response should be received'
-        PageLayout.count() == 5
+        then: 'HttpStatus FOUND should be received'
         response.status == HttpStatus.FOUND.value()
         response.redirectedUrl == '/pageLayout/list'
     }
@@ -36,15 +36,16 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     void "test getPageLayoutList action to get metaList"() {
         given: 'Some PageLayout Instance'
         createInstances("PageLayout", 5)
+        assert PageLayout.count() == 5
 
         when: 'getPageLayoutList action is hit'
         controller.getPageLayoutList()
 
         then: 'A valid JSON response should be received'
-        PageLayout.count() == 5
+        controller.response.json.pageLayoutList[0].id == 1
+        controller.response.json.pageLayoutList[0].layoutName == 'TestPageLayout-1'
         response.status == HttpStatus.OK.value()
     }
-
 
     // Create action
     void "test create action when parameters are passed"() {
@@ -52,10 +53,12 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
         Map params = [layoutName: 'TestPageLayout']
 
         when: 'Create action is called'
-        controller.request.parameters = params
+        controller.request.method = 'POST'
+        controller.request.json = (params as JSON).toString()
         controller.create()
 
-        then: 'Valid HttpStatus should be received'
+        then: 'Valid HttpStatus OK should be received with valid JSON response'
+        controller.response.json.pageLayoutInstance.layoutName == 'TestPageLayout'
         controller.response.status == HttpStatus.OK.value()
     }
 
@@ -63,12 +66,15 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     void "test list action when parameters are passed"() {
         given: 'Some PageLayout Instance'
         createInstances("PageLayout", 5)
+        assert PageLayout.count() == 5
 
         when: 'List action is hit'
-        controller.list(5)
+        controller.params.max = 5
+        controller.list()
 
-        then: 'A valid response should be received with HttpStatus OK'
-        PageLayout.count() == 5
+        then: 'HttpStatus OK should be received with valid JSON response'
+        controller.response.json.instanceList[0].id == 1
+        controller.response.json.instanceList[0].layoutName == 'TestPageLayout-1'
         response.contentType == 'application/json;charset=UTF-8'
         response.status == HttpStatus.OK.value()
     }
@@ -84,7 +90,7 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
         controller.request.json = params
         controller.save()
 
-        then: 'A valid HttpStatus OK should be received'
+        then: 'Criteria check should be satisfied'
         response.status == responseResult
 
         where:
@@ -102,7 +108,7 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
         controller.request.json = params
         controller.save()
 
-        then: 'A valid HttpStatus OK should be received'
+        then: 'HttpStatus NOT MODIFIED should be received'
         response.status == HttpStatus.NOT_MODIFIED.value()
     }
 
@@ -112,9 +118,12 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
         PageLayout pageLayoutInstance = getPageLayoutInstance(1)
 
         when: 'Show action is hit'
-        controller.show(pageLayoutInstance)
+        controller.params.id = pageLayoutInstance.id
+        controller.show()
 
         then: 'Valid JSON response should be received'
+        controller.response.json.pageLayoutInstance.id == 1
+        controller.response.json.pageLayoutInstance.layoutName == 'TestPageLayout-1'
         response.status == HttpStatus.OK.value()
     }
 
@@ -122,12 +131,15 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     void "test edit action when pageLayoutInstance is passed"() {
         given: 'PageLayout instance'
         PageLayout validPageLayoutInstance = getPageLayoutInstance(1)
-        PageLayout invalidPageLayoutInstance = null
 
         when: 'Edit action is hit'
-        controller.edit(validPageLayoutInstance)
+        controller.request.method = 'POST'
+        controller.params.id = validPageLayoutInstance.id
+        controller.edit()
 
         then: 'Valid JSON response should be received'
+        controller.response.json.pageLayoutInstance.id == 1
+        controller.response.json.pageLayoutInstance.layoutName == 'TestPageLayout-1'
         response.status == HttpStatus.OK.value()
     }
 
@@ -137,9 +149,11 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
         PageLayout invalidPageLayoutInstance = null
 
         when: 'Edit action is hit'
-        controller.edit(invalidPageLayoutInstance)
+        controller.request.method = 'POST'
+        controller.params.id = 1L
+        controller.edit()
 
-        then: 'Valid JSON response should be received'
+        then: 'Response redirect URL /list should be received'
         controller.response.redirectedUrl.contains('/list')
         response.status == HttpStatus.MOVED_TEMPORARILY.value()
     }
@@ -153,9 +167,12 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
         when: 'Update action is hit'
         controller.request.method = 'PUT'
         controller.request.json = params
-        controller.update(pageLayoutInstance, 1L)
+        controller.params.id = pageLayoutInstance.id
+        controller.update()
 
-        then: 'Valid HttpStatus should be received'
+        then: 'HttpStatus OK should be received'
+        pageLayoutInstance.layoutName == 'TestPageLayout'
+        controller.response.json.status.name == 'OK'
         controller.response.status == HttpStatus.OK.value()
     }
 
@@ -168,49 +185,29 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
         when: 'Update action is hit'
         controller.request.method = 'PUT'
         controller.request.json = params
-        controller.update(pageLayoutInstance, 1L)
+        controller.params.id = 1L
+        controller.update()
 
-        then: 'Valid HttpStatus should be received'
+        then: 'HttpStatus NOT_ACCEPTABLE should be received'
         controller.response.redirectedUrl.contains('/list')
         response.status == HttpStatus.MOVED_TEMPORARILY.value()
-    }
-
-    void "test update action when pageLayoutInstance is passed, which is updated by another user"() {
-        given: 'PageLayout and Map parameters instance'
-        PageLayout pageLayoutInstance = getPageLayoutInstance(1)
-        PageLayout invalidPageLayoutInstance1 = new PageLayout()
-        pageLayoutInstance.version = 2L
-        Map params = [layoutName: 'TestPageLayout']
-        Map invalidParams1 = [name: 'abs']
-
-        when: 'Update action is hit'
-        controller.request.method = 'PUT'
-        controller.request.json = params
-        controller.update(pageLayoutInstance, 1L)
-
-        then: 'Valid HttpStatus should be received'
-        response.status == HttpStatus.NOT_MODIFIED.value()
-
-        when: 'Update action is hit '
-        controller.request.method = 'PUT'
-        controller.request.json = invalidParams1
-        controller.update(invalidPageLayoutInstance1, 1L)
-
-        then: 'Valid HttpStatus should be received'
-        response.status == HttpStatus.NOT_MODIFIED.value()
     }
 
     // Delete action
     void "test delete action when pageLayoutInstance"() {
         given: 'PageLayout and Map parameters instance'
         PageLayout pageLayoutInstance = getPageLayoutInstance(1)
+        assert PageLayout.count() == 1
         Map params = [layoutName: 'TestPageLayout']
 
         when: 'Delete action is hit'
         controller.request.method = 'DELETE'
-        controller.delete(pageLayoutInstance)
+        controller.params.id = pageLayoutInstance.id
+        controller.delete()
 
-        then: 'Valid HttpStatus should be received'
+        then: 'HttpStatus OK should be received'
+        PageLayout.count() == 0
+        controller.response.json.status.name == 'OK'
         controller.response.status == HttpStatus.OK.value()
     }
 }

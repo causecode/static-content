@@ -11,6 +11,7 @@ import com.causecode.content.ContentService
 import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.blog.comment.CommentService
 import com.causecode.content.meta.Meta
+import com.causecode.utility.UtilParameters
 import grails.plugins.taggable.TagLink
 
 import java.text.DateFormatSymbols
@@ -35,7 +36,7 @@ class BlogService {
     List getAllTags() {
         List tagList = []
         Blog.allTags.each { tagName ->
-            def tagListInstance = TagLink.withCriteria(uniqueResult: true) {
+            def tagListInstance = TagLink.withCriteria(UtilParameters.UNIQUE_TRUE) {
                 createAlias('tag', 'tagInstance')
                 projections {
                     countDistinct 'id'
@@ -44,10 +45,11 @@ class BlogService {
                 eq('type', 'blog')
                 eq(TAG_INSTANCE_NAME, tagName)
 
-                maxResults(20)
+                maxResults(1)
             }
             tagList.add(tagListInstance)
         }
+
         return tagList
     }
 
@@ -59,6 +61,7 @@ class BlogService {
         } catch (IllegalArgumentException e) {
             log.info("Invalid value $value for BlogContentType")
         }
+
         return blogContentType
     }
 
@@ -75,11 +78,11 @@ class BlogService {
         List<Meta> metaInstanceList = blogInstance.metaTags
 
         return [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
-                blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
+            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
     }
 
-    StringBuilder queryModifierBasedOnFilter(StringBuilder query, String tag, Map monthYearFilters,
-                                             String queryFilter, String monthFilter) {
+    StringBuilder queryModifierBasedOnFilter(StringBuilder query, String tag, Map monthYearFilters, String queryFilter,
+            String monthFilter) {
         StringBuilder updatedQuery = query
         if (tag) {
             updatedQuery.append(", ${TagLink.name} tagLink WHERE b.id = tagLink.tagRef ")
@@ -108,6 +111,8 @@ class BlogService {
             }
             eq('publish', true)
             isNotNull(PUBLISHED_DATE)
+
+            maxResults(20)
         }
         publishDateList.each { publishedDate ->
             updateMonthFilterList.add(new DateFormatSymbols().months[publishedDate[Calendar.MONTH]] + '-' +

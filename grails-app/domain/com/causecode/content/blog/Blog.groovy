@@ -19,11 +19,12 @@ import groovy.transform.EqualsAndHashCode
  * @author Laxmi Salunkhe
  */
 @EqualsAndHashCode
-@SuppressWarnings('UnnecessaryTransientModifier')
 class Blog extends Content implements Taggable {
 
-    transient numberOfComments
-    transient blogImgSrc
+    static transients = ['numberOfComments', 'blogImgSrc']
+
+    int numberOfComments
+    String blogImgSrc
 
     UFile blogImg
     BlogContentType contentType

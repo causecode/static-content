@@ -13,10 +13,14 @@ import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.meta.Meta
 import com.causecode.content.page.Page
 import com.causecode.seo.friendlyurl.FriendlyUrlService
+import com.causecode.utility.UtilParameters
+import grails.core.GrailsApplication
 import grails.databinding.SimpleMapDataBindingSource
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.util.Environment
+import grails.web.databinding.GrailsWebDataBinder
+import grails.web.mapping.LinkGenerator
 import org.springframework.transaction.annotation.Transactional
 
 import java.lang.reflect.Field
@@ -27,6 +31,7 @@ import java.lang.reflect.Field
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
  */
+@SuppressWarnings(['GrailsStatelessService'])
 class ContentService {
 
     static transactional = false
@@ -39,20 +44,18 @@ class ContentService {
 
     private static final int RESULT_COUNT = 1000
 
-    private static final Map UNIQUE_TRUE = [uniqueResult: true]
-
     /**
      * Dependency Injection for the grailsLinkGenerator
      */
-    def grailsLinkGenerator
+    LinkGenerator grailsLinkGenerator
 
     /**
      * Dependency injection for the services
      */
     FriendlyUrlService friendlyUrlService
     SpringSecurityService springSecurityService
-    def grailsApplication
-    def grailsWebDataBinder
+    GrailsApplication grailsApplication
+    GrailsWebDataBinder grailsWebDataBinder
 
     /**
      * Used to get author of content instance with the help of author property passed.
@@ -91,20 +94,19 @@ class ContentService {
      * @param id Identity of Content domain instance.
      */
     boolean isVisible(def id) {
-        if (contentManager) { return true }
+        if (contentManager) {
+            return true
+        }
 
         List restrictedDomainClassList = [Page.name, Blog.name]
-        Content contentInstance = Content.withCriteria(UNIQUE_TRUE) {
+        Content contentInstance = Content.withCriteria(UtilParameters.UNIQUE_TRUE) {
             idEq(id.toLong())
             'in'('class', restrictedDomainClassList)
 
-            maxResults(RESULT_COUNT)
+            maxResults(1)
         }
 
-        boolean result = false
-        if (contentInstance?.publish) { result = true }
-
-        return result
+        return contentInstance ? (contentInstance.publish ? true : false) : true
     }
 
     /**
@@ -156,7 +158,7 @@ class ContentService {
             log.warn "Error saving ${contentInstance.class.name}: " + contentInstance.errors
             return contentInstance
         }
-        contentInstance.save()
+        contentInstance.save(UtilParameters.FLUSH_TRUE)
         if (!metaTypes || !metaValues) {
             return contentInstance
         }
@@ -173,7 +175,7 @@ class ContentService {
         contentMetas.meta*.delete()
 
         metaTypes.eachWithIndex { type, index ->
-            Meta metaInstance = ContentMeta.withCriteria(UNIQUE_TRUE) {
+            Meta metaInstance = ContentMeta.withCriteria(UtilParameters.UNIQUE_TRUE) {
                 createAlias(CONTENT, CONTENT_INSTANCE)
                 createAlias(META, 'metaInstance')
                 projections {
@@ -182,16 +184,18 @@ class ContentService {
                 eq(CONTENT_INSTANCE_ID, contentInstance.id)
                 eq('metaInstance.type', type)
 
-                maxResults(100)
+                maxResults(1)
             }
+
             metaInstance = metaInstance ?: new Meta([type: type])
             metaInstance.content = metaValues[index]
             metaInstance.validate()
             if (!metaInstance.hasErrors()) {
-                metaInstance.save()
+                metaInstance.save(UtilParameters.FLUSH_TRUE)
                 ContentMeta.findOrSaveByContentAndMeta(contentInstance, metaInstance)
             }
         }
+
         return contentInstance
     }
 
@@ -209,7 +213,8 @@ class ContentService {
             contentInstance.setTags([])
             BlogComment.findAllByBlog(contentInstance)*.delete()
         }
-        contentInstance.delete()
+
+        return contentInstance.delete()
     }
 
     /**
@@ -222,16 +227,17 @@ class ContentService {
     @Transactional
     ContentRevision createRevision(Content contentInstance, Class clazz, Map params) {
         Map contentRevisionDataMap = [
-                title: contentInstance.title,
-                body: contentInstance.body,
-                subTitle: contentInstance.subTitle,
-                revisionOf: contentInstance,
-                comment: params.revisionComment ?: ''
+            title: contentInstance.title,
+            body: contentInstance.body,
+            subTitle: contentInstance.subTitle,
+            revisionOf: contentInstance,
+            comment: params.revisionComment ?: ''
         ]
 
         ContentRevision contentRevisionInstance = clazz.newInstance(contentRevisionDataMap)
         contentRevisionInstance.save(flush: true)
-        contentRevisionInstance
+
+        return contentRevisionInstance
     }
 
     /**
