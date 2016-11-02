@@ -1,1 +1,4 @@
 rootProject.name = 'content'
+
+/*include 'nucleus'
+project(':nucleus').projectDir = new File('/media/causecode/Others/repos/nucleus')*/

@@ -8,8 +8,8 @@
 package com.causecode.content.page
 
 import com.causecode.content.ContentService
-import com.causecode.springsecurity.Annotations
-import com.causecode.utility.UtilParameters
+import com.causecode.user.Role
+import com.causecode.util.ResponseUtils
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
@@ -30,14 +30,12 @@ import grails.core.GrailsApplication
  * @author Laxmi Salunkhe
  *
  */
-@Secured([Annotations.ROLE_CONTENT_MANAGER])
+@Secured([Role.ROLE_CONTENT_MANAGER])
 @ControllerShorthand(value = 'c')
 class PageController {
 
     static allowedMethods = [show: 'GET', save: 'POST', update: 'PUT', delete: 'DELETE']
     static responseFormats = ['json']
-
-    //private static final Map PAGE_NOT_FOUND = 'page.not.found'
 
     ContentService contentService
     GrailsApplication grailsApplication
@@ -105,7 +103,7 @@ class PageController {
      * the Page instance.
      */
     @Transactional(readOnly = true)
-    @Secured([Annotations.PERMIT_ALL])
+    @Secured([Role.PERMIT_ALL])
     def show(Page pageInstance) {
         if (!pageInstance || pageInstance.hasErrors()) {
             throw new RequiredPropertyMissingException()
@@ -186,9 +184,9 @@ class PageController {
         }
         try {
             contentService.delete(pageInstance)
-            respond (UtilParameters.SUCCESS_TRUE)
+            respond (ResponseUtils.SUCCESS_TRUE)
         } catch (DataIntegrityViolationException e) {
-            respond (UtilParameters.SUCCESS_TRUE)
+            respond (ResponseUtils.SUCCESS_TRUE)
         }
 
         return

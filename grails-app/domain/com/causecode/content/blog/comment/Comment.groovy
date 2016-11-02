@@ -8,6 +8,7 @@
 package com.causecode.content.blog.comment
 
 import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * Used for storing comment contains reference for nested comment.
@@ -15,6 +16,7 @@ import groovy.transform.EqualsAndHashCode
  * @author Laxmi Salunkhe
  *
  */
+@ToString
 @EqualsAndHashCode
 @SuppressWarnings(['GrailsDomainWithServiceReference'])
 class Comment {

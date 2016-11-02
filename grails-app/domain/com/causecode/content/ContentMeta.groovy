@@ -9,12 +9,14 @@ package com.causecode.content
 
 import com.causecode.content.meta.Meta
 import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * Join class provides meta tags for content.
  * @author Shashank Agrawal
  *
  */
+@ToString
 @EqualsAndHashCode
 class ContentMeta {
 

@@ -7,8 +7,9 @@
  */
 package com.causecode.content.meta
 
-import com.causecode.springsecurity.Annotations
-import com.causecode.utility.UtilParameters
+import com.causecode.user.Role
+import com.causecode.util.DomainUtils
+import com.causecode.util.ResponseUtils
 import grails.plugin.springsecurity.annotation.Secured
 import org.springframework.dao.DataIntegrityViolationException
 import com.causecode.content.ContentMeta
@@ -20,7 +21,7 @@ import org.springframework.http.HttpStatus
  * @author Shashank Agrawal
  *
  */
-@Secured([Annotations.ROLE_CONTENT_MANAGER])
+@Secured([Role.ROLE_CONTENT_MANAGER])
 class MetaController {
 
     def beforeInterceptor = [action: this.&validate]
@@ -60,9 +61,9 @@ class MetaController {
         }
 
         try {
-            ContentMeta.findAllByMeta(metaInstance)*.delete(UtilParameters.FLUSH_TRUE)
-            metaInstance.delete(UtilParameters.FLUSH_TRUE)
-            respond(UtilParameters.SUCCESS_TRUE)
+            ContentMeta.findAllByMeta(metaInstance)*.delete(DomainUtils.FLUSH_TRUE)
+            metaInstance.delete(DomainUtils.FLUSH_TRUE)
+            respond(ResponseUtils.SUCCESS_TRUE)
         } catch (DataIntegrityViolationException e) {
             response.status = 500
             render status: HttpStatus.UNPROCESSABLE_ENTITY

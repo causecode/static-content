@@ -8,11 +8,13 @@
 package com.causecode.content.meta
 
 import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * Used for storing meta tags for contents.
  * @author Shashank Agrawal
  */
+@ToString
 @EqualsAndHashCode
 class Meta {
 

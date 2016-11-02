@@ -8,6 +8,7 @@
 package com.causecode.content.navigation
 
 import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * Used for rendering menu bar with menu items.
@@ -17,6 +18,7 @@ import groovy.transform.EqualsAndHashCode
  * @author Bharti Nagdev
  *
  */
+@ToString
 @EqualsAndHashCode
 class Menu {
 

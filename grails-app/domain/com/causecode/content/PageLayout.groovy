@@ -8,6 +8,7 @@
 package com.causecode.content
 
 import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * Generic domain stores page layout ,used for pages.
@@ -16,6 +17,7 @@ import groovy.transform.EqualsAndHashCode
  * @author Bharti Nagdev
  *
  */
+@ToString
 @EqualsAndHashCode
 class PageLayout {
 

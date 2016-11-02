@@ -8,6 +8,7 @@
 package com.causecode.content.navigation
 
 import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * Used to render menu items within menu , also support nested menu items.
@@ -16,6 +17,7 @@ import groovy.transform.EqualsAndHashCode
  * @author Laxmi Salunkhe
  * @author Bharti Nagdev
  */
+@ToString
 @EqualsAndHashCode
 class MenuItem {
 

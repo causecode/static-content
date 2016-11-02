@@ -12,8 +12,9 @@ import com.causecode.content.ContentService
 import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.blog.comment.Comment
 import com.causecode.content.meta.Meta
-import com.causecode.springsecurity.Annotations
-import com.causecode.utility.UtilParameters
+import com.causecode.user.Role
+import com.causecode.util.DomainUtils
+import com.causecode.util.ResponseUtils
 import com.lucastex.grails.fileuploader.FileUploaderService
 import com.lucastex.grails.fileuploader.FileUploaderServiceException
 import com.lucastex.grails.fileuploader.UFile
@@ -37,7 +38,7 @@ import java.util.regex.Pattern
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
  */
-@Secured([Annotations.ROLE_CONTENT_MANAGER])
+@Secured([Role.ROLE_CONTENT_MANAGER])
 @Transactional(readOnly = true)
 @ControllerShorthand(value = 'blog')
 class BlogController {
@@ -88,8 +89,8 @@ class BlogController {
      * @param tag String Used to filter Blogs with tag.
      * @return Map containing blog list and total count.
      */
-    @SuppressWarnings(['ElseBlockBraces', 'AbcMetric'])
-    @Secured([Annotations.PERMIT_ALL])
+    @SuppressWarnings(['ElseBlockBraces'])
+    @Secured([Role.PERMIT_ALL])
     def index(Integer max, Integer offset, String tag, String monthFilter, String queryFilter) {
         // To avoid Parameter Reassignment
         def (updateTag, updateMonthFilter, updateQueryFilter) = [tag, monthFilter, queryFilter]
@@ -102,13 +103,9 @@ class BlogController {
         long blogInstanceTotal
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
         List<String> monthFilterList = []
-        Map monthYearFilterMapInstance =  [month: BLANK, year: BLANK]
 
-        if (updateMonthFilter) {
-            List blogFilter = updateMonthFilter.split('-')
-            monthYearFilterMapInstance.month = blogFilter[0]
-            monthYearFilterMapInstance.year = blogFilter[1]
-        }
+        Map monthYearFilterMapInstance = updateMonthFilter ? getMonthYearFilterMapInstance(updateMonthFilter) :
+                [month: BLANK, year: BLANK]
 
         params.offset =  offset ?: 0
         params.max = Math.min(max ?: defaultMax, 100)
@@ -161,6 +158,15 @@ class BlogController {
         return renderGSPContentAndBlogCustomURLRedirect(result, LIST)
     }
 
+    Map getMonthYearFilterMapInstance(String updateMonthFilter) {
+        Map monthYearFilterMapInstance = [month: BLANK, year: BLANK]
+        List blogFilter = updateMonthFilter.split('-')
+        monthYearFilterMapInstance.month = blogFilter[0]
+        monthYearFilterMapInstance.year = blogFilter[1]
+
+        return monthYearFilterMapInstance
+    }
+
     def create(Blog blogInstance) {
         respond([blogInstance: blogInstance])
 
@@ -197,8 +203,8 @@ class BlogController {
                     return false
                 }
                 blogInstance.setTags(requestData.tags?.tokenize(COMMA)*.trim())
-                blogInstance.save(UtilParameters.FLUSH_TRUE)
-                respond(UtilParameters.SUCCESS_TRUE)
+                blogInstance.save(DomainUtils.FLUSH_TRUE)
+                respond(ResponseUtils.SUCCESS_TRUE)
             } catch (FileUploaderServiceException e) {
                 log.debug UNABLE_TO_UPLOAD, e
                 blogInstance.errors.reject("Image couldn't be uploaded " + e.message)
@@ -211,7 +217,7 @@ class BlogController {
         return true
     }
 
-    @Secured([Annotations.PERMIT_ALL])
+    @Secured([Role.PERMIT_ALL])
     def show() {
         Blog blogInstance = Blog.get(params.id)
 
@@ -277,7 +283,7 @@ class BlogController {
     /**
      * Update blog instance also sets tags for blog instance.
      */
-    @Secured([Annotations.ROLE_CONTENT_MANAGER, Annotations.ROLE_EMPLOYEE])
+    @Secured([Role.ROLE_CONTENT_MANAGER, Role.ROLE_EMPLOYEE])
     @SuppressWarnings('JavaIoPackageAccess')
     @Transactional
     def update() {
@@ -310,9 +316,9 @@ class BlogController {
                     return false
                 }
 
-                blogInstance.save(UtilParameters.FLUSH_TRUE)
+                blogInstance.save(DomainUtils.FLUSH_TRUE)
 
-                respond(UtilParameters.SUCCESS_TRUE)
+                respond(ResponseUtils.SUCCESS_TRUE)
             } catch (FileUploaderServiceException e) {
                 log.debug UNABLE_TO_UPLOAD, e
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
@@ -343,7 +349,7 @@ class BlogController {
      * as reply to given comment instance otherwise comment will be added as reference to blog instance instance.
      */
     @Transactional
-    @Secured([Annotations.PERMIT_ALL])
+    @Secured([Role.PERMIT_ALL])
     def comment(Blog blogInstance, Long commentId) {
         Long updateCommentId = commentId
         String errorMessage
@@ -388,16 +394,16 @@ class BlogController {
 
             if (updateCommentId) {
                 commentInstance.replyTo = Comment.get(updateCommentId)
-                commentInstance.save(UtilParameters.FLUSH_TRUE)
+                commentInstance.save(DomainUtils.FLUSH_TRUE)
             } else {
                 BlogComment blogCommentInstance = new BlogComment()
                 blogCommentInstance.blog = blogInstance
                 blogCommentInstance.comment = commentInstance
-                blogCommentInstance.save(UtilParameters.FLUSH_TRUE)
+                blogCommentInstance.save(DomainUtils.FLUSH_TRUE)
             }
             log.info 'Comment Added successfully.'
             if (request.xhr) {
-                render text: (UtilParameters.SUCCESS_TRUE as JSON)
+                render text: (ResponseUtils.SUCCESS_TRUE as JSON)
                 return
             }
             redirect uri: blogInstance.searchLink()

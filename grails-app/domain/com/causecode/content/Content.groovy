@@ -11,6 +11,7 @@ import com.causecode.annotation.sanitizedTitle.SanitizedTitle
 import com.causecode.content.meta.Meta
 import com.causecode.seo.friendlyurl.FriendlyUrlService
 import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * A generic domain used to store generic fields for storing any content.
@@ -19,6 +20,7 @@ import groovy.transform.EqualsAndHashCode
  * @author Bharti Nagdev
  * @author Sakshi Gangarde
  */
+@ToString
 @EqualsAndHashCode
 @SuppressWarnings(['GrailsDomainWithServiceReference'])
 class Content {

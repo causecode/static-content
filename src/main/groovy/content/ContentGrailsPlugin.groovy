@@ -10,7 +10,6 @@ package content
 import com.causecode.content.ContentService
 import grails.core.GrailsApplication
 import grails.plugins.Plugin
-import groovy.util.logging.Log4j
 import groovy.util.logging.Slf4j
 
 import java.lang.annotation.Annotation

@@ -13,7 +13,7 @@ import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.meta.Meta
 import com.causecode.content.page.Page
 import com.causecode.seo.friendlyurl.FriendlyUrlService
-import com.causecode.utility.UtilParameters
+import com.causecode.util.DomainUtils
 import grails.core.GrailsApplication
 import grails.databinding.SimpleMapDataBindingSource
 import grails.plugin.springsecurity.SpringSecurityService
@@ -99,7 +99,7 @@ class ContentService {
         }
 
         List restrictedDomainClassList = [Page.name, Blog.name]
-        Content contentInstance = Content.withCriteria(UtilParameters.UNIQUE_TRUE) {
+        Content contentInstance = Content.withCriteria(DomainUtils.UNIQUE_TRUE) {
             idEq(id.toLong())
             'in'('class', restrictedDomainClassList)
 
@@ -158,7 +158,7 @@ class ContentService {
             log.warn "Error saving ${contentInstance.class.name}: " + contentInstance.errors
             return contentInstance
         }
-        contentInstance.save(UtilParameters.FLUSH_TRUE)
+        contentInstance.save(DomainUtils.FLUSH_TRUE)
         if (!metaTypes || !metaValues) {
             return contentInstance
         }
@@ -175,7 +175,7 @@ class ContentService {
         contentMetas.meta*.delete()
 
         metaTypes.eachWithIndex { type, index ->
-            Meta metaInstance = ContentMeta.withCriteria(UtilParameters.UNIQUE_TRUE) {
+            Meta metaInstance = ContentMeta.withCriteria(DomainUtils.UNIQUE_TRUE) {
                 createAlias(CONTENT, CONTENT_INSTANCE)
                 createAlias(META, 'metaInstance')
                 projections {
@@ -191,7 +191,7 @@ class ContentService {
             metaInstance.content = metaValues[index]
             metaInstance.validate()
             if (!metaInstance.hasErrors()) {
-                metaInstance.save(UtilParameters.FLUSH_TRUE)
+                metaInstance.save(DomainUtils.FLUSH_TRUE)
                 ContentMeta.findOrSaveByContentAndMeta(contentInstance, metaInstance)
             }
         }

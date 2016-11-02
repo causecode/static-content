@@ -9,12 +9,14 @@ package com.causecode.content.blog.comment
 
 import com.causecode.content.blog.Blog
 import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * Join class provides comments for Blog.
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
  */
+@ToString
 @EqualsAndHashCode
 class BlogComment {
 

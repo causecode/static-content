@@ -7,8 +7,8 @@
  */
 package com.causecode.content
 
-import com.causecode.springsecurity.Annotations
-import com.causecode.utility.UtilParameters
+import com.causecode.user.Role
+import com.causecode.util.DomainUtils
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
 
@@ -23,7 +23,7 @@ import org.springframework.http.HttpStatus
  * @author Shashank Agrawal
  * @author Bharti Nagdev
  */
-@Secured([Annotations.ROLE_CONTENT_MANAGER])
+@Secured([Role.ROLE_CONTENT_MANAGER])
 class PageLayoutController {
 
     static allowedMethods = [save: 'POST', update: 'PUT', delete: 'DELETE']
@@ -67,7 +67,7 @@ class PageLayoutController {
         }
 
         log.info 'PageLayout instance saved successfully.'
-        pageLayoutInstance.save(UtilParameters.FLUSH_TRUE)
+        pageLayoutInstance.save(DomainUtils.FLUSH_TRUE)
         respond([status: HttpStatus.OK])
 
         return
@@ -110,7 +110,7 @@ class PageLayoutController {
         }
 
         log.info 'PageLayout instance updated successfully.'
-        pageLayoutInstance.save(UtilParameters.FLUSH_TRUE)
+        pageLayoutInstance.save(DomainUtils.FLUSH_TRUE)
 
         respond ([status: HttpStatus.OK])
 
@@ -119,7 +119,7 @@ class PageLayoutController {
 
     def delete(PageLayout pageLayoutInstance) {
         try {
-            pageLayoutInstance.delete(UtilParameters.FLUSH_TRUE)
+            pageLayoutInstance.delete(DomainUtils.FLUSH_TRUE)
         }
         catch (DataIntegrityViolationException e) {
             respond ([status: HttpStatus.NOT_MODIFIED])

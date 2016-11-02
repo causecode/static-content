@@ -8,12 +8,14 @@
 package com.causecode.content
 
 import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * Used to support old content reference if required.
  * @author Shashank Agrawal
  *
  */
+@ToString
 @EqualsAndHashCode
 class ContentRevision {
 

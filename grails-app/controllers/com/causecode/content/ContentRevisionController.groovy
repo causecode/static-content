@@ -7,8 +7,8 @@
  */
 package com.causecode.content
 
-import com.causecode.springsecurity.Annotations
-import com.causecode.utility.UtilParameters
+import com.causecode.user.Role
+import com.causecode.util.ResponseUtils
 import grails.plugin.springsecurity.annotation.Secured
 
 /**
@@ -16,7 +16,7 @@ import grails.plugin.springsecurity.annotation.Secured
  * @author Vishesh Duggar
  * @author Shashank Agrawal
  */
-@Secured(Annotations.ROLE_CONTENT_MANAGER)
+@Secured(Role.ROLE_CONTENT_MANAGER)
 class ContentRevisionController {
 
     static defaultAction = 'show'
@@ -45,7 +45,7 @@ class ContentRevisionController {
 
     def delete(Long id) {
         ContentRevision.get(id).delete(flush: true)
-        respond(UtilParameters.SUCCESS_TRUE)
+        respond(ResponseUtils.SUCCESS_TRUE)
 
         return
     }

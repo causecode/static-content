@@ -110,7 +110,7 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
         List<String> resultList = service.updatedMonthFilterListBasedOnPublishedDate(monthFilterList)
 
         then: 'List of string should be received'
-        resultList == ['10', 'October-2016']
+        resultList.contains(month)
     }
 
     // Method getBlogInstanceList

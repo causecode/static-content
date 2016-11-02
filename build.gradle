@@ -103,7 +103,7 @@ dependencies {
     compile "org.grails:grails-web-boot"
     compile "org.grails.plugins:cache"
     compile "org.grails.plugins:scaffolding"
-    compile "org.grails.plugins:spring-security-core:3.0.4"
+    compile "org.grails.plugins:spring-security-core:3.1.1"
     compile "org.grails.plugins:grails-markdown:3.0.0"
     compile "org.hibernate:hibernate-ehcache"
 
@@ -119,10 +119,10 @@ dependencies {
     testCompile "org.grails.plugins:geb"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
-    testCompile "com.causecode.plugins:nucleus:0.3.9"
 
     compile "com.causecode.plugins:file-uploader:2.4.8"
     compile "com.causecode.plugins:taggable:1.4.1"
+    compile "com.causecode.plugins:nucleus:0.4.0"
 }
 
 grails {
@@ -192,6 +192,6 @@ jacocoTestReport {
                     ])
         })
     }
-    executionData test//, integrationTest
-    jacocoTestReport.dependsOn test//, integrationTest
+    executionData test
+    jacocoTestReport.dependsOn test
 }

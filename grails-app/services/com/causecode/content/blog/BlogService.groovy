@@ -11,7 +11,7 @@ import com.causecode.content.ContentService
 import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.blog.comment.CommentService
 import com.causecode.content.meta.Meta
-import com.causecode.utility.UtilParameters
+import com.causecode.util.DomainUtils
 import grails.plugins.taggable.TagLink
 
 import java.text.DateFormatSymbols
@@ -36,7 +36,7 @@ class BlogService {
     List getAllTags() {
         List tagList = []
         Blog.allTags.each { tagName ->
-            def tagListInstance = TagLink.withCriteria(UtilParameters.UNIQUE_TRUE) {
+            def tagListInstance = TagLink.withCriteria(DomainUtils.UNIQUE_TRUE) {
                 createAlias('tag', 'tagInstance')
                 projections {
                     countDistinct 'id'
