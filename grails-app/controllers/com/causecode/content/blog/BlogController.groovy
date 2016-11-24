@@ -56,21 +56,6 @@ class BlogController {
     MarkdownService markdownService
     GrailsApplication grailsApplication
 
-    private static final String HTML_P_TAG_PATTERN = '(?s)<p(.*?)>(.*?)<\\/p>'
-    private static final String UNDEFINED = 'undefined'
-    private static final String BLANK = ''
-    private static final String COMMA = ','
-    private static final String LIST = 'list'
-    private static final String TYPE = 'type'
-    private static final String CONTENT = 'content'
-    private static final String BLOG_IMG_FILE_PATH = 'blogImgFilePath'
-    private static final String UNABLE_TO_UPLOAD = 'Unable to upload file'
-    private static final String TRUE = 'true'
-    private static final String SHOW_STRING = 'show'
-    private static final String AND_PUBLISH_TRUE = 'AND b.publish = true'
-
-    private static final int STATUS_403 = 403
-
     /**
      * Action list filters blog list with tags and returns Blog list and total matched result count.
      * If current user has role content manager then all Blog list will be returned otherwise blog with publish field
@@ -95,9 +80,9 @@ class BlogController {
         // To avoid Parameter Reassignment
         def (updateTag, updateMonthFilter, updateQueryFilter) = [tag, monthFilter, queryFilter]
 
-        updateTag = (tag == UNDEFINED) ? BLANK : tag
-        updateMonthFilter = (monthFilter == UNDEFINED) ? BLANK : monthFilter
-        updateQueryFilter = (queryFilter == UNDEFINED) ? BLANK : queryFilter
+        updateTag = (tag == 'undefined') ? '' : tag
+        updateMonthFilter = (monthFilter == 'undefined') ? '' : monthFilter
+        updateQueryFilter = (queryFilter == 'undefined') ? '' : queryFilter
 
         log.info "Parameters received to filter blogs : $params"
         long blogInstanceTotal
@@ -105,7 +90,7 @@ class BlogController {
         List<String> monthFilterList = []
 
         Map monthYearFilterMapInstance = updateMonthFilter ? getMonthYearFilterMapInstance(updateMonthFilter) :
-                [month: BLANK, year: BLANK]
+                [month: '', year: '']
 
         params.offset =  offset ?: 0
         params.max = Math.min(max ?: defaultMax, 100)
@@ -123,12 +108,12 @@ class BlogController {
         if (contentService.contentManager) {
             blogInstanceTotal = updateTag ? Blog.countByTag(updateTag) : Blog.count()
         } else if (updateTag) {
-            query.append(AND_PUBLISH_TRUE)
+            query.append('AND b.publish = true')
             blogInstanceTotal = Blog.findAllByTagWithCriteria(updateTag) {
                 eq('publish', true)
             }.size()
         } else if (updateMonthFilter) {
-            query.append(AND_PUBLISH_TRUE)
+            query.append('AND b.publish = true')
             blogInstanceTotal = Blog.countByPublish(true)
         } else {
             (updateQueryFilter) ? query.append(' AND ') : query.append(' where ')
@@ -138,7 +123,7 @@ class BlogController {
         query.append(' order by b.dateCreated desc')
 
         List<Map> blogList = Blog.executeQuery(query.toString(), [max: params.max, offset: params.offset])
-        Pattern patternTag = Pattern.compile(HTML_P_TAG_PATTERN)
+        Pattern patternTag = Pattern.compile('(?s)<p(.*?)>(.*?)<\\/p>')
 
         if (updateMonthFilter) {
             blogInstanceTotal = Blog.executeQuery(query.toString()).size()
@@ -155,11 +140,11 @@ class BlogController {
                       tagList: blogService.allTags]
 
         // Render GSP content and redirection
-        return renderGSPContentAndBlogCustomURLRedirect(result, LIST)
+        return renderGSPContentAndBlogCustomURLRedirect(result, 'list')
     }
 
     Map getMonthYearFilterMapInstance(String updateMonthFilter) {
-        Map monthYearFilterMapInstance = [month: BLANK, year: BLANK]
+        Map monthYearFilterMapInstance = [month: '', year: '']
         List blogFilter = updateMonthFilter.split('-')
         monthYearFilterMapInstance.month = blogFilter[0]
         monthYearFilterMapInstance.year = blogFilter[1]
@@ -182,13 +167,13 @@ class BlogController {
         Map requestData = request.JSON
         log.info "Parameters received to save blog: ${requestData}"
 
-        List metaTypeList = requestData.metaList ? requestData.metaList[(TYPE)] : []
-        List metaValueList = requestData.metaList ? requestData.metaList[(CONTENT)] : []
+        List metaTypeList = requestData.metaList ? requestData.metaList[('type')] : []
+        List metaValueList = requestData.metaList ? requestData.metaList[('content')] : []
 
         Blog.withTransaction { status ->
             Blog blogInstance = contentService.create(requestData, metaTypeList, metaValueList, Blog)
             UFile blogUfileInstance
-            String blogImgFilePath = requestData[BLOG_IMG_FILE_PATH]
+            String blogImgFilePath = requestData['blogImgFilePath']
             blogInstance.contentType = blogService.findBlogContentTypeByValue(requestData.type.toString())
 
             try {
@@ -202,11 +187,11 @@ class BlogController {
                     respond(blogInstance.errors)
                     return false
                 }
-                blogInstance.setTags(requestData.tags?.tokenize(COMMA)*.trim())
+                blogInstance.setTags(requestData.tags?.tokenize(',')*.trim())
                 blogInstance.save(DomainUtils.FLUSH_TRUE)
                 respond(ResponseUtils.SUCCESS_TRUE)
             } catch (FileUploaderServiceException e) {
-                log.debug UNABLE_TO_UPLOAD, e
+                log.debug 'Unable to upload file', e
                 blogInstance.errors.reject("Image couldn't be uploaded " + e.message)
                 respond(blogInstance.errors)
 
@@ -230,7 +215,7 @@ class BlogController {
         def blogInstanceTags = blogInstance.tags
 
         // Convert markdown content into html format
-        if (params.convertToMarkdown == TRUE) {
+        if (params.convertToMarkdown == 'true') {
            blogInstance.body = markdownService.markdown(blogInstance.body)
         }
 
@@ -242,7 +227,7 @@ class BlogController {
             blogInstanceTags: blogInstanceTags, metaList: metaInstanceList
         ]
 
-        renderGSPContentAndBlogCustomURLRedirect(blogInstance, result, SHOW_STRING)
+        renderGSPContentAndBlogCustomURLRedirect(blogInstance, result, 'show')
 
         return
     }
@@ -269,7 +254,7 @@ class BlogController {
     private boolean createBlogCustomURLAndRedirect(Blog blogInstance = null, String viewType) {
         String blogCustomURL
 
-        if (viewType.isCase(LIST)) {
+        if (viewType.isCase('list')) {
             blogCustomURL = grailsApplication.config.app.defaultURL + '/blog/list'
         } else {
             blogCustomURL = grailsApplication.config.app.defaultURL + "/blog/show/${blogInstance.id}"
@@ -292,17 +277,17 @@ class BlogController {
         bindData(blogInstance, requestData)
 
         if (requestData.tags != blogInstance.tags) {
-            blogInstance.setTags(requestData.tags?.tokenize(COMMA)*.trim())
+            blogInstance.setTags(requestData.tags?.tokenize(',')*.trim())
         }
 
         Blog.withTransaction { status ->
-            List metaTypeList = requestData.metaList ? requestData.metaList[(TYPE)] : []
-            List metaValueList = requestData.metaList ? requestData.metaList[(CONTENT)] : []
+            List metaTypeList = requestData.metaList ? requestData.metaList[('type')] : []
+            List metaValueList = requestData.metaList ? requestData.metaList[('content')] : []
 
             contentService.update(requestData, blogInstance, metaTypeList, metaValueList)
             blogInstance.contentType = blogService.findBlogContentTypeByValue(requestData.type.toString())
 
-            String blogImgFilePath = requestData[BLOG_IMG_FILE_PATH]
+            String blogImgFilePath = requestData['blogImgFilePath']
 
             try {
                 if (blogImgFilePath != blogInstance.blogImg?.path) {
@@ -320,7 +305,7 @@ class BlogController {
 
                 respond(ResponseUtils.SUCCESS_TRUE)
             } catch (FileUploaderServiceException e) {
-                log.debug UNABLE_TO_UPLOAD, e
+                log.debug 'Unable to upload file', e
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
                 respond([message: e.message])
             }
@@ -360,7 +345,7 @@ class BlogController {
             errorMessage = 'Not enough parameters received to add comment.'
             log.info errorMessage
             Map result = [message: errorMessage]
-            render status: STATUS_403, text: result as JSON
+            render status: 403, text: result as JSON
 
             return
         }
@@ -370,7 +355,7 @@ class BlogController {
             if (!captchaValid) {
                 if (request.xhr) {
                     Map result = [message: 'Invalid captcha entered.']
-                    render status: STATUS_403, text: result as JSON
+                    render status: 403, text: result as JSON
                     return
                 }
                 flash.message = message(code: 'default.captcha.invalid.message', args: [message(code: 'captcha.label')])
@@ -385,7 +370,7 @@ class BlogController {
                 status.setRollbackOnly()
                 if (request.xhr) {
                     Map result = [message: 'Something went wrong, Please try again later.']
-                    render status: STATUS_403, text: result as JSON
+                    render status: 403, text: result as JSON
                     return
                 }
                 redirect uri: blogInstance.searchLink()

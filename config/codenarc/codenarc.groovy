@@ -122,15 +122,6 @@ ruleset {
     StatelessSingleton
     ToStringReturnsNull
 
-    // rulesets/dry.xml
-    DuplicateListLiteral
-    DuplicateMapLiteral {
-        doNotApplyToFileNames = '**/grails-app/domain/**/*.groovy,**/Company.groovy,**/Experience.groovy,**/Address' +
-                '.groovy'
-    }
-    DuplicateNumberLiteral
-    DuplicateStringLiteral
-
     // rulesets/enhanced.xml
     // CloneWithoutCloneable, causing compilation errors -> https://github.com/CodeNarc/CodeNarc/issues/123
     // UnsafeImplementationAsMap

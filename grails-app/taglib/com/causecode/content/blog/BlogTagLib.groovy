@@ -16,9 +16,7 @@ import com.causecode.content.blog.comment.Comment
  */
 class BlogTagLib {
 
-    static namespace = CONTENT
-
-    private static final String CONTENT = 'content'
+    static namespace = 'content'
 
     /**
      * Used to render comment on blog. This tag uses template to render comment body.
@@ -57,7 +55,7 @@ class BlogTagLib {
         out << """<${nested ? 'div' : 'li'} class="media comment ${nested ? 'nested' : ''} ${attrs.classes ?: ''}">"""
 
         String template = attrs.bodyTemplate ?: '/blog/templates/commentBody'
-        String plugin = attrs.inPlugin ?: CONTENT
+        String plugin = attrs.inPlugin ?: 'content'
 
         out << render(template: template, model: [commentInstance: commentInstance,
                                                   nested: nested, attrs: attrs], plugin: plugin)

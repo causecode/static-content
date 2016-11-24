@@ -38,11 +38,6 @@ import spock.util.mop.ConfineMetaClassChanges
  */
 trait BaseTestSetup {
 
-    static final ROLE = 'ROLE_ADMIN'
-    static final USER_CLASS_NAME = 'com.causecode.user.User'
-    static final ROLE_CLASS_NAME = 'com.causecode.user.Role'
-    static final JOIN_CLASS_NAME = 'com.causecode.user.UserRole'
-
     // Mocked SpringSecurityUtils
     @ConfineMetaClassChanges([SpringSecurityUtils])
     void mockOutSpringSecurityUtilsConfig() {
@@ -50,10 +45,10 @@ trait BaseTestSetup {
 
         // set spring security core configuration
         config.putAll([
-            authority: [nameField: 'authority', className: ROLE_CLASS_NAME],
+            authority: [nameField: 'authority', className: 'com.causecode.user.Role'],
                 userLookup: [
-                    userDomainClassName: USER_CLASS_NAME,
-                    authorityJoinClassName: JOIN_CLASS_NAME,
+                    userDomainClassName: 'com.causecode.user.User',
+                    authorityJoinClassName: 'com.causecode.user.UserRole',
                     passwordPropertyName: 'password',
                     usernamePropertyName: 'username',
                     enabledPropertyName: 'enabled',

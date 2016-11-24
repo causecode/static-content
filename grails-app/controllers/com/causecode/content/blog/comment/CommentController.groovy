@@ -22,8 +22,6 @@ import com.causecode.content.blog.Blog
 @Transactional(readOnly = true)
 class CommentController {
 
-    private static final String TRUE = 'true'
-
     /**
      * This action delete comment instance if it has been added as reply to another comment otherwise
      * delete join class reference added for blog for given comment instance.
@@ -46,7 +44,7 @@ class CommentController {
 
             log.info 'Comment deleted successfully.'
             if (request.xhr) {
-                render TRUE
+                render 'true'
                 return
             }
 

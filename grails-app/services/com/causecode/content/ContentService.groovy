@@ -36,14 +36,6 @@ class ContentService {
 
     static transactional = false
 
-    private static final String ANONYMOUS_USER = 'anonymousUser'
-    private static final String CONTENT = 'content'
-    private static final String META = 'meta'
-    private static final String CONTENT_INSTANCE = 'contentInstance'
-    private static final String CONTENT_INSTANCE_ID = 'contentInstance.id'
-
-    private static final int RESULT_COUNT = 1000
-
     /**
      * Dependency Injection for the grailsLinkGenerator
      */
@@ -63,14 +55,14 @@ class ContentService {
      * @param authorProperty String representing property of current user to be returned. Default set to 'fullName'
      * field.
      * @return String specifying author for content instance. If content instance not specified and content instance
-     * author field is not a number the default string 'ANONYMOUS_USER' returned.
+     * author field is not a number the default string 'anonymousUser' returned.
      */
     String resolveAuthor(Content contentInstance, String authorProperty = 'fullName') {
         String updatedAuthorProperty = authorProperty
 
         if (!contentInstance?.id) {
             def currentUser = springSecurityService.currentUser
-            return currentUser ? currentUser.id.toString() : ANONYMOUS_USER
+            return currentUser ? currentUser.id.toString() : 'anonymousUser'
         }
 
         if (contentInstance.author?.isNumber()) {
@@ -86,7 +78,7 @@ class ContentService {
             return authorInstance[updatedAuthorProperty]
         }
 
-        return contentInstance.author ?: ANONYMOUS_USER
+        return contentInstance.author ?: 'anonymousUser'
     }
 
     /**
@@ -165,10 +157,10 @@ class ContentService {
 
         // Remove all content meta relations
         List<ContentMeta> contentMetas = ContentMeta.withCriteria {
-            createAlias(CONTENT, CONTENT_INSTANCE)
-            eq(CONTENT_INSTANCE_ID, contentInstance.id)
+            createAlias('content', 'contentInstance')
+            eq('contentInstance.id', contentInstance.id)
 
-            maxResults(RESULT_COUNT)
+            maxResults(1000)
         }*.delete()
 
         // Remove all metas
@@ -176,12 +168,12 @@ class ContentService {
 
         metaTypes.eachWithIndex { type, index ->
             Meta metaInstance = ContentMeta.withCriteria(DomainUtils.UNIQUE_TRUE) {
-                createAlias(CONTENT, CONTENT_INSTANCE)
-                createAlias(META, 'metaInstance')
+                createAlias('content', 'contentInstance')
+                createAlias('meta', 'metaInstance')
                 projections {
-                    property(META)
+                    property('meta')
                 }
-                eq(CONTENT_INSTANCE_ID, contentInstance.id)
+                eq('contentInstance.id', contentInstance.id)
                 eq('metaInstance.type', type)
 
                 maxResults(1)

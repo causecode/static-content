@@ -25,11 +25,6 @@ class BlogService {
 
     static transactional = false
 
-    private static final String TAG_INSTANCE_NAME = 'tagInstance.name'
-    private static final String AND = ' AND '
-    private static final String WHERE = ' WHERE '
-    private static final String PUBLISHED_DATE = 'publishedDate'
-
     CommentService commentService
     ContentService contentService
 
@@ -40,10 +35,10 @@ class BlogService {
                 createAlias('tag', 'tagInstance')
                 projections {
                     countDistinct 'id'
-                    property(TAG_INSTANCE_NAME)
+                    property('tagInstance.name')
                 }
                 eq('type', 'blog')
-                eq(TAG_INSTANCE_NAME, tagName)
+                eq('tagInstance.name', tagName)
 
                 maxResults(1)
             }
@@ -74,7 +69,7 @@ class BlogService {
             blogInstance.body = blogInstance.body?.markdownToHtml()
         }
 
-        List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: PUBLISHED_DATE, order: 'desc'])
+        List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         List<Meta> metaInstanceList = blogInstance.metaTags
 
         return [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
@@ -89,13 +84,13 @@ class BlogService {
             updatedQuery.append("AND tagLink.type = 'blog' AND tagLink.tag.name = '$tag' ")
         }
         if (monthFilter) {
-            tag ? updatedQuery.append(AND) : updatedQuery.append(WHERE)
+            tag ? updatedQuery.append(' AND ') : updatedQuery.append(' WHERE ')
             updatedQuery.append(" monthname(b.publishedDate) = '$monthYearFilters.month' " +
                     "AND year(b.publishedDate) = '$monthYearFilters.year'")
         }
         if (queryFilter) {
-            tag ? updatedQuery.append(AND) : (monthFilter ? updatedQuery.append(AND) : updatedQuery
-                    .append(WHERE))
+            tag ? updatedQuery.append(' AND ') : (monthFilter ? updatedQuery.append(' AND ') : updatedQuery
+                    .append(' WHERE '))
             updatedQuery.append(" b.title LIKE '%$queryFilter%' OR b.subTitle LIKE '%$queryFilter%' ")
             updatedQuery.append(" OR b.body LIKE '%$queryFilter%' OR b.author LIKE '%$queryFilter%'")
         }
@@ -107,10 +102,10 @@ class BlogService {
         List<String> updateMonthFilterList = monthFilterList
         List<Blog> publishDateList = Blog.createCriteria().list {
             projections {
-                property(PUBLISHED_DATE)
+                property('publishedDate')
             }
             eq('publish', true)
-            isNotNull(PUBLISHED_DATE)
+            isNotNull('publishedDate')
 
             maxResults(20)
         }

@@ -16,9 +16,6 @@ class FriendlyUrlService {
 
     static transactional = false
 
-    private static final String BLANK = ''
-    private static final String HYPHEN = '-'
-
     /**
      * This method transforms the text passed as an argument to a text without spaces,
      * html entities, accents, dots and extranges characters (only %,a-z,A-Z,0-9, ,_ and - are allowed).
@@ -32,7 +29,7 @@ class FriendlyUrlService {
 
         // Preserve escaped octets
         localText = localText.replaceAll('%([a-fA-F0-9][a-fA-F0-9])', '---$1---')
-        localText = localText.replaceAll('%', BLANK)
+        localText = localText.replaceAll('%', '')
         localText = localText.replaceAll('---([a-fA-F0-9][a-fA-F0-9])---', '%$1')
 
         // Remove accents
@@ -44,22 +41,22 @@ class FriendlyUrlService {
         localText = localText.toLowerCase()
 
         // Kill entities
-        localText = localText.replaceAll('&.+?;', BLANK)
+        localText = localText.replaceAll('&.+?;', '')
 
-        // Dots -> BLANK
-        localText = localText.replaceAll('\\.', BLANK)
+        // Dots -> ''
+        localText = localText.replaceAll('\\.', '')
 
         // Remove any character except %a-zA-Z0-9 _-
-        localText = localText.replaceAll('[^%a-zA-Z0-9 _-]', BLANK)
+        localText = localText.replaceAll('[^%a-zA-Z0-9 _-]', '')
 
         // Trim
         localText = localText.trim()
 
         // Spaces -> dashes
-        localText = localText.replaceAll('\\s+', HYPHEN)
+        localText = localText.replaceAll('\\s+', '-')
 
         // Dashes -> dash
-        localText = localText.replaceAll('-+', HYPHEN)
+        localText = localText.replaceAll('-+', '-')
 
         // It must end in a letter or digit, otherwise we strip the last char
         if (!localText[-1].charAt(0).isLetterOrDigit()) { localText = localText[0..-2] }
@@ -193,7 +190,7 @@ class FriendlyUrlService {
                 '\u00E3\u0082\u00AC': 'E',
 
                 // GBP (Pound) sign
-                '\u00C2\u00A3': BLANK]
+                '\u00C2\u00A3': '']
 
         return chars
     }

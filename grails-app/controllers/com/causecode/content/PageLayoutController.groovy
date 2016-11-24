@@ -29,13 +29,10 @@ class PageLayoutController {
     static allowedMethods = [save: 'POST', update: 'PUT', delete: 'DELETE']
     static responseFormats = ['json']
 
-    private static final String LIST_STRING = 'list'
-    private static final String DEFAULT_NOT_FOUND = 'default.not.found.message'
-
     GrailsWebDataBinder grailsWebDataBinder
 
     def index() {
-        redirect(action: LIST_STRING, params: params)
+        redirect(action: 'list', params: params)
 
         return
     }
@@ -83,7 +80,7 @@ class PageLayoutController {
     def edit(PageLayout pageLayoutInstance) {
         if (!pageLayoutInstance) {
             log.warn message(logWarnMessage())
-            redirect(action: LIST_STRING)
+            redirect(action: 'list')
             return
         }
 
@@ -95,7 +92,7 @@ class PageLayoutController {
     def update(PageLayout pageLayoutInstance) {
         if (!pageLayoutInstance || pageLayoutInstance.hasErrors()) {
             log.warn message(logWarnMessage())
-            redirect(action: LIST_STRING)
+            redirect(action: 'list')
             return
         }
 
@@ -132,6 +129,6 @@ class PageLayoutController {
 
     private Map logWarnMessage() {
 
-        return [code: DEFAULT_NOT_FOUND, args: [message(code: 'pageLayout.label'), params.id]]
+        return [code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), params.id]]
     }
 }

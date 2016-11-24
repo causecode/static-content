@@ -14,14 +14,10 @@
  */
 class ContentUrlMappings {
 
-    private static final String SHOW = 'show'
-    private static final String BLOG = 'blog'
-    private static final String LIST = 'list'
-
     static mappings = {
         "/blog/$id/$sanitizedTitle" {
-            controller = BLOG
-            action = SHOW
+            controller = 'blog'
+            action = 'show'
             constraints {
                 id validator: {  //Used to distinguish other Url like '/blog/edit/1'
                     it.isLong()
@@ -31,7 +27,7 @@ class ContentUrlMappings {
 
         "/c/$id/$sanitizedTitle" {
             controller = 'page'
-            action = SHOW
+            action = 'show'
             constraints {
                 id validator: {  //Used to distinguish other Url like '/page/edit/1'
                     it.isLong()
@@ -39,7 +35,7 @@ class ContentUrlMappings {
             }
         }
 
-        "/blog" (controller: BLOG, action: LIST)
-        "/blogs" (controller: BLOG, action: LIST)
+        "/blog" (controller: 'blog', action: 'list')
+        "/blogs" (controller: 'blog', action: 'list')
     }
 }

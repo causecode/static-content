@@ -18,13 +18,6 @@ import groovy.transform.ToString
 @EqualsAndHashCode
 class Meta {
 
-    public static final String KEYWORDS = 'keywords'
-    public static final String DESCRIPTION = 'description'
-    public static final String OG_DESCRIPTION = 'og:description'
-    public static final String OG_TITLE = 'og:title'
-    public static final String OG_IMAGE = 'og:image'
-    public static final String OG_URL = 'og:url'
-
     String type
     String content
 
@@ -43,7 +36,7 @@ class Meta {
     }
 
     static List<String> getTypeList() {
-        return [KEYWORDS, DESCRIPTION, OG_DESCRIPTION, OG_TITLE, OG_IMAGE, OG_URL]
+        return ['keywords', 'description', 'og:description', 'og:title', 'og:image', 'og:url']
     }
 
     @Override
