@@ -5,8 +5,10 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content.navigation
+
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * Used to render menu items within menu , also support nested menu items.
@@ -14,8 +16,9 @@ package com.causecode.content.navigation
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
  * @author Bharti Nagdev
- *
  */
+@ToString
+@EqualsAndHashCode
 class MenuItem {
 
     String roles
@@ -33,7 +36,7 @@ class MenuItem {
     Menu menu
 
     static hasMany = [childItems: MenuItem]
-    static mappedBy = [childItems: "parent"]
+    static mappedBy = [childItems: 'parent']
 
     static constraints = {
         roles nullable: true
@@ -42,12 +45,11 @@ class MenuItem {
     }
 
     static mapping = {
-        table "cc_content_menu_item"
+        table 'cc_content_menu_item'
     }
 
     @Override
     String toString() {
         "MenuItem [$title][$id]"
     }
-
 }

@@ -5,9 +5,11 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content.page
 
+import com.causecode.content.ContentService
+import com.causecode.user.Role
+import com.causecode.util.ResponseUtils
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
@@ -28,86 +30,100 @@ import grails.core.GrailsApplication
  * @author Laxmi Salunkhe
  *
  */
-@Secured(["ROLE_CONTENT_MANAGER"])
-@ControllerShorthand(value = "c")
+@Secured([Role.ROLE_CONTENT_MANAGER])
+@ControllerShorthand(value = 'c')
 class PageController {
 
-    static allowedMethods = [show: "GET", save: "POST", update: "PUT", delete: "DELETE"]
-    static responseFormats = ["json"]
+    static allowedMethods = [show: 'GET', save: 'POST', update: 'PUT', delete: 'DELETE']
+    static responseFormats = ['json']
 
-    def contentService
+    ContentService contentService
     GrailsApplication grailsApplication
 
     def handleRequiredPropertyMissingException(RequiredPropertyMissingException exception) {
-        log.debug "Page instance not found"
+        log.debug 'Page instance not found', exception
         response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
-        respond ([message: message(code: "page.not.found")])
+        respond ([message: message(code: 'page.not.found')])
+
         return
     }
 
     def index() {
-        redirect(action: "list", params: params)
+        redirect(action: 'list', params: params)
+
+        return
     }
 
     def getMetaTypeList() {
-        List metaTypeList = Meta.getTypeList()
-        respond ([metaTypeList:metaTypeList])
+        List metaTypeList = Meta.typeList
+        respond ([metaTypeList: metaTypeList])
+
+        return
     }
 
     def list(Integer max) {
-        params.sort = "dateCreated"
-        params.order = "desc"
+        params.sort = params.sort ?: 'dateCreated'
+        params.order = params.order ?: 'desc'
         params.max = Math.min(max ?: 10, 100)
 
         String contentManagerRole = grailsApplication.config.cc.plugins.content.contentMangerRole
         List pageInstanceList = Page.createCriteria().list(params) {
-            if(SpringSecurityUtils.ifNotGranted(contentManagerRole))
-                eq("publish", true)
+            if (SpringSecurityUtils.ifNotGranted(contentManagerRole)) {
+                eq('publish', true)
+            }
         }
         respond ([instanceList: pageInstanceList, totalCount: pageInstanceList.totalCount])
+
+        return
     }
 
-    def create() {
-        [pageInstance: new Page(params)]
+    def create(Page pageInstance) {
+        respond([pageInstance: pageInstance])
+
+        return
     }
 
     def save() {
         Map requestData = request.JSON
-        Page pageInstance = contentService.create(requestData, requestData.metaList.type, requestData.metaList.value, Page.class)
-        if(!pageInstance.save(flush: true)) {
-            render(view: "create", model: [pageInstance: pageInstance])
+        Page pageInstance = contentService.create(requestData, requestData.metaList.type,
+                requestData.metaList.content, Page)
+        if (!pageInstance.save(flush: true)) {
+            respond(view: 'create', model: [pageInstance: pageInstance], errors: pageInstance.errors)
             return
         }
 
-        flash.message = message(code: 'default.created.message', args: [message(code: 'page.label'), pageInstance.id])
         redirect uri: pageInstance.searchLink()
+
+        return
     }
 
     /**
-     * Transactional annotation is required since we are using autowire feature of 
+     * Transactional annotation is required since we are using autowire feature of
      * Grails domain classes so anyone can pass the domain field data which will update
      * the Page instance.
      */
     @Transactional(readOnly = true)
-    @Secured(["permitAll"])
+    @Secured([Role.PERMIT_ALL])
     def show(Page pageInstance) {
         if (!pageInstance || pageInstance.hasErrors()) {
             throw new RequiredPropertyMissingException()
         }
+
         /*
          * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
          * any change in data model must be updated in the GSP.
          * Render GSP content in JSON format.
          */
         if (params._escaped_fragment_) {
-            render (view: "show", model: [pageInstance: pageInstance], contentType: "application/json")
+            respond([view: 'show', model: [pageInstance: pageInstance], contentType: 'application/json'])
+
             return
         }
 
         // Check if a subject parameter is coming in request if yes, then use that an email subject
         String subject = params.subject
-        if (subject && pageInstance.body.contains("mailto:jobs@causecode.com")) {
-            pageInstance.body = pageInstance.body.replaceAll("subject=.*?\"", "subject=$subject\"")
+        if (subject && pageInstance.body.contains('mailto:jobs@causecode.com')) {
+            pageInstance.body = pageInstance.body.replaceAll('subject=.*?\"', "subject=$subject\"")
         }
 
         if (request.xhr) {
@@ -122,6 +138,8 @@ class PageController {
         }
 
         redirect(url: pageShowUrl, permanent: true, params: params)
+
+        return
     }
 
     def edit(Page pageInstance) {
@@ -129,39 +147,35 @@ class PageController {
             throw new RequiredPropertyMissingException()
         }
 
-        [pageInstance: pageInstance, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)]
+        respond([pageInstance: pageInstance, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)])
+
+        return
     }
 
-    def update(Page pageInstance, Long version) {
-        if (!pageInstance || pageInstance.hasErrors()) {
+    def update(Page pageInstance) {
+        Page updatePageInstance = pageInstance
+        if (!updatePageInstance || updatePageInstance.hasErrors()) {
             throw new RequiredPropertyMissingException()
         }
+
         Map requestData = request.JSON
 
-        if(version != null) {
-            if (pageInstance.version > version) {
-                pageInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'page.label')] as Object[],
-                        "Another user has updated this Page while you were editing")
-                respond(pageInstance.errors)
-                return
-            }
-        }
         log.info "Parameters received to update page instance: $params, $requestData"
-        pageInstance = contentService.update(requestData, pageInstance, requestData.metaList?.type,
-                requestData.metaList?.value)
+        updatePageInstance = contentService.update(requestData, updatePageInstance, requestData.metaList?.type,
+                requestData.metaList?.content)
 
-        if(pageInstance.hasErrors()) {
-            respond(pageInstance.errors)
+        if (updatePageInstance.hasErrors()) {
+            respond(updatePageInstance.errors)
             return
         }
-        flash.message = "<em>$pageInstance</em> Page updated successfully."
-        if(params.createRevision) {
-            contentService.createRevision(pageInstance, PageRevision.class, params)
-            flash.message += " Revision created successfully."
+
+        if (params.createRevision) {
+            contentService.createRevision(updatePageInstance, PageRevision, params)
         }
 
-        redirect uri: pageInstance.searchLink()
+        redirect uri: updatePageInstance.searchLink()
+
+        return
     }
 
     def delete(Page pageInstance) {
@@ -170,9 +184,11 @@ class PageController {
         }
         try {
             contentService.delete(pageInstance)
-            respond ([success: true])
+            respond (ResponseUtils.SUCCESS_TRUE)
         } catch (DataIntegrityViolationException e) {
-            respond ([success: false])
+            respond (ResponseUtils.SUCCESS_TRUE)
         }
+
+        return
     }
 }

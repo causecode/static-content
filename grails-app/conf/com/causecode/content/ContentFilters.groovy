@@ -17,7 +17,7 @@ class ContentFilters {
     /**
      * Dependency injection for the contentService
      */
-    def contentService
+    ContentService contentService
 
     /**
      * Filter to check if current user have authority to view the page or blog instance.
@@ -36,5 +36,4 @@ class ContentFilters {
             }
         }
     }
-
 }

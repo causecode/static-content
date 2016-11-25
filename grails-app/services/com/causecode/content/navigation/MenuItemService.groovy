@@ -5,7 +5,6 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content.navigation
 
 /**
@@ -16,7 +15,7 @@ package com.causecode.content.navigation
 class MenuItemService {
 
     /**
-     * Used to create menuItem instance with given parameters. 
+     * Used to create menuItem instance with given parameters.
      * @param args REQUIRED Map containing parameters required to create menuItem instance.
      * @return Newly created MenuItem Instance.
      */
@@ -27,7 +26,7 @@ class MenuItemService {
     }
 
     /**
-     * Used to update menuItem instance with given new parameters. 
+     * Used to update menuItem instance with given new parameters.
      * If menuItem instance is newly created, this method add menuItem to menu and reorder it.
      * @param menuItemInstance REQUIRED MenuItem Instance to be updated.
      * @param args Map containing parameters required to create menuItem instance.
@@ -36,8 +35,8 @@ class MenuItemService {
     MenuItem update(MenuItem menuItemInstance , Map args = [:]) {
         menuItemInstance.properties = args
 
-        if(!menuItemInstance.id) {
-            int index = args.index as int
+        if (!menuItemInstance.id) {
+            //int index = args.index as int
             Menu menuInstance = Menu.get(args.menuId)
             menuInstance.addToMenuItems(menuItemInstance)
             menuInstance.save(flush: true)
@@ -49,12 +48,9 @@ class MenuItemService {
 
     /**
      * Used to delete menuItem instance.
-     * 
-     * This method removes menuItem from menu and also deletes all its child 
-     * menuItems. 
-     * 
+     * This method removes menuItem from menu and also deletes all its child
+     * menuItems.
      * If menuItem to be removed is child of MenuItem then it removes menuItem from its parent menuItem.
-     * 
      * After removing all references it deletes menuItem instance.
      * @param menuItemInstance
      */
@@ -62,11 +58,11 @@ class MenuItemService {
         Menu menuInstance = menuItemInstance.menu
         menuInstance.removeFromMenuItems(menuItemInstance)
         menuInstance.save()
-        if(menuItemInstance.childItems) {
+        if (menuItemInstance.childItems) {
             List childItems = menuItemInstance.childItems.toArray()
             childItems.each { delete(it, false) }
         }
-        if(menuItemInstance.parent) {
+        if (menuItemInstance.parent) {
             MenuItem parentMenuItemInstance = menuItemInstance.parent
             parentMenuItemInstance.removeFromChildItems(menuItemInstance)
             parentMenuItemInstance.save(flush: flush)
@@ -88,7 +84,7 @@ class MenuItemService {
         log.info "Sorting $menuItemInstance at ${parentId ? 'non ' : ''}top level."
 
         // Removing from parent menu item (if exist) in every case
-        if(menuItemInstance.parent) {
+        if (menuItemInstance.parent) {
             MenuItem parentMenuItemInstance = menuItemInstance.parent
             parentMenuItemInstance.removeFromChildItems(menuItemInstance)
             parentMenuItemInstance.save()
@@ -96,7 +92,7 @@ class MenuItemService {
         }
 
         // When dropping a menu item to top level menu item
-        if(!parentId) {
+        if (!parentId) {
             fixOrder(menuInstance, menuItemInstance, index)
             return
         }
@@ -115,16 +111,17 @@ class MenuItemService {
      * @param index New position of menuItem instance.
      */
     void fixOrder(Menu menuInstance, MenuItem menuItemInstance = null, int index = 0) {
-        if(!menuInstance.menuItems) {
+        if (!menuInstance.menuItems) {
             log.info "No menuitems in $menuInstance to sort."
             return
         }
 
-        List<MenuItem> allMenuItems = menuInstance.menuItems.toArray().findAll { it } //MenuItem.findAllByMenu(menuInstance)
+        //MenuItem.findAllByMenu(menuInstance)
+        List<MenuItem> allMenuItems = menuInstance.menuItems.toArray().findAll { it }
         List<MenuItem> nonTopLevelMenuItems = allMenuItems.findAll { it.parent }
         List<MenuItem> topLevelMenuItems = allMenuItems.findAll { !it.parent }
 
-        if(menuItemInstance) {
+        if (menuItemInstance) {
             log.info "Adding $menuItemInstance to $menuInstance at position [$index]."
             topLevelMenuItems.remove(menuItemInstance)
             topLevelMenuItems.add(index, menuItemInstance)
@@ -134,5 +131,4 @@ class MenuItemService {
         menuInstance.menuItems.addAll(topLevelMenuItems + nonTopLevelMenuItems)
         menuInstance.save()
     }
-
 }

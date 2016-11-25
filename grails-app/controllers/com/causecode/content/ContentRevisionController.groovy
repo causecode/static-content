@@ -5,10 +5,10 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content
 
-import grails.converters.JSON
+import com.causecode.user.Role
+import com.causecode.util.ResponseUtils
 import grails.plugin.springsecurity.annotation.Secured
 
 /**
@@ -16,32 +16,37 @@ import grails.plugin.springsecurity.annotation.Secured
  * @author Vishesh Duggar
  * @author Shashank Agrawal
  */
-@Secured("ROLE_CONTENT_MANAGER")
+@Secured(Role.ROLE_CONTENT_MANAGER)
 class ContentRevisionController {
 
-    static defaultAction = "show"
+    static defaultAction = 'show'
+    static responseFormats = ['json']
 
     private ContentRevision contentRevisionInstance
 
     def show(Long id) {
-        [contentRevisionInstance: ContentRevision.get(id)]
+        respond(ContentRevision.get(id))
+
+        return
     }
 
     /**
-     * Used to load COntent Revision instance by ID.
+     * Used to load Content Revision instance by ID.
      * @param id REQUIRED Identity of ContentRevision domain instance to be loaded.
      * @return Renders content revision instance data in JSON format.
      */
     def load(Long id) {
         contentRevisionInstance = ContentRevision.get(id)
-        render ([title: contentRevisionInstance.title, subTitle: contentRevisionInstance.subTitle, body:
-            contentRevisionInstance.body] as JSON)
+        respond([title: contentRevisionInstance.title, subTitle: contentRevisionInstance.subTitle, body:
+            contentRevisionInstance.body])
+
         return
     }
 
     def delete(Long id) {
-        ContentRevision.get(id).delete()
-        render true
-    }
+        ContentRevision.get(id).delete(flush: true)
+        respond(ResponseUtils.SUCCESS_TRUE)
 
+        return
+    }
 }
