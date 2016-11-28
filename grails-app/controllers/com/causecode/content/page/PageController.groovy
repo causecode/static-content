@@ -101,7 +101,7 @@ class PageController {
      * the Page instance.
      */
     @Transactional(readOnly = true)
-    @Secured(['PERMIT_ALL'])
+    @Secured(['permitAll'])
     def show(Page pageInstance) {
         if (!pageInstance || pageInstance.hasErrors()) {
             throw new RequiredPropertyMissingException()

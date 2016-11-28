@@ -72,7 +72,7 @@ class BlogController {
      * @return Map containing blog list and total count.
      */
     @SuppressWarnings(['ElseBlockBraces'])
-    @Secured(['PERMIT_ALL'])
+    @Secured(['permitAll'])
     def index(Integer max, Integer offset, String tag, String monthFilter, String queryFilter) {
         // To avoid Parameter Reassignment
         def (updateTag, updateMonthFilter, updateQueryFilter) = [tag, monthFilter, queryFilter]
@@ -199,7 +199,7 @@ class BlogController {
         return true
     }
 
-    @Secured(['PERMIT_ALL'])
+    @Secured(['permitAll'])
     def show() {
         Blog blogInstance = Blog.get(params.id)
 
@@ -331,7 +331,7 @@ class BlogController {
      * as reply to given comment instance otherwise comment will be added as reference to blog instance instance.
      */
     @Transactional
-    @Secured(['PERMIT_ALL'])
+    @Secured(['permitAll'])
     def comment(Blog blogInstance, Long commentId) {
         Long updateCommentId = commentId
         String errorMessage
