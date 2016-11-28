@@ -12,9 +12,6 @@ import com.causecode.content.ContentService
 import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.blog.comment.Comment
 import com.causecode.content.meta.Meta
-import com.causecode.user.Role
-import com.causecode.util.DomainUtils
-import com.causecode.util.ResponseUtils
 import com.lucastex.grails.fileuploader.FileUploaderService
 import com.lucastex.grails.fileuploader.FileUploaderServiceException
 import com.lucastex.grails.fileuploader.UFile
@@ -38,7 +35,7 @@ import java.util.regex.Pattern
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
  */
-@Secured([Role.ROLE_CONTENT_MANAGER])
+@Secured(['ROLE_CONTENT_MANAGER'])
 @Transactional(readOnly = true)
 @ControllerShorthand(value = 'blog')
 class BlogController {
@@ -75,7 +72,7 @@ class BlogController {
      * @return Map containing blog list and total count.
      */
     @SuppressWarnings(['ElseBlockBraces'])
-    @Secured([Role.PERMIT_ALL])
+    @Secured(['PERMIT_ALL'])
     def index(Integer max, Integer offset, String tag, String monthFilter, String queryFilter) {
         // To avoid Parameter Reassignment
         def (updateTag, updateMonthFilter, updateQueryFilter) = [tag, monthFilter, queryFilter]
@@ -188,8 +185,8 @@ class BlogController {
                     return false
                 }
                 blogInstance.setTags(requestData.tags?.tokenize(',')*.trim())
-                blogInstance.save(DomainUtils.FLUSH_TRUE)
-                respond(ResponseUtils.SUCCESS_TRUE)
+                blogInstance.save([flush: true])
+                respond([success: true])
             } catch (FileUploaderServiceException e) {
                 log.debug 'Unable to upload file', e
                 blogInstance.errors.reject("Image couldn't be uploaded " + e.message)
@@ -202,7 +199,7 @@ class BlogController {
         return true
     }
 
-    @Secured([Role.PERMIT_ALL])
+    @Secured(['PERMIT_ALL'])
     def show() {
         Blog blogInstance = Blog.get(params.id)
 
@@ -268,7 +265,7 @@ class BlogController {
     /**
      * Update blog instance also sets tags for blog instance.
      */
-    @Secured([Role.ROLE_CONTENT_MANAGER, Role.ROLE_EMPLOYEE])
+    @Secured(['ROLE_CONTENT_MANAGER', 'ROLE_EMPLOYEE'])
     @SuppressWarnings('JavaIoPackageAccess')
     @Transactional
     def update() {
@@ -301,9 +298,9 @@ class BlogController {
                     return false
                 }
 
-                blogInstance.save(DomainUtils.FLUSH_TRUE)
+                blogInstance.save([flush: true])
 
-                respond(ResponseUtils.SUCCESS_TRUE)
+                respond([success: true])
             } catch (FileUploaderServiceException e) {
                 log.debug 'Unable to upload file', e
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
@@ -334,7 +331,7 @@ class BlogController {
      * as reply to given comment instance otherwise comment will be added as reference to blog instance instance.
      */
     @Transactional
-    @Secured([Role.PERMIT_ALL])
+    @Secured(['PERMIT_ALL'])
     def comment(Blog blogInstance, Long commentId) {
         Long updateCommentId = commentId
         String errorMessage
@@ -379,16 +376,16 @@ class BlogController {
 
             if (updateCommentId) {
                 commentInstance.replyTo = Comment.get(updateCommentId)
-                commentInstance.save(DomainUtils.FLUSH_TRUE)
+                commentInstance.save([flush: true])
             } else {
                 BlogComment blogCommentInstance = new BlogComment()
                 blogCommentInstance.blog = blogInstance
                 blogCommentInstance.comment = commentInstance
-                blogCommentInstance.save(DomainUtils.FLUSH_TRUE)
+                blogCommentInstance.save([flush: true])
             }
             log.info 'Comment Added successfully.'
             if (request.xhr) {
-                render text: (ResponseUtils.SUCCESS_TRUE as JSON)
+                render text: ([success: true] as JSON)
                 return
             }
             redirect uri: blogInstance.searchLink()

@@ -7,7 +7,6 @@
  */
 package com.causecode.content.blog.comment
 
-import com.causecode.user.Role
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
 import com.causecode.content.blog.Blog
@@ -18,7 +17,7 @@ import com.causecode.content.blog.Blog
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
  */
-@Secured([Role.ROLE_CONTENT_MANAGER])
+@Secured(['ROLE_CONTENT_MANAGER'])
 @Transactional(readOnly = true)
 class CommentController {
 

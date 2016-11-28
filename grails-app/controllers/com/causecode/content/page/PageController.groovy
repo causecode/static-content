@@ -8,8 +8,6 @@
 package com.causecode.content.page
 
 import com.causecode.content.ContentService
-import com.causecode.user.Role
-import com.causecode.util.ResponseUtils
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
@@ -30,7 +28,7 @@ import grails.core.GrailsApplication
  * @author Laxmi Salunkhe
  *
  */
-@Secured([Role.ROLE_CONTENT_MANAGER])
+@Secured(['ROLE_CONTENT_MANAGER'])
 @ControllerShorthand(value = 'c')
 class PageController {
 
@@ -103,7 +101,7 @@ class PageController {
      * the Page instance.
      */
     @Transactional(readOnly = true)
-    @Secured([Role.PERMIT_ALL])
+    @Secured(['PERMIT_ALL'])
     def show(Page pageInstance) {
         if (!pageInstance || pageInstance.hasErrors()) {
             throw new RequiredPropertyMissingException()
@@ -184,9 +182,9 @@ class PageController {
         }
         try {
             contentService.delete(pageInstance)
-            respond (ResponseUtils.SUCCESS_TRUE)
+            respond ([success: true])
         } catch (DataIntegrityViolationException e) {
-            respond (ResponseUtils.SUCCESS_TRUE)
+            respond ([success: true])
         }
 
         return

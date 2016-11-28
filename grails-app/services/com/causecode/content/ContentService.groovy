@@ -13,7 +13,6 @@ import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.meta.Meta
 import com.causecode.content.page.Page
 import com.causecode.seo.friendlyurl.FriendlyUrlService
-import com.causecode.util.DomainUtils
 import grails.core.GrailsApplication
 import grails.databinding.SimpleMapDataBindingSource
 import grails.plugin.springsecurity.SpringSecurityService
@@ -91,7 +90,7 @@ class ContentService {
         }
 
         List restrictedDomainClassList = [Page.name, Blog.name]
-        Content contentInstance = Content.withCriteria(DomainUtils.UNIQUE_TRUE) {
+        Content contentInstance = Content.withCriteria([uniqueResult: true]) {
             idEq(id.toLong())
             'in'('class', restrictedDomainClassList)
 
@@ -150,7 +149,7 @@ class ContentService {
             log.warn "Error saving ${contentInstance.class.name}: " + contentInstance.errors
             return contentInstance
         }
-        contentInstance.save(DomainUtils.FLUSH_TRUE)
+        contentInstance.save([flush: true])
         if (!metaTypes || !metaValues) {
             return contentInstance
         }
@@ -167,7 +166,7 @@ class ContentService {
         contentMetas.meta*.delete()
 
         metaTypes.eachWithIndex { type, index ->
-            Meta metaInstance = ContentMeta.withCriteria(DomainUtils.UNIQUE_TRUE) {
+            Meta metaInstance = ContentMeta.withCriteria([uniqueResult: true]) {
                 createAlias('content', 'contentInstance')
                 createAlias('meta', 'metaInstance')
                 projections {
@@ -183,7 +182,7 @@ class ContentService {
             metaInstance.content = metaValues[index]
             metaInstance.validate()
             if (!metaInstance.hasErrors()) {
-                metaInstance.save(DomainUtils.FLUSH_TRUE)
+                metaInstance.save([flush: true])
                 ContentMeta.findOrSaveByContentAndMeta(contentInstance, metaInstance)
             }
         }

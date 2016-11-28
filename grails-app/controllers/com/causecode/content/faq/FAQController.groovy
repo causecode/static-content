@@ -7,9 +7,6 @@
  */
 package com.causecode.content.faq
 
-import com.causecode.user.Role
-import com.causecode.util.DomainUtils
-import com.causecode.util.ResponseUtils
 import grails.plugin.springsecurity.annotation.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
@@ -22,7 +19,7 @@ import org.springframework.http.HttpStatus
  * @author Laxmi Salunkhe
  *
  */
-@Secured([Role.ROLE_CONTENT_MANAGER])
+@Secured(['ROLE_CONTENT_MANAGER'])
 class FAQController {
 
     static responseFormats = ['json']
@@ -55,7 +52,7 @@ class FAQController {
             return
         }
 
-        respond (ResponseUtils.SUCCESS_TRUE)
+        respond ([success: true])
 
         return
     }
@@ -85,7 +82,7 @@ class FAQController {
 
     def delete(FAQ faqInstance) {
         try {
-            faqInstance.delete(DomainUtils.FLUSH_TRUE)
+            faqInstance.delete([flush: true])
         } catch (DataIntegrityViolationException e) {
             respond ([status: HttpStatus.NOT_MODIFIED])
             return false
