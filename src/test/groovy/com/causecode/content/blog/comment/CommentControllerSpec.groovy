@@ -28,6 +28,8 @@ class CommentControllerSpec extends Specification implements BaseTestSetup {
         given: 'Blog and Comment instance with replyTo'
         Blog blogInstance = getBlogInstance(1)
         Comment commentInstance = getCommentInstance(1)
+        assert commentInstance.toString() == 'Comment(Comment text 1, 1)'
+
         commentInstance.replyTo = getCommentInstance(2)
         commentInstance.save()
 
@@ -53,7 +55,7 @@ class CommentControllerSpec extends Specification implements BaseTestSetup {
         blogCommentInstance.save()
 
         assert blogCommentInstance.id
-        assert blogCommentInstance.toString() == "BlogComment ($blogCommentInstance.id)($blogCommentInstance.blog.title)"
+        assert blogCommentInstance.toString() == 'BlogComment(1)'
 
         and: 'Mocking blogInstance'
         blogInstance.contentService = Mock(ContentService)

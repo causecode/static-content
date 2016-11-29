@@ -16,7 +16,7 @@ import groovy.transform.ToString
  * @author Laxmi Salunkhe
  *
  */
-@ToString
+@ToString(includes = ['id', 'commentText'], includePackage = false)
 @EqualsAndHashCode
 @SuppressWarnings(['GrailsDomainWithServiceReference'])
 class Comment {
@@ -51,10 +51,5 @@ class Comment {
         Comment.withNewSession {
             commentService.deleteNestedComment(this, false)
         }
-    }
-
-    @Override
-    String toString() {
-        return "Comment ($id)($commentText)"
     }
 }

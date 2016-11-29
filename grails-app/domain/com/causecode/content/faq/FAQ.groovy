@@ -16,15 +16,10 @@ import groovy.transform.ToString
  * @author Shashank Agrawal
  *
  */
-@ToString
+@ToString(includes = ['id'], includePackage = false)
 @EqualsAndHashCode
 class FAQ extends Content {
 
     static constraints = {
-    }
-
-    @Override
-    String toString() {
-        return "FAQ ($title)"
     }
 }

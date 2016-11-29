@@ -94,6 +94,7 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
     void "test show action for selected blog id"() {
         given: 'Blog instance'
         Blog blogInstance = getBlogInstance(1)
+        assert blogInstance.toString() == 'Blog(MARKDOWN(2))'
 
         and: 'Mocked BlogService'
         controller.blogService = [getAllTags: { ->

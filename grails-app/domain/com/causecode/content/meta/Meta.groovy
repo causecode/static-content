@@ -14,7 +14,7 @@ import groovy.transform.ToString
  * Used for storing meta tags for contents.
  * @author Shashank Agrawal
  */
-@ToString
+@ToString(includes = ['id', 'type'], includePackage = false)
 @EqualsAndHashCode
 class Meta {
 
@@ -37,10 +37,5 @@ class Meta {
 
     static List<String> getTypeList() {
         return ['keywords', 'description', 'og:description', 'og:title', 'og:image', 'og:url']
-    }
-
-    @Override
-    String toString() {
-        return "Meta ($type)"
     }
 }

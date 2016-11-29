@@ -16,7 +16,7 @@ import groovy.transform.ToString
  * These domain extend Content used to store Page contents and also stores page layout.
  * @author Shashank Agrawal
  */
-@ToString
+@ToString(includes = ['id', 'title'], includePackage = false)
 @EqualsAndHashCode
 class Page extends Content {
 

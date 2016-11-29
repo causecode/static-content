@@ -96,7 +96,6 @@ trait BaseTestSetup {
         blogInstance.save()
 
         assert blogInstance.id
-        assert blogInstance.toString() == "Blog ($blogInstance.title)($blogInstance.contentType)"
 
         return blogInstance
     }
@@ -119,7 +118,6 @@ trait BaseTestSetup {
         Comment commentInstance = new Comment(getCommentDataMap(index))
         commentInstance.save()
         assert commentInstance.id
-        assert commentInstance.toString() == "Comment ($commentInstance.id)($commentInstance.commentText)"
 
         return commentInstance
     }
@@ -129,7 +127,6 @@ trait BaseTestSetup {
         PageLayout pageLayoutInstance = new PageLayout([layoutName: "TestPageLayout-$index"])
         pageLayoutInstance.save()
         assert pageLayoutInstance.id
-        assert pageLayoutInstance.toString() == "PageLayout ($pageLayoutInstance.id)($pageLayoutInstance.layoutName)"
 
         return pageLayoutInstance
     }
@@ -149,7 +146,7 @@ trait BaseTestSetup {
         FAQ faqInstance = new FAQ(getContentParams(index))
         faqInstance.save()
         assert faqInstance.id
-        assert faqInstance.toString() == "FAQ ($faqInstance.title)"
+
         return faqInstance
     }
 
@@ -182,7 +179,6 @@ trait BaseTestSetup {
         contentMetaInstance.save()
 
         assert contentMetaInstance.id
-        assert contentMetaInstance.toString() == "ContentMeta ($contentMetaInstance.content)($contentMetaInstance.meta)"
 
         return contentMetaInstance
     }

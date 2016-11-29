@@ -19,7 +19,7 @@ import groovy.transform.ToString
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
  */
-@ToString
+@ToString(includes = ['title', 'contentType'], includePackage = false)
 @EqualsAndHashCode
 class Blog extends Content implements Taggable {
 
@@ -37,14 +37,8 @@ class Blog extends Content implements Taggable {
     }
 
     static final String UFILE_GROUP = 'blogImg'
-
-    @Override
-    String toString() {
-        return "Blog ($title)($contentType)"
-    }
 }
 
-@ToString
 @SuppressWarnings('GrailsDomainHasEquals')
 enum BlogContentType {
     TINYMCE(1),

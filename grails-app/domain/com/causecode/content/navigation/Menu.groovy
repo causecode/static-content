@@ -18,7 +18,7 @@ import groovy.transform.ToString
  * @author Bharti Nagdev
  *
  */
-@ToString
+@ToString(includes = ['id', 'name'], includePackage = false)
 @EqualsAndHashCode
 class Menu {
 
@@ -44,10 +44,5 @@ class Menu {
 
     static mapping = {
         table 'cc_content_menu'
-    }
-
-    @Override
-    String toString() {
-        "Menu [$name][$id]"
     }
 }

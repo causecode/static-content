@@ -115,6 +115,7 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
     void "test edit action when faqInstance is passed"() {
         given: 'faqInstance instance'
         FAQ validFaqInstance = getFAQInstance(1)
+        assert validFaqInstance.toString() == 'FAQ()'
         FAQ invalidFaqInstance = null
 
         when: 'Edit action is hit'

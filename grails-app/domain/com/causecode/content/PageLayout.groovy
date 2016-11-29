@@ -17,7 +17,7 @@ import groovy.transform.ToString
  * @author Bharti Nagdev
  *
  */
-@ToString
+@ToString(includes = ['id', 'layoutName'], includePackage = false)
 @EqualsAndHashCode
 class PageLayout {
 
@@ -28,10 +28,5 @@ class PageLayout {
 
     static mapping = {
         table 'cc_content_page_layout'
-    }
-
-    @Override
-    String toString() {
-        return  "PageLayout ($id)($layoutName)"
     }
 }

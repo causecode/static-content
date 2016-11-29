@@ -16,7 +16,7 @@ import groovy.transform.ToString
  * @author Shashank Agrawal
  * @author Laxmi Salunkhe
  */
-@ToString
+@ToString(includes = ['id', 'blog.title'], includePackage = false)
 @EqualsAndHashCode
 class BlogComment {
 
@@ -32,9 +32,9 @@ class BlogComment {
             comment.delete(flush: true)
         }
     }
-
-    @Override
-    String toString() {
-        return "BlogComment ($id)($blog.title)"
-    }
+//
+//    @Override
+//    String toString() {
+//        return "BlogComment ($id)($blog.title)"
+//    }
 }

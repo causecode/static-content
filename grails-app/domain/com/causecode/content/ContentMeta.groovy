@@ -16,7 +16,7 @@ import groovy.transform.ToString
  * @author Shashank Agrawal
  *
  */
-@ToString
+@ToString(includes = ['content', 'meta'], includePackage = false)
 @EqualsAndHashCode
 class ContentMeta {
 
@@ -35,10 +35,5 @@ class ContentMeta {
         version false
         meta cascade: 'delete'
         table 'cc_content_content_meta'
-    }
-
-    @Override
-    String toString() {
-        return "ContentMeta ($content)($meta)"
     }
 }

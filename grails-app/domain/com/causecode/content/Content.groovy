@@ -20,7 +20,7 @@ import groovy.transform.ToString
  * @author Bharti Nagdev
  * @author Sakshi Gangarde
  */
-@ToString
+@ToString(includes = ['id', 'title'], includePackage = false)
 @EqualsAndHashCode
 @SuppressWarnings(['GrailsDomainWithServiceReference'])
 class Content {

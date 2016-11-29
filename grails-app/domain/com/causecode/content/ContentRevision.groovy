@@ -15,7 +15,7 @@ import groovy.transform.ToString
  * @author Shashank Agrawal
  *
  */
-@ToString
+@ToString(includes = ['id', 'title'], includePackage = false)
 @EqualsAndHashCode
 class ContentRevision {
 

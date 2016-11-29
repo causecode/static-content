@@ -65,6 +65,8 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
     void "test create action when parameters are passed"() {
         given: 'Map parameters instance'
         PageLayout pageLayoutInstance = getPageLayoutInstance(1)
+        assert pageLayoutInstance.toString() == 'PageLayout(TestPageLayout-1, 1)'
+
         Map params = [pageLayout: 'pageLayoutInstance']
 
         when: 'Create action is hit'
