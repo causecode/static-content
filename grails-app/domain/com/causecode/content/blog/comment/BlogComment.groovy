@@ -32,9 +32,4 @@ class BlogComment {
             comment.delete(flush: true)
         }
     }
-//
-//    @Override
-//    String toString() {
-//        return "BlogComment ($id)($blog.title)"
-//    }
 }
