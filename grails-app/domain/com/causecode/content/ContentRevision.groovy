@@ -43,9 +43,4 @@ class ContentRevision {
         body type: 'text'
         table 'cc_content_content_revision'
     }
-
-    @Override
-    String toString() {
-        return "ContentRevision ($title)"
-    }
 }

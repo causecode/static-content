@@ -66,6 +66,7 @@ class ContentRevisionControllerSpec extends Specification implements BaseTestSet
 
     ContentRevision getContentRevisionInstance() {
         Content contentInstance = getContentInstance(1)
+
         Map contentRevisionDataMap = [
             title: 'Sample Title',
             body: 'Test Body',
@@ -78,7 +79,6 @@ class ContentRevisionControllerSpec extends Specification implements BaseTestSet
         contentRevisionInstance.save()
 
         assert contentRevisionInstance.id
-        assert contentRevisionInstance.toString() == "ContentRevision ($contentRevisionInstance.title)"
 
         return contentRevisionInstance
     }

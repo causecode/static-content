@@ -57,11 +57,6 @@ class Content {
         publishedDate nullable: true, bindable: false
     }
 
-    @Override
-    String toString() {
-        title
-    }
-
     String resolveAuthor() {
         return contentService.resolveAuthor(this)
     }

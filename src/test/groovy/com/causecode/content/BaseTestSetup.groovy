@@ -156,7 +156,6 @@ trait BaseTestSetup {
         contentInstance.save()
 
         assert contentInstance.id
-        assert contentInstance.toString() == "$contentInstance.title"
 
         return contentInstance
     }

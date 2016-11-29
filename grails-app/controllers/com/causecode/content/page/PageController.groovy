@@ -184,7 +184,7 @@ class PageController {
             contentService.delete(pageInstance)
             respond ([success: true])
         } catch (DataIntegrityViolationException e) {
-            respond ([success: true])
+            respond ([success: false])
         }
 
         return

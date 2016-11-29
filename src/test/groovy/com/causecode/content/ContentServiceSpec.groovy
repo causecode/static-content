@@ -36,6 +36,8 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
     void "test resolveAuthor method when contentInstance and authorProperty is passed"() {
         given: 'Instance of content and authorProperty'
         Content contentInstance1 = getContentInstance(1)
+        assert contentInstance1.toString() == 'Content(Targeting Test 1 Types and/or Phases, 1)'
+
         contentInstance1.author = '1'
         contentInstance1.save()
 

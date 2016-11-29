@@ -45,7 +45,8 @@ class ContentSpec extends Specification implements BaseTestSetup {
     void "test getMetaTags method for content instance"() {
         given: 'ContentMeta instance'
         ContentMeta contentMetaInstance = getContentMetaInstance(1)
-        assert contentMetaInstance.toString() == 'ContentMeta(Targeting Test 1 Types and/or Phases, Meta(keywords, 1))'
+        assert contentMetaInstance.toString() == 'ContentMeta(Content(Targeting Test 1 Types and/or Phases, 1),' +
+                ' Meta(keywords, 1))'
 
         when: 'getMetaTags method is called'
         List<Meta> resultMetaList = contentMetaInstance.content.getMetaTags()
