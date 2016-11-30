@@ -146,16 +146,15 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     void "test edit action when invalid pageLayoutInstance is passed"() {
         // Cannot be clubbed into one block for DRYness gives: Cannot issue a redirect(..) here.
         given: 'PageLayout instance'
-        PageLayout invalidPageLayoutInstance = null
+        PageLayout invalidPageLayoutInstance = getPageLayoutInstance(1)
 
         when: 'Edit action is hit'
         controller.request.method = 'POST'
-        controller.params.id = 1L
+        controller.params.id = 2L
         controller.edit()
 
         then: 'Response redirect URL /list should be received'
-        controller.response.redirectedUrl.contains('/list')
-        response.status == HttpStatus.MOVED_TEMPORARILY.value()
+        response.status == HttpStatus.UNPROCESSABLE_ENTITY.value()
     }
 
     // Update action
@@ -185,12 +184,11 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
         when: 'Update action is hit'
         controller.request.method = 'PUT'
         controller.request.json = params
-        controller.params.id = 1L
+        controller.params.id = 2L
         controller.update()
 
         then: 'HttpStatus NOT_ACCEPTABLE should be received'
-        controller.response.redirectedUrl.contains('/list')
-        response.status == HttpStatus.MOVED_TEMPORARILY.value()
+        response.status == HttpStatus.UNPROCESSABLE_ENTITY.value()
     }
 
     // Delete action

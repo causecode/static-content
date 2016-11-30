@@ -97,6 +97,13 @@ class BlogService {
         return updatedQuery
     }
 
+    /**
+     * This method is used to get the unique [month-year] list of the published blogs .i.e. the month and year on which
+     * the particular blog is published; further this list will be used as filter for various search pattern.
+     *
+     * @param monthFilterList List to be updated.
+     * @return updateMonthFilterList updated list of [month-year]
+     */
     List<String> updatedMonthFilterListBasedOnPublishedDate(List<String> monthFilterList) {
         List<String> updateMonthFilterList = monthFilterList
         List<Blog> publishDateList = Blog.createCriteria().list {
@@ -116,7 +123,15 @@ class BlogService {
         return updateMonthFilterList
     }
 
-    List<Blog> getBlogInstanceList(List<Map> blogList, Pattern patternTag) {
+    /**
+     * This method is used to get list of Blogs with there summary.
+     *
+     * @param blogList List of blogs
+     * @param patternTag Pattern to match the search content.
+     *
+     * @return List of blogs
+     */
+    List<Blog> getBlogSummaries(List<Map> blogList, Pattern patternTag) {
         List<Blog> blogInstanceList = []
         blogList.each {
             Blog blogInstance = Blog.get(it.id as long)

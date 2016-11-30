@@ -62,7 +62,7 @@ class BlogController {
      * Kindly refer previous commits for reference.
      *
      * New methods added: 1. blogService.queryModifierBasedOnFilter(...)
-     *                    2. blogService.getBlogInstanceList(...)
+     *                    2. blogService.getBlogSummaries(...)
      *                    3. blogService.updatedMonthFilterListBasedOnPublishedDate(...)
      *                    4. renderGSPContentAndBlogCustomURLRedirect(...)
      *
@@ -71,7 +71,6 @@ class BlogController {
      * @param tag String Used to filter Blogs with tag.
      * @return Map containing blog list and total count.
      */
-    @SuppressWarnings(['ElseBlockBraces'])
     @Secured(['permitAll'])
     def index(Integer max, Integer offset, String tag, String monthFilter, String queryFilter) {
         // To avoid Parameter Reassignment
@@ -127,7 +126,7 @@ class BlogController {
         }
 
         // Get blogInstanceList
-        List<Blog> blogInstanceList = blogService.getBlogInstanceList(blogList, patternTag)
+        List<Blog> blogInstanceList = blogService.getBlogSummaries(blogList, patternTag)
 
         // Updated monthFilterList based on Blog published date
         monthFilterList = blogService.updatedMonthFilterListBasedOnPublishedDate(monthFilterList)
@@ -229,6 +228,7 @@ class BlogController {
         return
     }
 
+    // TODO revisit the index action implementation to get rid of "CodeNarc's AbcMetric failure" & this methods.
     /*
      * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
      * any change in data model must be updated in the GSP.

@@ -113,7 +113,7 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
         resultList.contains(month)
     }
 
-    // Method getBlogInstanceList
+    // Method getBlogSummaries
     @ConfineMetaClassChanges([User, String])
     void "test getBlogInstanceList method when monthFilterList is passed"() {
         given: 'Instance of monthFilterList'
@@ -144,7 +144,7 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
         }
 
         when: 'updatedMonthFilterListBasedOnPublishedDate method is called'
-        List<Blog> resultList = service.getBlogInstanceList(blogList, patternTag)
+        List<Blog> resultList = service.getBlogSummaries(blogList, patternTag)
 
         then: 'Valid Response should be received'
         resultList[0].title == 'Targeting Test 1 Types and/or Phases'
@@ -159,7 +159,7 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
         List<Map> blogList = [mapInstance1]
 
         when: 'updatedMonthFilterListBasedOnPublishedDate method is called'
-        List<Blog> resultList = service.getBlogInstanceList(blogList, patternTag)
+        List<Blog> resultList = service.getBlogSummaries(blogList, patternTag)
 
         then: 'Valid Response should be received'
         resultList == []

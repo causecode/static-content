@@ -56,8 +56,9 @@ class PageLayoutController {
 
     def save(PageLayout pageLayoutInstance) {
         if (pageLayoutInstance.hasErrors()) {
-            log.warn "Error saving pageLayout Instance: $pageLayoutInstance.errors."
+            log.warn "Error saving pageLayout Instance: ${pageLayoutInstance.errors}"
             respond ([errors: pageLayoutInstance.errors], status: HttpStatus.NOT_MODIFIED)
+
             return
         }
 
@@ -77,8 +78,9 @@ class PageLayoutController {
 
     def edit(PageLayout pageLayoutInstance) {
         if (!pageLayoutInstance) {
-            log.warn message(logWarnMessage())
-            redirect(action: 'list')
+            log.warn "Invalid pageLayout Instance: ${pageLayoutInstance?.errors}"
+            respond ([errors: pageLayoutInstance?.errors], status: HttpStatus.UNPROCESSABLE_ENTITY)
+
             return
         }
 
@@ -89,8 +91,9 @@ class PageLayoutController {
 
     def update(PageLayout pageLayoutInstance) {
         if (!pageLayoutInstance || pageLayoutInstance.hasErrors()) {
-            log.warn message(logWarnMessage())
-            redirect(action: 'list')
+            log.warn "Invalid pageLayout Instance: ${pageLayoutInstance?.errors}"
+            respond ([errors: pageLayoutInstance?.errors], status: HttpStatus.UNPROCESSABLE_ENTITY)
+
             return
         }
 
@@ -99,8 +102,9 @@ class PageLayoutController {
         pageLayoutInstance.validate()
 
         if (pageLayoutInstance.hasErrors()) {
-            log.warn "Error updating pageLayout Instance: $pageLayoutInstance.errors."
-            respond ([errors: pageLayoutInstance.errors], status: HttpStatus.NOT_MODIFIED)
+            log.warn "Error updating pageLayout Instance: ${pageLayoutInstance.errors}"
+            respond ([errors: pageLayoutInstance?.errors], status: HttpStatus.UNPROCESSABLE_ENTITY)
+
             return
         }
 
@@ -123,10 +127,5 @@ class PageLayoutController {
         respond ([status: HttpStatus.OK])
 
         return true
-    }
-
-    private Map logWarnMessage() {
-
-        return [code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), params.id]]
     }
 }
