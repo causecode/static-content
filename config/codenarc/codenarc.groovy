@@ -53,7 +53,7 @@ ruleset {
     ThrowExceptionFromFinallyBlock
 
     // rulesets/braces.xml
-    ElseBlockBraces(bracesRequiredForElseIf: true)
+    ElseBlockBraces
     ForStatementBraces
     IfStatementBraces
     WhileStatementBraces
@@ -93,7 +93,7 @@ ruleset {
     IfStatementCouldBeTernary
     InvertedIfElse
     LongLiteralWithLowerCaseL
-//    NoDef
+    // NoDef
     ParameterReassignment
     TernaryCouldBeElvis
     VectorIsObsolete
@@ -103,7 +103,7 @@ ruleset {
     AbstractClassWithoutAbstractMethod
     AssignmentToStaticFieldFromInstanceMethod
     BooleanMethodReturnsNull
-    //BuilderMethodWithSideEffects
+    BuilderMethodWithSideEffects
     CloneableWithoutClone
     CloseWithoutCloseable
     CompareToWithoutComparable
@@ -122,17 +122,10 @@ ruleset {
     StatelessSingleton
     ToStringReturnsNull
 
-    // TODO fix these rulesets and enable them
-    // rulesets/dry.xml
-    DuplicateListLiteral
-    //DuplicateMapLiteral
-    //DuplicateNumberLiteral
-    //DuplicateStringLiteral
-
     // rulesets/enhanced.xml
-//    CloneWithoutCloneable
+    // CloneWithoutCloneable, causing compilation errors -> https://github.com/CodeNarc/CodeNarc/issues/123
+    // UnsafeImplementationAsMap
     JUnitAssertEqualsConstantActualValue
-//    UnsafeImplementationAsMap
 
     // rulesets/exceptions.xml
     CatchArrayIndexOutOfBoundsException
@@ -171,7 +164,7 @@ ruleset {
     MissingBlankLineAfterImports
     MissingBlankLineAfterPackage
     SpaceAfterCatch
-    //SpaceAfterClosingBrace
+    SpaceAfterClosingBrace
     SpaceAfterComma
     SpaceAfterFor
     SpaceAfterIf
@@ -200,7 +193,7 @@ ruleset {
     GrailsDomainHasEquals
     GrailsDomainHasToString
     GrailsDomainReservedSqlKeywordName
-    //GrailsDomainWithServiceReference
+    GrailsDomainWithServiceReference
     GrailsDuplicateConstraint
     GrailsDuplicateMapping
     GrailsMassAssignment
@@ -208,6 +201,9 @@ ruleset {
     GrailsServletContextReference
     GrailsSessionReference
     GrailsStatelessService
+
+    // Custom rule for Grails max parameter in list queries.
+    rule('file:config/codenarc/GrailsMaxForListQueriesRule.groovy')
 
     // rulesets/groovyism.xml
     AssignCollectionSort
@@ -259,30 +255,30 @@ ruleset {
     JdbcStatementReference
 
     // rulesets/junit.xml
-//    ChainedTest
-//    CoupledTestCase
-//    JUnitAssertAlwaysFails
-//    JUnitAssertAlwaysSucceeds
-//    JUnitFailWithoutMessage
-//    JUnitLostTest
-//    JUnitPublicField
-//    JUnitPublicNonTestMethod
-//    JUnitPublicProperty
-//    JUnitSetUpCallsSuper
-//    JUnitStyleAssertions
-//    JUnitTearDownCallsSuper
-//    JUnitTestMethodWithoutAssert
-//    JUnitUnnecessarySetUp
-//    JUnitUnnecessaryTearDown
-//    JUnitUnnecessaryThrowsException
-//    SpockIgnoreRestUsed
-//    UnnecessaryFail
-//    UseAssertEqualsInsteadOfAssertTrue
-//    UseAssertFalseInsteadOfNegation
-//    UseAssertNullInsteadOfAssertEquals
-//    UseAssertSameInsteadOfAssertTrue
-//    UseAssertTrueInsteadOfAssertEquals
-//    UseAssertTrueInsteadOfNegation
+    ChainedTest
+    CoupledTestCase
+    JUnitAssertAlwaysFails
+    JUnitAssertAlwaysSucceeds
+    JUnitFailWithoutMessage
+    JUnitLostTest
+    JUnitPublicField
+    JUnitPublicNonTestMethod
+    JUnitPublicProperty
+    JUnitSetUpCallsSuper
+    JUnitStyleAssertions
+    JUnitTearDownCallsSuper
+    JUnitTestMethodWithoutAssert
+    JUnitUnnecessarySetUp
+    JUnitUnnecessaryTearDown
+    JUnitUnnecessaryThrowsException
+    SpockIgnoreRestUsed
+    UnnecessaryFail
+    UseAssertEqualsInsteadOfAssertTrue
+    UseAssertFalseInsteadOfNegation
+    UseAssertNullInsteadOfAssertEquals
+    UseAssertSameInsteadOfAssertTrue
+    UseAssertTrueInsteadOfAssertEquals
+    UseAssertTrueInsteadOfNegation
 
     // rulesets/logging.xml
     LoggerForDifferentClass
@@ -301,7 +297,9 @@ ruleset {
     }
     ClassNameSameAsFilename
     ConfusingMethodName
-    //FactoryMethodName
+    FactoryMethodName {
+        regex = 'build.*'
+    }
     FieldName {
         regex = '^_?[a-z][a-zA-Z0-9]*$'
         finalRegex = '^_?[a-z][a-zA-Z0-9]*$'
@@ -314,7 +312,7 @@ ruleset {
     ObjectOverrideMisspelledMethodName
     PackageName
     ParameterName
-    //PropertyName
+    PropertyName
     VariableName {
         finalRegex = '^[a-z][a-zA-Z0-9]*$'
     }
@@ -339,7 +337,7 @@ ruleset {
     // rulesets/size.xml
     AbcMetric   // Requires the GMetrics jar
     ClassSize
-//    CrapMetric   // Requires the GMetrics jar and a Cobertura coverage file
+    // CrapMetric   // Requires the GMetrics jar and a Cobertura coverage file
     CyclomaticComplexity   // Requires the GMetrics jar
     MethodCount
     MethodSize
@@ -370,7 +368,7 @@ ruleset {
     UnnecessaryFinalOnPrivateMethod
     UnnecessaryFloatInstantiation
     UnnecessaryGString
-    //UnnecessaryGetter
+    UnnecessaryGetter
     UnnecessaryIfStatement
     UnnecessaryInstanceOfCheck
     UnnecessaryInstantiationToGetClass
@@ -384,14 +382,14 @@ ruleset {
     UnnecessaryPackageReference
     UnnecessaryParenthesesForMethodCallWithClosure
     UnnecessaryPublicModifier
-    //UnnecessaryReturnKeyword
+    // UnnecessaryReturnKeyword
     UnnecessarySelfAssignment
     UnnecessarySemicolon
     UnnecessaryStringInstantiation
     UnnecessarySubstring
     UnnecessaryTernaryExpression
     UnnecessaryToString
-    //UnnecessaryTransientModifier
+    UnnecessaryTransientModifier
 
     // rulesets/unused.xml
     UnusedArray

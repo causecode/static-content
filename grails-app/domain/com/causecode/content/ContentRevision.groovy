@@ -5,14 +5,18 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content
+
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * Used to support old content reference if required.
  * @author Shashank Agrawal
  *
  */
+@ToString(includes = ['id', 'title'], includePackage = false)
+@EqualsAndHashCode
 class ContentRevision {
 
     String title
@@ -37,7 +41,6 @@ class ContentRevision {
 
     static mapping = {
         body type: 'text'
-        table "cc_content_content_revision"
+        table 'cc_content_content_revision'
     }
-
 }

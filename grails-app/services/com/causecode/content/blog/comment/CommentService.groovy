@@ -5,15 +5,13 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content.blog.comment
 
-/**
- * This taglib provides tags for rendering comments on blog.
- * @author Shashank Agrawal
- */
 import com.causecode.content.blog.Blog
 
+/**
+ * A service for all comment related operations.
+ */
 class CommentService {
 
     static transactional = false
@@ -29,7 +27,7 @@ class CommentService {
         nestedCommentList.each {
             deleteNestedComment(it)
         }
-        if(deleteCommentAlso) {
+        if (deleteCommentAlso) {
             commentInstance.delete(flush: true)
         }
     }
@@ -40,12 +38,17 @@ class CommentService {
     }
 
     Map getCommentData(Comment commentInstance) {
-        if (!commentInstance) return [:]
-        return [
+        if (!commentInstance) {
+            log.warn "Invalid comment instance $commentInstance"
+            return [:]
+        }
+
+        return  [
             subject: commentInstance.subject, id: commentInstance.id,
-            name: commentInstance.name, email: commentInstance.email, 
+            name: commentInstance.name, email: commentInstance.email,
             commentText: commentInstance.commentText, lastUpdated: commentInstance.lastUpdated,
-            comments: getCommentsWithNestedComments(Comment.findAllByReplyTo(commentInstance))]
+            comments: getCommentsWithNestedComments(Comment.findAllByReplyTo(commentInstance))
+        ]
     }
 
     List getCommentsWithNestedComments(List<Comment> commentList) {

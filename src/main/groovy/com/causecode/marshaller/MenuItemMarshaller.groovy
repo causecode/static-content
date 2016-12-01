@@ -5,7 +5,6 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.marshaller
 
 import grails.converters.JSON
@@ -17,7 +16,10 @@ import org.grails.web.json.JSONWriter
 
 import com.causecode.content.navigation.MenuItem
 
-class MenuItemMarshaller implements ObjectMarshaller<JSON>, NameAwareMarshaller{
+/**
+ * This is MenuItem Marshaller.
+ */
+class MenuItemMarshaller implements ObjectMarshaller<JSON>, NameAwareMarshaller {
 
     @Override
     String getElementName(Object o) {
@@ -26,30 +28,30 @@ class MenuItemMarshaller implements ObjectMarshaller<JSON>, NameAwareMarshaller{
 
     @Override
     boolean supports(Object object) {
-        return object instanceof  MenuItem
+        return MenuItem.isCase(object)
     }
 
     @Override
     void marshalObject(Object object, JSON converter) throws ConverterException {
         MenuItem menuItemInstance = object as MenuItem
-        JSONWriter writer = converter.getWriter()
+        JSONWriter writer = converter.writer
 
         writer.object()
 
-        writer.key("id")
+        writer.key('id')
                 .value(menuItemInstance.id)
-        writer.key("version")
+        writer.key('version')
                 .value(menuItemInstance.version)
-        writer.key("title")
+        writer.key('title')
                 .value(menuItemInstance.title)
-        writer.key("url")
+        writer.key('url')
                 .value(menuItemInstance.url)
-        writer.key("parent")
+        writer.key('parent')
                 .value(menuItemInstance.parent)
 
-        writer.key("roles")
-        converter.convertAnother(menuItemInstance.roles?.tokenize(",") ?: [])
-        writer.key("childItems")
+        writer.key('roles')
+        converter.convertAnother(menuItemInstance.roles?.tokenize(',') ?: [])
+        writer.key('childItems')
         writer.array()
             menuItemInstance.childItems.each { childMenuItem ->
                 converter.convertAnother(childMenuItem)
