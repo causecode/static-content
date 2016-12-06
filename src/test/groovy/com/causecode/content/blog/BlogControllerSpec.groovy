@@ -14,12 +14,12 @@ import com.causecode.content.ContentRevision
 import com.causecode.content.ContentService
 import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.blog.comment.Comment
-import com.lucastex.grails.fileuploader.FileUploaderService
-import com.lucastex.grails.fileuploader.FileUploaderServiceException
-import com.lucastex.grails.fileuploader.UFileType
+import com.causecode.fileuploader.FileUploaderService
+import com.causecode.fileuploader.FileUploaderServiceException
+import com.causecode.fileuploader.UFileType
 import com.naleid.grails.MarkdownService
 import grails.plugin.springsecurity.SpringSecurityService
-import com.lucastex.grails.fileuploader.UFile
+import com.causecode.fileuploader.UFile
 import grails.plugins.taggable.Tag
 import grails.plugins.taggable.TagLink
 import grails.plugins.taggable.TaggableService

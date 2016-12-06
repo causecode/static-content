@@ -12,9 +12,9 @@ import com.causecode.content.ContentService
 import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.blog.comment.Comment
 import com.causecode.content.meta.Meta
-import com.lucastex.grails.fileuploader.FileUploaderService
-import com.lucastex.grails.fileuploader.FileUploaderServiceException
-import com.lucastex.grails.fileuploader.UFile
+import com.causecode.fileuploader.FileUploaderService
+import com.causecode.fileuploader.FileUploaderServiceException
+import com.causecode.fileuploader.UFile
 import com.naleid.grails.MarkdownService
 import grails.converters.JSON
 import grails.core.GrailsApplication
