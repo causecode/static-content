@@ -15,8 +15,8 @@ import com.causecode.content.ContentService
 import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.blog.comment.Comment
 import com.causecode.fileuploader.FileUploaderService
-import com.causecode.fileuploader.FileUploaderServiceException
 import com.causecode.fileuploader.UFileType
+import com.causecode.fileuploader.UploadFailureException
 import com.naleid.grails.MarkdownService
 import grails.plugin.springsecurity.SpringSecurityService
 import com.causecode.fileuploader.UFile
@@ -57,7 +57,7 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         // For fileUploaderException
         if(exceptionBool) {
             controller.metaClass.fileUploaderService = [saveFile: { String group, def file ->
-                throw new FileUploaderServiceException('Unable to upload file')
+                throw new UploadFailureException('Unable to upload file', new Throwable())
             }]
         } else {
             controller.metaClass.fileUploaderService = [saveFile: { String group, def file ->
