@@ -5,11 +5,13 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content
 
 import com.causecode.annotation.sanitizedTitle.SanitizedTitle
 import com.causecode.content.meta.Meta
+import com.causecode.seo.friendlyurl.FriendlyUrlService
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * A generic domain used to store generic fields for storing any content.
@@ -17,12 +19,16 @@ import com.causecode.content.meta.Meta
  * @author Shashank Agrawal
  * @author Bharti Nagdev
  * @author Sakshi Gangarde
- * 
  */
+@ToString(includes = ['id', 'title'], includePackage = false)
+@EqualsAndHashCode
+@SuppressWarnings(['GrailsDomainWithServiceReference'])
 class Content {
 
-    transient contentService
-    transient friendlyUrlService
+    static transients = ['contentService', 'friendlyUrlService']
+
+    ContentService contentService
+    FriendlyUrlService friendlyUrlService
 
     Date dateCreated
     Date lastUpdated
@@ -38,7 +44,7 @@ class Content {
 
     static mapping = {
         body type: 'text'
-        table "cc_content_content"
+        table 'cc_content_content'
     }
 
     static constraints = {  // Any modification here -> confirm in ContentRevision domain
@@ -51,11 +57,6 @@ class Content {
         publishedDate nullable: true, bindable: false
     }
 
-    @Override
-    String toString() {
-        title
-    }
-
     String resolveAuthor() {
         return contentService.resolveAuthor(this)
     }
@@ -65,19 +66,21 @@ class Content {
     }
 
     List<Meta> getMetaTags() {
-        if(!this.id) return [];
+        if (!this.id) {
+            return []
+        }
 
         ContentMeta.findAllByContent(this)*.meta
     }
 
     def beforeInsert() {
-        if(publish) {
+        if (publish) {
             publishedDate = new Date()
         }
     }
 
     def beforeUpdate() {
-        if(!this.getPersistentValue("publish") && publish) {
+        if (!this.getPersistentValue('publish') && publish) {
             publishedDate = new Date()
         }
     }
@@ -86,6 +89,4 @@ class Content {
         contentService.createLink([domain: this.class.name, absolute: absolute,
             controller: this.class.simpleName.toLowerCase(), id: this.id])
     }
-
-
 }

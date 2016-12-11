@@ -5,7 +5,6 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.marshaller
 
 import grails.converters.JSON
@@ -15,44 +14,46 @@ import org.grails.web.converters.marshaller.ObjectMarshaller
 import org.grails.web.json.JSONWriter
 import com.causecode.content.blog.Blog
 
+/**
+ * This is Blog domain Marshaller.
+ */
 class BlogDomainMarshaller implements ObjectMarshaller<JSON> {
 
     @Override
     boolean supports(Object object) {
-        return object instanceof Blog
+        return Blog.isCase(object)
     }
 
     @Override
     void marshalObject(Object object, JSON converter) throws ConverterException {
         Blog blogInstance = object as Blog
         String author = blogInstance.resolveAuthor()
-        JSONWriter writer = converter.getWriter()
+        JSONWriter writer = converter.writer
         writer.object()
 
-        writer.key("id")
+        writer.key('id')
                 .value(blogInstance.id)
-        writer.key("title")
+        writer.key('title')
                 .value(blogInstance.title)
-        writer.key("subTitle")
+        writer.key('subTitle')
                 .value(blogInstance.subTitle)
-        writer.key("body")
+        writer.key('body')
                 .value(blogInstance.body)
-        writer.key("author")
+        writer.key('author')
                 .value(author)
-        writer.key("publish")
+        writer.key('publish')
                 .value(blogInstance.publish)
-        writer.key("blogImgSrc")
+        writer.key('blogImgSrc')
                 .value(blogInstance.blogImg?.path)
-        writer.key("dateCreated")
+        writer.key('dateCreated')
         converter.convertAnother(blogInstance.dateCreated)
-        writer.key("lastUpdated")
+        writer.key('lastUpdated')
         converter.convertAnother(blogInstance.lastUpdated)
-        writer.key("publishedDate")
+        writer.key('publishedDate')
         converter.convertAnother(blogInstance.publishedDate)
-        writer.key("type")
+        writer.key('type')
                 .value(blogInstance.contentType?.name())
 
         writer.endObject()
     }
-
 }

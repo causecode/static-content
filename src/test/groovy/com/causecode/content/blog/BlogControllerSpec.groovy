@@ -1,37 +1,120 @@
+/*
+ * Copyright (c) 2016, CauseCode Technologies Pvt Ltd, India.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are not permitted.
+ */
 package com.causecode.content.blog
 
+import com.causecode.content.BaseTestSetup
 import com.causecode.content.Content
-import com.causecode.content.blog.comment.CommentService
+import com.causecode.content.ContentMeta
+import com.causecode.content.ContentRevision
+import com.causecode.content.ContentService
+import com.causecode.content.blog.comment.BlogComment
+import com.causecode.content.blog.comment.Comment
+import com.causecode.fileuploader.FileUploaderService
+import com.causecode.fileuploader.UFileType
+import com.causecode.fileuploader.UploadFailureException
 import com.naleid.grails.MarkdownService
+import grails.plugin.springsecurity.SpringSecurityService
+import com.causecode.fileuploader.UFile
 import grails.plugins.taggable.Tag
+import grails.plugins.taggable.TagLink
+import grails.plugins.taggable.TaggableService
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
+import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 import spock.lang.Specification
+import spock.util.mop.ConfineMetaClassChanges
 
 /**
- * Unit test for BlogController
+ * Note: Unit test left for index action because of StringBuilder query implementation.
  */
 @TestFor(BlogController)
-@Mock([Blog, Content, Tag])
-class BlogControllerSpec extends Specification {
+@Mock([Blog, Content, Tag, TaggableService, TagLink, SpringSecurityService, ContentMeta, ContentRevision,
+        BlogComment, Comment, UFile])
+class BlogControllerSpec extends Specification implements BaseTestSetup {
 
-    Blog blogInstance
+    // Utility method
+    @ConfineMetaClassChanges([BlogController])
+    void mockedServices(Blog blogInstance, boolean exceptionBool = false, boolean saveBool = false) {
+        // For save action call
+        if (saveBool) {
+            controller.metaClass.contentService = [create: { Map args, List metaTypes, List metaValues, Class clazz ->
+                return blogInstance
+            }]
+        } else {
+            controller.metaClass.contentService = [update: { Map args, Content contentInstance, List metaTypes,
+                List metaValues ->
 
-    def setup() {
-        //--Mocking Services, Methods and Variables
-        Blog.metaClass.static.getTagLinks = { tagService, obj ->
-            return
+                return blogInstance
+            }] as ContentService
         }
 
-        Map args = getContentParams(1) + [publish: true, publishedDate: new Date()]
-        blogInstance = new Blog(args)
-        blogInstance.save(flush: true)
-        assert blogInstance.id
+        // For fileUploaderException
+        if(exceptionBool) {
+            controller.metaClass.fileUploaderService = [saveFile: { String group, def file ->
+                throw new UploadFailureException('Unable to upload file', new Throwable())
+            }]
+        } else {
+            controller.metaClass.fileUploaderService = [saveFile: { String group, def file ->
+                return new UFile()
+            }]
+        }
 
-        controller.commentService = [getComments: { Blog blogInstanceComment ->
+        // For blogService
+        controller.metaClass.blogService = [findBlogContentTypeByValue: { String requestContentType ->
+            return blogInstance.contentType
+        }]
+    }
+
+    // Create Action
+    void "test create action for valid response when parameters are passed"() {
+        given: 'Parameters for new Blog'
+        controller.request.method = 'POST'
+        Map contentParamsInstanceMap = getContentParams(1)
+        controller.params.title = contentParamsInstanceMap.title
+        controller.params.subTitle = contentParamsInstanceMap.subTitle
+        controller.params.author = contentParamsInstanceMap.author
+        controller.params.body = contentParamsInstanceMap.body
+
+        when: 'Create action is hit'
+        controller.create()
+
+        then: 'A valid JSON response should be received with HttpStatus OK'
+        controller.response.json.blogInstance.subTitle == 'To execute the JUnit integration test 1'
+        controller.response.json.blogInstance.body.contains('Grails organises tests by phase and by type.')
+        controller.response.status == HttpStatus.OK.value()
+    }
+
+    // Show Action
+    void "test show action for selected blog id"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+        assert blogInstance.toString() == 'Blog(MARKDOWN(2))'
+
+        and: 'Mocked BlogService'
+        controller.blogService = [getAllTags: { ->
             return []
-        }] as CommentService
+        }] as BlogService
 
+        when: 'Action show is hit'
+        controller.request.method = 'GET'
+        controller.params.id = blogInstance.id
+        controller.show()
+
+        then: 'redirected to blog show angular based URL.'
+        controller.response.redirectedUrl.contains('/blog/show/' + blogInstance.id)
+    }
+
+    void "test show action for selected blog id and convertToMarkDown as 'true'"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+
+        and: 'Mocked Blog & MarkdownService'
         controller.blogService = [getAllTags: { ->
             return []
         }] as BlogService
@@ -40,79 +123,414 @@ class BlogControllerSpec extends Specification {
             return
         }] as MarkdownService
 
-        Blog.metaClass.getMetaTags = { -> ["phonegap, phonegap 3, phonegap wrap web app in android"] }
-        Blog.metaClass.tags = []
-    }
-
-    void "test show action with default parameters"() {
-        given: "populating parameters"
+        when: 'blog id and convertToMarkdown parameter is passed'
+        controller.request.method = 'GET'
         controller.params.id = blogInstance.id
-
-        when: "blog ID parameter passed."
-        controller.request.method = "GET"
+        controller.params.convertToMarkdown = 'true'
         controller.show()
 
-        then: "redirected to blog show angular based URL."
+        then: 'redirected to blog show angular based URL.'
         controller.response.redirectedUrl.contains('/blog/show/' + blogInstance.id)
     }
 
-    void "test show action for Google crawler request"() {
-        given: "populating parameters"
+    // Delete Action
+    void "test delete action when blog instance is passed"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
 
+        and: 'Mocked Content Service'
+        controller.contentService = Mock(ContentService)
+        1 * controller.contentService.delete(_) >> true
+
+        when: 'Action delete is hit'
         controller.params.id = blogInstance.id
+        controller.delete()
+
+        then: 'A valid JSON response should be received with HttpStatus OK'
+        controller.response.json.status.name == 'OK'
+        controller.response.status == HttpStatus.OK.value()
+    }
+
+    void "test delete action when wrong blog instance is passed"() {
+        given: 'Invalid Blog instance'
+        Blog blogInstance = new Blog()
+
+        and: 'Mocked ContentService'
+        controller.contentService = [delete: { Blog blogInstance1 ->
+            throw new DataIntegrityViolationException('Invalid blogInstance')
+        }] as ContentService
+
+        when: 'Action delete is hit'
+        controller.params.id = 1L
+        controller.delete()
+
+        then: 'Json status NOT_MODIFIED should be received'
+        controller.response.json.status.name == 'NOT_MODIFIED'
+    }
+
+    // TODO can be removed once we write the test case for index action
+    @ConfineMetaClassChanges([BlogController])
+    void "test renderGSPContentAndBlogCustomURLRedirect method when viewType list is passed"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+        Map result = [content1: 'Content 1', content2: 'Content 2']
+        String viewType = 'list'
+
+        when: 'Method renderGSPContentAndBlogCustomURLRedirect is called with _escaped_fragment_ as true'
         controller.params._escaped_fragment_ = true
+        boolean boolResult = controller.renderGSPContentAndBlogCustomURLRedirect(result, viewType)
 
-        and: "populating show GSP content"
-        List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
+        then: 'boolResult should be TRUE'
+        boolResult == true
+        controller.response.status == HttpStatus.OK.value()
 
-        when: "blog ID and _escaped_fragment_ parameter passed."
-        controller.request.method = "GET"
-        controller.show()
+        when: 'Method renderGSPContentAndBlogCustomURLRedirect is called with _escaped_fragment_ as false and ' +
+                'Mocked Ajax request'
+        controller.metaClass.getRequest = { ->
+            [xhr: true]
+        }
+        controller.params._escaped_fragment_ = false
+        boolean boolResult1 = controller.renderGSPContentAndBlogCustomURLRedirect(result, viewType)
 
-        then: "redirected to blog show angular based URL."
-        controller.modelAndView.model.blogInstance == blogInstance
-        controller.modelAndView.model.comments == null
-        controller.modelAndView.model.tagList == []
-        controller.modelAndView.model.blogInstanceList == blogInstanceList
-        controller.modelAndView.viewName == '/blog/show'
+        then: 'HttpStatus OK should be received with result map as response'
+        boolResult1 == true
+        controller.response.json.content2 == 'Content 2'
+        controller.response.json.content1 == 'Content 1'
+        controller.response.status == HttpStatus.OK.value()
     }
 
-    void "test show action for ajax request"() {
-        given: "populating parameters"
-        controller.params.id = blogInstance.id
+    // Save Action
+    @ConfineMetaClassChanges([ContentService, FileUploaderService, BlogService])
+    void "test save action when blog instance is passed"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
 
-        when: "ajax request comes in for show action"
-        controller.request.method = "GET"
+        and: 'Mocked Services method call'
+        mockedServices(blogInstance, false, true)
+
+        when: 'Action save is hit'
+        controller.request.method = 'POST'
+        controller.request.json = [metalist: [:]]
+        controller.save()
+
+        then: 'JSON response success TRUE should be received'
+        response.json.success == true
+        controller.response.status == HttpStatus.OK.value()
+    }
+
+    @ConfineMetaClassChanges([ContentService, FileUploaderService, BlogService])
+    void "test save action when blogImgFilePath is passed"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+
+        and: 'Mocked Services method call'
+        mockedServices(blogInstance, false, true)
+
+        when: 'Action save is hit'
+        controller.request.method = 'POST'
+        controller.request.json = [metalist: [:], blogImgFilePath: 'blog/img/file/path']
+        controller.save()
+
+        then: 'JSON response success TRUE should be received'
+        response.json.success == true
+        controller.response.status == HttpStatus.OK.value()
+    }
+
+    @ConfineMetaClassChanges([ContentService, FileUploaderService, BlogService])
+    void "test save action when blog instance has errors"() {
+        given: 'Blog instance'
+        Blog blogInstance = new Blog()
+
+        and: 'Mocked Services method call'
+        mockedServices(blogInstance, false, true)
+
+        when: 'Action save is hit'
+        controller.request.method = 'POST'
+        controller.request.json = [metalist: [:], blogImgFilePath: 'blog/img/file/path']
+        controller.save()
+
+        then: 'Error JSON response should be received'
+        String responseJSONError = (response.json.errors.message).toString()
+        responseJSONError.contains('[Property [body] of class [class com.causecode.content.blog.Blog] cannot be null')
+        controller.response.status == HttpStatus.UNPROCESSABLE_ENTITY.value()
+    }
+
+    // Custom method
+    void "test createBlogCustomURLAndRedirect method when viewType is passed as 'list'"() {
+        when: 'Method createBlogCustomURLAndRedirect is called with argument list'
+        controller.createBlogCustomURLAndRedirect('list')
+
+        then: 'redirected to blog show angular based URL.'
+        String defaultURL = grailsApplication.config.app.defaultURL
+        controller.response.redirectedUrl.contains('/blog/list')
+    }
+
+    // Update Action
+    @ConfineMetaClassChanges([ContentService, FileUploaderService, BlogService])
+    void "test update action when blog instance is passed"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+        assert blogInstance.subTitle == 'To execute the JUnit integration test 1'
+
+        and: 'Mocked Services method call'
+        mockedServices(blogInstance)
+
+        when: 'Action update is hit'
+        controller.request.method = 'PUT'
+        controller.request.json = [id: blogInstance.id, metalist: [:], subTitle: 'To execute the JUnit integration']
+        controller.update()
+
+        then: 'JSON response success TRUE should be received with updated instance'
+        blogInstance.subTitle == 'To execute the JUnit integration'
+        response.json.success == true
+        controller.response.status == HttpStatus.OK.value()
+    }
+
+    @ConfineMetaClassChanges([ContentService, FileUploaderService, BlogService])
+    void "test update action when blog instance is passed with blogImgFilePath"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+        UFile ufileInstance = new UFile([name: 'name', path: '/path', size: 1L, fileGroup: 'FileGroup',
+                extension: 'TXT', type: UFileType.LOCAL])
+        ufileInstance.save()
+
+        assert ufileInstance.id
+
+        blogInstance.blogImg = ufileInstance
+        blogInstance.save()
+
+        assert blogInstance.id
+
+        and: 'Mocking Services'
+        mockedServices(blogInstance)
+
+        when: 'Action update is hit'
+        controller.request.method = 'PUT'
+        controller.request.json = [id: blogInstance.id, metalist: [:],
+                blogImgFilePath: 'blog/img/file/path']
+        controller.update()
+
+        then: 'JSON response success TRUE should be received'
+        controller.response.json.success == true
+        controller.response.contentType == 'application/json;charset=UTF-8'
+        controller.response.status == HttpStatus.OK.value()
+    }
+
+    @ConfineMetaClassChanges([ContentService, FileUploaderService, BlogService])
+    void "test update action when blog instance is passed with invalidBlogInstance"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+
+        and: 'Mocked Services method call'
+        mockedServices(blogInstance, true)
+
+        when: 'Action update is hit'
+        controller.request.method = 'PUT'
+        controller.request.json = [id: blogInstance.id, metalist: [:],
+                blogImgFilePath: 'blog/img/file/path']
+        controller.update()
+
+        then: 'Exception message should be received as JSON response'
+        controller.response.json.message == 'Unable to upload file'
+        controller.response.status == HttpStatus.NOT_ACCEPTABLE.value()
+    }
+
+    // Comment Action
+    void "test comment action when id parameter is passed as null"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+        Comment commentInstance = getCommentInstance(1)
+
+        when: 'Action comment is hit'
+        controller.request.method = 'POST'
         controller.request.makeAjaxRequest()
-        controller.show()
+        controller.params.blogInstance = blogInstance.id
+        controller.params.commentId = commentInstance.id
+        controller.comment()
 
-        then: "should respond json data containing page instance"
-        controller.response.json["blogInstance"]
-        controller.response.json["blogInstance"].id
-        controller.response.json["blogInstance"].title == blogInstance.title
-        controller.response.json["blogInstance"].body == blogInstance.body
-        controller.response.json["blogInstance"].subTitle == blogInstance.subTitle
-        controller.response.json["blogInstance"].publish
+        then: 'Response status FORBIDDEN should be received'
+        controller.response.json.message == 'Not enough parameters received to add comment.'
+        controller.response.status == HttpStatus.FORBIDDEN.value()
     }
 
-    void "test show action of blog"() {
-        given: "populating parameters"
-        controller.params.id = blogInstance.id
+    void "test comment action when id parameter is passed"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+        Comment commentInstance = getCommentInstance(1)
 
-        when: "blog ID parameter passed."
-        controller.request.method = "GET"
-        controller.show()
+        and: 'Mocked Services method call'
+        // Only possible way to mock as import is not available
+        controller.simpleCaptchaService = [validateCaptcha: { String captcha ->
+            return false
+        }]
 
-        then: "redirected to blog show angular based URL."
-        controller.response.redirectedUrl.contains('/blog/show/' + blogInstance.id)
+        when: 'Action comment is hit with AJAX request'
+        controller.request.method = 'POST'
+        controller.request.makeAjaxRequest()
+        controller.params.id = 1L
+        controller.params.commentText = 'commentText'
+        controller.params.email = 'joe@abc.com'
+        controller.params.blogInstance = blogInstance.id
+        controller.params.commentId = commentInstance.id
+        controller.comment()
+
+        then: 'Response status FORBIDDEN should be received'
+        controller.response.json.message == 'Invalid captcha entered.'
+        controller.response.status == HttpStatus.FORBIDDEN.value()
     }
 
-    private Map getContentParams(Integer i) {
-        return [
-                title   : "Targeting Test $i Types and/or Phases",
-                author  : "Test User",
-                subTitle: "To execute the JUnit integration test $i",
-                body    : "Grails organises tests by phase and by type. The state of the Grails application.",
-        ]
+    void "test comment action when id parameter is passed without AJAX request"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+        Comment commentInstance = getCommentInstance(1)
+
+        and: 'Mocked Services method call'
+        // Only possible way to mock as import is not available
+        controller.simpleCaptchaService = [validateCaptcha: { String captcha ->
+            return false
+        }]
+
+        blogInstance.contentService = Mock(ContentService)
+        1 * blogInstance.contentService.createLink(_) >> '/blog/list'
+
+        when: 'Action comment is hit without AJAX request'
+        controller.request.method = 'POST'
+        controller.params.id = 1L
+        controller.params.commentText = 'commentText'
+        controller.params.email = 'joe@abc.com'
+        controller.params.blogInstance = blogInstance.id
+        controller.params.commentId = commentInstance.id
+        controller.comment()
+
+        then: 'Redirect URL /blog/list should be received'
+        controller.response.redirectedUrl.contains('/blog/list')
+    }
+
+    void "test comment action when id parameter is passed and validateCaptcha true"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+        Comment commentInstance = getCommentInstance(1)
+
+        and: 'Mocking SimpleCaptcha Service'
+        // Only possible way to mock as import is not available
+        controller.simpleCaptchaService = [validateCaptcha: { String captcha ->
+            return true
+        }]
+
+        blogInstance.contentService = Mock(ContentService)
+        1 * blogInstance.contentService.createLink(_) >> '/blog/list'
+
+        when: 'Action comment is hit without AJAX request'
+        controller.request.method = 'POST'
+        controller.params.id = 1L
+        controller.params.commentText = 'commentText'
+        controller.params.email = 'joe@abc.com'
+        controller.params.blogInstance = blogInstance.id
+        controller.params.commentId = commentInstance.id
+        controller.comment()
+
+        then: 'Redirect URL /blog/list should be received'
+        controller.response.redirectedUrl.contains('/blog/list')
+    }
+
+    void "test comment action when id parameter is passed with validateCaptcha true and AJAX request"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+        Comment commentInstance = getCommentInstance(1)
+
+        and: 'Mocking SimpleCaptcha Service'
+        // Only possible way to mock as import is not available
+        controller.simpleCaptchaService = [validateCaptcha: { String captcha ->
+            return true
+        }]
+
+        when: 'Action comment is hit without AJAX request'
+        controller.request.method = 'POST'
+        controller.request.makeAjaxRequest()
+        controller.params.id = 1L
+        controller.params.blogInstance = blogInstance.id
+        controller.params.commentId = commentInstance.id
+        controller.comment()
+
+        then: 'Response status FORBIDDEN should be received'
+        controller.response.status == HttpStatus.FORBIDDEN.value()
+    }
+
+    void "test comment action when id parameter is passed with validateCaptcha true and without an AJAX request"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+        Comment commentInstance = getCommentInstance(1)
+
+        and: 'Mocking SimpleCaptcha Service'
+        // Only possible way to mock as import is not available
+        controller.simpleCaptchaService = [validateCaptcha: { String captcha ->
+            return true
+        }]
+
+        blogInstance.contentService = Mock(ContentService)
+        1 * blogInstance.contentService.createLink(_) >> '/blog/list'
+
+        when: 'Action comment is hit without AJAX request'
+        controller.request.method = 'POST'
+        controller.params.id = 1L
+        controller.params.blogInstance = blogInstance.id
+        controller.params.commentId = commentInstance.id
+        controller.comment()
+
+        then: 'Redirect URL /blog/list should be received'
+        controller.response.redirectedUrl.contains('/blog/list')
+    }
+
+    void "test comment action when id is passed with validateCaptcha true, without an AJAX request and commentId 0"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+
+        and: 'Mocking SimpleCaptcha Service'
+        // Only possible way to mock as import is not available
+        controller.simpleCaptchaService = [validateCaptcha: { String captcha ->
+            return true
+        }]
+
+        blogInstance.contentService = Mock(ContentService)
+        1 * blogInstance.contentService.createLink(_) >> '/blog/list'
+
+        when: 'Action comment is hit without AJAX request'
+        controller.request.method = 'POST'
+        controller.params.id = 1L
+        controller.params.commentText = 'commentText'
+        controller.params.email = 'joe@abc.com'
+        controller.params.blogInstance = blogInstance.id
+        controller.params.commentId = 0
+        controller.comment()
+
+        then: 'Redirect URL should contains /blog/list'
+        BlogComment.count() == 1
+        controller.response.redirectedUrl.contains('/blog/list')
+    }
+
+    void "test comment action when id parameter is passed with validateCaptcha true, AJAX request and commentId 0"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+
+        and: 'Mocking Services'
+        // Only possible way to mock as import is not available
+        controller.simpleCaptchaService = [validateCaptcha: { String captcha ->
+            return true
+        }]
+
+        when: 'Action comment is hit without AJAX request'
+        controller.request.method = 'POST'
+        controller.request.makeAjaxRequest()
+        controller.params.id = 1L
+        controller.params.commentText = 'commentText'
+        controller.params.email = 'joe@abc.com'
+        controller.params.blogInstance = blogInstance.id
+        controller.params.commentId = 0
+        controller.comment()
+
+        then: 'JSON response success TRUE should be received'
+        controller.response.json.success == true
+        BlogComment.count() == 1
+        controller.response.status == HttpStatus.OK.value()
     }
 }

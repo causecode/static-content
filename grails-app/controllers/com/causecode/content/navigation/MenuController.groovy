@@ -5,9 +5,9 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content.navigation
 
+import com.causecode.content.ContentService
 import grails.plugin.springsecurity.annotation.Secured
 
 import org.springframework.dao.DataIntegrityViolationException
@@ -18,20 +18,19 @@ import org.springframework.http.HttpStatus
  * @author Vishesh Duggar
  * @author Laxmi Salunkhe
  * @author Shashank Agrawal
- *
  */
-@Secured(["ROLE_CONTENT_MANAGER"])
+@Secured(['ROLE_CONTENT_MANAGER'])
 class MenuController {
 
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    static allowedMethods = [save: 'POST', update: 'POST', delete: 'POST']
 
-    static responseFormats = ["json"]
+    static responseFormats = ['json']
 
-    def contentService
-    def menuItemService
+    ContentService contentService
+    //MenuItemService menuItemService
 
     def index() {
-        redirect(action: "list", params: params)
+        redirect(action: 'list', params: params)
     }
 
     def list(Integer max) {
@@ -42,7 +41,7 @@ class MenuController {
 
     def getRoleList() {
         def roleList = contentService.getRoleClass().list()
-        respond(roleList:roleList)
+        respond(roleList: roleList)
     }
 
     def save() {
@@ -55,7 +54,7 @@ class MenuController {
 
         respond ([status: HttpStatus.OK])
     }
-    
+
     def show(Menu menuInstance) {
         List<MenuItem> menuItemInstanceList = menuInstance.menuItems.findAll { !it.parent }
         respond ([menuItemInstanceList: menuItemInstanceList, menuInstance: menuInstance,
@@ -67,11 +66,11 @@ class MenuController {
     }
 
     def update(Menu menuInstance, Long version) {
-        if(version != null) {
+        if (version != null) {
             if (menuInstance.version > version) {
-                menuInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
+                menuInstance.errors.rejectValue('version', 'default.optimistic.locking.failure',
                         [message(code: 'menu.label')] as Object[],
-                        "Another user has updated this Menu while you were editing")
+                        'Another user has updated this Menu while you were editing')
                 respond(menuInstance.errors)
                 return
             }
@@ -81,7 +80,7 @@ class MenuController {
 
         if (!menuInstance.save(flush: true)) {
             respond(menuInstance.errors)
-            return 
+            return
         }
 
         respond ([status: HttpStatus.OK])

@@ -5,30 +5,23 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.exceptions
+
 /**
  * Thrown when a named property of a specific type is not present in a class.
- *
  * @author Deepen Dhamecha
  */
+class RequiredPropertyMissingException extends Exception {
 
-public class RequiredPropertyMissingException extends Exception {
-
-
-    public RequiredPropertyMissingException() {
-        super();
+    RequiredPropertyMissingException() {
+        super()
     }
 
-    public RequiredPropertyMissingException(String message) {
-        super(message);
+    RequiredPropertyMissingException(String message) {
+        super(message)
     }
 
-    public RequiredPropertyMissingException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public RequiredPropertyMissingException(Throwable cause) {
-        super(cause);
+    RequiredPropertyMissingException(String message, Throwable cause) {
+        super(message, cause)
     }
 }

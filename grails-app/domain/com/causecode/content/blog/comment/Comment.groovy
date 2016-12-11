@@ -5,8 +5,10 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content.blog.comment
+
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 /**
  * Used for storing comment contains reference for nested comment.
@@ -14,9 +16,14 @@ package com.causecode.content.blog.comment
  * @author Laxmi Salunkhe
  *
  */
+@ToString(includes = ['id', 'commentText'], includePackage = false)
+@EqualsAndHashCode
+@SuppressWarnings(['GrailsDomainWithServiceReference'])
 class Comment {
 
-    transient commentService
+    static transients = ['commentService']
+
+    CommentService commentService
 
     String commentText
     String email
@@ -36,8 +43,8 @@ class Comment {
     }
 
     static mapping = {
-        table "cc_content_comment"
-        commentText type: "text"
+        table 'cc_content_comment'
+        commentText type: 'text'
     }
 
     def beforeDelete() {
@@ -45,5 +52,4 @@ class Comment {
             commentService.deleteNestedComment(this, false)
         }
     }
-
 }

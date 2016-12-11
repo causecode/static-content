@@ -1,18 +1,17 @@
 /*
- * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
+ * Copyright (c) 2016, CauseCode Technologies Pvt Ltd, India.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content
 
-import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
 
 import grails.databinding.SimpleMapDataBindingSource
+import grails.web.databinding.GrailsWebDataBinder
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 
@@ -21,80 +20,81 @@ import org.springframework.http.HttpStatus
  * @author Vishesh Duggar
  * @author Shashank Agrawal
  * @author Bharti Nagdev
- *
  */
-@Secured(["ROLE_CONTENT_MANAGER"])
+@Secured(['ROLE_CONTENT_MANAGER'])
 class PageLayoutController {
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
-    static responseFormats = ["json"]
+    static allowedMethods = [save: 'POST', update: 'PUT', delete: 'DELETE']
+    static responseFormats = ['json']
 
-    def grailsWebDataBinder
+    GrailsWebDataBinder grailsWebDataBinder
 
     def index() {
-        redirect(action: "list", params: params)
+        redirect(action: 'list', params: params)
+
+        return
     }
 
     def list(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond ([instanceList: PageLayout.list(params), totalCount: PageLayout.count()])
+        respond([instanceList: PageLayout.list(params), totalCount: PageLayout.count()])
+
+        return
     }
 
     def getPageLayoutList() {
-        respond([pageLayoutList: PageLayout.list()])
+        respond([pageLayoutList: PageLayout.list(max: 200)])
+
+        return
     }
 
-    def create() {
-        [pageLayoutInstance: new PageLayout(params)]
+    def create(PageLayout pageLayoutInstance) {
+        respond([pageLayoutInstance: pageLayoutInstance])
+
+        return
     }
 
-    def save() {
-        Map requestData = request.JSON
-        log.info "Parameters received save pageLayout instance: ${requestData}"
-        PageLayout pageLayoutInstance = new PageLayout()
-        grailsWebDataBinder.bind(pageLayoutInstance, requestData as SimpleMapDataBindingSource)
-        pageLayoutInstance.validate()
-
+    def save(PageLayout pageLayoutInstance) {
         if (pageLayoutInstance.hasErrors()) {
-            log.warn "Error saving pageLayout Instance: $pageLayoutInstance.errors."
+            log.warn "Error saving pageLayout Instance: ${pageLayoutInstance.errors}"
             respond ([errors: pageLayoutInstance.errors], status: HttpStatus.NOT_MODIFIED)
+
             return
-        } else {
-            log.info "Pagelayout instance saved successfully."
-            pageLayoutInstance.save(flush: true)
         }
 
-        respond ([status: HttpStatus.OK])
+        log.info 'PageLayout instance saved successfully.'
+        pageLayoutInstance.save([flush: true])
+        respond([status: HttpStatus.OK])
+
+        return
     }
 
     @Transactional(readOnly = true)
     def show(PageLayout pageLayoutInstance) {
-        respond(pageLayoutInstance)
+        respond([pageLayoutInstance: pageLayoutInstance])
+
+        return
     }
 
     def edit(PageLayout pageLayoutInstance) {
         if (!pageLayoutInstance) {
-            log.warn message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), params.id])
-            redirect(action: "list")
+            log.warn "Invalid pageLayout Instance: ${pageLayoutInstance?.errors}"
+            respond ([errors: pageLayoutInstance?.errors], status: HttpStatus.UNPROCESSABLE_ENTITY)
+
             return
         }
 
         respond([pageLayoutInstance: pageLayoutInstance])
+
+        return
     }
 
-    def update(PageLayout pageLayoutInstance, Long version) {
-        if (!pageLayoutInstance) {
-            log.warn message(code: 'default.not.found.message', args: [message(code: 'pageLayout.label'), params.id])
-            redirect(action: "list")
-            return
-        }
+    def update(PageLayout pageLayoutInstance) {
+        if (!pageLayoutInstance || pageLayoutInstance.hasErrors()) {
+            log.warn "Invalid pageLayout Instance: ${pageLayoutInstance?.errors}"
+            respond ([errors: pageLayoutInstance?.errors], status: HttpStatus.UNPROCESSABLE_ENTITY)
 
-        if (version != null) {
-            if (pageLayoutInstance.version > version) {
-                respond ([message: "Another user has updated this page layout instance while you were editing"], 
-                    status: HttpStatus.NOT_MODIFIED)
-                return
-            }
+            return
         }
 
         Map requestData = request.JSON
@@ -102,25 +102,30 @@ class PageLayoutController {
         pageLayoutInstance.validate()
 
         if (pageLayoutInstance.hasErrors()) {
-            log.warn "Error updating pageLayout Instance: $pageLayoutInstance.errors."
-            respond ([errors: pageLayoutInstance.errors], status: HttpStatus.NOT_MODIFIED)
+            log.warn "Error updating pageLayout Instance: ${pageLayoutInstance.errors}"
+            respond ([errors: pageLayoutInstance?.errors], status: HttpStatus.UNPROCESSABLE_ENTITY)
+
             return
-        } else {
-            log.info "Pagelayout instance updated successfully."
-            pageLayoutInstance.save(flush: true)
         }
 
+        log.info 'PageLayout instance updated successfully.'
+        pageLayoutInstance.save([flush: true])
+
         respond ([status: HttpStatus.OK])
+
+        return
     }
 
     def delete(PageLayout pageLayoutInstance) {
         try {
-            pageLayoutInstance.delete(flush: true)
+            pageLayoutInstance.delete([flush: true])
         }
         catch (DataIntegrityViolationException e) {
             respond ([status: HttpStatus.NOT_MODIFIED])
-            return
+            return false
         }
         respond ([status: HttpStatus.OK])
+
+        return true
     }
 }

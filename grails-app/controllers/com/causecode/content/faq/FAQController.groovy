@@ -5,7 +5,6 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content.faq
 
 import grails.plugin.springsecurity.annotation.Secured
@@ -20,76 +19,77 @@ import org.springframework.http.HttpStatus
  * @author Laxmi Salunkhe
  *
  */
-@Secured(["ROLE_CONTENT_MANAGER"])
+@Secured(['ROLE_CONTENT_MANAGER'])
 class FAQController {
 
-    static responseFormats = ["json"]
-
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static responseFormats = ['json']
+    static allowedMethods = [save: 'POST', update: 'PUT', delete: 'DELETE']
 
     def index() {
-        redirect(action: "list", params: params)
+        redirect(action: 'list', params: params)
+
+        return
     }
 
     def list(Integer max, Integer offset) {
-        params.putAll(request.JSON)
         params.max = Math.min(max ?: 10, 100)
-        params.offset = offset ? offset: 0
-        respond ([instanceList: FAQ.list(params), totalCount: FAQ.count()]) 
+        params.offset = offset ?: 0
+        respond ([instanceList: FAQ.list(params), totalCount: FAQ.count()])
+
+        return
     }
 
-    def create() {
-        [FAQInstance: new FAQ(params)]
+    def create(FAQ faqInstance) {
+        respond ([FAQInstance: faqInstance])
+
+        return
     }
 
-    def save() {
-        params.putAll(request.JSON)
-        FAQ FAQInstance = new FAQ(params)
-        if (!FAQInstance.save(flush: true)) {
-            respond(FAQInstance.errors)
+    def save(FAQ faqInstance) {
+        if (faqInstance.hasErrors()) {
+            log.warn "Error saving pageLayout Instance: $faqInstance.errors."
+            respond ([errors: faqInstance.errors], status: HttpStatus.NOT_MODIFIED)
             return
         }
 
         respond ([success: true])
+
+        return
     }
 
-    def show(FAQ FAQInstance) {
-        respond (FAQInstance)
+    def show(FAQ faqInstance) {
+        respond ([FAQInstance: faqInstance])
+
+        return
     }
 
-    def edit(FAQ FAQInstance) {
-        [FAQInstance: FAQInstance]
+    def edit(FAQ faqInstance) {
+        respond ([FAQInstance: faqInstance])
+
+        return
     }
 
-    def update(FAQ FAQInstance, Long version) {
-        params.putAll(request.JSON)
-        if(version != null) {
-            if (FAQInstance.version > version) {
-                FAQInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                        [message(code: 'FAQ.label', default: 'FAQ')] as Object[],
-                        "Another user has updated this FAQ while you were editing")
-                respond(FAQInstance.errors)
-                return
-            }
-        }
-
-        FAQInstance.properties = params
-
-        if (!FAQInstance.save(flush: true)) {
-            respond(FAQInstance.errors)
+    def update(FAQ faqInstance) {
+        if (!faqInstance || faqInstance.hasErrors()) {
+            respond (faqInstance.errors)
             return
         }
 
-        respond ([status: HttpStatus.OK])
+        respond([status: HttpStatus.OK])
+
+        return
     }
 
-    def delete(FAQ FAQInstance) {
+    def delete(FAQ faqInstance) {
         try {
-            FAQInstance.delete(flush: true)
+            faqInstance.delete([flush: true])
         } catch (DataIntegrityViolationException e) {
             respond ([status: HttpStatus.NOT_MODIFIED])
-            return
+            return false
         }
-        respond ([status: HttpStatus.OK])
+
+        respond([status: HttpStatus.OK])
+
+        return true
     }
 }

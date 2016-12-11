@@ -5,9 +5,9 @@
  * Redistribution and use in source and binary forms, with or
  * without modification, are not permitted.
  */
-
 package com.causecode.content.navigation
 
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.SpringSecurityUtils
 
 /**
@@ -19,9 +19,9 @@ import grails.plugin.springsecurity.SpringSecurityUtils
  */
 class MenuTagLib {
 
-    static namespace = "com"
+    static namespace = 'com'
 
-    def springSecurityService
+    SpringSecurityService springSecurityService
 
     /**
      * Used to render menu bars.
@@ -31,12 +31,12 @@ class MenuTagLib {
      */
     def menu = { attrs, body ->
         Menu menuInstance = Menu.get(attrs.id)
-        if(!menuInstance) {
+        if (!menuInstance) {
             log.info "No menu found with id [$attrs.id]."
             return
         }
-        String template = attrs.menuTemplate ?: "/menu/templates/menu"
-        String plugin = attrs.inPlugin ?: "content"
+        String template = attrs.menuTemplate ?: '/menu/templates/menu'
+        String plugin = attrs.inPlugin ?: 'content'
 
         List<MenuItem> menuItemList = menuInstance.menuItems
 
@@ -50,21 +50,20 @@ class MenuTagLib {
      */
     def canBeVisible = { attrs, body ->
         def instance = attrs.instance
-        if(!instance) {
+        if (!instance) {
             return
         }
-        if(instance.roles) {
-            if(SpringSecurityUtils.ifAnyGranted(instance.roles)) {
+        if (instance.roles) {
+            if (SpringSecurityUtils.ifAnyGranted(instance.roles)) {
                 out << body()
             }
             return
         } else {
-            if(!instance.showOnlyWhenLoggedIn) {
+            if (!instance.showOnlyWhenLoggedIn) {
                 out << body()
-            } else if(springSecurityService.isLoggedIn()) {
+            } else if (springSecurityService.isLoggedIn()) {
                 out << body()
             }
         }
     }
-
 }
