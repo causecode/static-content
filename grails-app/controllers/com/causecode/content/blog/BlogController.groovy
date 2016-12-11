@@ -12,9 +12,11 @@ import com.causecode.content.ContentService
 import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.blog.comment.Comment
 import com.causecode.content.meta.Meta
-import com.lucastex.grails.fileuploader.FileUploaderService
-import com.lucastex.grails.fileuploader.FileUploaderServiceException
-import com.lucastex.grails.fileuploader.UFile
+import com.causecode.fileuploader.FileUploaderService
+import com.causecode.fileuploader.ProviderNotFoundException
+import com.causecode.fileuploader.StorageConfigurationException
+import com.causecode.fileuploader.UFile
+import com.causecode.fileuploader.UploadFailureException
 import com.naleid.grails.MarkdownService
 import grails.converters.JSON
 import grails.core.GrailsApplication
@@ -186,7 +188,7 @@ class BlogController {
                 blogInstance.setTags(requestData.tags?.tokenize(',')*.trim())
                 blogInstance.save([flush: true])
                 respond([success: true])
-            } catch (FileUploaderServiceException e) {
+            } catch (StorageConfigurationException | UploadFailureException | ProviderNotFoundException e) {
                 log.debug 'Unable to upload file', e
                 blogInstance.errors.reject("Image couldn't be uploaded " + e.message)
                 respond(blogInstance.errors)
@@ -301,7 +303,7 @@ class BlogController {
                 blogInstance.save([flush: true])
 
                 respond([success: true])
-            } catch (FileUploaderServiceException e) {
+            } catch (StorageConfigurationException | UploadFailureException | ProviderNotFoundException e) {
                 log.debug 'Unable to upload file', e
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
                 respond([message: e.message])

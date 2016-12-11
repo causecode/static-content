@@ -10,7 +10,7 @@ package com.causecode.content.blog
 import grails.plugins.taggable.Taggable
 
 import com.causecode.content.Content
-import com.lucastex.grails.fileuploader.UFile
+import com.causecode.fileuploader.UFile
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
