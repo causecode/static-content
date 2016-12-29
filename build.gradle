@@ -28,7 +28,7 @@ plugins {
 }
 
 group "com.causecode.plugins"
-version "2.5.6"
+version "2.5.7"
 
 apply plugin: "eclipse"
 apply plugin: "idea"
@@ -209,4 +209,13 @@ jacocoTestReport {
     }
     executionData test
     jacocoTestReport.dependsOn test
+}
+
+// Adding migration files to jar
+sourceSets {
+    main {
+        resources {
+            srcDir 'grails-app/migrations'
+        }
+    }
 }
