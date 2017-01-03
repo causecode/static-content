@@ -21,6 +21,9 @@ import grails.test.mixin.TestFor
 import spock.lang.Specification
 import spock.util.mop.ConfineMetaClassChanges
 
+/**
+ * This is Unit test file for PageController class.
+ */
 @TestFor(PageController)
 @Mock([Page, Content, PageLayout, ContentRevision, ContentMeta])
 class PageControllerSpec extends Specification implements BaseTestSetup {
@@ -35,7 +38,7 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
     // Index action
     void "test index action for valid JSON response"() {
         given: 'Page Instance'
-        createInstances("Page", 5)
+        createInstances('Page', 5)
         assert Page.count() == 5
 
         when: 'Index action is hit'
@@ -49,11 +52,11 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
     // GetMetaTypeList action
     void "test getMetaTypeList action to get metaList"() {
         given: 'Page Instance'
-        createInstances("Page", 5)
+        createInstances('Page', 5)
         assert PageLayout.count() == 5
 
         when: 'getMetaList action is hit'
-        controller.getMetaTypeList()
+        controller.metaTypeList
 
         then: 'A valid JSON response should be received'
         controller.response.json.metaTypeList[0] == 'keywords'
@@ -81,15 +84,16 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
 
     // List action
     @ConfineMetaClassChanges([Page])
+    @SuppressWarnings(['GrailsMaxForListQueries'])
     void "test list action when parameters are passed"() {
         given: 'Page Instances'
-        createInstances("Page", 5)
+        createInstances('Page', 5)
         assert Page.count() == 5
 
         and: 'Mock createCriteria'
         def customCriteria = [list: { Object params = null, Closure cls ->
             []
-        }]
+        } ]
         Page.metaClass.static.createCriteria = {
             customCriteria
         }
@@ -112,7 +116,7 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
 
         and: 'Mocking Services'
         controller.contentService = Mock(ContentService)
-        1 * controller.contentService.create(_,_,_,_) >> pageInstance
+        1 * controller.contentService.create(_, _, _, _) >> pageInstance
 
         pageInstance.contentService = Mock(ContentService)
         1 * pageInstance.contentService.createLink(_) >> '/page/list'
@@ -134,7 +138,7 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
 
         and: 'Mocking Services'
         controller.contentService = Mock(ContentService)
-        1 * controller.contentService.create(_,_,_,_) >> pageInstance
+        1 * controller.contentService.create(_, _, _, _) >> pageInstance
 
         when: 'Save action is hit'
         controller.request.method = 'POST'
@@ -167,9 +171,6 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
     }
 
     void "test show action when invalid instance is passed"() {
-        given: 'PageLayout instance'
-        Page pageInstance = null
-
         when: 'Show action is hit'
         controller.request.method = 'GET'
         controller.params.id = 1L
@@ -229,9 +230,6 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
     }
 
     void "test edit action for error response"() {
-        given: 'Invalid page instance'
-        Page invalidPageInstance = null
-
         when: 'Edit action is hit'
         controller.request.method = 'POST'
         controller.params.id = 1L
@@ -251,7 +249,7 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
 
         and: 'Mocking Services'
         controller.contentService = Mock(ContentService)
-        1 * controller.contentService.update(_,_,_,_) >> pageInstance
+        1 * controller.contentService.update(_, _, _, _) >> pageInstance
 
         pageInstance.contentService = Mock(ContentService)
         1 * pageInstance.contentService.createLink(_) >> '/page/list'
@@ -286,7 +284,7 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
 
         and: 'Mock services'
         controller.contentService = Mock(ContentService)
-        1 * controller.contentService.update(_,_,_,_) >> pageInstanceWithErrors
+        1 * controller.contentService.update(_, _, _, _) >> pageInstanceWithErrors
 
         when: 'Update action is hit'
         controller.request.method = 'PUT'
@@ -304,7 +302,7 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
 
         and: 'Mocking Services'
         controller.contentService = Mock(ContentService)
-        1 * controller.contentService.update(_,_,_,_) >> pageInstance
+        1 * controller.contentService.update(_, _, _, _) >> pageInstance
 
         pageInstance.contentService = Mock(ContentService)
         1 * pageInstance.contentService.createLink(_) >> '/page/list'
@@ -324,11 +322,10 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
     void "test delete action when pageInstance"() {
         given: 'Page and Map parameters instance'
         Page pageInstance = getPageInstance(1)
-        Map params = [layoutName: 'TestPageLayout']
 
         controller.contentService = [delete: { Page pageInstance1 ->
             return
-        }] as ContentService
+        } ] as ContentService
 
         when: 'Delete action is hit'
         controller.request.method = 'DELETE'
@@ -341,9 +338,6 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
     }
 
     void "test delete action for error response"() {
-        given: 'Page instance'
-        Page invalidPageInstance = null
-
         when: 'Delete action is called and RequiredPropertyMissingException is thrown'
         controller.request.method = 'DELETE'
         controller.params.id = 1L

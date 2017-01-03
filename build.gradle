@@ -20,6 +20,7 @@ buildscript {
     dependencies {
         classpath "com.netflix.nebula:nebula-publishing-plugin:4.4.4"
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "com.causecode.plugins:gradle-code-quality:0.0.3"
     }
 }
 
@@ -30,13 +31,13 @@ plugins {
 group "com.causecode.plugins"
 version "2.5.7"
 
-apply plugin: "eclipse"
 apply plugin: "idea"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-plugin-publish"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: 'codenarc'
 apply plugin: 'jacoco'
+apply plugin: 'gradle-code-quality'
 
 ext {
     grailsVersion = project.grailsVersion

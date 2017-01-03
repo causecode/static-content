@@ -7,9 +7,6 @@
  */
 package com.causecode.content
 
-import com.causecode.content.Content
-import com.causecode.content.ContentMeta
-import com.causecode.content.PageLayout
 import com.causecode.content.blog.Blog
 import com.causecode.content.blog.BlogContentType
 import com.causecode.content.blog.comment.Comment
