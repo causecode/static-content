@@ -29,14 +29,12 @@ plugins {
 }
 
 group "com.causecode.plugins"
-version "2.5.7"
+version "2.5.8"
 
 apply plugin: "idea"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-plugin-publish"
 apply plugin: "org.grails.grails-gsp"
-apply plugin: 'codenarc'
-apply plugin: 'jacoco'
 apply plugin: 'gradle-code-quality'
 
 ext {
@@ -164,53 +162,24 @@ grailsPublish {
     portalPassword = ""
 }
 
-codenarc {
-    toolVersion = "0.25.2"
-}
-
-codenarcMain {
-    configFile file('config/codenarc/codenarc.groovy')
-}
-
-codenarcTest {
-    configFile file('config/codenarc/codenarc.groovy')
-}
-
-jacoco {
-    toolVersion = "0.7.7.201606060606"
-    reportsDir = file("$buildDir/jacoco")
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled false
-        csv.enabled false
-        html.enabled true
-        html.destination "${buildDir}/jacoco/jacocoHtml/"
-    }
-    afterEvaluate {
-        classDirectories = files(classDirectories.files.collect {
-            fileTree(dir: it,
-                    exclude: ['**/FriendlyUrlService*/**',
-                              '**/Scraper*/**',
-                              '**/Application*/**',
-                              '**/Scraper*/**',
-                              '**/BlogTagLib*/**',
-                              '**/ContentTagLib*/**',
-                              '**/PageTagLib*/**',
-                              '**/ContentBootStrap*/**',
-                              '**/ContentGrailsPlugin*/**',
-                              '**/ContentUrlMappings*/**',
-                              'com/causecode/marshaller/**',
-                              'com/causecode/content/navigation/**',
-                              'com/causecode/content/news/**',
-                              'com/causecode/content/inputWidget/**',
-                    ])
-        })
-    }
-    executionData test
-    jacocoTestReport.dependsOn test
-}
+ ccJacocoExt {
+     toolVersion = '0.7.7.201606060606'
+     excludes = ['**/FriendlyUrlService*/**',
+               '**/Scraper*/**',
+               '**/Application*/**',
+               '**/Scraper*/**',
+               '**/BlogTagLib*/**',
+               '**/ContentTagLib*/**',
+               '**/PageTagLib*/**',
+               '**/ContentBootStrap*/**',
+               '**/ContentGrailsPlugin*/**',
+               '**/ContentUrlMappings*/**',
+               'com/causecode/marshaller/**',
+               'com/causecode/content/navigation/**',
+               'com/causecode/content/news/**',
+               'com/causecode/content/inputWidget/**',
+     ]
+ }
 
 // Adding migration files to jar
 sourceSets {
