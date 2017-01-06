@@ -83,6 +83,10 @@ class PageControllerSpec extends Specification implements BaseTestSetup {
     }
 
     // List action
+    /*
+     * Note: Suppressed GrailsMaxForListQueries warning here, as this warning should prompt in case of criteria query,
+     *       here its just a controller action call
+     */
     @ConfineMetaClassChanges([Page])
     @SuppressWarnings(['GrailsMaxForListQueries'])
     void "test list action when parameters are passed"() {

@@ -20,7 +20,7 @@ buildscript {
     dependencies {
         classpath "com.netflix.nebula:nebula-publishing-plugin:4.4.4"
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "com.causecode.plugins:gradle-code-quality:0.0.3"
+        classpath "com.causecode.plugins:gradle-code-quality:0.0.4"
     }
 }
 
@@ -163,8 +163,8 @@ grailsPublish {
 }
 
  ccJacocoExt {
-     toolVersion = '0.7.7.201606060606'
-     excludes = ['**/FriendlyUrlService*/**',
+     excludes = [
+               '**/FriendlyUrlService*/**',
                '**/Scraper*/**',
                '**/Application*/**',
                '**/Scraper*/**',

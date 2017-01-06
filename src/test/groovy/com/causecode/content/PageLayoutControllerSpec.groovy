@@ -22,7 +22,7 @@ import spock.lang.Unroll
 class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
 
     // Index action
-    void 'test index action for valid JSON response'() {
+    void "test index action for valid JSON response"() {
         given: 'PageLayout Instances'
         createInstances('PageLayout', 5)
         assert PageLayout.count() == 5
@@ -51,7 +51,7 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     }
 
     // Create action
-    void 'test create action when parameters are passed'() {
+    void "test create action when parameters are passed"() {
         given: 'Map parameters instance'
         Map params = [layoutName: 'TestPageLayout']
 
@@ -66,8 +66,12 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     }
 
     // List action
+    /*
+     * Note: Suppressed GrailsMaxForListQueries warning here, as this warning should prompt in case of criteria query,
+     *       here its just a controller action call
+     */
     @SuppressWarnings(['GrailsMaxForListQueries'])
-    void 'test list action when parameters are passed'() {
+    void "test list action when parameters are passed"() {
         given: 'Some PageLayout Instance'
         createInstances('PageLayout', 5)
         assert PageLayout.count() == 5
@@ -85,7 +89,7 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
 
     // Save action
     @Unroll
-    void 'test save action when request parameters are passed'() {
+    void "test save action when request parameters are passed"() {
         given: 'Map parameters instance'
         Map params = parameterMap
 
@@ -103,7 +107,7 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
         [abc: 'TestPageLayout']         | HttpStatus.NOT_MODIFIED.value()
     }
 
-    void 'test save action when invalid request parameters are passed'() {
+    void "test save action when invalid request parameters are passed"() {
         given: 'Map parameters instance'
         Map params = [abc: 'TestPageLayout']
 
@@ -117,7 +121,7 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     }
 
     // Show action
-    void 'test show action when PageLayout instance is passed'() {
+    void "test show action when PageLayout instance is passed"() {
         given: 'PageLayout instance'
         PageLayout pageLayoutInstance = getPageLayoutInstance(1)
 
@@ -132,7 +136,7 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     }
 
     // Edit action
-    void 'test edit action when pageLayoutInstance is passed'() {
+    void "test edit action when pageLayoutInstance is passed"() {
         given: 'PageLayout instance'
         PageLayout validPageLayoutInstance = getPageLayoutInstance(1)
 
@@ -147,7 +151,7 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
         response.status == HttpStatus.OK.value()
     }
 
-    void 'test edit action when invalid pageLayoutInstance is passed'() {
+    void "test edit action when invalid pageLayoutInstance is passed"() {
         // Cannot be clubbed into one block for DRYness gives: Cannot issue a redirect(..) here.
         when: 'Edit action is hit'
         controller.request.method = 'POST'
@@ -159,7 +163,7 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     }
 
     // Update action
-    void 'test update action when pageLayoutInstance is passed'() {
+    void "test update action when pageLayoutInstance is passed"() {
         given: 'PageLayout and Map parameters instance'
         PageLayout pageLayoutInstance = getPageLayoutInstance(1)
         Map params = [layoutName: 'TestPageLayout']
@@ -176,7 +180,7 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
         controller.response.status == HttpStatus.OK.value()
     }
 
-    void 'test update action when invalid pageLayoutInstance is passed'() {
+    void "test update action when invalid pageLayoutInstance is passed"() {
         // Cannot be clubbed into one block for DRYness gives: Cannot issue a redirect(..) here.
         given: 'PageLayout and Map parameters instance'
         Map params = [layoutName: 'TestPageLayout']
@@ -192,8 +196,8 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     }
 
     // Delete action
-    void 'test delete action when pageLayoutInstance'() {
-        given: 'PageLayout and Map parameters instance'
+    void "test delete action when pageLayoutInstance id is passed"() {
+        given: 'PageLayout instance'
         PageLayout pageLayoutInstance = getPageLayoutInstance(1)
         assert PageLayout.count() == 1
 

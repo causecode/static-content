@@ -57,6 +57,10 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
     }
 
     // List action
+    /*
+     * Note: Suppressed GrailsMaxForListQueries warning here, as this warning should prompt in case of criteria query,
+     *       here its just a controller action call
+     */
     @SuppressWarnings(['GrailsMaxForListQueries'])
     void "test list action when parameters are passed"() {
         given: 'Some Page Instance'
@@ -154,7 +158,7 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
 
     // Delete action
     void "test delete action when pageInstance"() {
-        given: 'Page and Map parameters instance'
+        given: 'Page instance'
         FAQ faqInstance = getFAQInstance(1)
 
         when: 'Delete action is hit'

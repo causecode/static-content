@@ -35,7 +35,7 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
 
     // Method getAllTags
     @ConfineMetaClassChanges([Blog, TagLink])
-    void 'test getAllTags method to get list of all tags'() {
+    void "test getAllTags method to get list of all tags"() {
         given: 'Instances of tag'
         Tag tag1 = new Tag([name: 'tag1']).save(failOnError: true)
         Tag tag2 = new Tag([name: 'tag2']).save(failOnError: true)
@@ -60,7 +60,7 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
 
     // Method findBlogContentTypeByValue
     @Unroll
-    void 'test findBlogContentTypeByValue method when parameter is passed'() {
+    void "test findBlogContentTypeByValue method when parameter is passed"() {
         when: 'findBlogContentTypeByValue method is called'
         BlogContentType blogContentTypeInstance = service.findBlogContentTypeByValue(parameter)
 
@@ -75,7 +75,7 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
     }
 
     // Method queryModifierBasedOnFilter
-    void 'test queryModifierBasedOnFilter method when blogInstance and convertToMarkDown is passed'() {
+    void "test queryModifierBasedOnFilter method when blogInstance and convertToMarkDown is passed"() {
         given: 'Instance of query, tag, monthYearFilter, queryFilter, monthFilter'
         StringBuilder query = new StringBuilder('SELECT * from user')
         String tag = 'Grails'
@@ -94,7 +94,7 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
 
     // Method updatedMonthFilterListBasedOnPublishedDate
     @ConfineMetaClassChanges([Blog])
-    void 'test updatedMonthFilterListBasedOnPublishedDate method when monthFilterList is passed'() {
+    void "test updatedMonthFilterListBasedOnPublishedDate method when monthFilterList is passed"() {
         given: 'Instance of monthFilterList'
         String month = (Calendar.instance).get(Calendar.MONTH) + 1
         List<String> monthFilterList = [month]
@@ -117,7 +117,7 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
 
     // Method getBlogSummaries
     @ConfineMetaClassChanges([User, String])
-    void 'test getBlogInstanceList method when monthFilterList is passed'() {
+    void "test getBlogInstanceList method when monthFilterList is passed"() {
         given: 'Instance of monthFilterList'
         Pattern patternTag = Pattern.compile('(?s)<p(.*?)>(.*?)<\\/p>') // HTML_PATTERN_TAG
         List<Map> blogList = [getBlogInstance(1), getBlogInstance(2)]
@@ -154,7 +154,7 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
         resultList[1].author.contains('User(cause-1, 1)')
     }
 
-    void 'test getBlogInstanceList method when empty list is passed'() {
+    void "test getBlogInstanceList method when empty list is passed"() {
         given: 'Instance of monthFilterList'
         Pattern patternTag = Pattern.compile('(?s)<p(.*?)>(.*?)<\\/p>') // HTML_PATTERN_TAG
         Map mapInstance1 = [id: 1]
@@ -169,7 +169,7 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
 
     // Method getBlog
     @ConfineMetaClassChanges([BlogService, String])
-    void 'test getBlog method when blogInstance and convertToMarkdown is passed'() {
+    void "test getBlog method when blogInstance and convertToMarkdown is passed"() {
         given: 'Instance of blog, comment and blogComment'
         Blog blogInstance = getBlogInstance(1)
 
