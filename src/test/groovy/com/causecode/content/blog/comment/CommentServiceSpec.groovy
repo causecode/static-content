@@ -16,6 +16,9 @@ import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import spock.lang.Specification
 
+/**
+ * This is Unit test file for CommentService class.
+ */
 @Mock([Comment, BlogComment, Blog, Tag, TaggableService, TagLink, CommentService])
 @TestFor(CommentService)
 class CommentServiceSpec extends Specification implements BaseTestSetup {

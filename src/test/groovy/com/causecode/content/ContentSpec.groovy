@@ -13,6 +13,9 @@ import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import spock.lang.Specification
 
+/**
+ * This is Unit test file for Content class.
+ */
 @Mock([ContentService, FriendlyUrlService, Meta, ContentMeta])
 @TestFor(Content)
 class ContentSpec extends Specification implements BaseTestSetup {
@@ -35,7 +38,7 @@ class ContentSpec extends Specification implements BaseTestSetup {
         Content contentInstance = getContentInstance(1)
 
         when: 'Method resolveAuthor is called'
-        String resultString = contentInstance.getSanitizedTitle()
+        String resultString = contentInstance.sanitizedTitle
 
         then: 'A valid result string should be received'
         resultString == 'targeting-test-1-types-andor-phases'
@@ -49,7 +52,7 @@ class ContentSpec extends Specification implements BaseTestSetup {
                 ' Meta(keywords, 1))'
 
         when: 'getMetaTags method is called'
-        List<Meta> resultMetaList = contentMetaInstance.content.getMetaTags()
+        List<Meta> resultMetaList = contentMetaInstance.content.metaTags
 
         then: 'Result list should not be null'
         resultMetaList != null

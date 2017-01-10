@@ -19,6 +19,9 @@ import grails.test.mixin.TestFor
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
 
+/**
+ * This is Unit test file for CommentController class.
+ */
 @Mock([Comment, Blog, TaggableService, Tag, TagLink, BlogComment, ContentService, CommentService, FriendlyUrlService])
 @TestFor(CommentController)
 class CommentControllerSpec extends Specification implements BaseTestSetup {

@@ -12,15 +12,15 @@ import grails.test.mixin.TestFor
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
 
+/**
+ * This is Unit test file of ContentRevisionController class.
+ */
 @Mock([ContentRevision, Content])
 @TestFor(ContentRevisionController)
 class ContentRevisionControllerSpec extends Specification implements BaseTestSetup {
 
     // Show action
     void "test show action when content instance and contentRevision is passed"() {
-        given: 'Instance of ContentRevision and Content'
-        ContentRevision contentRevisionInstance = contentRevisionInstance
-
         when: 'Show action is hit'
         controller.request.method = 'GET'
         controller.params.id = contentRevisionInstance.id
@@ -32,9 +32,6 @@ class ContentRevisionControllerSpec extends Specification implements BaseTestSet
 
     // Load action
     void "test load action when id is passed"() {
-        given: 'Instance of contentRevision'
-        ContentRevision contentRevisionInstance = contentRevisionInstance
-
         when: 'Load action is hit'
         controller.request.method = 'POST'
         controller.params.id = contentRevisionInstance.id
@@ -49,14 +46,10 @@ class ContentRevisionControllerSpec extends Specification implements BaseTestSet
 
     // Delete action
     void "test delete action when id is passed"() {
-        given: 'Instance of contentRevision'
-        ContentRevision contentRevisionInstance = contentRevisionInstance
-
-        assert ContentRevision.count() == 1
-
         when: 'Delete action is hit'
-        controller.request.method = 'POST'
         controller.params.id = contentRevisionInstance.id
+        controller.request.method = 'POST'
+        assert ContentRevision.count() == 1
         controller.delete()
 
         then: 'ContentRevision count should be equal to 0'
