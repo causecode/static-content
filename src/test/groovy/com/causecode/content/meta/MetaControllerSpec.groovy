@@ -15,15 +15,15 @@ import grails.test.mixin.TestFor
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
 
+/**
+ * This is Unit test file for MetaController class.
+ */
 @Mock([Meta, ContentMeta, Content])
 @TestFor(MetaController)
 class MetaControllerSpec extends Specification implements BaseTestSetup {
 
     // Validate method (private)
     void "test validate method meta instance id is passed"() {
-        given: 'Meta instance'
-        Meta metaInstance = getMetaInstance()
-
         when: 'Validate method is called'
         controller.params.id = metaInstance.id
         boolean boolResult = controller.validate()
@@ -44,7 +44,7 @@ class MetaControllerSpec extends Specification implements BaseTestSetup {
         when: 'Validate method is called with AJAX request'
         controller.params.id = 1L
         controller.request.makeAjaxRequest()
-        boolean boolResult1 = controller.validate()
+        boolResult = controller.validate()
 
         then: 'boolResult FALSE should be received'
         boolResult == false
@@ -62,9 +62,6 @@ class MetaControllerSpec extends Specification implements BaseTestSetup {
     }
 
     void "test deleteMeta action when id is passed"() {
-        given: 'Meta instance'
-        Meta meta = getMetaInstance()
-
         when: 'Meta instance is passed'
         controller.request.method = 'POST'
         controller.params.id = metaInstance.id

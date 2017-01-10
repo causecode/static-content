@@ -15,7 +15,6 @@ import com.causecode.content.blog.comment.Comment
 import com.causecode.content.blog.comment.CommentService
 import com.causecode.user.User
 import com.naleid.grails.MarkdownService
-import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugins.taggable.Tag
 import grails.plugins.taggable.TagLink
 import grails.plugins.taggable.TaggableService
@@ -27,6 +26,9 @@ import spock.util.mop.ConfineMetaClassChanges
 
 import java.util.regex.Pattern
 
+/**
+ * This is Unit test file for BlogService class.
+ */
 @TestFor(BlogService)
 @Mock([Blog, Tag, TagLink, TaggableService, Comment, BlogComment, User, MarkdownService, ContentMeta, CommentService])
 class BlogServiceSpec extends Specification implements BaseTestSetup {
@@ -49,7 +51,7 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
         }
 
         when: 'getAllTags method is called'
-        List resultList = service.getAllTags()
+        List resultList = service.allTags
 
         then: 'List of Tags should be received'
         resultList[0] == listOfTags
@@ -94,13 +96,13 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
     @ConfineMetaClassChanges([Blog])
     void "test updatedMonthFilterListBasedOnPublishedDate method when monthFilterList is passed"() {
         given: 'Instance of monthFilterList'
-        String month = (Calendar.getInstance()).get(Calendar.MONTH) + 1
+        String month = (Calendar.instance).get(Calendar.MONTH) + 1
         List<String> monthFilterList = [month]
 
         and: 'Mock createCriteria'
         def customCriteria = [list: { Object params = null, Closure cls ->
             [new Date()]
-        }]
+        } ]
 
         Blog.metaClass.static.createCriteria = {
             customCriteria
@@ -124,11 +126,11 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
         User.metaClass.encodePassword = { -> }
         Date dateOfBirth = new Date().parse('MM/dd/yyyy', '01/08/1993')
         def user = new User([
-            username: "cause-1",
-            password: "code-1",
-            email: "cause-1@code.com",
+            username: 'cause-1',
+            password: 'code-1',
+            email: 'cause-1@code.com',
             firstName: 'Cause',
-            lastName: "Code-1",
+            lastName: 'Code-1',
             dateOfBirth: dateOfBirth,
             bio: 'CauseCode beyond infinity',
             pictureUrl: 'https://causecode-picture.com'
@@ -149,7 +151,7 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
         then: 'Valid Response should be received'
         resultList[0].title == 'Targeting Test 1 Types and/or Phases'
         resultList[1].publish == true
-        resultList[1].author.contains('User [cause-1][1]')
+        resultList[1].author.contains('User(cause-1, 1)')
     }
 
     void "test getBlogInstanceList method when empty list is passed"() {

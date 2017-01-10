@@ -25,6 +25,9 @@ import spock.lang.Specification
 import spock.lang.Unroll
 import spock.util.mop.ConfineMetaClassChanges
 
+/**
+ * This is Unit test file for ContentService class.
+ */
 @TestFor(ContentService)
 @Mock([Content, SpringSecurityService, Meta, ContentMeta, ContentRevision, Blog, Tag,
         Page, PageRevision, User, TaggableService, TagLink, BlogComment])
@@ -52,11 +55,11 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
 
         Date dateOfBirth = new Date().parse('MM/dd/yyyy', '01/08/1993')
         def user = new User([
-            username: "cause-1",
-            password: "code-1",
-            email: "cause-1@code.com",
+            username: 'cause-1',
+            password: 'code-1',
+            email: 'cause-1@code.com',
             firstName: 'Cause',
-            lastName: "Code-1",
+            lastName: 'Code-1',
             dateOfBirth: dateOfBirth,
             bio: 'CauseCode beyond infinity',
             pictureUrl: 'https://causecode-picture.com'
@@ -146,7 +149,7 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
         then: 'Error response should be received'
         contentResult.id == null
         contentResult.hasErrors() == true
-        contentResult.errors.getFieldError("title").toString().contains("rejected value [null]")
+        contentResult.errors.getFieldError('title').toString().contains('rejected value [null]')
     }
 
     @ConfineMetaClassChanges([ContentMeta])
@@ -156,8 +159,8 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
         ContentMeta contentMetaInstance2 = getContentMetaInstance(2)
         Content contentInstance = contentMetaInstance1.content
         Map args = getContentParams(1)
-        Meta metaInstance1 = getMetaInstance()
-        Meta metaInstance2 = getMetaInstance()
+        Meta metaInstance1 = metaInstance
+        Meta metaInstance2 = metaInstance
         List metaTypes = [metaInstance1.type, metaInstance2.type]
         List metaValues = [metaInstance1.content, metaInstance2.content]
 
@@ -225,7 +228,6 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
     @ConfineMetaClassChanges([ContentService])
     void "test createLink method when map attributes is passed"() {
         given: 'Content instance'
-        Content contentInstance = getContentInstance(1)
         String domain = 'com.causecode.content.Content'
         Map attrs = [domain: domain, id: 0, absolute: true]
 

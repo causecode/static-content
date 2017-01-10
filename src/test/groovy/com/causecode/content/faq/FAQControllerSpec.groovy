@@ -14,6 +14,9 @@ import grails.test.mixin.TestFor
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
 
+/**
+ * This is Unit test file for FAQController class.
+ */
 @Mock([FAQ])
 @TestFor(FAQController)
 class FAQControllerSpec extends Specification implements BaseTestSetup {
@@ -21,7 +24,7 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
     // Index action
     void "test index action for valid JSON response"() {
         given: 'Some FAQ Instance'
-        createInstances("FAQ", 5)
+        createInstances('FAQ', 5)
 
         when: 'Index action is hit'
         controller.index()
@@ -36,10 +39,10 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
     void "test create action when parameters are passed"() {
         given: 'Map parameters instance'
         Map params = [
-            title   : "Targeting Test Types and/or Phases",
-            author  : "Test User",
-            subTitle: "To execute the JUnit integration test",
-            body    : "Grails organises tests by phase and by type. The state of the Grails application."
+            title: 'Targeting Test Types and/or Phases',
+            author: 'Test User',
+            subTitle: 'To execute the JUnit integration test',
+            body: 'Grails organises tests by phase and by type. The state of the Grails application.'
         ]
 
         when: 'Create action is hit'
@@ -54,9 +57,14 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
     }
 
     // List action
+    /*
+     * Note: Suppressed GrailsMaxForListQueries warning here, as this warning should prompt in case of criteria query,
+     *       here its just a controller action call
+     */
+    @SuppressWarnings(['GrailsMaxForListQueries'])
     void "test list action when parameters are passed"() {
         given: 'Some Page Instance'
-        createInstances("FAQ", 5)
+        createInstances('FAQ', 5)
         assert FAQ.count() == 5
 
         when: 'List action is hit'
@@ -71,7 +79,8 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
     // Save action
     void "test save action when request parameters are passed"() {
         given: 'Map parameters instance'
-        String jsonRequest = (getContentParams(1) as JSON).toString()
+        JSON json = getContentParams(1) as JSON
+        String jsonRequest = "${json}"
 
         when: 'Save action is hit'
         controller.request.method = 'POST'
@@ -85,7 +94,8 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
 
     void "test save action when invalid request parameters are passed"() {
         when: 'Invalid json is passed'
-        String jsonRequest2 = ([] as JSON).toString()
+        JSON json = [] as JSON
+        String jsonRequest2 = "${json}"
         controller.request.method = 'POST'
         controller.request.json = jsonRequest2
         controller.save()
@@ -116,7 +126,6 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
         given: 'faqInstance instance'
         FAQ validFaqInstance = getFAQInstance(1)
         assert validFaqInstance.toString() == 'FAQ()'
-        FAQ invalidFaqInstance = null
 
         when: 'Edit action is hit'
         controller.request.method = 'POST'
@@ -149,9 +158,8 @@ class FAQControllerSpec extends Specification implements BaseTestSetup {
 
     // Delete action
     void "test delete action when pageInstance"() {
-        given: 'Page and Map parameters instance'
+        given: 'Page instance'
         FAQ faqInstance = getFAQInstance(1)
-        Map params = [id: faqInstance.id.toString()]
 
         when: 'Delete action is hit'
         controller.request.method = 'DELETE'

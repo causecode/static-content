@@ -14,6 +14,9 @@ import org.springframework.http.HttpStatus
 import spock.lang.Specification
 import spock.lang.Unroll
 
+/**
+ * This is Unit test file for PageLayoutController class.
+ */
 @TestFor(PageLayoutController)
 @Mock([PageLayout])
 class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
@@ -21,7 +24,7 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     // Index action
     void "test index action for valid JSON response"() {
         given: 'PageLayout Instances'
-        createInstances("PageLayout", 5)
+        createInstances('PageLayout', 5)
         assert PageLayout.count() == 5
 
         when: 'Index action is hit'
@@ -35,11 +38,11 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     // GetPageLayoutList action
     void "test getPageLayoutList action to get metaList"() {
         given: 'Some PageLayout Instance'
-        createInstances("PageLayout", 5)
+        createInstances('PageLayout', 5)
         assert PageLayout.count() == 5
 
         when: 'getPageLayoutList action is hit'
-        controller.getPageLayoutList()
+        controller.pageLayoutList
 
         then: 'A valid JSON response should be received'
         controller.response.json.pageLayoutList[0].id == 1
@@ -63,9 +66,14 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     }
 
     // List action
+    /*
+     * Note: Suppressed GrailsMaxForListQueries warning here, as this warning should prompt in case of criteria query,
+     *       here its just a controller action call
+     */
+    @SuppressWarnings(['GrailsMaxForListQueries'])
     void "test list action when parameters are passed"() {
         given: 'Some PageLayout Instance'
-        createInstances("PageLayout", 5)
+        createInstances('PageLayout', 5)
         assert PageLayout.count() == 5
 
         when: 'List action is hit'
@@ -145,9 +153,6 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
 
     void "test edit action when invalid pageLayoutInstance is passed"() {
         // Cannot be clubbed into one block for DRYness gives: Cannot issue a redirect(..) here.
-        given: 'PageLayout instance'
-        PageLayout invalidPageLayoutInstance = getPageLayoutInstance(1)
-
         when: 'Edit action is hit'
         controller.request.method = 'POST'
         controller.params.id = 2L
@@ -178,7 +183,6 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     void "test update action when invalid pageLayoutInstance is passed"() {
         // Cannot be clubbed into one block for DRYness gives: Cannot issue a redirect(..) here.
         given: 'PageLayout and Map parameters instance'
-        PageLayout pageLayoutInstance = null
         Map params = [layoutName: 'TestPageLayout']
 
         when: 'Update action is hit'
@@ -192,11 +196,10 @@ class PageLayoutControllerSpec extends Specification implements BaseTestSetup {
     }
 
     // Delete action
-    void "test delete action when pageLayoutInstance"() {
-        given: 'PageLayout and Map parameters instance'
+    void "test delete action when pageLayoutInstance id is passed"() {
+        given: 'PageLayout instance'
         PageLayout pageLayoutInstance = getPageLayoutInstance(1)
         assert PageLayout.count() == 1
-        Map params = [layoutName: 'TestPageLayout']
 
         when: 'Delete action is hit'
         controller.request.method = 'DELETE'

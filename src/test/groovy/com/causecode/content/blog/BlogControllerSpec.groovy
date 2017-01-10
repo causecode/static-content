@@ -31,6 +31,7 @@ import spock.lang.Specification
 import spock.util.mop.ConfineMetaClassChanges
 
 /**
+ * This is Unit test file for BlogController class.
  * Note: Unit test left for index action because of StringBuilder query implementation.
  */
 @TestFor(BlogController)
@@ -45,30 +46,30 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         if (saveBool) {
             controller.metaClass.contentService = [create: { Map args, List metaTypes, List metaValues, Class clazz ->
                 return blogInstance
-            }]
+            } ]
         } else {
             controller.metaClass.contentService = [update: { Map args, Content contentInstance, List metaTypes,
                 List metaValues ->
 
                 return blogInstance
-            }] as ContentService
+            } ] as ContentService
         }
 
         // For fileUploaderException
-        if(exceptionBool) {
+        if (exceptionBool) {
             controller.metaClass.fileUploaderService = [saveFile: { String group, def file ->
                 throw new UploadFailureException('Unable to upload file', new Throwable())
-            }]
+            } ]
         } else {
             controller.metaClass.fileUploaderService = [saveFile: { String group, def file ->
                 return new UFile()
-            }]
+            } ]
         }
 
         // For blogService
         controller.metaClass.blogService = [findBlogContentTypeByValue: { String requestContentType ->
             return blogInstance.contentType
-        }]
+        } ]
     }
 
     // Create Action
@@ -99,7 +100,7 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         and: 'Mocked BlogService'
         controller.blogService = [getAllTags: { ->
             return []
-        }] as BlogService
+        } ] as BlogService
 
         when: 'Action show is hit'
         controller.request.method = 'GET'
@@ -117,11 +118,11 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         and: 'Mocked Blog & MarkdownService'
         controller.blogService = [getAllTags: { ->
             return []
-        }] as BlogService
+        } ] as BlogService
 
         controller.markdownService = [markdown: { String body ->
             return
-        }] as MarkdownService
+        } ] as MarkdownService
 
         when: 'blog id and convertToMarkdown parameter is passed'
         controller.request.method = 'GET'
@@ -152,13 +153,10 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
     }
 
     void "test delete action when wrong blog instance is passed"() {
-        given: 'Invalid Blog instance'
-        Blog blogInstance = new Blog()
-
-        and: 'Mocked ContentService'
+        given: 'Mocked ContentService'
         controller.contentService = [delete: { Blog blogInstance1 ->
             throw new DataIntegrityViolationException('Invalid blogInstance')
-        }] as ContentService
+        } ] as ContentService
 
         when: 'Action delete is hit'
         controller.params.id = 1L
@@ -171,8 +169,7 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
     // TODO can be removed once we write the test case for index action
     @ConfineMetaClassChanges([BlogController])
     void "test renderGSPContentAndBlogCustomURLRedirect method when viewType list is passed"() {
-        given: 'Blog instance'
-        Blog blogInstance = getBlogInstance(1)
+        given: 'Result map and view type'
         Map result = [content1: 'Content 1', content2: 'Content 2']
         String viewType = 'list'
 
@@ -250,7 +247,7 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         controller.save()
 
         then: 'Error JSON response should be received'
-        String responseJSONError = (response.json.errors.message).toString()
+        String responseJSONError = "${response.json.errors.message}"
         responseJSONError.contains('[Property [body] of class [class com.causecode.content.blog.Blog] cannot be null')
         controller.response.status == HttpStatus.UNPROCESSABLE_ENTITY.value()
     }
@@ -261,7 +258,6 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         controller.createBlogCustomURLAndRedirect('list')
 
         then: 'redirected to blog show angular based URL.'
-        String defaultURL = grailsApplication.config.app.defaultURL
         controller.response.redirectedUrl.contains('/blog/list')
     }
 
@@ -362,7 +358,7 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         // Only possible way to mock as import is not available
         controller.simpleCaptchaService = [validateCaptcha: { String captcha ->
             return false
-        }]
+        } ]
 
         when: 'Action comment is hit with AJAX request'
         controller.request.method = 'POST'
@@ -388,7 +384,7 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         // Only possible way to mock as import is not available
         controller.simpleCaptchaService = [validateCaptcha: { String captcha ->
             return false
-        }]
+        } ]
 
         blogInstance.contentService = Mock(ContentService)
         1 * blogInstance.contentService.createLink(_) >> '/blog/list'
@@ -415,7 +411,7 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         // Only possible way to mock as import is not available
         controller.simpleCaptchaService = [validateCaptcha: { String captcha ->
             return true
-        }]
+        } ]
 
         blogInstance.contentService = Mock(ContentService)
         1 * blogInstance.contentService.createLink(_) >> '/blog/list'
@@ -442,7 +438,7 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         // Only possible way to mock as import is not available
         controller.simpleCaptchaService = [validateCaptcha: { String captcha ->
             return true
-        }]
+        } ]
 
         when: 'Action comment is hit without AJAX request'
         controller.request.method = 'POST'
@@ -465,7 +461,7 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         // Only possible way to mock as import is not available
         controller.simpleCaptchaService = [validateCaptcha: { String captcha ->
             return true
-        }]
+        } ]
 
         blogInstance.contentService = Mock(ContentService)
         1 * blogInstance.contentService.createLink(_) >> '/blog/list'
@@ -489,7 +485,7 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         // Only possible way to mock as import is not available
         controller.simpleCaptchaService = [validateCaptcha: { String captcha ->
             return true
-        }]
+        } ]
 
         blogInstance.contentService = Mock(ContentService)
         1 * blogInstance.contentService.createLink(_) >> '/blog/list'
@@ -516,7 +512,7 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         // Only possible way to mock as import is not available
         controller.simpleCaptchaService = [validateCaptcha: { String captcha ->
             return true
-        }]
+        } ]
 
         when: 'Action comment is hit without AJAX request'
         controller.request.method = 'POST'
