@@ -210,8 +210,9 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         controller.request.json = [metalist: [:]]
         controller.save()
 
-        then: 'JSON response success TRUE should be received'
-        response.json.success == true
+        then: 'Saved instance should be returned as response'
+        response.json.id == 1
+        response.json.title == 'Targeting Test 1 Types and/or Phases'
         controller.response.status == HttpStatus.OK.value()
     }
 
@@ -228,8 +229,9 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         controller.request.json = [metalist: [:], blogImgFilePath: 'blog/img/file/path']
         controller.save()
 
-        then: 'JSON response success TRUE should be received'
-        response.json.success == true
+        then: 'Saved instance should be returned as response'
+        response.json.id == 1
+        response.json.title == 'Targeting Test 1 Types and/or Phases'
         controller.response.status == HttpStatus.OK.value()
     }
 
