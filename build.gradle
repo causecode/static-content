@@ -24,7 +24,7 @@ buildscript {
 }
 
 group "com.causecode.plugins"
-version "2.5.8"
+version "2.5.9"
 
 apply plugin: "idea"
 apply plugin: "org.grails.grails-plugin"

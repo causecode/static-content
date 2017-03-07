@@ -187,9 +187,11 @@ class BlogController {
                 }
                 blogInstance.setTags(requestData.tags?.tokenize(',')*.trim())
                 blogInstance.save([flush: true])
-                respond([success: true])
+
+                respond(blogInstance)
             } catch (StorageConfigurationException | UploadFailureException | ProviderNotFoundException e) {
                 log.debug 'Unable to upload file', e
+
                 blogInstance.errors.reject("Image couldn't be uploaded " + e.message)
                 respond(blogInstance.errors)
 
