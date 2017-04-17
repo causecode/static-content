@@ -5,10 +5,6 @@ modules = {
         dependsOn 'draggableAndSortable'
     }
 
-    inputWidget {
-        resource id:'js', url:[dir:'js/', file:"inputWidget.js"], minify: true
-    }
-
     draggableAndSortable {
         resource id: 'js', url: [dir: 'js/jquery-ui', file: 'jquery-ui-1.10.3.custom.js']
     }

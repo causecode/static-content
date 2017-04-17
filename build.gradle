@@ -19,12 +19,12 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "com.causecode.plugins:gradle-code-quality:0.0.4"
+        classpath "com.causecode.plugins:gradle-code-quality:0.0.7"
     }
 }
 
 group "com.causecode.plugins"
-version "2.5.9"
+version "2.6.0"
 
 apply plugin: "idea"
 apply plugin: "org.grails.grails-plugin"
@@ -156,7 +156,6 @@ grailsPublish {
              'com/causecode/marshaller/**',
              'com/causecode/content/navigation/**',
              'com/causecode/content/news/**',
-             'com/causecode/content/inputWidget/**',
      ]
  }
 
