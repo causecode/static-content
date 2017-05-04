@@ -8,10 +8,10 @@
 package com.causecode.content.page
 
 import com.causecode.RestfulController
-import com.causecode.content.Content
 import com.causecode.content.ContentService
 import com.causecode.content.meta.Meta
 import com.causecode.util.NucleusUtils
+import grails.converters.JSON
 import grails.core.GrailsApplication
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.annotation.Secured
@@ -93,8 +93,8 @@ class PageController extends RestfulController {
                 requestData.metaList?.content, Page)
 
         if (!NucleusUtils.save(pageInstance, true, log)) {
-            respondData([message: "Cannot save instance due to errors: ${pageInstance.errors}"],
-                    [status: HttpStatus.UNPROCESSABLE_ENTITY])
+            response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value())
+            render([message: "Could not save Page."] as JSON)
 
             return
         }
@@ -106,25 +106,17 @@ class PageController extends RestfulController {
     @Secured(['permitAll'])
     @Transactional(readOnly = true)
     def show() {
-        if (!params.id) {
-            respondData([message: 'Id cannot be null.'], [status: HttpStatus.NOT_ACCEPTABLE])
+        Page pageInstance = pageInstanceFromParams
 
-            return;
+        if (pageInstance) {
+            // Check if a subject parameter is coming in request if yes, then use that an email subject
+            String subject = params.subject
+            if (subject && pageInstance.body.contains('mailto:jobs@causecode.com')) {
+                pageInstance.body = pageInstance.body.replaceAll('subject=.*?\"', "subject=$subject\"")
+            }
+
+            render(model: [pageInstance: pageInstance], view: '/page/show')
         }
-
-        Page pageInstance = Page.get(params.id)
-
-        if (!pageInstance) {
-            respondData([message: "Page with id ${params.id} does not exist."], [status: HttpStatus.NOT_FOUND])
-        }
-
-        // Check if a subject parameter is coming in request if yes, then use that an email subject
-        String subject = params.subject
-        if (subject && pageInstance.body.contains('mailto:jobs@causecode.com')) {
-            pageInstance.body = pageInstance.body.replaceAll('subject=.*?\"', "subject=$subject\"")
-        }
-
-        render(model: [pageInstance: pageInstance], view: '/page/show')
     }
 
     @Override
@@ -133,43 +125,60 @@ class PageController extends RestfulController {
 
         log.debug "Parameters received to update Page instance ${params}"
 
-        Page pageInstance = Page.get(params.id)
+        Page pageInstance = pageInstanceFromParams
 
-        if (!pageInstance) {
-            respondData([message: "Page with id ${params.id} does not exist."], [status: HttpStatus.NOT_FOUND])
+        if (pageInstance) {
+            pageInstance = contentService.update(params, pageInstance, params.metaList?.type, params.metaList?.content)
+
+            if (pageInstance.hasErrors()) {
+                respond(pageInstance.errors)
+
+                return
+            }
+
+            if (params.createRevision) {
+                contentService.createRevision(pageInstance, PageRevision, params)
+            }
+
+            render(model: [pageInstance: pageInstance], view: '/page/show')
         }
-
-        pageInstance = contentService.update(params, pageInstance, params.metaList?.type, params.metaList?.content)
-
-        if (pageInstance.hasErrors()) {
-            respond(pageInstance.errors)
-
-            return
-        }
-
-        if (params.createRevision) {
-            contentService.createRevision(pageInstance, PageRevision, params)
-        }
-
-        render(model: [pageInstance: pageInstance], view: '/page/show')
     }
-    
+
     @Override
     def delete() {
         log.debug "Parameters received to delete Page instance ${params}"
 
+        Page pageInstance = pageInstanceFromParams
+
+        if (pageInstance) {
+            try {
+                contentService.delete(pageInstance)
+
+                render([message: 'Page deleted successfully.'] as JSON)
+            } catch (DataIntegrityViolationException e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
+                render([message: "Cannot delete Page with id ${params.id}"] as JSON)
+            }
+        }
+    }
+
+    private Page getPageInstanceFromParams() {
+        if (!params.id) {
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
+            render([message: 'Id cannot be null.'] as JSON)
+
+            return
+        }
+
         Page pageInstance = Page.get(params.id)
 
         if (!pageInstance) {
-            respondData([message: "Page with id ${params.id} does not exist."])
+            response.setStatus(HttpStatus.NOT_FOUND.value())
+            render([message: "Page with id ${params.id} does not exist."] as JSON)
+
+            return
         }
 
-        try {
-            contentService.delete(pageInstance)
-
-            respondData([message: 'Page deleted successfully.'])
-        } catch (DataIntegrityViolationException e) {
-            respondData([message: "Cannot delete Page with id ${params.id}"], [status: HttpStatus.NOT_ACCEPTABLE])
-        }
+        return pageInstance
     }
 }
