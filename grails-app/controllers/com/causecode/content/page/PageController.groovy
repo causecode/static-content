@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, CauseCode Technologies Pvt Ltd, India.
+ * Copyright (c) 2011 - Present, CauseCode Technologies Pvt Ltd, India.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or
@@ -7,115 +7,115 @@
  */
 package com.causecode.content.page
 
+import com.causecode.RestfulController
+import com.causecode.content.Content
 import com.causecode.content.ContentService
+import com.causecode.content.meta.Meta
+import com.causecode.util.NucleusUtils
+import grails.core.GrailsApplication
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
-
-import com.causecode.exceptions.RequiredPropertyMissingException
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 
-import com.causecode.annotation.shorthand.ControllerShorthand
-import com.causecode.content.ContentRevision
-import com.causecode.content.meta.Meta
-import grails.core.GrailsApplication
-
 /**
- * Provides default CRUD end point for Content Manager.
- * @author Vishesh Duggar
- * @author Shashank Agrawal
- * @author Laxmi Salunkhe
- *
+ * Provides default CRUD endpoint for Content Manager.
+ * @author Hardik Modha
  */
 @Secured(['ROLE_CONTENT_MANAGER'])
-@ControllerShorthand(value = 'c')
-class PageController {
+class PageController extends RestfulController {
 
-    static allowedMethods = [show: 'GET', save: 'POST', update: 'PUT', delete: 'DELETE']
     static responseFormats = ['json']
+    static namespace = 'v1'
 
     ContentService contentService
     GrailsApplication grailsApplication
 
-    def handleRequiredPropertyMissingException(RequiredPropertyMissingException exception) {
-        log.debug 'Page instance not found', exception
-        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
-        respond ([message: message(code: 'page.not.found')])
-
-        return
+    PageController() {
+        super(Page)
     }
 
+    /**
+     * This endpoint returns Page instance for the passed title name.
+     * @param params - comma separated string of titles
+     *
+     * @return
+     */
+    @Secured(['permitAll'])
+    def fetchPageByTitle() {
+        Map responseData = [:]
+
+        if (params.titles) {
+            String [] titles = params.titles.split(',')
+
+            titles.each { String title ->
+
+                Page page = Page.findByTitle(title)
+                if (page) {
+                    responseData.put(title, page)
+                }
+            }
+        }
+
+        respond([instanceList: responseData])
+    }
+
+    @Secured(['permitAll'])
+    @Override
     def index() {
-        redirect(action: 'list', params: params)
+        log.debug "Params received to get Page are ${params}"
 
-        return
-    }
-
-    def getMetaTypeList() {
-        List metaTypeList = Meta.typeList
-        respond ([metaTypeList: metaTypeList])
-
-        return
-    }
-
-    def list(Integer max) {
         params.sort = params.sort ?: 'dateCreated'
         params.order = params.order ?: 'desc'
-        params.max = Math.min(max ?: 10, 100)
+        params.max = Math.min(params.max ?: 10, 100)
 
-        String contentManagerRole = grailsApplication.config.cc.plugins.content.contentMangerRole
+        String contentManagerRole = grailsApplication.config.cc.plugins.content.contentManagerRole
+
         List pageInstanceList = Page.createCriteria().list(params) {
             if (SpringSecurityUtils.ifNotGranted(contentManagerRole)) {
                 eq('publish', true)
             }
         }
-        respond ([instanceList: pageInstanceList, totalCount: pageInstanceList.totalCount])
 
-        return
+        render(model: [instanceList: pageInstanceList], view: '/page/index')
     }
 
-    def create(Page pageInstance) {
-        respond([pageInstance: pageInstance])
-
-        return
+    @Secured(['permitAll'])
+    def getMetaTypeList() {
+        respond([metaTypeList: Meta.typeList])
     }
 
+    @Override
     def save() {
         Map requestData = request.JSON
-        Page pageInstance = contentService.create(requestData, requestData.metaList.type,
-                requestData.metaList.content, Page)
-        if (!pageInstance.save(flush: true)) {
-            respond(view: 'create', model: [pageInstance: pageInstance], errors: pageInstance.errors)
+        Page pageInstance = contentService.create(requestData, requestData.metaList?.type,
+                requestData.metaList?.content, Page)
+
+        if (!NucleusUtils.save(pageInstance, true, log)) {
+            respondData([message: "Cannot save instance due to errors: ${pageInstance.errors}"],
+                    [status: HttpStatus.UNPROCESSABLE_ENTITY])
+
             return
         }
 
-        redirect uri: pageInstance.searchLink()
-
-        return
+        render(model: [pageInstance: pageInstance], view: '/page/show')
     }
 
-    /**
-     * Transactional annotation is required since we are using autowire feature of
-     * Grails domain classes so anyone can pass the domain field data which will update
-     * the Page instance.
-     */
-    @Transactional(readOnly = true)
+    @Override
     @Secured(['permitAll'])
-    def show(Page pageInstance) {
-        if (!pageInstance || pageInstance.hasErrors()) {
-            throw new RequiredPropertyMissingException()
+    @Transactional(readOnly = true)
+    def show() {
+        if (!params.id) {
+            respondData([message: 'Id cannot be null.'], [status: HttpStatus.NOT_ACCEPTABLE])
+
+            return;
         }
 
-        /*
-         * URL that contains '_escaped_fragment_' parameter, represents a request from a crawler and
-         * any change in data model must be updated in the GSP.
-         * Render GSP content in JSON format.
-         */
-        if (params._escaped_fragment_) {
-            respond([view: 'show', model: [pageInstance: pageInstance], contentType: 'application/json'])
+        Page pageInstance = Page.get(params.id)
 
-            return
+        if (!pageInstance) {
+            respondData([message: "Page with id ${params.id} does not exist."], [status: HttpStatus.NOT_FOUND])
         }
 
         // Check if a subject parameter is coming in request if yes, then use that an email subject
@@ -124,69 +124,52 @@ class PageController {
             pageInstance.body = pageInstance.body.replaceAll('subject=.*?\"', "subject=$subject\"")
         }
 
-        if (request.xhr) {
-            respond(pageInstance)
-            return
-        }
-
-        String pageShowUrl = grailsApplication.config.app.defaultURL + "/page/show/${pageInstance.id}"
-
-        if (subject) {
-            pageShowUrl += "?subject=$subject"
-        }
-
-        redirect(url: pageShowUrl, permanent: true, params: params)
-
-        return
+        render(model: [pageInstance: pageInstance], view: '/page/show')
     }
 
-    def edit(Page pageInstance) {
-        if (!pageInstance || pageInstance.hasErrors()) {
-            throw new RequiredPropertyMissingException()
+    @Override
+    def update() {
+        params.putAll(request.JSON)
+
+        log.debug "Parameters received to update Page instance ${params}"
+
+        Page pageInstance = Page.get(params.id)
+
+        if (!pageInstance) {
+            respondData([message: "Page with id ${params.id} does not exist."], [status: HttpStatus.NOT_FOUND])
         }
 
-        respond([pageInstance: pageInstance, contentRevisionList: ContentRevision.findAllByRevisionOf(pageInstance)])
+        pageInstance = contentService.update(params, pageInstance, params.metaList?.type, params.metaList?.content)
 
-        return
-    }
+        if (pageInstance.hasErrors()) {
+            respond(pageInstance.errors)
 
-    def update(Page pageInstance) {
-        Page updatePageInstance = pageInstance
-        if (!updatePageInstance || updatePageInstance.hasErrors()) {
-            throw new RequiredPropertyMissingException()
-        }
-
-        Map requestData = request.JSON
-
-        log.info "Parameters received to update page instance: $params, $requestData"
-        updatePageInstance = contentService.update(requestData, updatePageInstance, requestData.metaList?.type,
-                requestData.metaList?.content)
-
-        if (updatePageInstance.hasErrors()) {
-            respond(updatePageInstance.errors)
             return
         }
 
         if (params.createRevision) {
-            contentService.createRevision(updatePageInstance, PageRevision, params)
+            contentService.createRevision(pageInstance, PageRevision, params)
         }
 
-        redirect uri: updatePageInstance.searchLink()
-
-        return
+        render(model: [pageInstance: pageInstance], view: '/page/show')
     }
+    
+    @Override
+    def delete() {
+        log.debug "Parameters received to delete Page instance ${params}"
 
-    def delete(Page pageInstance) {
-        if (!pageInstance || pageInstance.hasErrors()) {
-            throw new RequiredPropertyMissingException()
+        Page pageInstance = Page.get(params.id)
+
+        if (!pageInstance) {
+            respondData([message: "Page with id ${params.id} does not exist."])
         }
+
         try {
             contentService.delete(pageInstance)
-            respond ([success: true])
-        } catch (DataIntegrityViolationException e) {
-            respond ([success: false])
-        }
 
-        return
+            respondData([message: 'Page deleted successfully.'])
+        } catch (DataIntegrityViolationException e) {
+            respondData([message: "Cannot delete Page with id ${params.id}"], [status: HttpStatus.NOT_ACCEPTABLE])
+        }
     }
 }
