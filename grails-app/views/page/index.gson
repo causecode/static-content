@@ -10,6 +10,6 @@ model {
 }
 
 json {
-	instanceList g.render(template: "/page/page", var: 'pageInstance', collection: instanceList)
+    instanceList g.render(template: "/page/page", var: 'pageInstance', collection: instanceList)
     totalCount instanceList.size()
 }

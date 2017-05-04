@@ -47,7 +47,7 @@ class PageController extends RestfulController {
         Map responseData = [:]
 
         if (params.titles) {
-            String [] titles = params.titles.split(',')
+            String[] titles = params.titles.split(',')
 
             titles.each { String title ->
 
