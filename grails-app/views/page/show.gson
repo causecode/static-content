@@ -11,4 +11,4 @@ model {
     Page pageInstance
 }
 
-json g.render(pageInstance)
+json g.render(pageInstance, [excludes: ['lastUpdated', 'dateCreated']])

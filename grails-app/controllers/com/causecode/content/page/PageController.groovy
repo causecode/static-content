@@ -68,13 +68,33 @@ class PageController extends RestfulController {
 
         params.sort = params.sort ?: 'dateCreated'
         params.order = params.order ?: 'desc'
-        params.max = Math.min(params.max ?: 10, 100)
+
+        try {
+            params.max = Math.min(params.max?.toInteger() ?: 10, 100)
+            params.offset = params.offset?.toInteger() ?: 0
+        } catch (NumberFormatException e) {
+            params.max = 10
+            params.offset = 0
+        }
 
         String contentManagerRole = grailsApplication.config.cc.plugins.content.contentManagerRole
 
         List pageInstanceList = Page.createCriteria().list(params) {
-            if (SpringSecurityUtils.ifNotGranted(contentManagerRole)) {
+
+            if (SpringSecurityUtils.ifAnyGranted(contentManagerRole)) {
+                if (params.publish) {
+                    eq('publish', params.publish.toBoolean())
+                }
+            } else {
                 eq('publish', true)
+            }
+
+            if (params.query) {
+                or {
+                    ilike('title', "%${params.query}%")
+                    ilike('subTitle', "%${params.query}%")
+                    ilike('body', "%${params.query}%")
+                }
             }
         }
 
@@ -94,7 +114,7 @@ class PageController extends RestfulController {
 
         if (!NucleusUtils.save(pageInstance, true, log)) {
             response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value())
-            render([message: "Could not save Page."] as JSON)
+            render([message: 'Error occured while saving the Page.'] as JSON)
 
             return
         }
