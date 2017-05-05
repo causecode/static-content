@@ -43,7 +43,7 @@ class PageController extends RestfulController {
      * @return
      */
     @Secured(['permitAll'])
-    def fetchPageByTitle() {
+    def byTitle() {
         Map responseData = [:]
 
         if (params.titles) {
@@ -52,7 +52,10 @@ class PageController extends RestfulController {
             titles.each { String title ->
 
                 Page page = Page.findByTitle(title)
-                if (page) {
+
+                String contentManagerRole = grailsApplication.config.cc.plugins.content.contentManagerRole
+
+                if (page && (SpringSecurityUtils.ifAnyGranted(contentManagerRole) || page.publish)) {
                     responseData.put(title, page)
                 }
             }
@@ -82,19 +85,19 @@ class PageController extends RestfulController {
         List pageInstanceList = Page.createCriteria().list(params) {
 
             if (SpringSecurityUtils.ifAnyGranted(contentManagerRole)) {
-                if (params.publish) {
-                    eq('publish', params.publish.toBoolean())
+                if (params.publish?.toString()) {
+                    eq('publish', params.publish)
+                }
+
+                if (params.query) {
+                    or {
+                        ilike('title', "%${params.query}%")
+                        ilike('subTitle', "%${params.query}%")
+                        ilike('body', "%${params.query}%")
+                    }
                 }
             } else {
                 eq('publish', true)
-            }
-
-            if (params.query) {
-                or {
-                    ilike('title', "%${params.query}%")
-                    ilike('subTitle', "%${params.query}%")
-                    ilike('body', "%${params.query}%")
-                }
             }
         }
 
@@ -151,7 +154,8 @@ class PageController extends RestfulController {
             pageInstance = contentService.update(params, pageInstance, params.metaList?.type, params.metaList?.content)
 
             if (pageInstance.hasErrors()) {
-                respond(pageInstance.errors)
+                response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                render([message: 'Error occured while updating the Page.'] as JSON)
 
                 return
             }
@@ -177,7 +181,7 @@ class PageController extends RestfulController {
                 render([message: 'Page deleted successfully.'] as JSON)
             } catch (DataIntegrityViolationException e) {
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
-                render([message: "Cannot delete Page with id ${params.id}"] as JSON)
+                render([message: "Cannot delete Page with id ${params.id}."] as JSON)
             }
         }
     }
