@@ -21,12 +21,14 @@ import org.springframework.http.HttpStatus
 
 /**
  * Provides default CRUD endpoint for Content Manager.
+ * @author Vishesh Duggar
+ * @author Shashank Agrawal
+ * @author Laxmi Salunkhe
  * @author Hardik Modha
  */
 @Secured(['ROLE_CONTENT_MANAGER'])
 class PageController extends RestfulController {
 
-    static responseFormats = ['json']
     static namespace = 'v1'
 
     ContentService contentService
@@ -40,7 +42,7 @@ class PageController extends RestfulController {
      * This endpoint returns Page instance for the passed title name.
      * @param params - comma separated string of titles
      *
-     * @return
+     * @return List of Page instances
      */
     @Secured(['permitAll'])
     def byTitle() {
@@ -64,6 +66,13 @@ class PageController extends RestfulController {
         respond([instanceList: responseData])
     }
 
+    /**
+     * Endpoint to fetch PaginatedList of Page instances based on passed parameters. This endpoint also provides
+     * facility to filter and show only published records to normal users. User with contentManagerRole can see
+     * unpublished records and filter records by passing query as parameter.
+     *
+     * @return PaginatedList of matching Page instances
+     */
     @Secured(['permitAll'])
     @Override
     def index() {
@@ -101,14 +110,26 @@ class PageController extends RestfulController {
             }
         }
 
-        render(model: [instanceList: pageInstanceList], view: '/page/index')
+        int totalCount = pageInstanceList ? pageInstanceList.totalCount : 0
+
+        render(model: [instanceList: pageInstanceList, totalCount: totalCount], view: '/page/index')
     }
 
+    /**
+     * This endpoint returns the list of Meta tags useful for SEO.
+     *
+     * @return list of meta tags.
+     */
     @Secured(['permitAll'])
     def getMetaTypeList() {
         respond([metaTypeList: Meta.typeList])
     }
 
+    /**
+     * An Endpoint to save the instance of Page.
+     *
+     * @return Error message when instance cannot be saved, saved instance otherwise.
+     */
     @Override
     def save() {
         Map requestData = request.JSON
@@ -116,15 +137,19 @@ class PageController extends RestfulController {
                 requestData.metaList?.content, Page)
 
         if (!NucleusUtils.save(pageInstance, true, log)) {
-            response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value())
-            render([message: 'Error occured while saving the Page.'] as JSON)
+            respondData([message: 'Error occurred while saving the Page.'], [status: HttpStatus.UNPROCESSABLE_ENTITY])
 
-            return
+            return false
         }
 
         render(model: [pageInstance: pageInstance], view: '/page/show')
     }
 
+    /**
+     * An endpoint to return the Page instance for show and edit ui pages.
+     *
+     * @return Page instance
+     */
     @Override
     @Secured(['permitAll'])
     @Transactional(readOnly = true)
@@ -142,6 +167,12 @@ class PageController extends RestfulController {
         }
     }
 
+    /**
+     * Endpoint to update the Page instance. It updates the instance whose id is sent in the params.
+     * If createRevision parameter is passed then it creates a revision for the instance.
+     *
+     * @return On success updated page instance, error message with appropriate status code otherwise.
+     */
     @Override
     def update() {
         params.putAll(request.JSON)
@@ -154,10 +185,10 @@ class PageController extends RestfulController {
             pageInstance = contentService.update(params, pageInstance, params.metaList?.type, params.metaList?.content)
 
             if (pageInstance.hasErrors()) {
-                response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value())
-                render([message: 'Error occured while updating the Page.'] as JSON)
+                respondData([message: 'Error occurred while updating the Page.'],
+                        [status: HttpStatus.UNPROCESSABLE_ENTITY])
 
-                return
+                return false
             }
 
             if (params.createRevision) {
@@ -168,6 +199,12 @@ class PageController extends RestfulController {
         }
     }
 
+    /**
+     * An endpoint to delete an instance of Page.
+     *
+     * @return Success message when instance is successfully deleted, error message with appropriate status code if an
+     * error occurs while deleting the instance.
+     */
     @Override
     def delete() {
         log.debug "Parameters received to delete Page instance ${params}"
@@ -178,14 +215,22 @@ class PageController extends RestfulController {
             try {
                 contentService.delete(pageInstance)
 
-                render([message: 'Page deleted successfully.'] as JSON)
+                respondData([message: 'Page deleted successfully.'])
             } catch (DataIntegrityViolationException e) {
-                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())
-                render([message: "Cannot delete Page with id ${params.id}."] as JSON)
+                respondData([message: "Cannot delete Page with id ${params.id}."], [status: HttpStatus.NOT_ACCEPTABLE])
+
+                return false
             }
         }
     }
 
+    /**
+     * This method validates for id and if id exist then fetches the instance from database and returns it.
+     * If id does not exist in params or instance does not exist for provided id then appropriate error message is
+     * returned with status code.
+     *
+     * @return Page instance when instance exists for the provided id, null otherwise.
+     */
     private Page getPageInstanceFromParams() {
         if (!params.id) {
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value())

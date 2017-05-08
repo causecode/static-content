@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2011 - Present, CauseCode Technologies Pvt Ltd, India.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or
+ * without modification, are not permitted.
+ */
 package com.causecode.content.page
 
 import com.causecode.content.Content
@@ -94,7 +101,7 @@ class PageControllerSpec extends Specification {
 
     @Unroll
     void "test byTitle action for param #titlesParam"() {
-        given: 'instances of Page'
+        given: 'Instances of Page'
         mockSpringSecurityUtils(isContentManager)
         generatePageInstances(1, 'test', true, 'AboutUs')
         generatePageInstances(1, 'test', true, 'ContactUs')
@@ -106,7 +113,7 @@ class PageControllerSpec extends Specification {
         controller.request.method = 'GET'
         controller.byTitle()
 
-        then: 'list of matching instances should be returned'
+        then: 'List of matching instances should be returned'
         controller.response.json.instanceList.size() == expectedSize
 
         where:
@@ -122,7 +129,7 @@ class PageControllerSpec extends Specification {
 
     @Unroll
     void "test index action when user is #userType"() {
-        given: 'instances of Page'
+        given: 'Instances of Page'
         mockSpringSecurityUtils(isContentManager)
         generatePageInstances(70, 'hello')
         generatePageInstances(50, 'world', true)
@@ -170,7 +177,7 @@ class PageControllerSpec extends Specification {
     }
 
     void "test save action for various save cases"() {
-        given: 'mocked contentService and NucleusUtils call'
+        given: 'Mocked contentService and NucleusUtils call'
         mockContentServiceCreate()
         mockNucleusUtilsSave()
 
@@ -188,12 +195,12 @@ class PageControllerSpec extends Specification {
         performSaveRequest()
 
         then: 'Error message should be returned'
-        controller.response.json.message.contains('Error occured while saving the Page.')
+        controller.response.json.message.contains('Error occurred while saving the Page.')
         controller.response.status == 422
     }
 
      void "test show action for various cases"() {
-         given: 'an instance of Page'
+         given: 'An instance of Page'
          Page page = Page.build(body: 'test body')
          assert page.id
 
@@ -201,7 +208,7 @@ class PageControllerSpec extends Specification {
          controller.request.method = 'GET'
          controller.show()
 
-         then: 'server responds with appropriate error message'
+         then: 'Server responds with appropriate error message'
          controller.response.json.message == 'Id cannot be null.'
          controller.response.status == 406
 
@@ -226,7 +233,7 @@ class PageControllerSpec extends Specification {
      }
 
     void "test update action for various cases"() {
-        given: 'an instance of Page and mocked service call'
+        given: 'An instance of Page and mocked service call'
         mockContentServiceUpdate()
 
         Page page = Page.build(body: '<p>Unit Test<p>', subTitle: 'test', title: 'test')
@@ -238,7 +245,7 @@ class PageControllerSpec extends Specification {
                 title: 'Unit Test', createRevision: true]
         controller.update()
 
-        then: 'instance should be updated and updated instance should be returned'
+        then: 'Instance should be updated and updated instance should be returned'
         model.pageInstance.id
         model.pageInstance.title == 'Unit Test'
         model.pageInstance.subTitle == 'Unit Test'
@@ -249,13 +256,13 @@ class PageControllerSpec extends Specification {
         controller.request.method = 'PUT'
         controller.update()
 
-        then: 'appropriate error message and status code is returned'
-        controller.response.json.message == 'Error occured while updating the Page.'
+        then: 'Appropriate error message and status code is returned'
+        controller.response.json.message == 'Error occurred while updating the Page.'
         controller.response.status == 422
     }
 
     void "test delete action for various cases"() {
-        given: 'an instance of Page and mocked service call'
+        given: 'An instance of Page and mocked service call'
         mockContentServiceDelete()
         Page page = Page.build()
         assert page.id
@@ -265,7 +272,7 @@ class PageControllerSpec extends Specification {
         controller.params.id = page.id
         controller.delete()
 
-        then: 'instance should be deleted successfully and success message should be returned'
+        then: 'Instance should be deleted successfully and success message should be returned'
         controller.response.json.message == 'Page deleted successfully.'
         controller.response.status == 200
 
@@ -275,7 +282,7 @@ class PageControllerSpec extends Specification {
         controller.params.id = page.id
         controller.delete()
 
-        then: 'appropriate error message and status code should be returned'
+        then: 'Appropriate error message and status code should be returned'
         controller.response.json.message == "Cannot delete Page with id ${page.id}."
         controller.response.status == 406
     }
@@ -284,7 +291,7 @@ class PageControllerSpec extends Specification {
         when: 'getPageInstanceFromParams is called with invalid parameters'
         controller.pageInstanceFromParams
 
-        then: 'appropriate error message and status code is returned'
+        then: 'Appropriate error message and status code is returned'
         controller.response.json.message == 'Id cannot be null.'
         controller.response.status == 406
 
@@ -293,7 +300,7 @@ class PageControllerSpec extends Specification {
         controller.params.id = 1111
         controller.pageInstanceFromParams
 
-        then: 'appropriate error message and status code is returned'
+        then: 'Appropriate error message and status code is returned'
         controller.response.json.message == 'Page with id 1111 does not exist.'
         controller.response.status == 404
 

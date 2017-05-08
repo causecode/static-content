@@ -6,7 +6,6 @@
  * without modification, are not permitted.
  *//*
 
-
 package com.causecode.content.blog
 
 import spock.lang.*

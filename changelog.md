@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 2.6.1
+1. Changed PageController to follow restful pattern.
+2. Removed gsp pages from grails-app/views/page
+ - create.gsp
+ - edit.gsp
+ - show.gsp
+ - list.gsp
+
 ## Version 2.6.0
 
     1. Removed InputWidget classes. These classes include - 
