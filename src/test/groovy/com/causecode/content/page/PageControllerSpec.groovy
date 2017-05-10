@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-Present, CauseCode Technologies Pvt Ltd, India.
+ * Copyright (c) 2011 - Present, CauseCode Technologies Pvt Ltd, India.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or
@@ -7,348 +7,312 @@
  */
 package com.causecode.content.page
 
-import com.causecode.content.BaseTestSetup
-import com.causecode.content.ContentMeta
-import com.causecode.content.ContentRevision
-import com.causecode.content.ContentService
-import com.causecode.content.PageLayout
-import grails.plugin.springsecurity.SpringSecurityUtils
-import grails.util.Holders
-import org.springframework.http.HttpStatus
 import com.causecode.content.Content
-import grails.test.mixin.Mock
+import com.causecode.content.ContentService
+import com.causecode.content.meta.Meta
+import com.causecode.util.NucleusUtils
+import grails.buildtestdata.mixin.Build
+import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.test.mixin.TestFor
+import grails.util.Holders
+import org.springframework.dao.DataIntegrityViolationException
 import spock.lang.Specification
-import spock.util.mop.ConfineMetaClassChanges
+import spock.lang.Unroll
 
 /**
- * This is Unit test file for PageController class.
+ * This class contains unit test cases for {@link PageController}
  */
 @TestFor(PageController)
-@Mock([Page, Content, PageLayout, ContentRevision, ContentMeta])
-class PageControllerSpec extends Specification implements BaseTestSetup {
+@Build([Page])
+class PageControllerSpec extends Specification {
 
-    def setup() {
-        Holders.grailsApplication.config.cc.plugins.content.contentManagerRole = 'manager'
-        SpringSecurityUtils.metaClass.static.ifNotGranted = { String role ->
-            return true
+    void generatePageInstances(int numberOfInstances, String body = '', boolean publish = false, String title = 'far') {
+        numberOfInstances.times {
+            Page.build(publish: publish, body: body, title: title)
         }
     }
 
-    // Index action
-    void "test index action for valid JSON response"() {
-        given: 'Page Instance'
-        createInstances('Page', 5)
-        assert Page.count() == 5
+    void mockSpringSecurityUtils(boolean result) {
+        Holders.grailsApplication.config.cc.plugins.content.contentManagerRole = 'manager'
 
-        when: 'Index action is hit'
+        GroovyMock(SpringSecurityUtils, global: true)
+        SpringSecurityUtils.ifAnyGranted(_) >> {
+            return result
+        }
+    }
+
+    void mockContentServiceCreate() {
+        ContentService contentService = Mock(ContentService)
+        contentService.create(_, _, _, _) >> { Map args, List metaTypes, List metaValues, Class clazz = Content ->
+            return Page.build(body: args.body, title: args.title)
+        }
+        controller.contentService = contentService
+    }
+
+    void mockContentServiceUpdate() {
+        ContentService contentService = Mock(ContentService)
+        contentService.update(_, _, _, _) >> { Map args, Content contentInstance, List metaTypes, List metaValues ->
+            return Page.build(body: args.body, title: args.title, subTitle: args.subTitle)
+        } >> {
+            return Page.buildWithoutSave(body: '', title: '', subTitle: '')
+        }
+
+        1 * contentService.createRevision(_, _, _) >> {
+            return
+        }
+
+        controller.contentService = contentService
+    }
+
+    void mockContentServiceDelete() {
+        ContentService contentService = Mock(ContentService)
+        contentService.delete(_) >> {
+            return
+        } >> {
+            throw new DataIntegrityViolationException('Error')
+        }
+
+        controller.contentService = contentService
+    }
+
+    void mockNucleusUtilsSave() {
+        GroovyMock(NucleusUtils, global: true)
+
+        2 * NucleusUtils.save(_, _, _) >> {
+            return true
+        } >> {
+            return false
+        }
+    }
+
+    void performSaveRequest() {
+        controller.request.method = 'POST'
+        controller.request.json = [body: '<p>Test</p>', title: 'Unit Test']
+        controller.save()
+    }
+
+    void performShowRequest(Long id) {
+        controller.response.reset()
+        controller.request.method = 'GET'
+        controller.params.id = id
+        controller.params.subject = 'TestSubject'
+        controller.show()
+    }
+
+    @Unroll
+    void "test byTitle action for param #titlesParam"() {
+        given: 'Instances of Page'
+        mockSpringSecurityUtils(isContentManager)
+        generatePageInstances(1, 'test', true, 'AboutUs')
+        generatePageInstances(1, 'test', true, 'ContactUs')
+        generatePageInstances(1, 'test', false, 'Footer')
+
+        when: 'byTitle action is hit'
+        controller.response.reset()
+        controller.params.titles = titlesParam
+        controller.request.method = 'GET'
+        controller.byTitle()
+
+        then: 'List of matching instances should be returned'
+        controller.response.json.instanceList.size() == expectedSize
+
+        where:
+        titlesParam         | isContentManager | expectedSize
+        null                | false            | 0
+        'AboutUs'           | true             | 1
+        'AboutUs,ContactUs' | true             | 2
+        'dummy,AboutUs'     | true             | 1
+        'dummy'             | true             | 0
+        'Footer'            | true             | 1
+        'Footer'            | false            | 0
+    }
+
+    @Unroll
+    void "test index action when user is #userType"() {
+        given: 'Instances of Page'
+        mockSpringSecurityUtils(isContentManager)
+        generatePageInstances(70, 'hello')
+        generatePageInstances(50, 'world', true)
+
+        when: 'index actions is hit'
+        controller.params.max = max
+        controller.params.offset = offset
+        controller.params.query = query
+        controller.params.publish = publish
+        controller.request.method = 'GET'
         controller.index()
 
-        then: 'Redirect URL should contain /page/list'
-        response.status == HttpStatus.FOUND.value()
-        response.redirectedUrl == '/page/list'
+        then: 'List of Page instances is returned with totalCount'
+        controller.modelAndView.model.instanceList.totalCount == totalCount
+        controller.modelAndView.model.instanceList.size() == expectedSize
+        controller.response.status == 200
+        view == '/page/index'
+
+        where:
+        isContentManager | max     | offset  | query   | publish | expectedSize | totalCount | userType
+        true             | 5       | 0       | null    | null    | 5            | 120        | 'contentManager'
+        true             | 10      | 0       | null    | null    | 10           | 120        | 'contentManager'
+        false            | 20      | 0       | null    | null    | 20           | 50         | 'not contentManager'
+        false            | 50      | 40      | null    | null    | 10           | 50         | 'not contentManager'
+        true             | 'dummy' | 0       | null    | null    | 10           | 120        | 'contentManager'
+        false            | 10      | 'dummy' | null    | null    | 10           | 50         | 'not contentManager'
+        true             | 10      | 0       | 'hello' | null    | 10           | 70         | 'contentManager'
+        false            | 10      | 0       | 'hello' | null    | 10           | 50         | 'not contentManager'
+        false            | 10      | 0       | 'world' | null    | 10           | 50         | 'not contentManager'
+        true             | 10      | 0       | null    | true    | 10           | 50         | 'contentManager'
+        true             | 10      | 0       | null    | false   | 10           | 70         | 'contentManager'
+        false            | 10      | 0       | null    | true    | 10           | 50         | 'not contentManager'
+        false            | 10      | 0       | null    | false   | 10           | 50         | 'not contentManager'
     }
 
-    // GetMetaTypeList action
-    void "test getMetaTypeList action to get metaList"() {
-        given: 'Page Instance'
-        createInstances('Page', 5)
-        assert PageLayout.count() == 5
-
-        when: 'getMetaList action is hit'
+    void "test getMetaTypeList action"() {
+        when: 'getMetaTypeList action is hit'
+        controller.request.method == 'GET'
         controller.metaTypeList
 
-        then: 'A valid JSON response should be received'
-        controller.response.json.metaTypeList[0] == 'keywords'
-        controller.response.json.metaTypeList[1] == 'description'
-        response.status == HttpStatus.OK.value()
+        then: 'List of typeList should be returned'
+        controller.response.json.metaTypeList.size() == 6
+        controller.response.json.metaTypeList == Meta.typeList
+        controller.response.status == 200
     }
 
-    // Create action
-    void "test create action when parameters are passed"() {
-        given: 'Map parameters instance'
-        PageLayout pageLayoutInstance = getPageLayoutInstance(1)
-        assert pageLayoutInstance.toString() == 'PageLayout(TestPageLayout-1, 1)'
+    void "test save action for various save cases"() {
+        given: 'Mocked contentService and NucleusUtils call'
+        mockContentServiceCreate()
+        mockNucleusUtilsSave()
 
-        Map params = [pageLayout: 'pageLayoutInstance']
+        when: 'save action is hit with valid parameters'
+        performSaveRequest()
 
-        when: 'Create action is hit'
-        controller.request.method = 'POST'
-        controller.request.parameters = params
-        controller.create()
+        then: 'Saved instance should be returned'
+        model.pageInstance.id
+        model.pageInstance.body == '<p>Test</p>'
+        model.pageInstance.title == 'Unit Test'
+        controller.response.status == 200
 
-        then: 'JSON response with HttpStatus OK should be received'
-        controller.response.json.pageInstance.publish == false
-        controller.response.status == HttpStatus.OK.value()
+        when: 'save action is hit and instance cannot be saved'
+        controller.response.reset()
+        performSaveRequest()
+
+        then: 'Error message should be returned'
+        controller.response.json.message.contains('Error occurred while saving the Page.')
+        controller.response.status == 422
     }
 
-    // List action
-    /*
-     * Note: Suppressed GrailsMaxForListQueries warning here, as this warning should prompt in case of criteria query,
-     *       here its just a controller action call
-     */
-    @ConfineMetaClassChanges([Page])
-    @SuppressWarnings(['GrailsMaxForListQueries'])
-    void "test list action when parameters are passed"() {
-        given: 'Page Instances'
-        createInstances('Page', 5)
-        assert Page.count() == 5
+     void "test show action for various cases"() {
+         given: 'An instance of Page'
+         Page page = Page.build(body: 'test body')
+         assert page.id
 
-        and: 'Mock createCriteria'
-        def customCriteria = [list: { Object params = null, Closure cls ->
-            []
-        } ]
-        Page.metaClass.static.createCriteria = {
-            customCriteria
-        }
+         when: 'show action is hit and id is not passed in parameters'
+         controller.request.method = 'GET'
+         controller.show()
 
-        when: 'List action is hit'
-        controller.request.method = 'GET'
-        controller.params.max = 5
-        controller.list()
+         then: 'Server responds with appropriate error message'
+         controller.response.json.message == 'Id cannot be null.'
+         controller.response.status == 406
 
-        then: 'A valid response should be received with HttpStatus OK'
-        response.contentType == 'application/json;charset=UTF-8'
-        response.status == HttpStatus.OK.value()
-    }
+         when: 'show action is hit, subject param is provided but body does not contain predefined text'
+         performShowRequest(page.id)
 
-    // Save action
-    void "test save action when request parameters are passed"() {
-        given: 'Map parameters instance'
-        Page pageInstance = getPageInstance(1)
-        String jsonRequest = '{"metaList": [{"type": "type", "content": "content"}]}'
+         then: 'Page instance should be returned without any changes in body'
+         model.pageInstance.id
+         model.pageInstance.body == 'test body'
+         controller.response.status == 200
 
-        and: 'Mocking Services'
-        controller.contentService = Mock(ContentService)
-        1 * controller.contentService.create(_, _, _, _) >> pageInstance
+         when: 'show action is hit, subject param is provided and instance body contains predefind text'
+         page = Page.build(body: 'mailto:jobs@causecode.com?subject="')
+         assert page.id
+         assert !page.body.contains('TestSubject')
+         performShowRequest(page.id)
 
-        pageInstance.contentService = Mock(ContentService)
-        1 * pageInstance.contentService.createLink(_) >> '/page/list'
+         then: 'Page instance should be returned and provided subject should be used'
+         model.pageInstance.id
+         model.pageInstance.body.contains('TestSubject')
+         controller.response.status == 200
+     }
 
-        when: 'Save action is hit'
-        controller.request.method = 'POST'
-        controller.request.json = jsonRequest
-        controller.save()
+    void "test update action for various cases"() {
+        given: 'An instance of Page and mocked service call'
+        mockContentServiceUpdate()
 
-        then: 'A valid HttpStatus OK should be received'
-        response.status == HttpStatus.FOUND.value()
-        controller.response.redirectedUrl.contains('/page/list')
-    }
+        Page page = Page.build(body: '<p>Unit Test<p>', subTitle: 'test', title: 'test')
+        assert page.id
 
-    void "test save action when pageInstance cannot be saved"() {
-        given: 'Map parameters instance'
-        Page pageInstance = new Page()
-        String jsonRequest = '{"metaList": [{"type": "type", "content": "content"}]}'
-
-        and: 'Mocking Services'
-        controller.contentService = Mock(ContentService)
-        1 * controller.contentService.create(_, _, _, _) >> pageInstance
-
-        when: 'Save action is hit'
-        controller.request.method = 'POST'
-        controller.request.json = jsonRequest
-        controller.save()
-
-        then: 'JSON response with HttpStatus OK should be received'
-        controller.response.json.errors.errors[0].message.contains('Property [body] of class [class com.causecode.')
-        controller.response.json.errors.errors[0].field == 'body'
-        response.status == HttpStatus.OK.value()
-    }
-
-    // Show action
-    void "test show action when Page instance is passed"() {
-        given: 'PageLayout instance'
-        Page pageInstance = getPageInstance(1)
-        pageInstance.body = 'mailto:jobs@causecode.com'
-        pageInstance.save()
-
-        assert pageInstance.id
-
-        when: 'Show action is hit'
-        controller.request.method = 'GET'
-        controller.params.subject = 'subject'
-        controller.params.id = pageInstance.id
-        controller.show()
-
-        then: 'Response status MOVED_PERMANENTLY should be received'
-        response.status == HttpStatus.MOVED_PERMANENTLY.value()
-    }
-
-    void "test show action when invalid instance is passed"() {
-        when: 'Show action is hit'
-        controller.request.method = 'GET'
-        controller.params.id = 1L
-        controller.show()
-
-        then: 'Response status NOT_ACCEPTABLE should be received'
-        controller.response.json.message == 'page.not.found'
-        response.status == HttpStatus.NOT_ACCEPTABLE.value()
-    }
-
-    void "test show action when params is passed"() {
-        given: 'PageLayout instance'
-        Page pageInstance = getPageInstance(1)
-
-        when: 'Show action is hit'
-        controller.request.method = 'GET'
-        controller.params._escaped_fragment_ = true
-        controller.params.id = pageInstance.id
-        controller.show()
-
-        then: 'JSON response with HttpStatus OK should be received'
-        controller.response.json.model.pageInstance.subTitle == 'To execute the JUnit integration test 1'
-        controller.response.json.model.pageInstance.publish == true
-        response.status == HttpStatus.OK.value()
-    }
-
-    void "test show action when AJAX request is made"() {
-        given: 'PageLayout instance'
-        Page pageInstance = getPageInstance(1)
-
-        when: 'Show action is hit'
-        controller.request.method = 'GET'
-        controller.request.makeAjaxRequest()
-        controller.params.id = pageInstance.id
-        controller.show()
-
-        then: 'Valid JSON response should be received'
-        controller.response.json.body.contains('Grails organises tests by phase and by type.')
-        controller.response.json.title == 'Targeting Test 1 Types and/or Phases'
-        response.status == HttpStatus.OK.value()
-    }
-
-    // Edit action
-    void "test edit action when pageInstance is passed"() {
-        given: 'PageLayout instance'
-        Page validPageInstance = getPageInstance(1)
-
-        when: 'Edit action is hit'
-        controller.request.method = 'POST'
-        controller.params.id = validPageInstance.id
-        controller.edit()
-
-        then: 'JSON response should be received'
-        controller.response.json.pageInstance.subTitle == 'To execute the JUnit integration test 1'
-        controller.response.json.pageInstance.publish == true
-        response.status == HttpStatus.OK.value()
-    }
-
-    void "test edit action for error response"() {
-        when: 'Edit action is hit'
-        controller.request.method = 'POST'
-        controller.params.id = 1L
-        controller.edit()
-
-        then: 'JSON error response should be received'
-        controller.response.json['message'] == 'page.not.found'
-        response.status == HttpStatus.NOT_ACCEPTABLE.value()
-    }
-
-    // Update action
-    void "test update action when pageLayoutInstance is passed"() {
-        // Note: Updated instance cannot be checked as the update is performed by service method call which is mocked
-        given: 'Page and Map parameters instance'
-        Page pageInstance = getPageInstance(1)
-        Map params = [layoutName: 'TestPageLayout']
-
-        and: 'Mocking Services'
-        controller.contentService = Mock(ContentService)
-        1 * controller.contentService.update(_, _, _, _) >> pageInstance
-
-        pageInstance.contentService = Mock(ContentService)
-        1 * pageInstance.contentService.createLink(_) >> '/page/list'
-
-        when: 'Update action is hit with pageInstance'
+        when: 'update action is hit and instance is updated successfully'
         controller.request.method = 'PUT'
-        controller.request.json = params
-        controller.params.id = pageInstance.id
+        controller.request.json = [id: page.id, body: '<p>Unit Test</p>', subTitle: 'Unit Test',
+                title: 'Unit Test', createRevision: true]
         controller.update()
 
-        then: 'HttpStatus FOUND should be received'
-        controller.response.status == HttpStatus.FOUND.value()
-        controller.response.redirectedUrl.contains('/page/list')
+        then: 'Instance should be updated and updated instance should be returned'
+        model.pageInstance.id
+        model.pageInstance.title == 'Unit Test'
+        model.pageInstance.subTitle == 'Unit Test'
+        controller.response.status == 200
 
-        when: 'Update action is hit with invalid instance'
+        when: 'update action is hit and instance has errors'
+        controller.response.reset()
         controller.request.method = 'PUT'
-        controller.request.json = params
-        controller.params.id = 1L
         controller.update()
 
-        then: 'JSON error response should be received'
-        controller.response.json['message'] == 'page.not.found'
+        then: 'Appropriate error message and status code is returned'
+        controller.response.json.message == 'Error occurred while updating the Page.'
+        controller.response.status == 422
     }
 
-    void "test update action when invalid instance is passed"() {
-        given: 'Page and Map parameters instance'
-        Page pageInstance = getPageInstance(1)
-        Page pageInstanceWithErrors = new Page([abc: 'abc'])
-        pageInstanceWithErrors.save()
+    void "test delete action for various cases"() {
+        given: 'An instance of Page and mocked service call'
+        mockContentServiceDelete()
+        Page page = Page.build()
+        assert page.id
 
-        Map params = [layoutName: 'TestPageLayout']
-
-        and: 'Mock services'
-        controller.contentService = Mock(ContentService)
-        1 * controller.contentService.update(_, _, _, _) >> pageInstanceWithErrors
-
-        when: 'Update action is hit'
-        controller.request.method = 'PUT'
-        controller.request.json = params
-        controller.params.id = pageInstance.id
-        controller.update()
-
-        then: 'HttpStatus UNPROCESSABLE ENTITY should be received'
-        controller.response.status == HttpStatus.UNPROCESSABLE_ENTITY.value()
-    }
-
-    void "test update action when parameters are passed"() {
-        given: 'Page and Map parameters instance'
-        Page pageInstance = getPageInstance(1)
-
-        and: 'Mocking Services'
-        controller.contentService = Mock(ContentService)
-        1 * controller.contentService.update(_, _, _, _) >> pageInstance
-
-        pageInstance.contentService = Mock(ContentService)
-        1 * pageInstance.contentService.createLink(_) >> '/page/list'
-
-        when: 'Update action is hit'
-        controller.request.method = 'PUT'
-        controller.params.createRevision = true
-        controller.params.id = pageInstance.id
-        controller.update()
-
-        then: 'HttpStatus FOUND should be received with Redirect URL /page/list'
-        controller.response.status == HttpStatus.FOUND.value()
-        controller.response.redirectedUrl.contains('/page/list')
-    }
-
-    // Delete action
-    void "test delete action when pageInstance"() {
-        given: 'Page and Map parameters instance'
-        Page pageInstance = getPageInstance(1)
-
-        controller.contentService = [delete: { Page pageInstance1 ->
-            return
-        } ] as ContentService
-
-        when: 'Delete action is hit'
+        when: 'delete action is hit with valid parameters'
         controller.request.method = 'DELETE'
-        controller.params.id = pageInstance.id
+        controller.params.id = page.id
         controller.delete()
 
-        then: 'HttpStatus OK should be received with success TRUE'
-        controller.response.json.success == true
-        controller.response.status == HttpStatus.OK.value()
-    }
+        then: 'Instance should be deleted successfully and success message should be returned'
+        controller.response.json.message == 'Page deleted successfully.'
+        controller.response.status == 200
 
-    void "test delete action for error response"() {
-        when: 'Delete action is called and RequiredPropertyMissingException is thrown'
-        controller.request.method = 'DELETE'
-        controller.params.id = 1L
+        when: 'delete action is hit and instance cannot be deleted'
+        controller.response.reset()
+        controller.request.method == 'DELETE'
+        controller.params.id = page.id
         controller.delete()
 
-        then: 'Error response should be received'
-        controller.response.json['message'] == 'page.not.found'
-        controller.response.status == HttpStatus.NOT_ACCEPTABLE.value()
+        then: 'Appropriate error message and status code should be returned'
+        controller.response.json.message == "Cannot delete Page with id ${page.id}."
+        controller.response.status == 406
+    }
+
+    void "test getPageInstanceFromParams method for various cases"() {
+        when: 'getPageInstanceFromParams is called with invalid parameters'
+        controller.pageInstanceFromParams
+
+        then: 'Appropriate error message and status code is returned'
+        controller.response.json.message == 'Id cannot be null.'
+        controller.response.status == 406
+
+        when: 'getPageInstanceFromParams is called and Page instance cannot be found'
+        controller.response.reset()
+        controller.params.id = 1111
+        controller.pageInstanceFromParams
+
+        then: 'Appropriate error message and status code is returned'
+        controller.response.json.message == 'Page with id 1111 does not exist.'
+        controller.response.status == 404
+
+        when: 'getPageInstanceFromParams method is called and Page instance exist'
+        Page page = Page.build()
+        assert page.id
+
+        controller.params.id = page.id
+        Page pageInstance = controller.pageInstanceFromParams
+
+        then: 'Page instance is returned'
+        pageInstance
+        pageInstance.id == page.id
     }
 }

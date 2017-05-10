@@ -36,7 +36,7 @@ class ContentUrlMappings {
             }
         }
 
-        "/blog" (controller: 'blog', action: 'list')
-        "/blogs" (controller: 'blog', action: 'list')
+        '/blog' (controller: 'blog', action: 'list')
+        '/blogs' (controller: 'blog', action: 'list')
     }
 }

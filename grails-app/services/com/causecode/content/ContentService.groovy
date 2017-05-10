@@ -156,8 +156,7 @@ class ContentService {
 
         // Remove all content meta relations
         List<ContentMeta> contentMetas = ContentMeta.withCriteria {
-            createAlias('content', 'contentInstance')
-            eq('contentInstance.id', contentInstance.id)
+            eq('content.id', contentInstance.id)
 
             maxResults(1000)
         }*.delete()
@@ -167,13 +166,11 @@ class ContentService {
 
         metaTypes.eachWithIndex { type, index ->
             Meta metaInstance = ContentMeta.withCriteria([uniqueResult: true]) {
-                createAlias('content', 'contentInstance')
-                createAlias('meta', 'metaInstance')
                 projections {
                     property('meta')
                 }
-                eq('contentInstance.id', contentInstance.id)
-                eq('metaInstance.type', type)
+                eq('content.id', contentInstance.id)
+                eq('meta.type', type)
 
                 maxResults(1)
             }
