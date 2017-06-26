@@ -21,6 +21,7 @@ import com.naleid.grails.MarkdownService
 import grails.converters.JSON
 import grails.core.GrailsApplication
 import grails.databinding.SimpleMapDataBindingSource
+import grails.gorm.DetachedCriteria
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
@@ -104,7 +105,17 @@ class BlogController {
 
         // Modifying query and blogInstance Total based on Role @here : ROLE_CONTENT_MANAGER
         if (contentService.contentManager) {
-            blogInstanceTotal = updateTag ? Blog.countByTag(updateTag) : Blog.count()
+            if(updateTag) {
+                blogInstanceTotal = Blog.countByTag(updateTag)
+            } else if(updateMonthFilter) {
+                blogInstanceTotal = Blog.executeQuery("select distinct b from Blog b where monthname(b.publishedDate) = '$monthYearFilterMapInstance.month' " +
+                        " AND year(b.publishedDate) = '$monthYearFilterMapInstance.year'").size()
+            } else if(updateQueryFilter) {
+                blogInstanceTotal = Blog.executeQuery("select distinct b from Blog b where (b.author " +
+                        "LIKE '%$updateQueryFilter%' or b.body LIKE '%$updateQueryFilter%' or b.title LIKE '%$updateQueryFilter%' or b.subTitle LIKE '%$updateQueryFilter%')").size()
+            } else {
+                blogInstanceTotal = Blog.count()
+            }
         } else if (updateTag) {
             query.append('AND b.publish = true')
             blogInstanceTotal = Blog.findAllByTagWithCriteria(updateTag) {
@@ -112,20 +123,21 @@ class BlogController {
             }.size()
         } else if (updateMonthFilter) {
             query.append('AND b.publish = true')
-            blogInstanceTotal = Blog.countByPublish(true)
+            blogInstanceTotal = Blog.executeQuery("select distinct b from Blog b where monthname(b.publishedDate) = '$monthYearFilterMapInstance.month' " +
+                    " AND year(b.publishedDate) = '$monthYearFilterMapInstance.year' AND b.publish = true").size()
+        } else if(updateQueryFilter) {
+            query.append(' AND b.publish = true')
+            blogInstanceTotal = Blog.executeQuery("select distinct b from Blog b where (b.author " +
+                    "LIKE '%$updateQueryFilter%' or b.body LIKE '%$updateQueryFilter%' or b.title LIKE '%$updateQueryFilter%' or b.subTitle LIKE '%$updateQueryFilter%') and " +
+                    "b.publish = true").size()
         } else {
-            (updateQueryFilter) ? query.append(' AND ') : query.append(' where ')
-            query.append(' b.publish = true')
+            query.append(' where b.publish = true')
             blogInstanceTotal = Blog.countByPublish(true)
         }
         query.append(' order by b.dateCreated desc')
 
         List<Map> blogList = Blog.executeQuery(query.toString(), [max: params.max, offset: params.offset])
         Pattern patternTag = Pattern.compile('(?s)<p(.*?)>(.*?)<\\/p>')
-
-        if (updateMonthFilter) {
-            blogInstanceTotal = Blog.executeQuery(query.toString()).size()
-        }
 
         // Get blogInstanceList
         List<Blog> blogInstanceList = blogService.getBlogSummaries(blogList, patternTag)
@@ -216,15 +228,18 @@ class BlogController {
 
         // Convert markdown content into html format
         if (params.convertToMarkdown == 'true') {
-           blogInstance.body = markdownService.markdown(blogInstance.body)
+            blogInstance.body = markdownService.markdown(blogInstance.body)
         }
 
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         List<Meta> metaInstanceList = blogInstance.metaTags
 
+        List<String> monthFilterList = []
+        monthFilterList = blogService.updatedMonthFilterListBasedOnPublishedDate(monthFilterList)
+
         Map result = [blogInstance: blogInstance, comments: null,
-            tagList: tagList, blogInstanceList: blogInstanceList,
-            blogInstanceTags: blogInstanceTags, metaList: metaInstanceList
+                      tagList: tagList, blogInstanceList: blogInstanceList, monthFilterList: monthFilterList.unique(),
+                      blogInstanceTags: blogInstanceTags, metaList: metaInstanceList
         ]
 
         renderGSPContentAndBlogCustomURLRedirect(blogInstance, result, 'show')

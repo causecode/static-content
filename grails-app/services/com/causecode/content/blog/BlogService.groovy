@@ -90,8 +90,8 @@ class BlogService {
         if (queryFilter) {
             tag ? updatedQuery.append(' AND ') : (monthFilter ? updatedQuery.append(' AND ') : updatedQuery
                     .append(' WHERE '))
-            updatedQuery.append(" b.title LIKE '%$queryFilter%' OR b.subTitle LIKE '%$queryFilter%' ")
-            updatedQuery.append(" OR b.body LIKE '%$queryFilter%' OR b.author LIKE '%$queryFilter%'")
+            updatedQuery.append(" (b.title LIKE '%$queryFilter%' OR b.subTitle LIKE '%$queryFilter%' ")
+            updatedQuery.append(" OR b.body LIKE '%$queryFilter%' OR b.author LIKE '%$queryFilter%')")
         }
 
         return updatedQuery

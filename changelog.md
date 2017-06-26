@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.6.2
+1. Fixed blog total count and blog list on various filters. (e.g searchQuery, monthFilter, tagFilter)
+2. Returned monthFilterList from `show` method of `BlogController`.
+
 ## Version 2.6.1
 1. Changed PageController to follow restful pattern.
 2. Removed gsp pages from grails-app/views/page
