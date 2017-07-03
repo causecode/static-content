@@ -77,11 +77,11 @@ class BlogController {
     @Secured(['permitAll'])
     def index(Integer max, Integer offset, String tag, String monthFilter, String queryFilter) {
         // To avoid Parameter Reassignment
-        def (updateTag, updateMonthFilter, updateQueryFilter) = [tag, monthFilter, queryFilter]
+        //def (updateTag, updateMonthFilter, updateQueryFilter) = [tag, monthFilter, queryFilter]
 
-        updateTag = (tag == 'undefined') ? '' : tag
-        updateMonthFilter = (monthFilter == 'undefined') ? '' : monthFilter
-        updateQueryFilter = (queryFilter == 'undefined') ? '' : queryFilter
+        String updateTag = (tag == 'undefined') ? '' : tag
+        String updateMonthFilter = (monthFilter == 'undefined') ? '' : monthFilter
+        String updateQueryFilter = (queryFilter == 'undefined') ? '' : queryFilter
 
         log.info "Parameters received to filter blogs : $params"
         long blogInstanceTotal
@@ -108,11 +108,9 @@ class BlogController {
             if(updateTag) {
                 blogInstanceTotal = Blog.countByTag(updateTag)
             } else if(updateMonthFilter) {
-                blogInstanceTotal = Blog.executeQuery("select distinct b from Blog b where monthname(b.publishedDate) = '$monthYearFilterMapInstance.month' " +
-                        " AND year(b.publishedDate) = '$monthYearFilterMapInstance.year'").size()
+                blogInstanceTotal = blogService.getCountByMonthFilter(monthYearFilterMapInstance, false)
             } else if(updateQueryFilter) {
-                blogInstanceTotal = Blog.executeQuery("select distinct b from Blog b where (b.author " +
-                        "LIKE '%$updateQueryFilter%' or b.body LIKE '%$updateQueryFilter%' or b.title LIKE '%$updateQueryFilter%' or b.subTitle LIKE '%$updateQueryFilter%')").size()
+                blogInstanceTotal = blogService.getCountByQueryFilter(updateQueryFilter, false)
             } else {
                 blogInstanceTotal = Blog.count()
             }
@@ -123,20 +121,17 @@ class BlogController {
             }.size()
         } else if (updateMonthFilter) {
             query.append('AND b.publish = true')
-            blogInstanceTotal = Blog.executeQuery("select distinct b from Blog b where monthname(b.publishedDate) = '$monthYearFilterMapInstance.month' " +
-                    " AND year(b.publishedDate) = '$monthYearFilterMapInstance.year' AND b.publish = true").size()
+            blogInstanceTotal = blogService.getCountByMonthFilter(monthYearFilterMapInstance, true)
         } else if(updateQueryFilter) {
             query.append(' AND b.publish = true')
-            blogInstanceTotal = Blog.executeQuery("select distinct b from Blog b where (b.author " +
-                    "LIKE '%$updateQueryFilter%' or b.body LIKE '%$updateQueryFilter%' or b.title LIKE '%$updateQueryFilter%' or b.subTitle LIKE '%$updateQueryFilter%') and " +
-                    "b.publish = true").size()
+            blogInstanceTotal = blogService.getCountByQueryFilter(updateQueryFilter, true)
         } else {
             query.append(' where b.publish = true')
             blogInstanceTotal = Blog.countByPublish(true)
         }
         query.append(' order by b.dateCreated desc')
 
-        List<Map> blogList = Blog.executeQuery(query.toString(), [max: params.max, offset: params.offset])
+        List<Map> blogList = blogService.executeQuery(query.toString(), [max: params.max, offset: params.offset])
         Pattern patternTag = Pattern.compile('(?s)<p(.*?)>(.*?)<\\/p>')
 
         // Get blogInstanceList

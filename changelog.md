@@ -3,6 +3,7 @@
 ## Version 2.6.2
 1. Fixed blog total count and blog list on various filters. (e.g searchQuery, monthFilter, tagFilter)
 2. Returned monthFilterList from `show` method of `BlogController`.
+3. Updated Test cases
 
 ## Version 2.6.1
 1. Changed PageController to follow restful pattern.

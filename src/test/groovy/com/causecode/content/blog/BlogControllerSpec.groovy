@@ -18,6 +18,7 @@ import com.causecode.fileuploader.FileUploaderService
 import com.causecode.fileuploader.UFileType
 import com.causecode.fileuploader.UploadFailureException
 import com.naleid.grails.MarkdownService
+import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import com.causecode.fileuploader.UFile
 import grails.plugins.taggable.Tag
@@ -162,7 +163,9 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         controller.params.id = 1L
         controller.delete()
 
-        then: 'Json status NOT_MODIFIED should be received'
+        then: 'Json stat' +
+                '' +
+                'us NOT_MODIFIED should be received'
         controller.response.json.status.name == 'NOT_MODIFIED'
     }
 
@@ -196,8 +199,117 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         controller.response.status == HttpStatus.OK.value()
     }
 
+    // Index action
+    void "test index action when user is not content manager"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+
+        and: 'Mocked service'
+
+        controller.blogService = new BlogService()
+        controller.contentService = Mock(ContentService)
+        (1.._) * controller.contentService.isContentManager() >> false
+        controller.blogService = [executeQuery: { String query, Map args ->
+            return [blogInstance]
+        }, getBlogSummaries:{List<Map> blogList, def patternTag ->
+            return [blogInstance]
+        }, getAllTags: {-> []},
+        getCountByMonthFilter:  {Map monthYearFilterMapInstance, boolean publish -> 1
+        }, getCountByQueryFilter: {String updateQueryFilter, boolean publish -> 1
+        }] as BlogService
+
+        when: 'No filter is passed'
+        controller.request.makeAjaxRequest()
+        controller.params._escaped_fragment_ = false
+        controller.request.method = 'GET'
+        controller.params.max = 10
+        controller.params.offset = 0
+        controller.index()
+
+        then:
+        response.json.totalCount == 1
+
+        when: 'Search Query is specified'
+        controller.request.makeAjaxRequest()
+        controller.params._escaped_fragment_ = false
+        controller.request.makeAjaxRequest()
+        controller.params._escaped_fragment_ = false
+        controller.params.queryFilter = 'Author'
+        controller.index()
+
+        then:
+        response.json.totalCount == 1
+
+        when: 'Month Filter is specified'
+        controller.request.makeAjaxRequest()
+        controller.params.queryFilter = ''
+        controller.params._escaped_fragment_ = false
+        controller.request.makeAjaxRequest()
+        controller.params._escaped_fragment_ = false
+        controller.params.monthFilter = new Date()
+        controller.index()
+
+        then:
+        response.json.totalCount == 1
+
+    }
+
+    //Index action
+    void "test index action when user is content manager"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+
+        and: 'Mocked service'
+
+        controller.blogService = new BlogService()
+        controller.contentService = Mock(ContentService)
+        (1.._) * controller.contentService.isContentManager() >> true
+        controller.blogService = [executeQuery: { String query, Map args ->
+            return [blogInstance]
+        }, getBlogSummaries:{List<Map> blogList, def patternTag ->
+            return [blogInstance]
+        }, getAllTags: {-> []},
+                                  getCountByMonthFilter:  {Map monthYearFilterMapInstance, boolean publish -> 1
+                                  }, getCountByQueryFilter: {String updateQueryFilter, boolean publish -> 1
+        }] as BlogService
+
+        when: 'No filter is passed'
+        controller.request.makeAjaxRequest()
+        controller.params._escaped_fragment_ = false
+        controller.request.method = 'GET'
+        controller.params.max = 10
+        controller.params.offset = 0
+        controller.index()
+
+        then:
+        response.json.totalCount == 1
+
+        when: 'Search Query is specified'
+        controller.request.makeAjaxRequest()
+        controller.params._escaped_fragment_ = false
+        controller.request.makeAjaxRequest()
+        controller.params._escaped_fragment_ = false
+        controller.params.queryFilter = 'Author'
+        controller.index()
+
+        then:
+        response.json.totalCount == 1
+
+        when: 'Month Filter is specified'
+        controller.request.makeAjaxRequest()
+        controller.params.queryFilter = ''
+        controller.params._escaped_fragment_ = false
+        controller.request.makeAjaxRequest()
+        controller.params._escaped_fragment_ = false
+        controller.params.monthFilter = new Date()
+        controller.index()
+
+        then:
+        response.json.totalCount == 1
+
+    }
+
     // Save Action
-    @ConfineMetaClassChanges([ContentService, FileUploaderService, BlogService])
     void "test save action when blog instance is passed"() {
         given: 'Blog instance'
         Blog blogInstance = getBlogInstance(1)

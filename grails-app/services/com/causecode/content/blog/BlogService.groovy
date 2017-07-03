@@ -29,7 +29,7 @@ class BlogService {
 
     List getAllTags() {
         List tagList = []
-        Blog.allTags.each { tagName ->
+        Blog?.allTags.each { tagName ->
             def tagListInstance = TagLink.withCriteria([uniqueResult: true]) {
                 createAlias('tag', 'tagInstance')
                 projections {
@@ -71,12 +71,12 @@ class BlogService {
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         List<Meta> metaInstanceList = blogInstance.metaTags
 
-        return [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
-            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
+        return [blogInstance    : blogInstance, comments: blogComments, tagList: tagList,
+                blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
     }
 
     StringBuilder queryModifierBasedOnFilter(StringBuilder query, String tag, Map monthYearFilters, String queryFilter,
-            String monthFilter) {
+                                             String monthFilter) {
         StringBuilder updatedQuery = query
         if (tag) {
             updatedQuery.append(", ${TagLink.name} tagLink WHERE b.id = tagLink.tagRef ")
@@ -153,5 +153,24 @@ class BlogService {
         }
 
         return blogInstanceList
+    }
+
+    int getCountByMonthFilter(Map monthYearFilterMapInstance, boolean publish) {
+        StringBuilder query = "select distinct b from Blog b where monthname(b.publishedDate) = '$monthYearFilterMapInstance.month' " +
+                " AND year(b.publishedDate) = '$monthYearFilterMapInstance.year'"
+        query = publish ? query.append(' AND b.publish = true') : query
+        return Blog.executeQuery(query).size()
+    }
+
+    int getCountByQueryFilter(String updateQueryFilter, boolean publish) {
+        StringBuilder query = "select distinct b from Blog b where (b.author " +
+                "LIKE '%$updateQueryFilter%' or b.body LIKE '%$updateQueryFilter%' or b.title LIKE" +
+                " '%$updateQueryFilter%' or b.subTitle LIKE '%$updateQueryFilter%')"
+        query = publish ? query.append(' AND b.publish = true') : query
+        return Blog.executeQuery(query).size()
+    }
+
+    List executeQuery(String query, Map args) {
+        return Blog.executeQuery(query, args)
     }
 }
