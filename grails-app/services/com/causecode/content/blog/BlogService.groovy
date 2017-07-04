@@ -156,19 +156,19 @@ class BlogService {
     }
 
     int getCountByMonthFilter(Map monthYearFilterMapInstance, boolean publish) {
-        StringBuilder query = 'select distinct b from Blog b where monthname(b.publishedDate) =' +
+        StringBuilder query = new StringBuilder('select distinct b from Blog b where monthname(b.publishedDate) =' +
                 " '$monthYearFilterMapInstance.month' " +
-                " AND year(b.publishedDate) = '$monthYearFilterMapInstance.year'"
+                " AND year(b.publishedDate) = '$monthYearFilterMapInstance.year'")
         query = publish ? query.append(' AND b.publish = true') : query
-        return Blog.executeQuery(query).size()
+        return Blog.executeQuery(query.toString()).size()
     }
 
     int getCountByQueryFilter(String updateQueryFilter, boolean publish) {
-        StringBuilder query = 'select distinct b from Blog b where (b.author ' +
+        StringBuilder query = new StringBuilder('select distinct b from Blog b where (b.author ' +
                 "LIKE '%$updateQueryFilter%' or b.body LIKE '%$updateQueryFilter%' or b.title LIKE" +
-                " '%$updateQueryFilter%' or b.subTitle LIKE '%$updateQueryFilter%')"
+                " '%$updateQueryFilter%' or b.subTitle LIKE '%$updateQueryFilter%')")
         query = publish ? query.append(' AND b.publish = true') : query
-        return Blog.executeQuery(query).size()
+        return Blog.executeQuery(query.toString()).size()
     }
 
 }
