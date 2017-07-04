@@ -19,11 +19,13 @@ import com.causecode.fileuploader.UFileType
 import com.causecode.fileuploader.UploadFailureException
 import com.naleid.grails.MarkdownService
 import grails.converters.JSON
+import grails.orm.HibernateCriteriaBuilder
 import grails.plugin.springsecurity.SpringSecurityService
 import com.causecode.fileuploader.UFile
 import grails.plugins.taggable.Tag
 import grails.plugins.taggable.TagLink
 import grails.plugins.taggable.TaggableService
+import grails.test.hibernate.HibernateSpec
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import org.springframework.dao.DataIntegrityViolationException
@@ -38,8 +40,9 @@ import spock.util.mop.ConfineMetaClassChanges
 @TestFor(BlogController)
 @Mock([Blog, Content, Tag, TaggableService, TagLink, SpringSecurityService, ContentMeta, ContentRevision,
         BlogComment, Comment, UFile])
-class BlogControllerSpec extends Specification implements BaseTestSetup {
+class BlogControllerSpec extends HibernateSpec implements BaseTestSetup {
 
+    List<Class> getDomainClasses() { [ Blog ] }
     // Utility method
     @ConfineMetaClassChanges([BlogController])
     void mockedServices(Blog blogInstance, boolean exceptionBool = false, boolean saveBool = false) {
@@ -199,7 +202,7 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         controller.response.status == HttpStatus.OK.value()
     }
 
-    // Index action
+    //Index action
     void "test index action when user is not content manager"() {
         given: 'Blog instance'
         Blog blogInstance = getBlogInstance(1)
@@ -214,22 +217,18 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         }, getBlogSummaries:{List<Map> blogList, def patternTag ->
             return [blogInstance]
         }, getAllTags: {-> []},
-        getCountByMonthFilter:  {Map monthYearFilterMapInstance, boolean publish -> 1
-        }, getCountByQueryFilter: {String updateQueryFilter, boolean publish -> 1
+          getCountByMonthFilter:  {Map monthYearFilterMapInstance, boolean publish -> 1},
+          getCountByQueryFilter: {String updateQueryFilter, boolean publish -> 1},
+          updatedMonthFilterListBasedOnPublishedDate: {List<String> monthFilter ->
+            []
         }] as BlogService
 
-        when: 'No filter is passed'
-        controller.request.makeAjaxRequest()
-        controller.params._escaped_fragment_ = false
-        controller.request.method = 'GET'
-        controller.params.max = 10
-        controller.params.offset = 0
-        controller.index()
-
-        then:
-        response.json.totalCount == 1
-
         when: 'Search Query is specified'
+        GroovyMock(Blog, global: true)
+        Blog.findAllByTagWithCriteria(_, _) >> []
+        Blog.countByPublish(_) >> 1
+        Blog.executeQuery(_,_) >> [blogInstance]
+        response.reset()
         controller.request.makeAjaxRequest()
         controller.params._escaped_fragment_ = false
         controller.request.makeAjaxRequest()
@@ -241,12 +240,41 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         response.json.totalCount == 1
 
         when: 'Month Filter is specified'
+        response.reset()
         controller.request.makeAjaxRequest()
         controller.params.queryFilter = ''
         controller.params._escaped_fragment_ = false
         controller.request.makeAjaxRequest()
         controller.params._escaped_fragment_ = false
         controller.params.monthFilter = new Date()
+        controller.index()
+
+        then:
+        response.json.totalCount == 1
+
+        when: 'Tag is specified'
+        response.reset()
+        controller.request.makeAjaxRequest()
+        controller.params.queryFilter = ''
+        controller.params._escaped_fragment_ = false
+        controller.request.makeAjaxRequest()
+        controller.params._escaped_fragment_ = false
+        controller.params.tag = 'grails'
+        controller.index()
+
+        then:
+        response.json.totalCount == 0
+
+        when: 'No filter is passed'
+        response.reset()
+        controller.params.queryFilter = ''
+        controller.params.tag = ''
+        controller.params.monthFilter = ''
+        controller.request.makeAjaxRequest()
+        controller.params._escaped_fragment_ = false
+        controller.request.method = 'GET'
+        controller.params.max = 10
+        controller.params.offset = 0
         controller.index()
 
         then:
@@ -269,22 +297,19 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         }, getBlogSummaries:{List<Map> blogList, def patternTag ->
             return [blogInstance]
         }, getAllTags: {-> []},
-                                  getCountByMonthFilter:  {Map monthYearFilterMapInstance, boolean publish -> 1
-                                  }, getCountByQueryFilter: {String updateQueryFilter, boolean publish -> 1
+        getCountByMonthFilter:  {Map monthYearFilterMapInstance, boolean publish -> 1
+        },
+        getCountByQueryFilter: {String updateQueryFilter, boolean publish -> 1
+        }, updatedMonthFilterListBasedOnPublishedDate: {List<String> monthFilter ->
+            []
         }] as BlogService
 
-        when: 'No filter is passed'
-        controller.request.makeAjaxRequest()
-        controller.params._escaped_fragment_ = false
-        controller.request.method = 'GET'
-        controller.params.max = 10
-        controller.params.offset = 0
-        controller.index()
-
-        then:
-        response.json.totalCount == 1
-
         when: 'Search Query is specified'
+        GroovyMock(Blog, global: true)
+        Blog.countByTag(_) >> 0
+        Blog.count() >> 1
+        Blog.executeQuery(_,_) >> [blogInstance]
+        response.reset()
         controller.request.makeAjaxRequest()
         controller.params._escaped_fragment_ = false
         controller.request.makeAjaxRequest()
@@ -296,12 +321,41 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         response.json.totalCount == 1
 
         when: 'Month Filter is specified'
+        response.reset()
         controller.request.makeAjaxRequest()
         controller.params.queryFilter = ''
         controller.params._escaped_fragment_ = false
         controller.request.makeAjaxRequest()
         controller.params._escaped_fragment_ = false
         controller.params.monthFilter = new Date()
+        controller.index()
+
+        then:
+        response.json.totalCount == 1
+
+        when: 'Tag is specified'
+        response.reset()
+        controller.request.makeAjaxRequest()
+        controller.params.queryFilter = ''
+        controller.params._escaped_fragment_ = false
+        controller.request.makeAjaxRequest()
+        controller.params._escaped_fragment_ = false
+        controller.params.tag = 'grails'
+        controller.index()
+
+        then:
+        response.json.totalCount == 0
+
+        when: 'No filter is passed'
+        response.reset()
+        controller.params.queryFilter = ''
+        controller.params.tag = ''
+        controller.params.monthFilter = ''
+        controller.request.makeAjaxRequest()
+        controller.params._escaped_fragment_ = false
+        controller.request.method = 'GET'
+        controller.params.max = 10
+        controller.params.offset = 0
         controller.index()
 
         then:

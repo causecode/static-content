@@ -21,7 +21,6 @@ import com.naleid.grails.MarkdownService
 import grails.converters.JSON
 import grails.core.GrailsApplication
 import grails.databinding.SimpleMapDataBindingSource
-import grails.gorm.DetachedCriteria
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
@@ -105,11 +104,11 @@ class BlogController {
 
         // Modifying query and blogInstance Total based on Role @here : ROLE_CONTENT_MANAGER
         if (contentService.contentManager) {
-            if(updateTag) {
+            if (updateTag) {
                 blogInstanceTotal = Blog.countByTag(updateTag)
-            } else if(updateMonthFilter) {
+            } else if (updateMonthFilter) {
                 blogInstanceTotal = blogService.getCountByMonthFilter(monthYearFilterMapInstance, false)
-            } else if(updateQueryFilter) {
+            } else if (updateQueryFilter) {
                 blogInstanceTotal = blogService.getCountByQueryFilter(updateQueryFilter, false)
             } else {
                 blogInstanceTotal = Blog.count()
@@ -122,7 +121,7 @@ class BlogController {
         } else if (updateMonthFilter) {
             query.append('AND b.publish = true')
             blogInstanceTotal = blogService.getCountByMonthFilter(monthYearFilterMapInstance, true)
-        } else if(updateQueryFilter) {
+        } else if (updateQueryFilter) {
             query.append(' AND b.publish = true')
             blogInstanceTotal = blogService.getCountByQueryFilter(updateQueryFilter, true)
         } else {
@@ -131,7 +130,7 @@ class BlogController {
         }
         query.append(' order by b.dateCreated desc')
 
-        List<Map> blogList = blogService.executeQuery(query.toString(), [max: params.max, offset: params.offset])
+        List<Map> blogList = Blog.executeQuery(query.toString(), [max: params.max, offset: params.offset])
         Pattern patternTag = Pattern.compile('(?s)<p(.*?)>(.*?)<\\/p>')
 
         // Get blogInstanceList

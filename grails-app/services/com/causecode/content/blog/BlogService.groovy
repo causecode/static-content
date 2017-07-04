@@ -71,7 +71,7 @@ class BlogService {
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         List<Meta> metaInstanceList = blogInstance.metaTags
 
-        return [blogInstance    : blogInstance, comments: blogComments, tagList: tagList,
+        return [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
                 blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
     }
 
@@ -156,21 +156,19 @@ class BlogService {
     }
 
     int getCountByMonthFilter(Map monthYearFilterMapInstance, boolean publish) {
-        StringBuilder query = "select distinct b from Blog b where monthname(b.publishedDate) = '$monthYearFilterMapInstance.month' " +
+        StringBuilder query = 'select distinct b from Blog b where monthname(b.publishedDate) =' +
+                " '$monthYearFilterMapInstance.month' " +
                 " AND year(b.publishedDate) = '$monthYearFilterMapInstance.year'"
         query = publish ? query.append(' AND b.publish = true') : query
         return Blog.executeQuery(query).size()
     }
 
     int getCountByQueryFilter(String updateQueryFilter, boolean publish) {
-        StringBuilder query = "select distinct b from Blog b where (b.author " +
+        StringBuilder query = 'select distinct b from Blog b where (b.author ' +
                 "LIKE '%$updateQueryFilter%' or b.body LIKE '%$updateQueryFilter%' or b.title LIKE" +
                 " '%$updateQueryFilter%' or b.subTitle LIKE '%$updateQueryFilter%')"
         query = publish ? query.append(' AND b.publish = true') : query
         return Blog.executeQuery(query).size()
     }
 
-    List executeQuery(String query, Map args) {
-        return Blog.executeQuery(query, args)
-    }
 }
