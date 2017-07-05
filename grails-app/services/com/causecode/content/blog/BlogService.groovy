@@ -29,7 +29,7 @@ class BlogService {
 
     List getAllTags() {
         List tagList = []
-        Blog?.allTags.each { tagName ->
+        Blog.allTags.each { tagName ->
             def tagListInstance = TagLink.withCriteria([uniqueResult: true]) {
                 createAlias('tag', 'tagInstance')
                 projections {
@@ -76,7 +76,7 @@ class BlogService {
     }
 
     StringBuilder queryModifierBasedOnFilter(StringBuilder query, String tag, Map monthYearFilters, String queryFilter,
-                                             String monthFilter) {
+            String monthFilter) {
         StringBuilder updatedQuery = query
         if (tag) {
             updatedQuery.append(", ${TagLink.name} tagLink WHERE b.id = tagLink.tagRef ")
@@ -155,6 +155,12 @@ class BlogService {
         return blogInstanceList
     }
 
+    /**
+     * @param monthYearFilterMapInstance Map holding month and year in string format (e.g [month: 'April', year:2017])
+     * @param publish Used to check whether user is content manager or not.
+     * True value indicates user is not content manager.
+     * @return Total no of blogs matching given monthFilter
+     */
     int getCountByMonthFilter(Map monthYearFilterMapInstance, boolean publish) {
         StringBuilder query = new StringBuilder('select distinct b from Blog b where monthname(b.publishedDate) =' +
                 " '$monthYearFilterMapInstance.month' " +
@@ -163,6 +169,12 @@ class BlogService {
         return Blog.executeQuery(query.toString()).size()
     }
 
+    /**
+     * @param updateQueryFilter Search query
+     * @param publish Used to check whether user is content manager or not.
+     * True value indicates user is not content manager.
+     * @return Total no of blogs matching given search query
+     */
     int getCountByQueryFilter(String updateQueryFilter, boolean publish) {
         StringBuilder query = new StringBuilder('select distinct b from Blog b where (b.author ' +
                 "LIKE '%$updateQueryFilter%' or b.body LIKE '%$updateQueryFilter%' or b.title LIKE" +

@@ -75,19 +75,13 @@ class BlogController {
      */
     @Secured(['permitAll'])
     def index(Integer max, Integer offset, String tag, String monthFilter, String queryFilter) {
-        // To avoid Parameter Reassignment
-        //def (updateTag, updateMonthFilter, updateQueryFilter) = [tag, monthFilter, queryFilter]
-
-        String updateTag = (tag == 'undefined') ? '' : tag
-        String updateMonthFilter = (monthFilter == 'undefined') ? '' : monthFilter
-        String updateQueryFilter = (queryFilter == 'undefined') ? '' : queryFilter
 
         log.info "Parameters received to filter blogs : $params"
         long blogInstanceTotal
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
         List<String> monthFilterList = []
 
-        Map monthYearFilterMapInstance = updateMonthFilter ? getMonthYearFilterMapInstance(updateMonthFilter) :
+        Map monthYearFilterMapInstance = monthFilter ? getMonthYearFilterMapInstance(monthFilter) :
                 [month: '', year: '']
 
         params.offset =  offset ?: 0
@@ -99,31 +93,31 @@ class BlogController {
                 ' b.lastUpdated as lastUpdated, b.publishedDate as publishedDate) FROM Blog b')
 
         // Modifying query based on filters
-        query = blogService.queryModifierBasedOnFilter(query, updateTag, monthYearFilterMapInstance, updateQueryFilter,
-                updateMonthFilter)
+        query = blogService.queryModifierBasedOnFilter(query, tag, monthYearFilterMapInstance, queryFilter,
+                monthFilter)
 
         // Modifying query and blogInstance Total based on Role @here : ROLE_CONTENT_MANAGER
         if (contentService.contentManager) {
-            if (updateTag) {
-                blogInstanceTotal = Blog.countByTag(updateTag)
-            } else if (updateMonthFilter) {
+            if (tag) {
+                blogInstanceTotal = Blog.countByTag(tag)
+            } else if (monthFilter) {
                 blogInstanceTotal = blogService.getCountByMonthFilter(monthYearFilterMapInstance, false)
-            } else if (updateQueryFilter) {
-                blogInstanceTotal = blogService.getCountByQueryFilter(updateQueryFilter, false)
+            } else if (queryFilter) {
+                blogInstanceTotal = blogService.getCountByQueryFilter(queryFilter, false)
             } else {
                 blogInstanceTotal = Blog.count()
             }
-        } else if (updateTag) {
+        } else if (tag) {
             query.append('AND b.publish = true')
-            blogInstanceTotal = Blog.findAllByTagWithCriteria(updateTag) {
+            blogInstanceTotal = Blog.findAllByTagWithCriteria(tag) {
                 eq('publish', true)
             }.size()
-        } else if (updateMonthFilter) {
+        } else if (monthFilter) {
             query.append('AND b.publish = true')
             blogInstanceTotal = blogService.getCountByMonthFilter(monthYearFilterMapInstance, true)
-        } else if (updateQueryFilter) {
+        } else if (queryFilter) {
             query.append(' AND b.publish = true')
-            blogInstanceTotal = blogService.getCountByQueryFilter(updateQueryFilter, true)
+            blogInstanceTotal = blogService.getCountByQueryFilter(queryFilter, true)
         } else {
             query.append(' where b.publish = true')
             blogInstanceTotal = Blog.countByPublish(true)
@@ -228,8 +222,7 @@ class BlogController {
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         List<Meta> metaInstanceList = blogInstance.metaTags
 
-        List<String> monthFilterList = []
-        monthFilterList = blogService.updatedMonthFilterListBasedOnPublishedDate(monthFilterList)
+        List<String> monthFilterList = blogService.updatedMonthFilterListBasedOnPublishedDate([])
 
         Map result = [blogInstance: blogInstance, comments: null,
                       tagList: tagList, blogInstanceList: blogInstanceList, monthFilterList: monthFilterList.unique(),

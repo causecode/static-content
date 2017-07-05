@@ -233,7 +233,7 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
         Map attrs = [domain: domain, id: 0, absolute: true]
 
         and: 'Mocked Services'
-        service.friendlyUrlService = new FriendlyUrlService()
+        service.friendlyUrlService = Mock(FriendlyUrlService)
         service.metaClass.getShorthandAnnotatedControllers = { ->
             return []
         }

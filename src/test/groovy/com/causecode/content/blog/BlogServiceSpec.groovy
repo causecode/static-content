@@ -194,4 +194,42 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
         then: 'Valid result map should be received'
         result.blogInstance == blogInstance
     }
+
+    void "test getCountByQueryFilter method"() {
+        given: 'Mocked Blog'
+        GroovyMock(Blog, global: true)
+        Blog.executeQuery(_) >> []
+
+        when: 'user is not content manager'
+        long count = service.getCountByQueryFilter('grails', true)
+
+        then:
+        count == 0
+
+        when: 'user is content manager'
+        count = service.getCountByQueryFilter('grails', false)
+
+        then:
+        count == 0
+
+    }
+
+    void "test getCountByMonthFilter method"() {
+        given: 'Mocked Blog'
+        GroovyMock(Blog, global: true)
+        Blog.executeQuery(_) >> []
+
+        when: 'user is not content manager'
+        long count = service.getCountByMonthFilter([month: 'july', year: 2017], true)
+
+        then:
+        count == 0
+
+        when: 'user is content manager'
+        count = service.getCountByMonthFilter([month: 'july', year: 2017], false)
+
+        then:
+        count == 0
+
+    }
 }
