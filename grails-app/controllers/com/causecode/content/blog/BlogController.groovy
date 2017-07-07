@@ -93,39 +93,18 @@ class BlogController {
                 ' b.lastUpdated as lastUpdated, b.publishedDate as publishedDate) FROM Blog b')
 
         // Modifying query based on filters
-        query = blogService.queryModifierBasedOnFilter(query, tag, monthYearFilterMapInstance, queryFilter,
-                monthFilter)
-
-        // Modifying query and blogInstance Total based on Role @here : ROLE_CONTENT_MANAGER
-        if (contentService.contentManager) {
-            if (tag) {
-                blogInstanceTotal = Blog.countByTag(tag)
-            } else if (monthFilter) {
-                blogInstanceTotal = blogService.getCountByMonthFilter(monthYearFilterMapInstance, false)
-            } else if (queryFilter) {
-                blogInstanceTotal = blogService.getCountByQueryFilter(queryFilter, false)
-            } else {
-                blogInstanceTotal = Blog.count()
-            }
-        } else if (tag) {
-            query.append('AND b.publish = true')
-            blogInstanceTotal = Blog.findAllByTagWithCriteria(tag) {
-                eq('publish', true)
-            }.size()
-        } else if (monthFilter) {
-            query.append('AND b.publish = true')
-            blogInstanceTotal = blogService.getCountByMonthFilter(monthYearFilterMapInstance, true)
-        } else if (queryFilter) {
-            query.append(' AND b.publish = true')
-            blogInstanceTotal = blogService.getCountByQueryFilter(queryFilter, true)
-        } else {
-            query.append(' where b.publish = true')
-            blogInstanceTotal = Blog.countByPublish(true)
-        }
+        query = blogService.queryModifierBasedOnFilter([query: query, tag: tag,
+                monthYearFilterMapInstance: monthYearFilterMapInstance, queryFilter: queryFilter,
+                monthFilter: monthFilter, isContentManager: contentService.contentManager])
         query.append(' order by b.dateCreated desc')
 
         List<Map> blogList = Blog.executeQuery(query.toString(), [max: params.max, offset: params.offset])
         Pattern patternTag = Pattern.compile('(?s)<p(.*?)>(.*?)<\\/p>')
+
+        String countQuery = query.toString().replace('new Map(b.id as id, b.body as body, b.title as title, b.subTitle'
+                + ' as subTitle, b.author as author, b.lastUpdated as lastUpdated, b.publishedDate as publishedDate)',
+                'count(*)')
+        blogInstanceTotal = Blog.executeQuery(countQuery)[0]
 
         // Get blogInstanceList
         List<Blog> blogInstanceList = blogService.getBlogSummaries(blogList, patternTag)

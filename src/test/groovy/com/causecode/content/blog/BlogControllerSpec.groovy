@@ -207,38 +207,27 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         controller.blogService = Mock(BlogService)
         controller.contentService = Mock(ContentService)
         controller.contentService.isContentManager() >> false
-        controller.blogService = [executeQuery: { String query, Map args ->
+        controller.blogService = [getBlogSummaries:{List<Map> blogList, def patternTag ->
             return [blogInstance]
-        }, getBlogSummaries:{List<Map> blogList, def patternTag ->
-            return [blogInstance]
-        }, getAllTags: {-> []},
-           getCountByMonthFilter:  { Map monthYearFilterMapInstance, boolean publish -> 1
-        },
-           getCountByQueryFilter: {String updateQueryFilter, boolean publish -> 1
+        }, getAllTags: {-> []
         }, updatedMonthFilterListBasedOnPublishedDate: {List<String> monthFilter ->
             []
-        }] as BlogService
+        }, queryModifierBasedOnFilter: {Map params -> new StringBuilder()}] as BlogService
         GroovyMock(Blog, global: true)
-        Blog.findAllByTagWithCriteria(_, _) >> []
-        Blog.countByPublish(_) >> 1
         Blog.executeQuery(_,_) >> [blogInstance]
+        Blog.executeQuery(_) >> [1]
         controller.params._escaped_fragment_ = false
-        long id = blogInstance.id
 
         expect:
         controller.request.makeAjaxRequest()
         response.reset()
         controller.index(10,0,tag,monthFilter,queryFilter)
-        if (response.json.instanceList.size() != 0) {
-            response.json.instanceList[0].id == id
-        }
-        response.json.totalCount == count
+        response.json.totalCount == 1
 
         where:
         queryFilter << ['Author', '', '', '']
         monthFilter << ['', new Date().toString(), '', '']
         tag << ['', '', 'grails', '']
-        count << [1, 1, 0, 1]
     }
 
     //Index action
@@ -251,38 +240,27 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         controller.blogService = Mock(BlogService)
         controller.contentService = Mock(ContentService)
         controller.contentService.isContentManager() >> true
-        controller.blogService = [executeQuery: { String query, Map args ->
+        controller.blogService = [getBlogSummaries:{List<Map> blogList, def patternTag ->
             return [blogInstance]
-        }, getBlogSummaries:{List<Map> blogList, def patternTag ->
-            return [blogInstance]
-        }, getAllTags: {-> []},
-        getCountByMonthFilter:  {Map monthYearFilterMapInstance, boolean publish -> 1
-        },
-        getCountByQueryFilter: {String updateQueryFilter, boolean publish -> 1
+        }, getAllTags: {-> []
         }, updatedMonthFilterListBasedOnPublishedDate: {List<String> monthFilter ->
             []
-        }] as BlogService
+        }, queryModifierBasedOnFilter: {Map params -> new StringBuilder()}] as BlogService
         GroovyMock(Blog, global: true)
-        Blog.countByTag(_) >> 0
-        Blog.count() >> 1
         Blog.executeQuery(_,_) >> [blogInstance]
+        Blog.executeQuery(_) >> [1]
         controller.params._escaped_fragment_ = false
-        long id = blogInstance.id
 
         expect:
         controller.request.makeAjaxRequest()
         response.reset()
         controller.index(10,0,tag,monthFilter,queryFilter)
-        if (response.json.instanceList.size() != 0) {
-            response.json.instanceList[0].id == id
-        }
-        response.json.totalCount == count
+        response.json.totalCount == 1
 
         where:
         queryFilter << ['Author', '', '', '']
         monthFilter << ['', new Date().toString(), '', '']
         tag << ['', '', 'grails', '']
-        count << [1, 1, 0, 1]
     }
 
     // Save Action

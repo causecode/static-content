@@ -75,23 +75,27 @@ class BlogService {
                 blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
     }
 
-    StringBuilder queryModifierBasedOnFilter(StringBuilder query, String tag, Map monthYearFilters, String queryFilter,
-            String monthFilter) {
-        StringBuilder updatedQuery = query
-        if (tag) {
+    StringBuilder queryModifierBasedOnFilter(Map params) {
+        StringBuilder updatedQuery = params.query
+        if (params.tag) {
             updatedQuery.append(", ${TagLink.name} tagLink WHERE b.id = tagLink.tagRef ")
-            updatedQuery.append("AND tagLink.type = 'blog' AND tagLink.tag.name = '$tag' ")
+            updatedQuery.append("AND tagLink.type = 'blog' AND tagLink.tag.name = '$params.tag' ")
         }
-        if (monthFilter) {
-            tag ? updatedQuery.append(' AND ') : updatedQuery.append(' WHERE ')
-            updatedQuery.append(" monthname(b.publishedDate) = '$monthYearFilters.month' " +
-                    "AND year(b.publishedDate) = '$monthYearFilters.year'")
+        if (params.monthFilter) {
+            params.tag ? updatedQuery.append(' AND ') : updatedQuery.append(' WHERE ')
+            updatedQuery.append(" monthname(b.publishedDate) = '$params.monthYearFilterMapInstance.month' " +
+                    "AND year(b.publishedDate) = '$params.monthYearFilterMapInstance.year'")
         }
-        if (queryFilter) {
-            tag ? updatedQuery.append(' AND ') : (monthFilter ? updatedQuery.append(' AND ') : updatedQuery
-                    .append(' WHERE '))
-            updatedQuery.append(" (b.title LIKE '%$queryFilter%' OR b.subTitle LIKE '%$queryFilter%' ")
-            updatedQuery.append(" OR b.body LIKE '%$queryFilter%' OR b.author LIKE '%$queryFilter%')")
+        if (params.queryFilter) {
+            params.tag ? updatedQuery.append(' AND ') :
+                    (params.monthFilter ? updatedQuery.append(' AND ') : updatedQuery.append(' WHERE '))
+            updatedQuery.append(" (b.title LIKE '%$params.queryFilter%' OR b.subTitle LIKE '%$params.queryFilter%' ")
+            updatedQuery.append(" OR b.body LIKE '%$params.queryFilter%' OR b.author LIKE '%$params.queryFilter%')")
+        }
+        if (!params.isContentManager && (params.tag || params.monthFilter || params.queryFilter)) {
+            updatedQuery.append(' AND b.publish = true')
+        } else if (!params.isContentManager) {
+            updatedQuery.append(' where b.publish = true')
         }
 
         return updatedQuery
@@ -153,34 +157,6 @@ class BlogService {
         }
 
         return blogInstanceList
-    }
-
-    /**
-     * @param monthYearFilterMapInstance Map holding month and year in string format (e.g [month: 'April', year:2017])
-     * @param publish Used to check whether user is content manager or not.
-     * True value indicates user is not content manager.
-     * @return Total no of blogs matching given monthFilter
-     */
-    int getCountByMonthFilter(Map monthYearFilterMapInstance, boolean publish) {
-        StringBuilder query = new StringBuilder('select distinct b from Blog b where monthname(b.publishedDate) =' +
-                " '$monthYearFilterMapInstance.month' " +
-                " AND year(b.publishedDate) = '$monthYearFilterMapInstance.year'")
-        query = publish ? query.append(' AND b.publish = true') : query
-        return Blog.executeQuery(query.toString()).size()
-    }
-
-    /**
-     * @param updateQueryFilter Search query
-     * @param publish Used to check whether user is content manager or not.
-     * True value indicates user is not content manager.
-     * @return Total no of blogs matching given search query
-     */
-    int getCountByQueryFilter(String updateQueryFilter, boolean publish) {
-        StringBuilder query = new StringBuilder('select distinct b from Blog b where (b.author ' +
-                "LIKE '%$updateQueryFilter%' or b.body LIKE '%$updateQueryFilter%' or b.title LIKE" +
-                " '%$updateQueryFilter%' or b.subTitle LIKE '%$updateQueryFilter%')")
-        query = publish ? query.append(' AND b.publish = true') : query
-        return Blog.executeQuery(query.toString()).size()
     }
 
 }

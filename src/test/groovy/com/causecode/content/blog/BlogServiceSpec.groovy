@@ -82,14 +82,24 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
         Map monthYearFilters = [month: 'september', year: '1991']
         String queryFilter = 'My new Blog'
         String monthFilter = 'september'
+        Map args = [query: query, tag: tag,
+                    monthYearFilterMapInstance: monthYearFilters, queryFilter: queryFilter, monthFilter: monthFilter,
+                    isContentManager: true]
 
         when: 'queryModifierBasedOnFilter method is called'
-        StringBuilder resultQuery = service.queryModifierBasedOnFilter(query, tag, monthYearFilters, queryFilter,
-                monthFilter)
+        StringBuilder queryIfContentManager = service.queryModifierBasedOnFilter(args)
+        args.isContentManager = false
+        StringBuilder queryIfNotContentManager = service.queryModifierBasedOnFilter(args)
+        args.tag = ''
+        args.queryFilter = ''
+        args.monthFilter = ''
+        StringBuilder queryIfNoFilter = service.queryModifierBasedOnFilter(args)
 
         then: 'Valid query instance'
-        resultQuery.contains('SELECT * from user, grails.plugins.taggable.TagLink tagLink WHERE b.id = ' +
+        queryIfContentManager.contains('SELECT * from user, grails.plugins.taggable.TagLink tagLink WHERE b.id = ' +
                 'tagLink.tagRef AND')
+        queryIfNotContentManager.contains('AND b.publish = true')
+        queryIfNoFilter.contains('where b.publish = true')
     }
 
     // Method updatedMonthFilterListBasedOnPublishedDate
@@ -195,41 +205,4 @@ class BlogServiceSpec extends Specification implements BaseTestSetup {
         result.blogInstance == blogInstance
     }
 
-    void "test getCountByQueryFilter method"() {
-        given: 'Mocked Blog'
-        GroovyMock(Blog, global: true)
-        Blog.executeQuery(_) >> []
-
-        when: 'user is not content manager'
-        long count = service.getCountByQueryFilter('grails', true)
-
-        then:
-        count == 0
-
-        when: 'user is content manager'
-        count = service.getCountByQueryFilter('grails', false)
-
-        then:
-        count == 0
-
-    }
-
-    void "test getCountByMonthFilter method"() {
-        given: 'Mocked Blog'
-        GroovyMock(Blog, global: true)
-        Blog.executeQuery(_) >> []
-
-        when: 'user is not content manager'
-        long count = service.getCountByMonthFilter([month: 'july', year: 2017], true)
-
-        then:
-        count == 0
-
-        when: 'user is content manager'
-        count = service.getCountByMonthFilter([month: 'july', year: 2017], false)
-
-        then:
-        count == 0
-
-    }
 }
