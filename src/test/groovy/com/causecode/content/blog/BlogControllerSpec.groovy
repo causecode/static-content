@@ -28,6 +28,7 @@ import grails.test.mixin.TestFor
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
+import spock.lang.Unroll
 import spock.util.mop.ConfineMetaClassChanges
 
 /**
@@ -196,8 +197,73 @@ class BlogControllerSpec extends Specification implements BaseTestSetup {
         controller.response.status == HttpStatus.OK.value()
     }
 
+    //Index action
+    @Unroll
+    void "test index action when user is not content manager"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+
+        and: 'Mocked service'
+        controller.blogService = Mock(BlogService)
+        controller.contentService = Mock(ContentService)
+        controller.contentService.isContentManager() >> false
+        controller.blogService = [getBlogSummaries:{List<Map> blogList, def patternTag ->
+            return [blogInstance]
+        }, getAllTags: {-> []
+        }, updatedMonthFilterListBasedOnPublishedDate: {List<String> monthFilter ->
+            []
+        }, queryModifierBasedOnFilter: {Map params -> new StringBuilder()}] as BlogService
+        GroovyMock(Blog, global: true)
+        Blog.executeQuery(_,_) >> [blogInstance]
+        Blog.executeQuery(_) >> [1]
+        controller.params._escaped_fragment_ = false
+
+        expect:
+        controller.request.makeAjaxRequest()
+        response.reset()
+        controller.index(10,0,tag,monthFilter,queryFilter)
+        response.json.totalCount == 1
+
+        where:
+        queryFilter << ['Author', '', '', '']
+        monthFilter << ['', new Date().toString(), '', '']
+        tag << ['', '', 'grails', '']
+    }
+
+    //Index action
+    @Unroll
+    void "test index action when user is content manager"() {
+        given: 'Blog instance'
+        Blog blogInstance = getBlogInstance(1)
+
+        and: 'Mocked service'
+        controller.blogService = Mock(BlogService)
+        controller.contentService = Mock(ContentService)
+        controller.contentService.isContentManager() >> true
+        controller.blogService = [getBlogSummaries:{List<Map> blogList, def patternTag ->
+            return [blogInstance]
+        }, getAllTags: {-> []
+        }, updatedMonthFilterListBasedOnPublishedDate: {List<String> monthFilter ->
+            []
+        }, queryModifierBasedOnFilter: {Map params -> new StringBuilder()}] as BlogService
+        GroovyMock(Blog, global: true)
+        Blog.executeQuery(_,_) >> [blogInstance]
+        Blog.executeQuery(_) >> [1]
+        controller.params._escaped_fragment_ = false
+
+        expect:
+        controller.request.makeAjaxRequest()
+        response.reset()
+        controller.index(10,0,tag,monthFilter,queryFilter)
+        response.json.totalCount == 1
+
+        where:
+        queryFilter << ['Author', '', '', '']
+        monthFilter << ['', new Date().toString(), '', '']
+        tag << ['', '', 'grails', '']
+    }
+
     // Save Action
-    @ConfineMetaClassChanges([ContentService, FileUploaderService, BlogService])
     void "test save action when blog instance is passed"() {
         given: 'Blog instance'
         Blog blogInstance = getBlogInstance(1)
