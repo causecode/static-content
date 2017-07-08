@@ -72,26 +72,30 @@ class BlogService {
         List<Meta> metaInstanceList = blogInstance.metaTags
 
         return [blogInstance: blogInstance, comments: blogComments, tagList: tagList,
-            blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
+                blogInstanceList: blogInstanceList, blogInstanceTags: blogInstanceTags, metaList: metaInstanceList]
     }
 
-    StringBuilder queryModifierBasedOnFilter(StringBuilder query, String tag, Map monthYearFilters, String queryFilter,
-            String monthFilter) {
-        StringBuilder updatedQuery = query
-        if (tag) {
+    StringBuilder queryModifierBasedOnFilter(Map params) {
+        StringBuilder updatedQuery = params.query
+        if (params.tag) {
             updatedQuery.append(", ${TagLink.name} tagLink WHERE b.id = tagLink.tagRef ")
-            updatedQuery.append("AND tagLink.type = 'blog' AND tagLink.tag.name = '$tag' ")
+            updatedQuery.append("AND tagLink.type = 'blog' AND tagLink.tag.name = '$params.tag' ")
         }
-        if (monthFilter) {
-            tag ? updatedQuery.append(' AND ') : updatedQuery.append(' WHERE ')
-            updatedQuery.append(" monthname(b.publishedDate) = '$monthYearFilters.month' " +
-                    "AND year(b.publishedDate) = '$monthYearFilters.year'")
+        if (params.monthFilter) {
+            params.tag ? updatedQuery.append(' AND ') : updatedQuery.append(' WHERE ')
+            updatedQuery.append(" monthname(b.publishedDate) = '$params.monthYearFilterMapInstance.month' " +
+                    "AND year(b.publishedDate) = '$params.monthYearFilterMapInstance.year'")
         }
-        if (queryFilter) {
-            tag ? updatedQuery.append(' AND ') : (monthFilter ? updatedQuery.append(' AND ') : updatedQuery
-                    .append(' WHERE '))
-            updatedQuery.append(" b.title LIKE '%$queryFilter%' OR b.subTitle LIKE '%$queryFilter%' ")
-            updatedQuery.append(" OR b.body LIKE '%$queryFilter%' OR b.author LIKE '%$queryFilter%'")
+        if (params.queryFilter) {
+            params.tag ? updatedQuery.append(' AND ') :
+                    (params.monthFilter ? updatedQuery.append(' AND ') : updatedQuery.append(' WHERE '))
+            updatedQuery.append(" (b.title LIKE '%$params.queryFilter%' OR b.subTitle LIKE '%$params.queryFilter%' ")
+            updatedQuery.append(" OR b.body LIKE '%$params.queryFilter%' OR b.author LIKE '%$params.queryFilter%')")
+        }
+        if (!params.isContentManager && (params.tag || params.monthFilter || params.queryFilter)) {
+            updatedQuery.append(' AND b.publish = true')
+        } else if (!params.isContentManager) {
+            updatedQuery.append(' where b.publish = true')
         }
 
         return updatedQuery
@@ -154,4 +158,5 @@ class BlogService {
 
         return blogInstanceList
     }
+
 }

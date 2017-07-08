@@ -75,19 +75,13 @@ class BlogController {
      */
     @Secured(['permitAll'])
     def index(Integer max, Integer offset, String tag, String monthFilter, String queryFilter) {
-        // To avoid Parameter Reassignment
-        def (updateTag, updateMonthFilter, updateQueryFilter) = [tag, monthFilter, queryFilter]
-
-        updateTag = (tag == 'undefined') ? '' : tag
-        updateMonthFilter = (monthFilter == 'undefined') ? '' : monthFilter
-        updateQueryFilter = (queryFilter == 'undefined') ? '' : queryFilter
 
         log.info "Parameters received to filter blogs : $params"
         long blogInstanceTotal
         int defaultMax = grailsApplication.config.cc.plugins.content.blog.list.max ?: 10
         List<String> monthFilterList = []
 
-        Map monthYearFilterMapInstance = updateMonthFilter ? getMonthYearFilterMapInstance(updateMonthFilter) :
+        Map monthYearFilterMapInstance = monthFilter ? getMonthYearFilterMapInstance(monthFilter) :
                 [month: '', year: '']
 
         params.offset =  offset ?: 0
@@ -99,33 +93,18 @@ class BlogController {
                 ' b.lastUpdated as lastUpdated, b.publishedDate as publishedDate) FROM Blog b')
 
         // Modifying query based on filters
-        query = blogService.queryModifierBasedOnFilter(query, updateTag, monthYearFilterMapInstance, updateQueryFilter,
-                updateMonthFilter)
-
-        // Modifying query and blogInstance Total based on Role @here : ROLE_CONTENT_MANAGER
-        if (contentService.contentManager) {
-            blogInstanceTotal = updateTag ? Blog.countByTag(updateTag) : Blog.count()
-        } else if (updateTag) {
-            query.append('AND b.publish = true')
-            blogInstanceTotal = Blog.findAllByTagWithCriteria(updateTag) {
-                eq('publish', true)
-            }.size()
-        } else if (updateMonthFilter) {
-            query.append('AND b.publish = true')
-            blogInstanceTotal = Blog.countByPublish(true)
-        } else {
-            (updateQueryFilter) ? query.append(' AND ') : query.append(' where ')
-            query.append(' b.publish = true')
-            blogInstanceTotal = Blog.countByPublish(true)
-        }
+        query = blogService.queryModifierBasedOnFilter([query: query, tag: tag,
+                monthYearFilterMapInstance: monthYearFilterMapInstance, queryFilter: queryFilter,
+                monthFilter: monthFilter, isContentManager: contentService.contentManager])
         query.append(' order by b.dateCreated desc')
 
         List<Map> blogList = Blog.executeQuery(query.toString(), [max: params.max, offset: params.offset])
         Pattern patternTag = Pattern.compile('(?s)<p(.*?)>(.*?)<\\/p>')
 
-        if (updateMonthFilter) {
-            blogInstanceTotal = Blog.executeQuery(query.toString()).size()
-        }
+        String countQuery = query.toString().replace('new Map(b.id as id, b.body as body, b.title as title, b.subTitle'
+                + ' as subTitle, b.author as author, b.lastUpdated as lastUpdated, b.publishedDate as publishedDate)',
+                'count(*)')
+        blogInstanceTotal = Blog.executeQuery(countQuery)[0]
 
         // Get blogInstanceList
         List<Blog> blogInstanceList = blogService.getBlogSummaries(blogList, patternTag)
@@ -216,15 +195,17 @@ class BlogController {
 
         // Convert markdown content into html format
         if (params.convertToMarkdown == 'true') {
-           blogInstance.body = markdownService.markdown(blogInstance.body)
+            blogInstance.body = markdownService.markdown(blogInstance.body)
         }
 
         List<Blog> blogInstanceList = Blog.findAllByPublish(true, [max: 5, sort: 'publishedDate', order: 'desc'])
         List<Meta> metaInstanceList = blogInstance.metaTags
 
+        List<String> monthFilterList = blogService.updatedMonthFilterListBasedOnPublishedDate([])
+
         Map result = [blogInstance: blogInstance, comments: null,
-            tagList: tagList, blogInstanceList: blogInstanceList,
-            blogInstanceTags: blogInstanceTags, metaList: metaInstanceList
+                      tagList: tagList, blogInstanceList: blogInstanceList, monthFilterList: monthFilterList.unique(),
+                      blogInstanceTags: blogInstanceTags, metaList: metaInstanceList
         ]
 
         renderGSPContentAndBlogCustomURLRedirect(blogInstance, result, 'show')

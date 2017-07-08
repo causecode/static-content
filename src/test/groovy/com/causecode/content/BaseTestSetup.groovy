@@ -90,7 +90,7 @@ trait BaseTestSetup {
     // Blog
     Blog getBlogInstance(int index) {
         Blog blogInstance = new Blog(getContentParams(index))
-        blogInstance.save()
+        blogInstance.save(flush: true)
 
         assert blogInstance.id
 

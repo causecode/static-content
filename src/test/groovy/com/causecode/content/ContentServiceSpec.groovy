@@ -12,6 +12,7 @@ import com.causecode.content.blog.comment.BlogComment
 import com.causecode.content.meta.Meta
 import com.causecode.content.page.Page
 import com.causecode.content.page.PageRevision
+import com.causecode.seo.friendlyurl.FriendlyUrlService
 import com.causecode.user.User
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.SpringSecurityUtils
@@ -232,6 +233,7 @@ class ContentServiceSpec extends Specification implements BaseTestSetup {
         Map attrs = [domain: domain, id: 0, absolute: true]
 
         and: 'Mocked Services'
+        service.friendlyUrlService = Mock(FriendlyUrlService)
         service.metaClass.getShorthandAnnotatedControllers = { ->
             return []
         }
