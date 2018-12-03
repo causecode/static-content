@@ -109,3 +109,40 @@ static Map shorthandControllers = [:]
 ```
 
 NOTE : Secure domains
+
+## Publish plugin
+
+### Local maven
+- Run following commands to publish plugin to local maven repository.
+```
+grails clean
+grails compile
+grails maven-install
+```
+
+Note: Make sure you are using Grails version 2.3.5 and Java version 1.7
+
+### Nexus repository
+- Run the following commands to publish the plugin to nexus.
+ ```
+ grails clean
+ grails compile
+ grails publish-plugin
+ ```
+
+ ### Credentials
+ Create a `settings.groovy` file in `~/.grails/` directory if not present and add the following config:
+ ```
+ // use username and password of nexus repo
+ grails.project.repos.ccRepo.username = "foo"
+ grails.project.repos.ccRepo.password = "bar"
+
+ grails.project.dependency.authentication = {
+   credentials {
+     id = "ccRepo"
+     username = "foo"
+     password = "bar"
+   }
+ }
+ ```
+
